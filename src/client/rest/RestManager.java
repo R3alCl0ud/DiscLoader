@@ -1,5 +1,12 @@
 package client.rest;
 
-public class RestManager {
+import client.Client;
 
+public class RESTManager {
+	
+	public Client client;
+		
+	public RESTManager(Client client) {
+		this.client = client;
+	}
 }
