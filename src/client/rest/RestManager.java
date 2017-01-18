@@ -9,4 +9,8 @@ public class RESTManager {
 	public RESTManager(Client client) {
 		this.client = client;
 	}
+	
+	public void push(APIRequest request) {
+		
+	}
 }

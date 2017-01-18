@@ -36,7 +36,6 @@ public class User {
 	}
 	
 	public String avatarURL() {
-		return constants.assets(this.avatar);
-		
+		return constants.Endpoints.avatar(this.id, this.avatar);
 	}
 }

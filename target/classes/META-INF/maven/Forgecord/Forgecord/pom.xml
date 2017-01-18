@@ -24,6 +24,19 @@
   		<artifactId>json</artifactId>
   		<version>20160810</version>
   	</dependency>
+  	<dependency>
+  		<groupId>org.atteo.classindex</groupId>
+  		<artifactId>classindex</artifactId>
+  	</dependency>
   </dependencies>
   <url>https://github.com/R3alCl0ud/Forgecord</url>
+  <dependencyManagement>
+  	<dependencies>
+  		<dependency>
+  			<groupId>org.atteo.classindex</groupId>
+  			<artifactId>classindex</artifactId>
+  			<version>3.3</version>
+  		</dependency>
+  	</dependencies>
+  </dependencyManagement>
 </project>
