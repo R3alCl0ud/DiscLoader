@@ -8,7 +8,8 @@ public class constants {
 	public static final String API = HOST + "/api/v6";
 	public static final JSONObject Endpoints = new JSONObject().put("login", API + "/auth/login")
 			.put("logout", API + "/auth/logout").put("gateway", API + "/gateway")
-			.put("botGateway", API + "/gateway/bot").put("CDN", "https://cdn.discordapp.com");
+			.put("botGateway", API + "/gateway/bot").put("CDN", "https://cdn.discordapp.com")
+			.put("me", API + "/users/@me");
 
 	public static String assets(String asset) {
 		return HOST + "/assets/" + asset;
