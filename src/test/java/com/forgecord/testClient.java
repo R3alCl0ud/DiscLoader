@@ -8,7 +8,7 @@ public class testClient {
 	public static void main(String[] args) {
 		Client client = new Client();
 
-		client.login("MjcxNjYwMzYxMTMwODM1OTcx.C2Jq8Q.RlFFdeHvE98orTuurJ7qKQNqJi4");
+		client.login("NOT FOR YOU");
 		System.out.println(client.token);		
 	}
 
