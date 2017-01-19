@@ -48,11 +48,6 @@
   		<artifactId>unirest-java</artifactId>
   		<version>1.4.9</version>
   	</dependency>
-  	<dependency>
-  		<groupId>org.jdeferred</groupId>
-  		<artifactId>jdeferred-core</artifactId>
-  		<version>1.2.4</version>
-  	</dependency>
   </dependencies>
   <url>https://github.com/R3alCl0ud/Forgecord</url>
   <dependencyManagement>

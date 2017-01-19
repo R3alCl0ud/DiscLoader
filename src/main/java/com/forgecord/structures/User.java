@@ -17,6 +17,7 @@ public class User {
 	
 	public User(Client client, JSONObject data) {
 		this.client = client;
+		this.setup(data);
 	}
 	
 	public void setup(JSONObject data) {

@@ -14,8 +14,8 @@ public class constants {
 	public static class Endpoints {
 		public static String login = API + "/auth/login";
 		public static String logout = API + "/auth/login";
-		public static String gateway = API + "/auth/login";
-		public static String botGateway = API + "/auth/login";
+		public static String gateway = API + "/gateway";
+		public static String botGateway = API + "/gateway/bot";
 		public static String CDN = "https://cdn.discordapp.com";
 		public static String assets(String asset) {
 			return HOST + "/assets/" + asset;

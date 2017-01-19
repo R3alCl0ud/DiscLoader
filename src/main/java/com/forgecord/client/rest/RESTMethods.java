@@ -2,12 +2,10 @@ package main.java.com.forgecord.client.rest;
 
 
 import java.lang.reflect.Method;
-
-import org.json.JSONObject;
+import java.util.concurrent.CompletableFuture;
 
 import main.java.com.forgecord.client.Client;
 import main.java.com.forgecord.util.constants;
-import main.java.com.forgecord.util.promise.*;
 
 public class RESTMethods {
 	
@@ -23,7 +21,7 @@ public class RESTMethods {
 		this.client.manager.connectToWebSocket(token);
 	}
 	
-	public String getGateway() {
-		return this.client.ws.gateway = "/?v=6";
+	public CompletableFuture<?> getGateway() {
+		return this.rest.createRequest(constants.Endpoints.gateway, "get", true);
 	}
 }

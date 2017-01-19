@@ -5,19 +5,19 @@ import java.util.List;
 
 import org.json.JSONObject;
 
-
+import main.java.com.forgecord.client.rest.APIRequest;
 import main.java.com.forgecord.client.rest.RESTManager;
 
 public class RequestHandler {
 	
 	public RESTManager restManager;
-	public List<JSONObject> queue = new ArrayList<JSONObject>();
+	public List<APIRequest> queue = new ArrayList<APIRequest>();
 	
 	public RequestHandler(RESTManager restManager) {
 		this.restManager = restManager;
 	}
 	
-	public void push(JSONObject request) {
+	public void push(APIRequest request) {
 		this.queue.add(request);
 	}
 	

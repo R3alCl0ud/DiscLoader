@@ -25,4 +25,25 @@ public class RESTManager {
 		this.handlers = new JSONObject();
 	}
 	
+	public CompletableFuture push(SequentialRequestHandler handler, APIRequest apiRequest) {
+		CompletableFuture future = new CompletableFuture();
+		apiRequest.setFuture(future);
+		handler.push(apiRequest);
+		return future;
+	}
+	
+	public CompletableFuture createRequest(String url, String method, boolean auth, JSONObject data) {
+		APIRequest apiRequest = new APIRequest(this, method, url, auth, data);
+		if (!this.handlers.has(apiRequest.route)) this.handlers.put(apiRequest.route, new SequentialRequestHandler(this, apiRequest.route));
+		SequentialRequestHandler handler = (SequentialRequestHandler) this.handlers.get(apiRequest.route);
+		return this.push(handler, apiRequest);
+	}
+	
+	public CompletableFuture createRequest(String url, String method, boolean auth) {
+		APIRequest apiRequest = new APIRequest(this, method, url, auth, new JSONObject());
+		if (!this.handlers.has(apiRequest.route)) this.handlers.put(apiRequest.route, new SequentialRequestHandler(this, apiRequest.route));
+		SequentialRequestHandler handler = (SequentialRequestHandler) this.handlers.get(apiRequest.route);
+		return this.push(handler, apiRequest);
+	}
+	
 }

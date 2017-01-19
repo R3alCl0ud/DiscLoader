@@ -1,6 +1,9 @@
 package main.java.com.forgecord.client.websocket;
 
 import java.io.*;
+
+import org.json.JSONObject;
+
 import com.neovisionaries.ws.client.*;
 
 import main.java.com.forgecord.client.Client;
@@ -11,6 +14,7 @@ public class WebSocketManager {
 	public WebSocketPacketManager packetManager;
 	public String sessionID;
 	public int sequence;
+	public int status;
 	public String gateway;
 	public boolean normalReady;
 	public boolean first = true;
@@ -24,7 +28,7 @@ public class WebSocketManager {
 	}
 	
 	public void _connect(String gateway) throws IOException, WebSocketException {
-		System.out.printf("Connecting to gateway %s", gateway);
+		System.out.printf("Connecting to gateway %s%n", gateway);
 		this.ws = new WebSocketFactory().setConnectionTimeout(15000).createSocket(gateway).addHeader("Accept-Encoding", "gzip").connect();
 		this.packetManager.handleMessages();
 	}
@@ -37,5 +41,10 @@ public class WebSocketManager {
 			Thread.sleep(5500);
 			this._connect(gateway);
 		}
+	}
+	
+	public void send(JSONObject payload) {
+		System.out.println(payload);
+		this.ws.sendText(payload.toString());
 	}
 }
