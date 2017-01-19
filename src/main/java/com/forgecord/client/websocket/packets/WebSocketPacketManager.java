@@ -7,16 +7,19 @@ import org.json.JSONObject;
 
 import com.neovisionaries.ws.client.*;
 
+import main.java.com.forgecord.client.Client;
 import main.java.com.forgecord.client.websocket.WebSocketManager;
 
 public class WebSocketPacketManager extends WebSocketAdapter implements WebSocketListener {
 	public WebSocketManager ws;
-	public boolean lastHeartBeatAck = false;
-	public boolean reconnecting = false;
+	public Client client;
+	
 	
 	public WebSocketPacketManager(WebSocketManager webSocketManager) {
 
 		this.ws = webSocketManager;
+		
+		this.client = this.ws.client;
 	}
 	
 	public void handleMessages() {
@@ -31,8 +34,8 @@ public class WebSocketPacketManager extends WebSocketAdapter implements WebSocke
 
 	@Override
 	public void onConnected(WebSocket websocket, Map<String, List<String>> headers) throws Exception {
-		System.out.println("Sucessfully connected to gateway");
-		this.lastHeartBeatAck = true;
+		this.client.emit("debug", "Sucessfully connected to gateway");
+		this.ws.lastHeartBeatAck = true;
 		this.sendNewIdentify();
 	}
 
@@ -51,8 +54,11 @@ public class WebSocketPacketManager extends WebSocketAdapter implements WebSocke
 
 	@Override
 	public void onTextMessage(WebSocket websocket, String text) throws Exception {
-		System.out.println(text);
+		this.client.emit("raw", text);
+//		System.out.println(text);
 		JSONObject data = this.parsePacketData(text);
+		
+		if ((int) data.get("op") == 10) this.client.manager.setupKeepAlive((int) ((JSONObject) data.get("d")).get("heartbeat_interval"));
 	}
 
 	@Override
@@ -78,10 +84,10 @@ public class WebSocketPacketManager extends WebSocketAdapter implements WebSocke
 	}
 
 	public void sendNewIdentify() {
-		this.reconnecting = false;
+		this.ws.reconnecting = false;
 		JSONObject payload = new JSONObject();
 		JSONObject properties = new JSONObject().put("$os", "Forgecord").put("$browser", "Forgecord").put("$device", "Forgecord");
-		payload.put("token", this.ws.client.token).put("large_threshold", 250).put("compress", false).put("properties", properties);
+		payload.put("token", this.client.token).put("large_threshold", 250).put("compress", false).put("properties", properties);
 		
 		JSONObject packet = new JSONObject();
 		packet.put("op", 2).put("d", payload);

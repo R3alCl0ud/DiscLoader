@@ -15,7 +15,7 @@ public class Ready extends AbstractHandler {
 		Client client = this.packetManager.ws.client;
 		JSONObject data = (JSONObject) packet.get("d");
 	
-		
+		client.ws.heartbeat(false);
 		
 		return null;
 	}
