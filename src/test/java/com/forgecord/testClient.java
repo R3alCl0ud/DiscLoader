@@ -8,7 +8,7 @@ public class testClient {
 		Client client = new Client();
 
 		
-		client.login("mfa.qaPsDgy3JjktGISe4QH-MbD7Em0VCc7XK71yFCTq0wjcPZqKp0YNuVRbkeNG2yF23bqGM7sN7AepRJKqB2Ub");
+		client.login("");
 		System.out.println(client.token);
 		
 	}
