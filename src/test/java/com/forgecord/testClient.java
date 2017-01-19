@@ -14,7 +14,7 @@ public class testClient {
 		client.on("debug", e -> System.out.println(e));
 		client.on("raw", e -> System.out.println(e));
 		
-		client.login("MjcxNjYwMzYxMTMwODM1OTcx.C2KgGw.WTcSF6ilD5ahNrfY5P8IQmq8RH8");
+		client.login("TOKEN");
 
 		client.on("ready", e -> {
 			System.out.printf("Username: %s%nChannels: %d%n", client.user.username, client.channels.size());
