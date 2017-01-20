@@ -1,6 +1,12 @@
 # Forgecord
 Simple Discord API abstractions for Java
 
-# Planned Features
-- connect to websocket gateway
-- easy to setup command system.
+# Done
+- Connect to the gateway
+- Properly heartbeat with the gateway
+- Add events system
+
+# Todo
+- Finish constants registry
+- Finish packet reading
+- Host documentation
