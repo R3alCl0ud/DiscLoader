@@ -26,7 +26,7 @@ public class EventEmitter {
 	 *            The event to listen for
 	 * @param handler
 	 *            The function that handles the event
-	 * @return this
+	 * @return {@link EventEmitter this}
 	 */
 	public EventEmitter on(String event, Consumer<?> handler) {
 		this.onHandlers.add(event, handler);
@@ -41,7 +41,7 @@ public class EventEmitter {
 	 *            The event to listen for
 	 * @param handler
 	 *            The function that handles the event
-	 * @return this
+	 * @return {@link EventEmitter this}
 	 */
 	public EventEmitter once(String event, Consumer<?> handler) {
 		this.onceHandlers.add(event, handler);
@@ -56,7 +56,7 @@ public class EventEmitter {
 	 *            The emitted event
 	 * @param data
 	 *            The data to pass to the handlers
-	 * @return this
+	 * @return {@link EventEmitter this}
 	 */
 	public EventEmitter emit(String event, Object data) {
 		this.onceHandlers.execute(event, true, data);

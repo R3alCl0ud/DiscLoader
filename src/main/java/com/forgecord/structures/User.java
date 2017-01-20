@@ -43,7 +43,7 @@ public class User {
 
 	/**
 	 * Gets the link to the user's avatar.
-	 * @returns 
+	 * @returns {@link String avatarURL}
 	 */
 	public String avatarURL() {
 		return constants.Endpoints.avatar(this.id, this.avatar);

@@ -4,7 +4,6 @@ import java.text.MessageFormat;
 
 public class constants {
 	public static final String HOST = "https://discordapp.com";
-	public static final String CDN = "https://discordapp.com";
 	public static final String API = MessageFormat.format("{0}/api/v6", new Object[]{HOST});
 
 	public static final class Endpoints {
@@ -23,24 +22,24 @@ public class constants {
 		}
 
 		public static final String assets(String asset) {
-			return MessageFormat.format("{0}/assets/{1}", HOST, asset);
+			return MessageFormat.format("{0}/assets/{1}", new Object[]{HOST, asset});
 		}
 
 		public static final String user(String userID) {
-			return MessageFormat.format("%s/users/%s", API, userID);
+			return MessageFormat.format("{0}/users/{1}", new Object[]{API, userID});
 		}
 
 		public static final String userChannels(String userID) {
-			return MessageFormat.format("%s/channels", Endpoints.user(userID));
+			return MessageFormat.format("{0}/channels", new Object[]{Endpoints.user(userID)});
 		}
 
 		public static final String userProfile(String userID) {
-			return MessageFormat.format("%s/profile", Endpoints.user(userID));
+			return MessageFormat.format("{0}/profile", new Object[]{Endpoints.user(userID)});
 		}
 
 		public static final String avatar(String id, String avatar) {
-			return MessageFormat.format("%s/avatars/%s/%s%s?size=1024", Endpoints.CDN, id, avatar,
-					avatar.startsWith("a_") ? ".gif" : ".jpg");
+			return MessageFormat.format("{0}/avatars/{1}/{2}{3}?size=1024", new Object[]{Endpoints.CDN, id, avatar,
+					avatar.startsWith("a_") ? ".gif" : ".jpg"});
 		}
 	}
 
@@ -83,6 +82,8 @@ public class constants {
 		public static final String GUILD_ROLE_DELETE = "GUILD_ROLE_DELETE";
 		public static final String GUILD_ROLE_UPDATE = "GUILD_ROLE_UPDATE";
 		public static final String GUILD_EMOJIS_UPDATE = "GUILD_EMOJIS_UPDATE";
+		public static final String CHANNEL_CREATE = "CHANNEL_CREATE";
+		public static final String CHANNE_DELETE = "CHANNEL_DELETE";
 	}
 
 	public static final class Events {
