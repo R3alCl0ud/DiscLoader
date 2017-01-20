@@ -1,5 +1,7 @@
 package main.java.com.forgecord.client.websocket.packets;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -9,17 +11,39 @@ import com.neovisionaries.ws.client.*;
 
 import main.java.com.forgecord.client.Client;
 import main.java.com.forgecord.client.websocket.WebSocketManager;
+import main.java.com.forgecord.client.websocket.packets.handlers.*;
+import main.java.com.forgecord.util.constants;
 
 public class WebSocketPacketManager extends WebSocketAdapter implements WebSocketListener {
 	public WebSocketManager ws;
 	public Client client;
-	
+	public HashMap<String, AbstractHandler> handlers;
+	public List<JSONObject> queue;
+	public static String[] BeforeReady = {constants.WSEvents.READY, constants.WSEvents.GUILD_CREATE, constants.WSEvents.GUILD_DELETE, constants.WSEvents.GUILD_MEMBER_ADD, constants.WSEvents.GUILD_MEMBER_REMOVE, constants.WSEvents.GUILD_MEMBERS_CHUNK};
 	
 	public WebSocketPacketManager(WebSocketManager webSocketManager) {
 
 		this.ws = webSocketManager;
 		
 		this.client = this.ws.client;
+		
+		this.queue = new ArrayList<JSONObject>();
+		
+		this.handlers = new HashMap<String, AbstractHandler>();
+		
+		this.register(constants.WSEvents.READY, new Ready(this));
+		this.register(constants.WSEvents.GUILD_CREATE, new GuildCreate(this));
+	}
+	
+	public void register(String event, AbstractHandler  handler) {
+		this.handlers.put(event, handler);
+	}
+	
+	public void handleQueue() {
+		this.queue.forEach(packet -> {
+			this.handle(packet);
+			this.queue.remove(packet);
+		});
 	}
 	
 	public void handleMessages() {
@@ -35,7 +59,7 @@ public class WebSocketPacketManager extends WebSocketAdapter implements WebSocke
 	@Override
 	public void onConnected(WebSocket websocket, Map<String, List<String>> headers) throws Exception {
 		this.client.emit("debug", "Sucessfully connected to gateway");
-		this.ws.lastHeartBeatAck = true;
+		this.ws.lastHeartbeatAck = true;
 		this.sendNewIdentify();
 	}
 
@@ -46,8 +70,7 @@ public class WebSocketPacketManager extends WebSocketAdapter implements WebSocke
 	}
 
 	@Override
-	public void onDisconnected(WebSocket websocket, WebSocketFrame serverCloseFrame, WebSocketFrame clientCloseFrame,
-			boolean closedByServer) throws Exception {
+	public void onDisconnected(WebSocket websocket, WebSocketFrame serverCloseFrame, WebSocketFrame clientCloseFrame, boolean closedByServer) throws Exception {
 
 		
 	}
@@ -55,10 +78,11 @@ public class WebSocketPacketManager extends WebSocketAdapter implements WebSocke
 	@Override
 	public void onTextMessage(WebSocket websocket, String text) throws Exception {
 		this.client.emit("raw", text);
-//		System.out.println(text);
 		JSONObject data = this.parsePacketData(text);
 		
-		if ((int) data.get("op") == 10) this.client.manager.setupKeepAlive((int) ((JSONObject) data.get("d")).get("heartbeat_interval"));
+		if ((int) data.get("op") == 10) this.client.manager.setupKeepAlive(((JSONObject) data.get("d")).getInt("heartbeat_interval"));
+		
+		this.handle(data);
 	}
 
 	@Override
@@ -73,10 +97,32 @@ public class WebSocketPacketManager extends WebSocketAdapter implements WebSocke
 		
 	}
 
+	public void setSequence(int s) {
+		if (s > this.ws.sequence) this.ws.sequence = s;
+	}
+	
 	public void handle(JSONObject packet) {
-		if (packet.getInt("op") == 7) {
-			
+		if (packet.getInt("op") == constants.OPCodes.RECONNECT) {
+			this.setSequence(packet.getInt("s"));
+			return;
 		}
+		
+		if (packet.getInt("op") == constants.OPCodes.HEARTBEAT_ACK) {
+			this.ws.lastHeartbeatAck = true;
+			this.ws.client.emit("debug", "Heartbeat Acknoledged");
+		} else if (packet.getInt("op") == constants.OPCodes.HEARTBEAT) {
+			JSONObject payload = new JSONObject().put("op", constants.OPCodes.HEARTBEAT).put("d", this.client.ws.sequence);
+			this.client.ws.send(payload);
+			this.ws.client.emit("debug", "Received gateway heartbeat");
+		}
+		
+		this.setSequence(packet.getInt("s"));
+		
+		if (this.handlers.containsKey(packet.get("t"))) {
+			this.handlers.get(packet.get("t")).handle(packet);
+			return;
+		}
+		
  	}
 	
 	public JSONObject parsePacketData(String packet) {

@@ -7,7 +7,7 @@ import main.java.com.forgecord.util.constants;
 
 public class User {
 	
-	public int id;
+	public String id;
 	public String username;
 	public String discriminator;
 	public String avatar;
@@ -21,10 +21,10 @@ public class User {
 	}
 	
 	public void setup(JSONObject data) {
-		this.id = data.getInt("id");
+		this.id = data.getString("id");
 		
 		
-		this.username = data.getString("avatar");
+		this.username = data.getString("username");
 		
 		
 		this.discriminator = data.getString("discriminator");

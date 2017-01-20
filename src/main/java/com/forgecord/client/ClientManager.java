@@ -36,7 +36,6 @@ public class ClientManager {
 	public void connectToWebSocket(String token) {
 		this.client.token = token;
 		this.client.rest.methods.getGateway().thenAccept(this::connect);
-//		System.out.println("Test");
 	}
 
 	public void setupKeepAlive(int interval) {
@@ -44,7 +43,7 @@ public class ClientManager {
 			@Override
 			public void run() {
 				client.ws.heartbeat(true);
-				client.emit("debug", "Sending Heartbeat");
+				
 			}
 		};
 		timer.scheduleAtFixedRate(this.heartbeatInterval, interval, interval);

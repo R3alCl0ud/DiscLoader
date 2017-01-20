@@ -1,5 +1,6 @@
 package main.java.com.forgecord.client;
 
+import java.util.Date;
 import java.util.HashMap;
 
 import main.java.com.forgecord.client.events.EventEmitter;
@@ -10,23 +11,35 @@ import main.java.com.forgecord.structures.ClientUser;
 import main.java.com.forgecord.structures.Guild;
 import main.java.com.forgecord.structures.User;
 
-public class Client extends EventEmitter{
+public class Client extends EventEmitter {
 
 	public ClientUser user;
-	
-	public HashMap<String, Guild> guilds;
-	public HashMap<String, ? extends Channel> channels;
-	public HashMap<String, User> users;
+	public ClientManager manager;
+	public ClientDataManager dataManager;
+	public RESTManager rest;
+	public WebSocketManager ws;
 	
 	public String token;
-	public WebSocketManager ws;
-	public RESTManager rest;
-	public ClientManager manager;
+
+	public Date readyAt;
+	
+	public HashMap<String, Guild> guilds;
+	public HashMap<String, Channel> channels;
+	public HashMap<String, User> users;
 	
 	public Client() {
 		this.ws = new WebSocketManager(this);
 		this.rest = new RESTManager(this);
 		this.manager = new ClientManager(this);
+		this.dataManager = new ClientDataManager(this);
+		
+		this.guilds = new HashMap<String, Guild>();
+		
+		
+		this.channels = new HashMap<String, Channel>();
+		
+		
+		this.users = new HashMap<String, User>();
 	}
 	
 	public void login(String token) {

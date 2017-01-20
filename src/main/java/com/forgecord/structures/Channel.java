@@ -4,7 +4,7 @@ import main.java.com.forgecord.client.Client;
 
 public class Channel {
 	
-	public int id;
+	public String id;
 	public Client client;
 	
 	public Channel(Client client) {

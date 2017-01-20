@@ -1,14 +1,16 @@
 package test.java.com.forgecord;
 
-import java.util.Timer;
-import java.util.TimerTask;
+import org.json.JSONObject;
 
 import main.java.com.forgecord.client.Client;
 
 
 public class testClient {
-
+	
+	public static JSONObject auth = new JSONObject();
+	
 	public static void main(String[] args) {
+		
 		Client client = new Client();
 
 		client.on("debug", e -> System.out.println(e));
@@ -19,14 +21,7 @@ public class testClient {
 		client.on("ready", e -> {
 			System.out.printf("Username: %s%nChannels: %d%n", client.user.username, client.channels.size());
 		});
-		
-		Timer test = new Timer();
-		TimerTask task = new TimerTask() {
-			public void run() {
-				System.out.println("Test timer");
-			}
-		};
-//		test.scheduleAtFixedRate(task, 100, 100);
+	
 	}
 
 }

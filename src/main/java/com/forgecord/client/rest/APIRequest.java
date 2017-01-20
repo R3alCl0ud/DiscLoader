@@ -61,8 +61,7 @@ public class APIRequest {
 
 			@Override
 			public void cancelled() {
-
-				
+				future.completeExceptionally(new Throwable());
 			}
 
 			@SuppressWarnings("unchecked")

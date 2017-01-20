@@ -1,15 +1,8 @@
 package main.java.com.forgecord.client.events;
 
-import java.util.ArrayList;
-import java.util.Collection;
 import java.util.HashMap;
-import java.util.List;
 import java.util.function.Consumer;
 
-import org.json.JSONArray;
-import org.json.JSONObject;
-
-@SuppressWarnings("rawtypes")
 public class EventEmitter {
 	
 	public Listeners onHandlers;
@@ -25,8 +18,7 @@ public class EventEmitter {
 	 * @param handler The function that handles the event
 	 * @return this
 	 */
-	@SuppressWarnings("unchecked")
-	public EventEmitter on(String event, Consumer handler) {
+	public EventEmitter on(String event, Consumer<?> handler) {
 		this.onHandlers.add(event, handler);
 		return this;
 	}
@@ -37,8 +29,7 @@ public class EventEmitter {
 	 * @param handler The function that handles the event
 	 * @return this
 	 */
-	@SuppressWarnings("unchecked")
-	public EventEmitter once(String event, Consumer handler) {
+	public EventEmitter once(String event, Consumer<?> handler) {
 		this.onceHandlers.add(event, handler);
 		return this;
 	}
@@ -49,29 +40,32 @@ public class EventEmitter {
 	 * @param data The data to pass to the handlers
 	 * @return this
 	 */
-	@SuppressWarnings("unchecked")
 	public EventEmitter emit(String event, Object data) {
 		this.onceHandlers.execute(event, true, data);
 		this.onHandlers.execute(event, false, data);
 		return this;
 	}
 	
+	@SuppressWarnings("rawtypes")
 	class Listeners {
-		private HashMap<String, HashMap> events = new HashMap<String, HashMap>();
+		private HashMap<String, HashMap> events;
+		
 		
 		public Listeners() {
-			
+			this.events = new HashMap<String, HashMap>();
 		}
 		
-		public void add(String event, Consumer handler) {
+		@SuppressWarnings("unchecked")
+		public void add(String event, Consumer<?> handler) {
 			if (!events.containsKey(event)) events.put(event, new HashMap<String, Consumer>());
 			events.get(event).put(handler.toString(), handler);
 		}
 		
+		@SuppressWarnings("unchecked")
 		public void execute(String event, boolean remove, Object data) {
 			if (!events.containsKey(event)) return;
 			events.get(event).forEach((key, action) -> {
-				Consumer handler = (Consumer) action;
+				Consumer<Object> handler = (Consumer<Object>) action;
 				handler.accept(data);
 				if (remove) events.get(event).remove(key);
 			});
