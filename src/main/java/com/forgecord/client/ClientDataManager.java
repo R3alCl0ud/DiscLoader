@@ -10,19 +10,17 @@ import main.java.com.forgecord.structures.VoiceChannel;
 import main.java.com.forgecord.util.constants;
 
 public class ClientDataManager {
-	
+
 	public Client client;
-	
-	
+
 	public ClientDataManager(Client client) {
 		this.client = client;
 	}
-	
-	public boolean pastReady() {;
+
+	public boolean pastReady() {
 		return this.client.ws.status == constants.Status.READY;
 	}
-	
-	
+
 	public Guild newGuild(JSONObject data) {
 		boolean already = this.client.guilds.containsKey(data.getString("id"));
 		Guild guild = new Guild(this.client, data);
@@ -32,14 +30,15 @@ public class ClientDataManager {
 		}
 		return guild;
 	}
-	
+
 	public User newUser(JSONObject data) {
-		if (this.client.users.containsKey(data.getString("id"))) return this.client.users.get(data.getString("id"));
+		if (this.client.users.containsKey(data.getString("id")))
+			return this.client.users.get(data.getString("id"));
 		User user = new User(this.client, data);
 		this.client.users.put(user.id, user);
 		return user;
 	}
-	
+
 	public Channel newChannel(JSONObject data, Guild guild) {
 		boolean already = this.client.channels.containsKey(data.getString("id"));
 		Channel channel = null;
@@ -48,9 +47,10 @@ public class ClientDataManager {
 		} else if (data.getString("type") == "voice") {
 			channel = new VoiceChannel(this.client);
 		}
-		
+
 		if (channel != null) {
-			if (this.pastReady() &&!already) this.client.emit(constants.Events.CHANNEL_CREATE, channel);
+			if (this.pastReady() && !already)
+				this.client.emit(constants.Events.CHANNEL_CREATE, channel);
 			this.client.channels.put(channel.id, channel);
 			return channel;
 		}

@@ -22,6 +22,14 @@ public class APIRequest {
 	public final boolean auth;
 	public CompletableFuture<String> Future;
     
+	/**
+	 * The rest request class
+	 * @param rest The client's rest manager
+	 * @param method The http request type, ex. "GET", "POST", "PUT"
+	 * @param url The endpoint of the request
+	 * @param auth Whether or not to apply the client's token to the request
+	 * @param data The request's payload
+	 */
 	public APIRequest(RESTManager rest, String method, String url, boolean auth, JSONObject data) {
 	    this.rest = rest;
 	    this.method = method;
@@ -31,6 +39,11 @@ public class APIRequest {
 	    this.route = this.getRoute(this.url);
 	}
 
+	/**
+	 * Converts the {@link APIRequest} URL to the corresponding API Endpoint 
+	 * @param url
+	 * @return API Endpoint {@link constants.Endpoints}
+	 */
 	public String getRoute(String url) {
 		String route = url.split("[?]")[0];
 		if (route.contains("/channels/") || route.contains("/guilds/")) {

@@ -5,76 +5,102 @@ import java.text.MessageFormat;
 public class constants {
 	public static final String HOST = "https://discordapp.com";
 	public static final String CDN = "https://discordapp.com";
-	public static final String API = HOST + "/api/v6";
-	public static class Endpoints {
-		public static String login = API + "/auth/login";
-		public static String logout = API + "/auth/login";
-		public static String gateway = API + "/gateway";
-		public static String botGateway = API + "/gateway/bot";
-		public static String CDN = "https://cdn.discordapp.com";
-		public static String invite(String id) { return MessageFormat.format("%s/invite/%s", API, id); }
-		public static String inviteLink(String id) { return MessageFormat.format("https://discord.gg/%s", API, id); }
-		public static String assets(String asset) {
-			return HOST + "/assets/" + asset;
+	public static final String API = MessageFormat.format("{0}/api/v6", new Object[]{HOST});
+
+	public static final class Endpoints {
+		public static final String login = API + "/auth/login";
+		public static final String logout = API + "/auth/login";
+		public static final String gateway = API + "/gateway";
+		public static final String botGateway = API + "/gateway/bot";
+		public static final String CDN = "https://cdn.discordapp.com";
+
+		public static final String invite(String id) {
+			return MessageFormat.format("%s/invite/%s", API, id);
 		}
-		
-		public static String user(String userID) {
-			return API + "/users/" + userID;
+
+		public static final String inviteLink(String id) {
+			return MessageFormat.format("https://discord.gg/{0}", new Object[]{id});
 		}
-		public static String userChannels(String userID) {
-			return Endpoints.user(userID) + "/channels";
+
+		public static final String assets(String asset) {
+			return MessageFormat.format("{0}/assets/{1}", HOST, asset);
 		}
-		public static String userProfile(String userID) { return MessageFormat.format("%s/profile", Endpoints.user(userID)); }
-		public static String avatar(String id, String avatar) {
-			return Endpoints.CDN + "/avatars/" + id + "/" + avatar + (avatar.startsWith("a_") ? ".gif" : ".jpg") + "?size=1024";
+
+		public static final String user(String userID) {
+			return MessageFormat.format("%s/users/%s", API, userID);
 		}
-	}
-	
-	public static class Status {
-		public static int READY = 0;
-		public static int CONNECTING = 1;
-		public static int RECONNECTING = 2;
-		public static int IDLE = 3;
-		public static int NEARLY = 4;
-		public static int DISCONNECTED = 5;
-	}
-	
-	public static class OPCodes {
-		public static int DISPATCH = 0;
-		public static int HEARTBEAT = 1;
-		public static int IDENTIFY = 2;
-		public static int STATUS_UPDATE = 3;
-		public static int VOICE_STATE_UPDATE = 4;
-		public static int VOICE_SERVER_PING = 5;
-		public static int RESUME = 6;
-		public static int RECONNECT = 7;
-		public static int REQUEST_GUILD_MEMBERS = 8;
-		public static int INVALID_SESSION = 9;
-		public static int HELLO = 10;
-		public static int HEARTBEAT_ACK = 11;
-	}
-	
-	public static class WSEvents {
-		public static String READY = "READY";
-		public static String GUILD_CREATE = "GUILD_CREATE";
-		public static String GUILD_DELETE = "GUILD_DELETE";
-		public static String GUILD_UPDATE = "GUILD_UPDATE";
-		public static String GUILD_MEMBERS_CHUNK = "GUILD_MEMBERS_CHUNK";
-		public static String GUILD_MEMBER_ADD = "GUILD_MEMBER_ADD";
-		public static String GUILD_MEMBER_REMOVE = "GUILD_MEMBER_REMOVE";
-		public static String GUILD_MEMBER_UPDATE = "GUILD_MEMBER_UPDATE";
-		public static String GUILD_BAN_ADD = "GUILD_BAN_ADD";
-		public static String GUILD_BAN_REMOVE = "GUILD_BAN_REMOVE";
-		public static String GUILD_ROLE_CREATE = "GUILD_ROLE_CREATE";
-		public static String GUILD_ROLE_DELETE = "GUILD_ROLE_DELETE";
-		public static String GUILD_ROLE_UPDATE = "GUILD_ROLE_UPDATE";
-		public static String GUILD_EMOJIS_UPDATE = "GUILD_EMOJIS_UPDATE";
+
+		public static final String userChannels(String userID) {
+			return MessageFormat.format("%s/channels", Endpoints.user(userID));
+		}
+
+		public static final String userProfile(String userID) {
+			return MessageFormat.format("%s/profile", Endpoints.user(userID));
+		}
+
+		public static final String avatar(String id, String avatar) {
+			return MessageFormat.format("%s/avatars/%s/%s%s?size=1024", Endpoints.CDN, id, avatar,
+					avatar.startsWith("a_") ? ".gif" : ".jpg");
+		}
 	}
 
-	public static class Events {
-		public static String READY = "ready";
-		public static String GUILD_CREATE = "GuildCreate";
-		public static String GUILD_DELETE = "GuildDelete";
-		public static String CHANNEL_CREATE = "ChannelCreate";
+	public static final class Status {
+		public static final int READY = 0;
+		public static final int CONNECTING = 1;
+		public static final int RECONNECTING = 2;
+		public static final int IDLE = 3;
+		public static final int NEARLY = 4;
+		public static final int DISCONNECTED = 5;
+	}
+
+	public static final class OPCodes {
+		public static final int DISPATCH = 0;
+		public static final int HEARTBEAT = 1;
+		public static final int IDENTIFY = 2;
+		public static final int STATUS_UPDATE = 3;
+		public static final int VOICE_STATE_UPDATE = 4;
+		public static final int VOICE_SERVER_PING = 5;
+		public static final int RESUME = 6;
+		public static final int RECONNECT = 7;
+		public static final int REQUEST_GUILD_MEMBERS = 8;
+		public static final int INVALID_SESSION = 9;
+		public static final int HELLO = 10;
+		public static final int HEARTBEAT_ACK = 11;
+	}
+
+	public static final class WSEvents {
+		public static final String READY = "READY";
+		public static final String GUILD_CREATE = "GUILD_CREATE";
+		public static final String GUILD_DELETE = "GUILD_DELETE";
+		public static final String GUILD_UPDATE = "GUILD_UPDATE";
+		public static final String GUILD_MEMBERS_CHUNK = "GUILD_MEMBERS_CHUNK";
+		public static final String GUILD_MEMBER_ADD = "GUILD_MEMBER_ADD";
+		public static final String GUILD_MEMBER_REMOVE = "GUILD_MEMBER_REMOVE";
+		public static final String GUILD_MEMBER_UPDATE = "GUILD_MEMBER_UPDATE";
+		public static final String GUILD_BAN_ADD = "GUILD_BAN_ADD";
+		public static final String GUILD_BAN_REMOVE = "GUILD_BAN_REMOVE";
+		public static final String GUILD_ROLE_CREATE = "GUILD_ROLE_CREATE";
+		public static final String GUILD_ROLE_DELETE = "GUILD_ROLE_DELETE";
+		public static final String GUILD_ROLE_UPDATE = "GUILD_ROLE_UPDATE";
+		public static final String GUILD_EMOJIS_UPDATE = "GUILD_EMOJIS_UPDATE";
+	}
+
+	public static final class Events {
+		public static final String READY = "ready";
+		public static final String GUILD_CREATE = "GuildCreate";
+		public static final String GUILD_DELETE = "GuildDelete";
+		public static final String GUILD_UPDATE = "GuildUpdate";
+		public static final String GUILD_MEMBERS_CHUNK = "GuildMembersChunk";
+		public static final String GUILD_MEMBER_ADD = "GuildMemberAdd";
+		public static final String GUILD_MEMBER_REMOVE = "GuildMemberRemove";
+		public static final String GUILD_MEMBER_UPDATE = "GuildMemberUpdate";
+		public static final String GUILD_BAN_ADD = "GuildBanAdd";
+		public static final String GUILD_BAN_REMOVE = "GuildBanRemove";
+		public static final String GUILD_ROLE_CREATE = "GuildRoleCreate";
+		public static final String GUILD_ROLE_DELETE = "GuildRoleDelete";
+		public static final String GUILD_ROLE_UPDATE = "GuildRoleUpdate";
+		public static final String GUILD_EMOJIS_UPDATE = "GuildEmojisUpdate";
+		public static final String CHANNEL_CREATE = "ChannelCreate";
+		public static final String CHANNE_DELETE = "ChannelDelete";
 	}
 }

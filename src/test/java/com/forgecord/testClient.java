@@ -1,5 +1,9 @@
 package test.java.com.forgecord;
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+
 import org.json.JSONObject;
 
 import main.java.com.forgecord.client.Client;
@@ -22,6 +26,11 @@ public class testClient {
 			System.out.printf("Username: %s%nChannels: %d%n", client.user.username, client.channels.size());
 		});
 	
+		try {
+			System.out.println(Files.readAllBytes(Paths.get("./auth.json")));
+		} catch (IOException e1) {
+			e1.printStackTrace();
+		}
 	}
 
 }

@@ -1,0 +1,10 @@
+main.java.com.forgecord.client
+main.java.com.forgecord.client.events
+main.java.com.forgecord.client.rest
+main.java.com.forgecord.client.rest.RequestHandlers
+main.java.com.forgecord.client.websocket
+main.java.com.forgecord.client.websocket.packets
+main.java.com.forgecord.client.websocket.packets.handlers
+main.java.com.forgecord.structures
+main.java.com.forgecord.util
+test.java.com.forgecord

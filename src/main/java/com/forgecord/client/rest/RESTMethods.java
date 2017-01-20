@@ -24,4 +24,8 @@ public class RESTMethods {
 	public CompletableFuture<?> getGateway() {
 		return this.rest.createRequest(constants.Endpoints.gateway, "get", true);
 	}
+
+	public void logout() {
+		
+	}
 }
