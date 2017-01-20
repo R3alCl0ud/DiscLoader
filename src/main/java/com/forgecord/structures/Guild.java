@@ -25,12 +25,12 @@ public class Guild {
 	public int memberCount;
 	
 	/**
-	 * 
+	 * are embeds enabled
 	 */
 	public boolean embedEnabled;
 	
 	/**
-	 * iss the guild large (more than 250 members)
+	 * is the guild large (more than 250 members)
 	 */
 	public boolean large;
 	
@@ -40,7 +40,7 @@ public class Guild {
 	public boolean unavailable;
 	
 	/**
-	 * 
+	 * The {@link Date} at which the {@link Client} joined the guild.
 	 */
 	public Date joinedAt;
 	
@@ -69,8 +69,8 @@ public class Guild {
 	public HashMap<String, Emoji> emojis;
 	
 	/**
-	 * @param client
-	 * @param data
+	 * @param client The {@link Client} that cached the guild
+	 * @param data The guilds data
 	 */
 	public Guild(Client client, JSONObject data) {
 		this.client = client;
