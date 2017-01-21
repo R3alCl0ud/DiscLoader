@@ -1,4 +1,4 @@
-# Forgecord
+# DiscLoader
 Simple Discord API abstractions for Java
 
 # Done
