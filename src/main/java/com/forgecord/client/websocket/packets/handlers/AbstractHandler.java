@@ -10,7 +10,7 @@ public class AbstractHandler {
 		this.packetManager = packetManager;
 	}
 	
-	public JSONObject handle(JSONObject packet) {
-		return packet;
+	public void handle(JSONObject packet) {
+		return;
 	}
 }

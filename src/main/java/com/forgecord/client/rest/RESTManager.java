@@ -26,7 +26,7 @@ public class RESTManager {
 		return future;
 	}
 
-	public CompletableFuture<String> createRequest(String url, String method, boolean auth, JSONObject data) {
+	public CompletableFuture<String> createRequest(String url, int method, boolean auth, JSONObject data) {
 		APIRequest apiRequest = new APIRequest(this, method, url, auth, data);
 		if (!this.handlers.has(apiRequest.route))
 			this.handlers.put(apiRequest.route, new SequentialRequestHandler(this, apiRequest.route));
@@ -34,7 +34,7 @@ public class RESTManager {
 		return this.push(handler, apiRequest);
 	}
 
-	public CompletableFuture<String> createRequest(String url, String method, boolean auth) {
+	public CompletableFuture<String> createRequest(String url, int method, boolean auth) {
 		APIRequest apiRequest = new APIRequest(this, method, url, auth, new JSONObject());
 		if (!this.handlers.has(apiRequest.route))
 			this.handlers.put(apiRequest.route, new SequentialRequestHandler(this, apiRequest.route));

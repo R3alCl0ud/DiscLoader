@@ -14,7 +14,7 @@ public class constants {
 		public static final String CDN = "https://cdn.discordapp.com";
 
 		public static final String invite(String id) {
-			return MessageFormat.format("%s/invite/%s", API, id);
+			return MessageFormat.format("{0}/invite/{1}", new Object[]{API, id});
 		}
 
 		public static final String inviteLink(String id) {
@@ -41,8 +41,24 @@ public class constants {
 			return MessageFormat.format("{0}/avatars/{1}/{2}{3}?size=1024", new Object[]{Endpoints.CDN, id, avatar,
 					avatar.startsWith("a_") ? ".gif" : ".jpg"});
 		}
+		
+		public static final String messages(String channelID) {
+			return MessageFormat.format("{0}/channels/{1}/messages", new Object[] {API, channelID});
+		}
+		
+		public static final String message(String channelID, String messageID) {
+			return MessageFormat.format("{0}/channels/{1}/messages/{2}", new Object[] {API, channelID, messageID});
+		}
 	}
 
+	public static final class Methods {
+		public static final int GET = 0;
+		public static final int POST = 1;
+		public static final int DELETE = 2;
+		public static final int PATCH = 3;
+		public static final int PUT = 4;
+	}
+	
 	public static final class Status {
 		public static final int READY = 0;
 		public static final int CONNECTING = 1;

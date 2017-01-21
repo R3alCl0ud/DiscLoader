@@ -14,19 +14,18 @@ public class Ready extends AbstractHandler {
 		super(packetManager);
 	}
 	
-	public JSONObject handle(JSONObject packet) {
+	public void handle(JSONObject packet) {
 		Client client = this.packetManager.ws.client;
 		JSONObject data = (JSONObject) packet.get("d");
 	
 		client.ws.heartbeat(false);
 
 		ClientUser clientUser = new ClientUser(client,  data.getJSONObject("user"));
-		clientUser.settings = data.getJSONObject("user_settings");
+		clientUser.setSettings(data.getJSONObject("user_settings"));
 		client.user = clientUser;
 		client.readyAt = new Date();
 		client.users.put(clientUser.id, clientUser);
 		data.getJSONArray("guilds").forEach(guild -> client.dataManager.newGuild((JSONObject) guild));
-		System.out.printf("Username: %s, Guilds: %d%n", client.user.username, client.guilds.size());
-		return null;
+		System.out.printf("Username: %s%nGuilds: %d%nChannels: %d%n", client.user.username, client.guilds.size(), client.channels.size());
 	}
 }

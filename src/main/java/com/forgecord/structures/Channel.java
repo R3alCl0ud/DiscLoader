@@ -1,30 +1,47 @@
 package main.java.com.forgecord.structures;
 
-import java.util.concurrent.CompletableFuture;
+import org.json.JSONObject;
 
 import main.java.com.forgecord.client.Client;
 
+/**
+ * Channel base class, All channel types extend this class
+ * 
+ * @author Perry Berman
+ *
+ */
 public class Channel {
 
-	public String id;
+	/**
+	 * 
+	 */
+	public final String id;
+	
+	/**
+	 * the channel's name
+	 */
+	public String name;
+	
+	/**
+	 * The channel's type 
+	 */
+	public String type;
+
+	
+	/**
+	 * the {@link Client client} that cached the channel 
+	 */
 	public Client client;
 
 	/**
-	 * Channel base class, All channel types extend this class
-	 * 
 	 * @param client
-	 *            The client that instantiated the channel
+	 * @param data
 	 */
-	public Channel(Client client) {
+	public Channel(Client client, JSONObject data) {
 		this.client = client;
-	}
 
-	/**
-	 * Sends a message to the channel
-	 * @param content The message's content
-	 * @return {@link CompletableFuture}
-	 */
-	public CompletableFuture<String> sendMessage(String content) {
-		return null;
+		this.id = data.getString("id");
+		
+		this.name = null;
 	}
 }

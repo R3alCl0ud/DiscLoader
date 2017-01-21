@@ -41,7 +41,6 @@ public class ClientManager {
 			@Override
 			public void run() {
 				client.ws.heartbeat(true);
-
 			}
 		};
 		timer.scheduleAtFixedRate(this.heartbeatInterval, interval, interval);

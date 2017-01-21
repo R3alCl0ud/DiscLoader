@@ -6,7 +6,7 @@ import java.util.function.Consumer;
 /**
  * EventEmitter
  * 
- * @author perryberman
+ * @author Perry Berman
  *
  */
 public class EventEmitter {

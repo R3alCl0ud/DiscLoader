@@ -3,8 +3,6 @@ package main.java.com.forgecord.client.rest.RequestHandlers;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.json.JSONObject;
-
 import main.java.com.forgecord.client.rest.APIRequest;
 import main.java.com.forgecord.client.rest.RESTManager;
 

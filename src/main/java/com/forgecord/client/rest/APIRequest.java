@@ -7,6 +7,9 @@ import com.mashape.unirest.request.BaseRequest;
 import com.mashape.unirest.request.GetRequest;
 import com.mashape.unirest.request.HttpRequest;
 import com.mashape.unirest.request.body.MultipartBody;
+
+import main.java.com.forgecord.util.constants;
+
 import com.mashape.unirest.http.HttpResponse;
 
 import java.util.concurrent.CompletableFuture;
@@ -18,7 +21,7 @@ public class APIRequest {
 	public String url;
 	public final JSONObject data;
 	public final String route; 
-	public final String method;
+	public final int method;
 	public final boolean auth;
 	public CompletableFuture<String> Future;
     
@@ -30,7 +33,7 @@ public class APIRequest {
 	 * @param auth Whether or not to apply the client's token to the request
 	 * @param data The request's payload
 	 */
-	public APIRequest(RESTManager rest, String method, String url, boolean auth, JSONObject data) {
+	public APIRequest(RESTManager rest, int method, String url, boolean auth, JSONObject data) {
 	    this.rest = rest;
 	    this.method = method;
 	    this.auth = auth;
@@ -62,9 +65,10 @@ public class APIRequest {
 		BaseRequest request = null;
 		CompletableFuture<String> future = this.Future;
 		switch (this.method) {
-		case "get": 
+		case constants.Methods.GET: 
 			request = Unirest.get(this.route);
 			break;
+		
 		default: 
 			request = Unirest.get(this.route);
 		}
@@ -77,7 +81,6 @@ public class APIRequest {
 				future.completeExceptionally(new Throwable());
 			}
 
-			@SuppressWarnings("unchecked")
 			@Override
 			public void completed(HttpResponse<String> response) {
 				System.out.println("APIResponse: " + response.getBody());

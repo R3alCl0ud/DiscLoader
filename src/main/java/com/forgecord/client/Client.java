@@ -11,9 +11,10 @@ import main.java.com.forgecord.structures.ClientUser;
 import main.java.com.forgecord.structures.Guild;
 import main.java.com.forgecord.structures.User;
 
+
 /**
- * 
- * @author perryberman
+ * The Client
+ * @author Perry Berman
  *
  */
 public class Client extends EventEmitter {
@@ -49,10 +50,6 @@ public class Client extends EventEmitter {
 	 */
 	public HashMap<String, User> users;
 
-	/**
-	 * The main Client.
-	 * @author perryberman
-	 */
 	public Client() {
 		this.ws = new WebSocketManager(this);
 		this.rest = new RESTManager(this);
@@ -66,14 +63,24 @@ public class Client extends EventEmitter {
 		this.users = new HashMap<String, User>();
 	}
 
+	/**
+	 * 
+	 * @param token
+	 */
 	public final void login(String token) {
 		this.rest.methods.login(token);
 	}
 	
+	/**
+	 * @param reason The reason for logging out
+	 */
 	public final void logout(String reason) {
 		this.rest.methods.logout();
 	}
 	
+	/**
+	 * @param reason
+	 */
 	public final void disconnect(String reason) {
 		
 	}

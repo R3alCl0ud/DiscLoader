@@ -3,6 +3,7 @@ package main.java.com.forgecord.client;
 import org.json.JSONObject;
 
 import main.java.com.forgecord.structures.Channel;
+import main.java.com.forgecord.structures.DMChannel;
 import main.java.com.forgecord.structures.Guild;
 import main.java.com.forgecord.structures.TextChannel;
 import main.java.com.forgecord.structures.User;
@@ -42,10 +43,14 @@ public class ClientDataManager {
 	public Channel newChannel(JSONObject data, Guild guild) {
 		boolean already = this.client.channels.containsKey(data.getString("id"));
 		Channel channel = null;
-		if (data.getString("type") == "text") {
-			channel = new TextChannel(this.client);
-		} else if (data.getString("type") == "voice") {
-			channel = new VoiceChannel(this.client);
+		if (data.getBoolean("isprivate")) {
+			channel = new DMChannel(this.client, data);
+		} else {
+			if (data.getString("type") == "text") {
+				channel = new TextChannel(this.client, data);
+			} else if (data.getString("type") == "voice") {
+				channel = new VoiceChannel(this.client, data);
+			}
 		}
 
 		if (channel != null) {
