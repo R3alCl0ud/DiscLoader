@@ -1,5 +1,7 @@
 package io.disc.DiscLoader.socket;
 
+import com.neovisionaries.ws.client.WebSocket;
+
 import io.disc.DiscLoader.DiscLoader;
 
 /**
@@ -13,6 +15,12 @@ public class DiscSocket {
 	 */
 	public DiscLoader loader;
 	
+	
+	/**
+	 * 
+	 */
+	public WebSocket ws;
+	
 	/**
 	 * @param loader
 	 */
@@ -20,6 +28,9 @@ public class DiscSocket {
 		this.loader = loader;
 	}
 	
+	/**
+	 * 
+	 */
 	public void connectSocket() {
 		
 	}
