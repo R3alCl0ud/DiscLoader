@@ -10,7 +10,7 @@ public class testClient {
 		DiscLoader client = new DiscLoader();
 		Gson gson = new Gson();
 		SocketPacket packet = gson.fromJson("{\"op\":0, \"s\": null, \"d\": {\"name\": \"Test\"}}", SocketPacket.class);
-		System.out.println(gson.toJson(packet.d));
+		System.out.println(gson.toJson(packet.d.v));
 		
 	}
 	

@@ -5,6 +5,7 @@ import java.util.concurrent.CompletableFuture;
 import io.disc.DiscLoader.events.DiscHandler;
 import io.disc.DiscLoader.rest.DiscREST;
 import io.disc.DiscLoader.socket.DiscSocket;
+import io.disc.DiscLoader.util.constants;
 
 /**
  * @author Perry Berman
@@ -26,9 +27,9 @@ public class DiscLoader {
 		this.handler.loadEvents();
 	}
 
-	public CompletableFuture<String> login(String token) {
+	public CompletableFuture<?> login(String token) {
 		this.token = token;
-		CompletableFuture<String> future = new CompletableFuture<String>();
-		return future;
+		
+		return this.rest.makeRequest(constants.Endpoints.gateway, constants.Methods.GET, true);
 	}
 }
