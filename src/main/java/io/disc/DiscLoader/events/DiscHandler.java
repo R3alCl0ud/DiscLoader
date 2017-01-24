@@ -20,7 +20,6 @@ public class DiscHandler {
 		StackTraceElement[] traces = Thread.currentThread().getStackTrace();
 		for (int i = 0; i < traces.length; i++) {
 			if (traces[i].getClassName() != this.getClass().getName()) {
-				System.out.println(traces[i].getClassName());
 				try {
 					loaded = loader.loadClass(traces[i].getClassName());
 					Method methods[] = loaded.getDeclaredMethods();

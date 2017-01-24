@@ -2,6 +2,8 @@ package io.disc.DiscLoader;
 
 import java.util.concurrent.CompletableFuture;
 
+import com.google.gson.Gson;
+
 import io.disc.DiscLoader.events.DiscHandler;
 import io.disc.DiscLoader.rest.DiscREST;
 import io.disc.DiscLoader.socket.DiscSocket;
@@ -27,9 +29,19 @@ public class DiscLoader {
 		this.handler.loadEvents();
 	}
 
-	public CompletableFuture<?> login(String token) {
+	public CompletableFuture<String> login(String token) {
 		this.token = token;
-		
-		return this.rest.makeRequest(constants.Endpoints.gateway, constants.Methods.GET, true);
+		CompletableFuture<String> future = (CompletableFuture<String>) this.rest.makeRequest(constants.Endpoints.gateway, constants.Methods.GET, true);
+		future.thenAcceptAsync(text -> {
+			System.out.println(text);
+			Gson gson = new Gson();
+			Gateway gateway = (Gateway) gson.fromJson(text, Gateway.class);
+			this.discSocket.connectSocket(gateway.url + "?v=6&encoding=json");
+		});
+		return future;
+	}
+	
+	public class Gateway {
+		public String url;
 	}
 }

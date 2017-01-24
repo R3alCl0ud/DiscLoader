@@ -4,9 +4,7 @@ public class SocketPacket {
 	public int op;
 	public int s;
 	public String t;
-	public String[] _trace;
-	public int heartbeat_interval;
-	public D d;
+	public Object d;
 	public SocketPacket() {
 
 	}
