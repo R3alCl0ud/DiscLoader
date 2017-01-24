@@ -15,4 +15,9 @@ public class testClient {
 	public void raw(String raw) {
 		System.out.println(raw);
 	}
+	
+	@eventHandler
+	public void debug(String debug) {
+		System.out.println(debug);
+	}
 }

@@ -6,9 +6,9 @@ package io.disc.DiscLoader.objects.gateway;
  */
 public class Ready {
 	public int v;
-	public User user;
+	public UserGateway user;
 	public String session_id;
 	public String[] _trace;
-	public Guild[] guilds;
-	public DMChannel[] private_channels;
+	public GuildGateway[] guilds;
+	public DMChannelGateway[] private_channels;
 }

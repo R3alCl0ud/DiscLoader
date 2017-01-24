@@ -4,7 +4,7 @@ package io.disc.DiscLoader.objects.gateway;
  * @author perryberman
  *
  */
-public class User {
+public class UserGateway {
 	public String id;
 	public String email;
 	public String password;
