@@ -119,6 +119,6 @@ public class constants {
 		public static final String GUILD_ROLE_UPDATE = "GuildRoleUpdate";
 		public static final String GUILD_EMOJIS_UPDATE = "GuildEmojisUpdate";
 		public static final String CHANNEL_CREATE = "ChannelCreate";
-		public static final String CHANNE_DELETE = "ChannelDelete";
+		public static final String CHANNEL_DELETE = "ChannelDelete";
 	}
 }
