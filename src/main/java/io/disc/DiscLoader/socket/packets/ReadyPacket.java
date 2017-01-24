@@ -1,5 +1,7 @@
 package io.disc.DiscLoader.socket.packets;
 
+import com.google.gson.Gson;
+
 import io.disc.DiscLoader.objects.gateway.Ready;
 import io.disc.DiscLoader.socket.DiscSocket;
 
@@ -9,8 +11,9 @@ public class ReadyPacket extends DiscPacket {
 	}
 
 	public void handle(SocketPacket packet) {
-		packet.d = this.socket.gson.fromJson((String) packet.d, Ready.class);
-		System.out.println("Got Ready Packet");
+		Gson gson = new Gson();
+		packet.d = gson.fromJson(gson.toJson(packet.d), Ready.class);
+		System.out.println(((Ready)packet.d).user.username);
 		this.socket.sendHeartbeat(false);
 	}
 }

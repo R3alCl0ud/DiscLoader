@@ -12,11 +12,6 @@ public class testClient {
 	}
 	
 	@eventHandler
-	public void Ready(Object data) {
-		
-	}
-	
-	@eventHandler
 	public void raw(String raw) {
 		System.out.println(raw);
 	}

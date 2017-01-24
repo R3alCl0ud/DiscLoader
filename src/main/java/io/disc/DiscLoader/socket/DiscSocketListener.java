@@ -77,8 +77,8 @@ public class DiscSocketListener extends WebSocketAdapter implements WebSocketLis
 		this.setSequence(packet.s);
 
 		if (packet.op == constants.OPCodes.DISPATCH) {
-			if (!this.handlers.containsKey(packet.t))
-				return;
+			if (!this.handlers.containsKey(packet.t)) return;
+			System.out.println(packet.t);
 			this.handlers.get(packet.t).handle(packet);
 		}
 	}
@@ -155,7 +155,8 @@ public class DiscSocketListener extends WebSocketAdapter implements WebSocketLis
 
 	@Override
 	public void onTextMessage(WebSocket ws, String text) throws Exception {
-		this.socket.loader.emit("raw", text);
+//		this.socket.loader.emit("raw", text);
+		System.out.println(text);
 		SocketPacket packet = gson.fromJson(text, SocketPacket.class);
 		this.handle(packet);
 	}

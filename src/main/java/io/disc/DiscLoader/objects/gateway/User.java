@@ -5,13 +5,13 @@ package io.disc.DiscLoader.objects.gateway;
  *
  */
 public class User {
-	String id;
-	String email;
-	String password;
-	String username;
-	String avatar;
-	String discriminator;
-	boolean bot;
-	boolean verified;
-	boolean mfa_enabled;
+	public String id;
+	public String email;
+	public String password;
+	public String username;
+	public String avatar;
+	public String discriminator;
+	public boolean bot;
+	public boolean verified;
+	public boolean mfa_enabled;
 }

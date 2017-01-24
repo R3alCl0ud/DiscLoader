@@ -90,6 +90,6 @@ public class DiscSocket {
 	}
 	
 	public void send(JSONObject packet) {
-		this.send(packet);
+		this.send(packet, false);
 	}
 }

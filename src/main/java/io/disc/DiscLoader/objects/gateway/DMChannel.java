@@ -1,9 +1,13 @@
 package io.disc.DiscLoader.objects.gateway;
 
-public class Channel {
+/**
+ * @author perryberman
+ *
+ */
+public class DMChannel {
 	String id;
-	String type;
+	int type;
 	boolean is_private;
-	User[] recipients;
+	User recipient;
 	String last_message_id;
 }
