@@ -19,7 +19,7 @@ public class DiscREST {
 
 	}
 
-	public CompletableFuture<?> makeRequest(String url, int method, boolean auth, Object data) {
+	public CompletableFuture<String> makeRequest(String url, int method, boolean auth, Object data) {
 		APIRequest request = new APIRequest(url, method, auth, data);
 		CompletableFuture<String> future = new CompletableFuture<String>();
 		if (!this.queues.containsKey(url)) {
@@ -32,7 +32,7 @@ public class DiscREST {
 		return future; 
 	}
 
-	public CompletableFuture<?> makeRequest(String url, int method, boolean auth) {
+	public CompletableFuture<String> makeRequest(String url, int method, boolean auth) {
 		return this.makeRequest(url, method, auth, null);
 	}
 }

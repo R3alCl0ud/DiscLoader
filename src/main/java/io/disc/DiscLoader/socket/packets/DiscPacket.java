@@ -1,7 +1,19 @@
 package io.disc.DiscLoader.socket.packets;
 
-public class DiscPacket {
-	void handle(SocketPacket packet) {
+import io.disc.DiscLoader.socket.DiscSocket;
+
+/**
+ * @author perryberman
+ *
+ */
+public abstract class DiscPacket {
+	public DiscSocket socket;
+	
+	public DiscPacket(DiscSocket socket) {
+		this.socket = socket;
+	}
+	
+	public void handle(SocketPacket packet) {
 		
 	}
 }

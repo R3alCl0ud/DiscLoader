@@ -30,7 +30,7 @@ public class DiscSocket {
 	 */
 	public WebSocket ws;
 
-	public int s = -1;
+	public int s;
 
 	private TimerTask heartbeatInterval;
 

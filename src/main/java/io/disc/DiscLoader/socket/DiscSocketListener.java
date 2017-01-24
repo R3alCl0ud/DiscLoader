@@ -1,5 +1,7 @@
 package io.disc.DiscLoader.socket;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -14,7 +16,9 @@ import com.neovisionaries.ws.client.WebSocketListener;
 import com.neovisionaries.ws.client.WebSocketState;
 
 import io.disc.DiscLoader.DiscLoader;
-import io.disc.DiscLoader.socket.packets.Hello;
+import io.disc.DiscLoader.socket.packets.DiscPacket;
+import io.disc.DiscLoader.socket.packets.HelloPacket;
+import io.disc.DiscLoader.socket.packets.ReadyPacket;
 import io.disc.DiscLoader.socket.packets.SocketPacket;
 import io.disc.DiscLoader.util.constants;
 
@@ -24,8 +28,59 @@ public class DiscSocketListener extends WebSocketAdapter implements WebSocketLis
 	public DiscLoader loader;
 	public DiscSocket socket;
 
+	public HashMap<String, DiscPacket> handlers;
+
+	public List<SocketPacket> queue;
+
 	public DiscSocketListener(DiscSocket socket) {
 		this.socket = socket;
+		this.handlers = new HashMap<String, DiscPacket>();
+		this.queue = new ArrayList<SocketPacket>();
+		
+		this.register(constants.WSEvents.HELLO, new HelloPacket(this.socket));
+		this.register(constants.WSEvents.READY, new ReadyPacket(this.socket));
+	}
+
+	public void setSequence(int s) {
+		if (s > this.socket.s)
+			this.socket.s = s;
+	}
+
+	public void register(String event, DiscPacket handler) {
+		this.handlers.put(event, handler);
+	}
+
+	public void handleQueue() {
+		this.queue.forEach(packet -> {
+			this.handle(packet);
+			this.queue.remove(packet);
+		});
+	}
+
+	public void handle(SocketPacket packet) {
+		if (packet.op == constants.OPCodes.RECONNECT) {
+			this.setSequence(packet.s);
+			return;
+		}
+		
+		if (packet.op == constants.OPCodes.HELLO) {
+			this.handlers.get(constants.WSEvents.HELLO).handle(packet);
+		}
+
+		if (packet.op == constants.OPCodes.HEARTBEAT_ACK) {
+			this.socket.lastHeartbeatAck = true;
+		} else if (packet.op == constants.OPCodes.HEARTBEAT) {
+			JSONObject payload = new JSONObject().put("op", constants.OPCodes.HEARTBEAT).put("d", this.socket.s);
+			this.socket.send(payload);
+		}
+		
+		this.setSequence(packet.s);
+
+		if (packet.op == constants.OPCodes.DISPATCH) {
+			if (!this.handlers.containsKey(packet.t))
+				return;
+			this.handlers.get(packet.t).handle(packet);
+		}
 	}
 
 	public void handleCallbackError(WebSocket ws, Throwable arg1) throws Exception {
@@ -100,28 +155,26 @@ public class DiscSocketListener extends WebSocketAdapter implements WebSocketLis
 
 	@Override
 	public void onTextMessage(WebSocket ws, String text) throws Exception {
-		System.out.println(text);
-		System.out.println("test");
+		this.socket.loader.emit("raw", text);
 		SocketPacket packet = gson.fromJson(text, SocketPacket.class);
-		if (packet.op == constants.OPCodes.HELLO) {
-			packet.d = this.gson.fromJson(packet.d.toString(), Hello.class);
-			this.socket.keepAlive(((Hello)packet.d).heartbeat_interval);
-		}
+		this.handle(packet);
 	}
 
 	public void onTextMessageError(WebSocket arg0, WebSocketException arg1, byte[] arg2) throws Exception {
-		
+
 	}
 
 	public void onUnexpectedError(WebSocket arg0, WebSocketException arg1) throws Exception {
-		
+
 	}
-	
+
 	public void sendNewIdentify() {
 		JSONObject payload = new JSONObject();
-		JSONObject properties = new JSONObject().put("$os", "DiscLoader").put("$browser", "DiscLoader").put("$device", "DiscLoader");
-		payload.put("token", this.socket.loader.token).put("large_threshold", 250).put("compress", false).put("properties", properties);
-		
+		JSONObject properties = new JSONObject().put("$os", "DiscLoader").put("$browser", "DiscLoader").put("$device",
+				"DiscLoader");
+		payload.put("token", this.socket.loader.token).put("large_threshold", 250).put("compress", false)
+				.put("properties", properties);
+
 		JSONObject packet = new JSONObject();
 		packet.put("op", 2).put("d", payload);
 		this.socket.send(packet);

@@ -1,7 +1,4 @@
-/**
- * 
- */
-package io.disc.DiscLoader.socket.packets;
+package io.disc.DiscLoader.objects.gateway;
 
 /**
  * @author Perry Berman

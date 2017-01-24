@@ -17,9 +17,9 @@ public class DiscLoader {
 
 	public DiscSocket discSocket;
 	public String token;
-	
+
 	public DiscHandler handler;
-	
+
 	public DiscREST rest;
 
 	public DiscLoader() {
@@ -31,7 +31,7 @@ public class DiscLoader {
 
 	public CompletableFuture<String> login(String token) {
 		this.token = token;
-		CompletableFuture<String> future = (CompletableFuture<String>) this.rest.makeRequest(constants.Endpoints.gateway, constants.Methods.GET, true);
+		CompletableFuture<String> future = this.rest.makeRequest(constants.Endpoints.gateway, constants.Methods.GET, true);
 		future.thenAcceptAsync(text -> {
 			System.out.println(text);
 			Gson gson = new Gson();
@@ -40,8 +40,15 @@ public class DiscLoader {
 		});
 		return future;
 	}
-	
+
 	public class Gateway {
 		public String url;
+	}
+	
+	public void emit(String event, Object data) {
+		this.handler.emit(event, data);
+	}
+	public void emit(String event) {
+		this.emit(event, null);
 	}
 }

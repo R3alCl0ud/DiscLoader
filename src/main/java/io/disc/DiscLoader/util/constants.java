@@ -84,6 +84,7 @@ public class constants {
 	}
 
 	public static final class WSEvents {
+		public static final String HELLO = "HELLO";
 		public static final String READY = "READY";
 		public static final String GUILD_CREATE = "GUILD_CREATE";
 		public static final String GUILD_DELETE = "GUILD_DELETE";
