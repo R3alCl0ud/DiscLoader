@@ -6,6 +6,7 @@ import java.util.concurrent.CompletableFuture;
 import com.google.gson.Gson;
 
 import io.disc.DiscLoader.events.DiscHandler;
+import io.disc.DiscLoader.objects.gateway.GuildGateway;
 import io.disc.DiscLoader.objects.structures.Channel;
 import io.disc.DiscLoader.objects.structures.Guild;
 import io.disc.DiscLoader.objects.structures.User;
@@ -68,4 +69,16 @@ public class DiscLoader {
 	public void emit(String event) {
 		this.emit(event, null);
 	}
+	
+	public Guild addGuild(GuildGateway guild) {
+		boolean exists = this.guilds.containsKey(guild.id);
+		
+		Guild newGuild = new Guild(this, guild);
+		this.guilds.put(newGuild.id, newGuild);
+		if (!exists && this.discSocket.status == constants.Status.READY) {
+			this.emit(constants.Events.GUILD_CREATE, newGuild);
+		}
+		return newGuild;
+	}
+	
 }

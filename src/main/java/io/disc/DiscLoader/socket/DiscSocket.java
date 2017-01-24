@@ -42,6 +42,8 @@ public class DiscSocket {
 
 	private DiscSocketListener socketListener;
 
+	public int status;
+
 	/**
 	 * @param loader
 	 */
