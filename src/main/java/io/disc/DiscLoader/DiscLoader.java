@@ -10,8 +10,8 @@ import io.disc.DiscLoader.socket.DiscSocket;
 import io.disc.DiscLoader.util.constants;
 
 /**
- * @author Perry Berman
- *
+ * @author Perry Berman, Zachary Waldron
+ * 
  */
 public class DiscLoader {
 

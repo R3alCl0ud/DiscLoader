@@ -5,6 +5,7 @@ import java.text.MessageFormat;
 public class constants {
 	public static final String HOST = "https://discordapp.com";
 	public static final String API = MessageFormat.format("{0}/api/v6", new Object[] { HOST });
+	public static final String LoaderVersion = "0.0.1_a";
 
 	public static final class Endpoints {
 		public static final String login = API + "/auth/login";
