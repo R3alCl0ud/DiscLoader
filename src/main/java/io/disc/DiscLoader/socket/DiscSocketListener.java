@@ -155,8 +155,8 @@ public class DiscSocketListener extends WebSocketAdapter implements WebSocketLis
 
 	@Override
 	public void onTextMessage(WebSocket ws, String text) throws Exception {
-//		this.socket.loader.emit("raw", text);
-		System.out.println(text);
+		this.socket.loader.emit("raw", text);
+//		System.out.println(text);
 		SocketPacket packet = gson.fromJson(text, SocketPacket.class);
 		this.handle(packet);
 	}

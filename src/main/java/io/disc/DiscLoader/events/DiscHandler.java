@@ -5,25 +5,29 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 import io.disc.DiscLoader.DiscLoader;
+import io.disc.DiscLoader.testClient;
 
 public class DiscHandler {
 
 	public HashMap<String, ArrayList<Method>> events;
 	public DiscLoader loader;
+	private HashMap<String, Object> instances;
 
 	public DiscHandler(DiscLoader loader) {
 		this.loader = loader;
 		this.events = new HashMap<String, ArrayList<Method>>();
+		this.instances = new HashMap<String, Object>();
+		
 	}
 
 	public void loadEvents() {
-		ClassLoader loader = ClassLoader.getSystemClassLoader();
+		ClassLoader classLoader = ClassLoader.getSystemClassLoader();
 		Class<?> loaded;
 		StackTraceElement[] traces = Thread.currentThread().getStackTrace();
 		for (int i = 0; i < traces.length; i++) {
 			if (traces[i].getClassName() != this.getClass().getName()) {
 				try {
-					loaded = loader.loadClass(traces[i].getClassName());
+					loaded = classLoader.loadClass(traces[i].getClassName());
 					Method methods[] = loaded.getDeclaredMethods();
 					for (int n = 0; n < methods.length; n++) {
 						eventHandler event = methods[n].getAnnotation(io.disc.DiscLoader.events.eventHandler.class);
@@ -34,9 +38,14 @@ public class DiscHandler {
 								this.events.put(methods[n].getName(), new ArrayList<Method>());
 							}
 							this.events.get(methods[n].getName()).add(methods[n]);
+							this.instances.put(methods[n].getName(), loaded.newInstance());
 						}
 					}
 				} catch (ClassNotFoundException e) {
+					e.printStackTrace();
+				} catch (InstantiationException e) {
+					e.printStackTrace();
+				} catch (IllegalAccessException e) {
 					e.printStackTrace();
 				}
 
@@ -47,10 +56,11 @@ public class DiscHandler {
 	public void emit(String event, Object data) {
 		if (!this.events.containsKey(event))
 			return;
-
-		this.events.get(event).forEach(handler -> {
+		this.events.get(event).forEach(method -> {
 			try {
-				handler.invoke(data);
+//				method.getName().getClass().getMethod(event).invoke(method.getName().getClass(), data);
+//				method.
+//				method.invoke(, data);
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
