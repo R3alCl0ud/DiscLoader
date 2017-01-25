@@ -58,9 +58,8 @@ public class DiscHandler {
 			return;
 		this.events.get(event).forEach(method -> {
 			try {
-//				method.getName().getClass().getMethod(event).invoke(method.getName().getClass(), data);
-//				method.
-//				method.invoke(, data);
+				Object t = this.instances.get(event);
+				method.invoke(t, data);
 			} catch (Exception e) {
 				e.printStackTrace();
 			}

@@ -5,21 +5,24 @@ import javax.swing.JLabel;
 import io.disc.DiscLoader.events.eventHandler;
 
 public class testClient {
-	public static ClientFrame frame; 
-	
+	public static ClientFrame frame;
+
 	public static void main(String... args) {
 		DiscLoader client = new DiscLoader();
+		frame = new ClientFrame(client);
 		client.login("MjcxNjYwMzYxMTMwODM1OTcx.C2gSGw.pCPSCH3b_lIvsrTjMl8QmZ_iPjs");
-		frame = new ClientFrame();
 	}
-	
+
 	@eventHandler
 	public void raw(String raw) {
-		
-		frame.panel.add(new JLabel((String)raw));
-		frame.panel.validate();
+		System.out.println(raw);
+		JLabel nextLine = new JLabel((String) raw);
+		nextLine.setLocation(0, (110 + frame.panel.getHeight()));
+		frame.panel.add(nextLine);
+		frame.panel.revalidate();
+		frame.panel.repaint();
 	}
-	
+
 	@eventHandler
 	public void debug(String debug) {
 		System.out.println(debug);
