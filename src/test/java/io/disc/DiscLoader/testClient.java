@@ -3,7 +3,13 @@ package io.disc.DiscLoader;
 import javax.swing.JLabel;
 
 import io.disc.DiscLoader.events.eventHandler;
+import io.disc.DiscLoader.objects.loader.Mod;
 
+@Mod(
+		modid = "Test Client",
+		version = "0.0.1_a",
+		desc = "A test client for DiscLoader API"
+	)
 public class testClient {
 	public static ClientFrame frame;
 

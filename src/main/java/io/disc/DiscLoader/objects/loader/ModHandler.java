@@ -1,5 +1,6 @@
 package io.disc.DiscLoader.objects.loader;
 
+import java.io.File;
 import java.lang.reflect.Method;
 import java.util.Optional;
 
@@ -9,9 +10,40 @@ public class ModHandler {
 	private Method methods[];
 	
 	// Set annotation class name
-	private static String ann_class = "io.disc.DiscLoader.objects.loader.Mod.class";
+	private String ann_class = "io.disc.DiscLoader.objects.loader.Mod.class";
 	
-	public void beginLoader(Optional<String> customPath) {
+	public void beginLoader(Optional<String> customAnnotationPath) {
+		Method entryPoint;
+		if (customAnnotationPath.isPresent()) this.ann_class = customAnnotationPath.get();
 		
+		// Determine if mod loading folder exists already
+		File dir = (new File("mods"));
+		if (!dir.exists() || !dir.isDirectory()) {
+			try {
+				boolean success = (new File("mods")).mkdirs();
+				if (!success) {
+					System.out.println("Error occurred while making directory: mods");
+					System.exit(1);
+				}
+			} catch (Exception e) {
+				System.out.println("Error occurred while making directory: mods");
+				System.exit(1);
+			}
+		}
+		
+		try {
+			dir = (new File("mods"));
+		} catch (Exception e) {
+			System.out.println("Error occurred while making directory: mods");
+			System.exit(1);
+		}
+		
+		if (!dir.isDirectory()) {
+			System.out.println("Error occurred while reading directory: mods");
+			System.out.println("\tReported as: NOT A DIR");
+			System.exit(1);
+		}
+		
+		System.out.println(System.getProperty("user.dir"));
 	}
 }

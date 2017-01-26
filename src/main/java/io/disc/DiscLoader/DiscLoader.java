@@ -7,6 +7,8 @@ import com.google.gson.Gson;
 
 import io.disc.DiscLoader.events.DiscHandler;
 import io.disc.DiscLoader.objects.gateway.GuildGateway;
+import io.disc.DiscLoader.objects.loader.Mod;
+import io.disc.DiscLoader.objects.loader.ModHandler;
 import io.disc.DiscLoader.objects.structures.Channel;
 import io.disc.DiscLoader.objects.structures.Guild;
 import io.disc.DiscLoader.objects.structures.User;
@@ -26,10 +28,13 @@ public class DiscLoader {
 	public DiscHandler handler;
 
 	public DiscREST rest;
+	
+	public ModHandler modh;
 
 	public HashMap<String, User> users;
 	public HashMap<String, Channel> channels;
 	public HashMap<String, Guild> guilds;
+	public HashMap<String, Mod> mods;
 	
 	public User user;
 
@@ -43,10 +48,12 @@ public class DiscLoader {
 
 		this.channels = new HashMap<String, Channel>();
 		this.guilds = new HashMap<String, Guild>();
+		this.mods = new HashMap<String, Mod>();
 	}
 
 	public CompletableFuture<String> login(String token) {
 		this.token = token;
+		this.modh.beginLoader(null);
 		CompletableFuture<String> future = this.rest.makeRequest(constants.Endpoints.gateway, constants.Methods.GET,
 				true);
 		future.thenAcceptAsync(text -> {
