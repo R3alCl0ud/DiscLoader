@@ -13,17 +13,18 @@ public class OpenPanel extends JPanel {
 
 	public OpenPanel(FlowLayout flowLayout) {
 		super(flowLayout);
+		this.setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
 	}
 	
 	public OpenPanel() {
 		super();
 	}
 
-	public Component setActiveComponent(Component comp) {
-		this.remove(this.active);
-		this.active = comp;
+	public Component setActivePanel(Component panel) {
+		if (this.active != null) this.remove(this.active);
+		this.active = panel;
 		this.add(this.active);
-		return comp;
+		return panel;
 	}
 
 }

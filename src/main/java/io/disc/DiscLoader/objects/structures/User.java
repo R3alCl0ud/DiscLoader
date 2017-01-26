@@ -18,6 +18,8 @@ public class User {
 
 		this.username = user.username;
 
+		this.discriminator = user.discriminator;
+		
 		this.password = user.password;
 
 		this.avatar = user.avatar;
