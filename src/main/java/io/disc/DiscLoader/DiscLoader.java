@@ -54,6 +54,7 @@ public class DiscLoader {
 		this.mods = new HashMap<String, Mod>();
 		
 		this.modh = new ModHandler();
+
 		
 		this.ready = false;
 	}
