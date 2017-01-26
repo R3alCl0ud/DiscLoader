@@ -69,15 +69,19 @@ public class DiscSocket {
 	}
 
 	public void keepAlive(int interval) {
+		DiscSocket socket = this;
 		this.heartbeatInterval = new TimerTask() {
+			@Override
 			public void run() {
-				sendHeartbeat(true);
+				socket.loader.emit("debug", "Sending heartbeat");
+				socket.sendHeartbeat(true);
 			}
 		};
 		timer.scheduleAtFixedRate(this.heartbeatInterval, interval, interval);
 	}
 
 	public void sendHeartbeat(boolean normal) {
+		this.loader.emit("debug", "Attempting heartbeat");
 		if (normal && !this.lastHeartbeatAck) {
 			this.ws.disconnect(1007);
 			return;

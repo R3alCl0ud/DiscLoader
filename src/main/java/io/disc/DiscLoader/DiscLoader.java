@@ -6,7 +6,8 @@ import java.util.concurrent.CompletableFuture;
 import com.google.gson.Gson;
 
 import io.disc.DiscLoader.events.DiscHandler;
-import io.disc.DiscLoader.objects.gateway.GuildGateway;
+import io.disc.DiscLoader.objects.gateway.ChannelJSON;
+import io.disc.DiscLoader.objects.gateway.GuildJSON;
 import io.disc.DiscLoader.objects.loader.Mod;
 import io.disc.DiscLoader.objects.loader.ModHandler;
 import io.disc.DiscLoader.objects.structures.Channel;
@@ -25,6 +26,8 @@ public class DiscLoader {
 	public DiscSocket discSocket;
 	public String token;
 
+	public boolean ready;
+	
 	public DiscHandler handler;
 
 	public DiscREST rest;
@@ -49,11 +52,15 @@ public class DiscLoader {
 		this.channels = new HashMap<String, Channel>();
 		this.guilds = new HashMap<String, Guild>();
 		this.mods = new HashMap<String, Mod>();
+		
+		this.modh = new ModHandler();
+		
+		this.ready = false;
 	}
 
 	public CompletableFuture<String> login(String token) {
 		this.token = token;
-		this.modh.beginLoader(null);
+//		this.modh.beginLoader();
 		CompletableFuture<String> future = this.rest.makeRequest(constants.Endpoints.gateway, constants.Methods.GET,
 				true);
 		future.thenAcceptAsync(text -> {
@@ -77,7 +84,7 @@ public class DiscLoader {
 		this.emit(event, null);
 	}
 	
-	public Guild addGuild(GuildGateway guild) {
+	public Guild addGuild(GuildJSON guild) {
 		boolean exists = this.guilds.containsKey(guild.id);
 		
 		Guild newGuild = new Guild(this, guild);
@@ -86,6 +93,17 @@ public class DiscLoader {
 			this.emit(constants.Events.GUILD_CREATE, newGuild);
 		}
 		return newGuild;
+	}
+	
+	public Channel addChannel(ChannelJSON channel) {
+		boolean exists = this.channels.containsKey(channel.id);
+		
+		Channel newChannel = new Channel(channel);
+		this.channels.put(newChannel.id, newChannel);
+		if (!exists && this.ready) {
+			
+		}
+		return newChannel;
 	}
 	
 }

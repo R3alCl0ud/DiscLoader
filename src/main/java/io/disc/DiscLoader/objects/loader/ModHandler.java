@@ -12,9 +12,9 @@ public class ModHandler {
 	// Set annotation class name
 	private String ann_class = "io.disc.DiscLoader.objects.loader.Mod.class";
 	
-	public void beginLoader(Optional<String> customAnnotationPath) {
+	public void beginLoader(String customAnnotationPath) {
 		Method entryPoint;
-		if (customAnnotationPath.isPresent()) this.ann_class = customAnnotationPath.get();
+		if (customAnnotationPath != null) this.ann_class = customAnnotationPath;
 		
 		// Determine if mod loading folder exists already
 		File dir = (new File("mods"));
@@ -45,5 +45,9 @@ public class ModHandler {
 		}
 		
 		System.out.println(System.getProperty("user.dir"));
+	}
+	
+	public void beginLoader() {
+		this.beginLoader(null);
 	}
 }

@@ -21,9 +21,10 @@ public class ClientFrame extends JFrame {
 		this.setTitle("Re-bug");
 		Container content = this.getContentPane();
 		content.applyComponentOrientation(ComponentOrientation.getOrientation(content.getLocale()));
-		this.panels.add(new OpenPanel(new FlowLayout(FlowLayout.LEFT)));
+		this.setLayout(new FlowLayout());
+		this.panels.add(new OpenPanel(new FlowLayout(FlowLayout.LEFT, 0, 0)));
 		this.panels.get(0).setLocation(0, 0);
-		this.panels.get(0).setLayout(new BoxLayout(this.panels.get(0), BoxLayout.Y_AXIS));
+		this.panels.get(0).setLayout(new BoxLayout(this.panels.get(0), BoxLayout.X_AXIS));
 		this.add(this.panels.get(0));
 		this.panels.get(0).validate();
 		this.setVisible(true);
@@ -34,6 +35,7 @@ public class ClientFrame extends JFrame {
 		OpenPanel panel = this.panels.get(0);
 		ClientButton client = new ClientButton("DiscLoader", panel, this.loader);
 		client.setLocation(0, panel.getHeight() + 220);
+		panel.setSize(400, 720);
 		panel.add(client);
 		panel.revalidate();
 		panel.repaint();

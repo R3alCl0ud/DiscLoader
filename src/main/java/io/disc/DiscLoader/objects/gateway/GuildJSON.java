@@ -4,13 +4,14 @@ package io.disc.DiscLoader.objects.gateway;
  * @author perryberman
  *
  */
-public class GuildGateway {
+public class GuildJSON {
 	public String id;
 	public String name;
 	public String owner_id;
 	public boolean unavailable;
 	
-	public Member[] members;
+	public MemberJSON[] members;
+	public ChannelJSON[] channels;
 	
-	public PresenceGate[] presences;
+	public PresenceJSON[] presences;
 }

@@ -1,7 +1,7 @@
 package io.disc.DiscLoader.objects.gateway;
 
-public class Member {
-	public UserGateway user;
+public class MemberJSON {
+	public UserJSON user;
 	
 	public String nick;
 	public String[] roles;

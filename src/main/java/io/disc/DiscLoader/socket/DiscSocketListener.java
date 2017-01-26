@@ -16,10 +16,7 @@ import com.neovisionaries.ws.client.WebSocketListener;
 import com.neovisionaries.ws.client.WebSocketState;
 
 import io.disc.DiscLoader.DiscLoader;
-import io.disc.DiscLoader.socket.packets.DiscPacket;
-import io.disc.DiscLoader.socket.packets.HelloPacket;
-import io.disc.DiscLoader.socket.packets.ReadyPacket;
-import io.disc.DiscLoader.socket.packets.SocketPacket;
+import io.disc.DiscLoader.socket.packets.*;
 import io.disc.DiscLoader.util.constants;
 
 public class DiscSocketListener extends WebSocketAdapter implements WebSocketListener {
@@ -39,6 +36,7 @@ public class DiscSocketListener extends WebSocketAdapter implements WebSocketLis
 		
 		this.register(constants.WSEvents.HELLO, new HelloPacket(this.socket));
 		this.register(constants.WSEvents.READY, new ReadyPacket(this.socket));
+		this.register(constants.WSEvents.GUILD_CREATE, new GuildCreate(this.socket));
 	}
 
 	public void setSequence(int s) {
@@ -109,6 +107,7 @@ public class DiscSocketListener extends WebSocketAdapter implements WebSocketLis
 
 	public void onDisconnected(WebSocket ws, WebSocketFrame frame_1, WebSocketFrame frame_2, boolean isDisconnected)
 			throws Exception {
+		System.out.println("Got disconnected from the websocket");
 	}
 
 	public void onError(WebSocket ws, WebSocketException e) throws Exception {

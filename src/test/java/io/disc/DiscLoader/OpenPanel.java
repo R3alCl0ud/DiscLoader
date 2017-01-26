@@ -13,7 +13,8 @@ public class OpenPanel extends JPanel {
 
 	public OpenPanel(FlowLayout flowLayout) {
 		super(flowLayout);
-		this.setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
+		this.setLayout(new BoxLayout(this, BoxLayout.LINE_AXIS));
+		this.setLocation(330, 0);
 	}
 	
 	public OpenPanel() {

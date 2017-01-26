@@ -10,7 +10,7 @@ public class HelloPacket extends DiscPacket {
 	}
 
 	public void handle(SocketPacket packet) {
-		packet.d = this.socket.gson.fromJson((String) packet.d, Hello.class);
+		packet.d = this.socket.gson.fromJson(this.socket.gson.toJson(packet.d), Hello.class);
 		this.socket.keepAlive(((Hello) packet.d).heartbeat_interval);
 	}
 

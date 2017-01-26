@@ -1,6 +1,6 @@
 package io.disc.DiscLoader.objects.structures;
 
-import io.disc.DiscLoader.objects.gateway.UserGateway;
+import io.disc.DiscLoader.objects.gateway.UserJSON;
 
 public class User {
 	public String id;
@@ -13,7 +13,7 @@ public class User {
 	public boolean verified;
 	public boolean mfa;
 
-	public User(UserGateway user) {
+	public User(UserJSON user) {
 		this.id = user.id;
 
 		this.username = user.username;
