@@ -49,6 +49,8 @@ public class DiscLoader {
 		this.channels = new HashMap<String, Channel>();
 		this.guilds = new HashMap<String, Guild>();
 		this.mods = new HashMap<String, Mod>();
+		
+		this.modh = new ModHandler();
 	}
 
 	public CompletableFuture<String> login(String token) {
