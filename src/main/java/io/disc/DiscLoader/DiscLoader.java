@@ -8,6 +8,7 @@ import com.google.gson.Gson;
 import io.disc.DiscLoader.events.DiscHandler;
 import io.disc.DiscLoader.objects.gateway.ChannelJSON;
 import io.disc.DiscLoader.objects.gateway.GuildJSON;
+import io.disc.DiscLoader.objects.gateway.UserJSON;
 import io.disc.DiscLoader.objects.loader.Mod;
 import io.disc.DiscLoader.objects.loader.ModHandler;
 import io.disc.DiscLoader.objects.structures.Channel;
@@ -105,6 +106,13 @@ public class DiscLoader {
 			
 		}
 		return newChannel;
+	}
+	
+	public User addUser(UserJSON data) {
+		if (this.users.containsKey(data.id)) return this.users.get(data.id);
+		User user = new User(data);
+		this.users.put(user.id, user);
+		return user;
 	}
 	
 }
