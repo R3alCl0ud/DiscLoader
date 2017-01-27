@@ -5,6 +5,7 @@ import java.util.HashMap;
 import io.disc.DiscLoader.DiscLoader;
 import io.disc.DiscLoader.objects.gateway.GuildJSON;
 import io.disc.DiscLoader.objects.gateway.MemberJSON;
+import io.disc.DiscLoader.objects.gateway.RoleJSON;
 import io.disc.DiscLoader.util.constants;
 
 public class Guild {
@@ -27,6 +28,7 @@ public class Guild {
 		
 		this.members = new HashMap<String, GuildMember>();
 		this.channels = new HashMap<String, Channel>();
+		this.roles = new HashMap<String, Role>();
 		
 		if (guild.unavailable) {
 			this.available = false;
@@ -41,6 +43,13 @@ public class Guild {
 	public void setup(GuildJSON guild) {
 		this.name = guild.name;
 		this.icon = guild.icon != null ? guild.icon : null;
+		if (guild.roles != null) {
+			for (RoleJSON role : guild.roles) {
+				this.addRole(role);
+			}
+		}
+		
+		
 		if (guild.members != null) {
 			for (MemberJSON member : guild.members) {
 				this.addMember(member);
@@ -57,5 +66,15 @@ public class Guild {
 			this.loader.emit(constants.Events.GUILD_MEMBER_ADD, member);
 		}
 		return member;
+	}
+	
+	public Role addRole(RoleJSON guildRole) {
+		boolean exists = this.roles.containsKey(guildRole.id);
+		Role role = new Role(this, guildRole);
+		this.roles.put(role.id, role);
+		if (!exists && this.loader.ready) {
+			this.loader.emit(constants.Events.GUILD_ROLE_CREATE, role);
+		}
+		return role;
 	}
 }

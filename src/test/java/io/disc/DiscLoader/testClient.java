@@ -1,11 +1,5 @@
 package io.disc.DiscLoader;
 
-import java.awt.*;
-import java.awt.event.*;
-import java.awt.font.*;
-import javax.swing.*;
-import javax.swing.event.*;
-
 import io.disc.DiscLoader.events.eventHandler;
 import io.disc.DiscLoader.objects.loader.Mod;
 
@@ -22,11 +16,15 @@ public class testClient {
 	@eventHandler
 	public void raw(String raw) {
 		System.out.println(raw);
-		// frame.updateContents();
 	}
 
 	@eventHandler
 	public void debug(String debug) {
 		System.out.println(debug);
+	}
+	
+	@eventHandler
+	public void ready() {
+		
 	}
 }

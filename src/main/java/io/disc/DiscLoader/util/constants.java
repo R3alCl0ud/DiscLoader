@@ -50,6 +50,17 @@ public class constants {
 		public static final String message(String channelID, String messageID) {
 			return MessageFormat.format("{0}/channels/{1}/messages/{2}", new Object[] { API, channelID, messageID });
 		}
+
+		public static final String currentUser = MessageFormat.format("%s/users/@me", new Object[] { API });
+		public static final String currentUserGuilds = MessageFormat.format("%s/users/@me/guilds", new Object[] { API });
+
+		// public static final String
+		// public static final String
+		// public static final String
+		// public static final String
+		// public static final String
+		// public static final String
+
 	}
 
 	public static final class Methods {
