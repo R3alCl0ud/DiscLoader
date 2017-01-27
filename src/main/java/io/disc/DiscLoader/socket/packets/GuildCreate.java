@@ -15,7 +15,9 @@ public class GuildCreate extends DiscPacket {
 	public void handle(SocketPacket packet) {
 		Gson gson = new Gson();
 		System.out.println("Loading guild");
-		GuildJSON guild = gson.fromJson(gson.toJson(packet.d), GuildJSON.class);
+		String d = gson.toJson(packet.d);
+		GuildJSON guild = gson.fromJson(d, GuildJSON.class);
+		System.out.println(guild.id);
 		this.socket.loader.addGuild(guild);
 	}
 

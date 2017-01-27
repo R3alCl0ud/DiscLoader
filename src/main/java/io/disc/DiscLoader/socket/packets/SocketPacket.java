@@ -4,7 +4,7 @@ public class SocketPacket {
 	public int op;
 	public int s;
 	public String t;
-	public String d;
+	public Object d;
 	public SocketPacket() {
 
 	}

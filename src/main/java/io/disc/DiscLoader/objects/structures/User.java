@@ -2,9 +2,11 @@ package io.disc.DiscLoader.objects.structures;
 
 import java.text.MessageFormat;
 
+import io.disc.DiscLoader.DiscLoader;
 import io.disc.DiscLoader.objects.gateway.UserJSON;
 
 public class User {
+	public final DiscLoader loader;
 	public String id;
 	public String email;
 	public String password;
@@ -15,7 +17,9 @@ public class User {
 	public boolean verified;
 	public boolean mfa;
 
-	public User(UserJSON user) {
+	public User(DiscLoader loader, UserJSON user) {
+		this.loader = loader;
+		
 		this.id = user.id;
 
 		this.username = user.username;

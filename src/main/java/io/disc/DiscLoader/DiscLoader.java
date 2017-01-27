@@ -28,18 +28,18 @@ public class DiscLoader {
 	public String token;
 
 	public boolean ready;
-	
+
 	public DiscHandler handler;
 
 	public DiscREST rest;
-	
+
 	public ModHandler modh;
 
 	public HashMap<String, User> users;
 	public HashMap<String, Channel> channels;
 	public HashMap<String, Guild> guilds;
 	public HashMap<String, Mod> mods;
-	
+
 	public User user;
 
 	public DiscLoader() {
@@ -53,16 +53,15 @@ public class DiscLoader {
 		this.channels = new HashMap<String, Channel>();
 		this.guilds = new HashMap<String, Guild>();
 		this.mods = new HashMap<String, Mod>();
-		
+
 		this.modh = new ModHandler();
 
-		
 		this.ready = false;
 	}
 
 	public CompletableFuture<String> login(String token) {
 		this.token = token;
-//		this.modh.beginLoader();
+		// this.modh.beginLoader();
 		CompletableFuture<String> future = this.rest.makeRequest(constants.Endpoints.gateway, constants.Methods.GET,
 				true);
 		future.thenAcceptAsync(text -> {
@@ -85,10 +84,10 @@ public class DiscLoader {
 	public void emit(String event) {
 		this.emit(event, null);
 	}
-	
+
 	public Guild addGuild(GuildJSON guild) {
 		boolean exists = this.guilds.containsKey(guild.id);
-		
+
 		Guild newGuild = new Guild(this, guild);
 		this.guilds.put(newGuild.id, newGuild);
 		if (!exists && this.discSocket.status == constants.Status.READY) {
@@ -96,23 +95,30 @@ public class DiscLoader {
 		}
 		return newGuild;
 	}
-	
+
 	public Channel addChannel(ChannelJSON channel) {
 		boolean exists = this.channels.containsKey(channel.id);
-		
+
 		Channel newChannel = new Channel(channel);
 		this.channels.put(newChannel.id, newChannel);
 		if (!exists && this.ready) {
-			
+
 		}
 		return newChannel;
 	}
-	
+
 	public User addUser(UserJSON data) {
-		if (this.users.containsKey(data.id)) return this.users.get(data.id);
-		User user = new User(data);
+		if (this.users.containsKey(data.id))
+			return this.users.get(data.id);
+		User user = new User(this, data);
 		this.users.put(user.id, user);
 		return user;
 	}
-	
+
+	public void checkReady() {
+		int unavailable = 0;
+		// Guild[] guilds = this.guilds.get
+
+	}
+
 }

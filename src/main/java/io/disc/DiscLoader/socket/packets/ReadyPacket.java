@@ -4,7 +4,6 @@ import com.google.gson.Gson;
 
 import io.disc.DiscLoader.objects.gateway.GuildJSON;
 import io.disc.DiscLoader.objects.gateway.Ready;
-import io.disc.DiscLoader.objects.structures.User;
 import io.disc.DiscLoader.socket.DiscSocket;
 
 public class ReadyPacket extends DiscPacket {
@@ -14,8 +13,10 @@ public class ReadyPacket extends DiscPacket {
 
 	public void handle(SocketPacket packet) {
 		Gson gson = new Gson();
-		Ready ready = gson.fromJson(gson.toJson(packet.d), Ready.class);
-		this.socket.loader.user = new User(ready.user);
+		String d = gson.toJson(packet.d);
+		Ready ready = gson.fromJson(d, Ready.class);
+		System.out.println(ready.v);
+		this.socket.loader.user = this.socket.loader.addUser(ready.user);
 		GuildJSON[] guilds = ready.guilds;
 		for (int i = 0; i < guilds.length; i++) {
 			this.socket.loader.addGuild(guilds[i]);

@@ -51,7 +51,7 @@ public class Guild {
 		System.out.println("setup");
 		this.name = guild.name;
 		this.icon = guild.icon != null ? guild.icon : null;
-		if (guild.roles != null) {
+		/*if (guild.roles != null) {
 			for (RoleJSON role : guild.roles) {
 				System.out.println(role.name);
 				this.addRole(role);
@@ -61,7 +61,8 @@ public class Guild {
 			for (MemberJSON member : guild.members) {
 				this.addMember(member);
 			}
-		}
+		}*/
+		this.loader.checkReady();
 	}
 	
 	public GuildMember addMember(MemberJSON guildUser) {

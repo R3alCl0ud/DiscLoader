@@ -35,15 +35,6 @@ public class GuildMember {
 		this.deaf = guildUser.deaf;
 		this.mute = this.deaf ? true : guildUser.mute;
 		
-		for (RoleJSON roleJSON : guildUser.roles) {
-			if (this.guild.roles.containsKey(roleJSON.id)) {
-				Role role = this.guild.roles.get(roleJSON.id);
-				this.roles.put(role.id, role);
-			} else {
-				Role role = this.guild.addRole(roleJSON);
-				this.roles.put(role.id, role);
-			}
-		}
 	}
 	
 	public String toString() {
