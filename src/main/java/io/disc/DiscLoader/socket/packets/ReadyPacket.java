@@ -14,9 +14,9 @@ public class ReadyPacket extends DiscPacket {
 
 	public void handle(SocketPacket packet) {
 		Gson gson = new Gson();
-		packet.d = gson.fromJson(gson.toJson(packet.d), Ready.class);
-		this.socket.loader.user = new User(((Ready)packet.d).user);
-		GuildJSON[] guilds = ((Ready)packet.d).guilds;
+		Ready ready = gson.fromJson(gson.toJson(packet.d), Ready.class);
+		this.socket.loader.user = new User(ready.user);
+		GuildJSON[] guilds = ready.guilds;
 		for (int i = 0; i < guilds.length; i++) {
 			this.socket.loader.addGuild(guilds[i]);
 		}

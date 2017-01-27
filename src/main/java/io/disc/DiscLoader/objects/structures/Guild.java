@@ -34,21 +34,26 @@ public class Guild {
 		this.roles = new HashMap<String, Role>();
 		this.presences = new HashMap<String, Presence>();
 		
-		if (guild.unavailable) {
+		if (guild.unavailable == true) {
+			System.out.println("unavailable");
 			this.available = false;
 			this.id = guild.id;
 		} else {
+			System.out.println("Available");
 			this.available = true;
+			this.id = guild.id;
 			this.setup(guild);
 		}
 		
 	}
 	
 	public void setup(GuildJSON guild) {
+		System.out.println("setup");
 		this.name = guild.name;
 		this.icon = guild.icon != null ? guild.icon : null;
 		if (guild.roles != null) {
 			for (RoleJSON role : guild.roles) {
+				System.out.println(role.name);
 				this.addRole(role);
 			}
 		}
@@ -79,13 +84,12 @@ public class Guild {
 		return role;
 	}
 	
-	public Presence addPresence(PresenceJSON guildPresence) {
-		boolean exists = this.presences.containsKey(guildPresence.user.id);
-		Presence presence = new Presence(this, this.loader.users.get(guildPresence.user.id), guildPresence);
-		this.presences.put(presence.user.id, presence);
-		if (!exists && this.loader.ready) {
-			
+	public void setPresence(PresenceJSON guildPresence) {
+		if (this.presences.containsKey(guildPresence.user.id)) {
+			this.presences.get(guildPresence.user.id).update(guildPresence);
+			return;
 		}
-		return presence;
+		Presence presence = new Presence(guildPresence);
+		this.presences.put(guildPresence.user.id, presence);
 	}
 }

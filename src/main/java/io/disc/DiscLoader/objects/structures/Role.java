@@ -1,5 +1,7 @@
 package io.disc.DiscLoader.objects.structures;
 
+import java.math.BigDecimal;
+
 import io.disc.DiscLoader.objects.gateway.RoleJSON;
 
 public class Role {
@@ -15,14 +17,15 @@ public class Role {
 	public final Guild guild;
 	
 	public Role(Guild guild, RoleJSON role) {
+		this.guild = guild;
 		this.id = role.id;
 		this.name = role.name;
-		this.color = role.color;
-		this.permissions = role.permissions;
-		this.position = role.position;
+		this.color = new BigDecimal(role.color).intValue();
+		this.permissions = new BigDecimal(role.permissions).intValue();
+		this.position = new BigDecimal(role.position).intValue();
 		this.hoist = role.hoist;
 		this.managed = role.managed;
-		this.guild = guild;
+		System.out.println(this.permissions);
 	}
 
 }
