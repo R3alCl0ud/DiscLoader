@@ -5,6 +5,7 @@ import java.util.HashMap;
 import io.disc.DiscLoader.DiscLoader;
 import io.disc.DiscLoader.objects.gateway.GuildJSON;
 import io.disc.DiscLoader.objects.gateway.MemberJSON;
+import io.disc.DiscLoader.objects.gateway.PresenceJSON;
 import io.disc.DiscLoader.objects.gateway.RoleJSON;
 import io.disc.DiscLoader.util.constants;
 
@@ -23,12 +24,15 @@ public class Guild {
 	
 	public HashMap<String, Role> roles;
 	
+	public HashMap<String, Presence> presences;
+	
 	public Guild(DiscLoader loader, GuildJSON guild) {
 		this.loader = loader;
 		
 		this.members = new HashMap<String, GuildMember>();
 		this.channels = new HashMap<String, Channel>();
 		this.roles = new HashMap<String, Role>();
+		this.presences = new HashMap<String, Presence>();
 		
 		if (guild.unavailable) {
 			this.available = false;
@@ -48,14 +52,11 @@ public class Guild {
 				this.addRole(role);
 			}
 		}
-		
-		
 		if (guild.members != null) {
 			for (MemberJSON member : guild.members) {
 				this.addMember(member);
 			}
 		}
-		
 	}
 	
 	public GuildMember addMember(MemberJSON guildUser) {
@@ -76,5 +77,15 @@ public class Guild {
 			this.loader.emit(constants.Events.GUILD_ROLE_CREATE, role);
 		}
 		return role;
+	}
+	
+	public Presence addPresence(PresenceJSON guildPresence) {
+		boolean exists = this.presences.containsKey(guildPresence.user.id);
+		Presence presence = new Presence(this, this.loader.users.get(guildPresence.user.id), guildPresence);
+		this.presences.put(presence.user.id, presence);
+		if (!exists && this.loader.ready) {
+			
+		}
+		return presence;
 	}
 }

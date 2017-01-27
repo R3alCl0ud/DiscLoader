@@ -112,7 +112,12 @@ public class constants {
 		public static final String GUILD_ROLE_UPDATE = "GUILD_ROLE_UPDATE";
 		public static final String GUILD_EMOJIS_UPDATE = "GUILD_EMOJIS_UPDATE";
 		public static final String CHANNEL_CREATE = "CHANNEL_CREATE";
-		public static final String CHANNE_DELETE = "CHANNEL_DELETE";
+		public static final String CHANNEL_DELETE = "CHANNEL_DELETE";
+		public static final String CHANNEL_UPDATE = "CHANNEL_UPDATE";
+		public static final String CHANNEL_PINS_UPDATE = "CHANNEL_PINS_UPDATE";
+		
+		
+		public static final String PRESENCE_UPDATE = "PRESENCE_UPDATE";
 	}
 
 	public static final class Events {
@@ -132,5 +137,11 @@ public class constants {
 		public static final String GUILD_EMOJIS_UPDATE = "GuildEmojisUpdate";
 		public static final String CHANNEL_CREATE = "ChannelCreate";
 		public static final String CHANNEL_DELETE = "ChannelDelete";
+		public static final String CHANNEL_UPDATE = "ChannelUpdate";
+		public static final String CHANNEL_PINS_UPDATE = "ChannelPinsUpdate";
+		
+		
+		public static final String PRESENCE_UPDATE = "PresenceUpdate";
+		
 	}
 }

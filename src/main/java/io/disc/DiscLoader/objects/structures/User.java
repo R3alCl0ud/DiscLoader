@@ -1,5 +1,7 @@
 package io.disc.DiscLoader.objects.structures;
 
+import java.text.MessageFormat;
+
 import io.disc.DiscLoader.objects.gateway.UserJSON;
 
 public class User {
@@ -25,5 +27,9 @@ public class User {
 		this.avatar = user.avatar;
 
 		this.bot = user.bot;
+	}
+	
+	public String toString() {
+		return MessageFormat.format("<@%d>", new Object[] {this.id});
 	}
 }
