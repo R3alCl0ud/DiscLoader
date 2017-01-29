@@ -1,7 +1,7 @@
 package io.disc.DiscLoader.objects.gateway;
 
 /**
- * @author perryberman
+ * @author Perry Berman
  *
  */
 public class GuildJSON {
@@ -11,7 +11,7 @@ public class GuildJSON {
 	public String splash;
 	public String owner_id;
 	public String embed_channel_id;
-//	public String[] features;
+	public String[] features;
 	
 	public int verification_level;
 	public int default_message_notifications;
@@ -21,8 +21,8 @@ public class GuildJSON {
 	public boolean unavailable;
 	
 	public MemberJSON[] members;
-//	public ChannelJSON[] channels;
-//	public RoleJSON[] roles;
+	public ChannelJSON[] channels;
+	public RoleJSON[] roles;
 	public PresenceJSON[] presences;
 	
 }

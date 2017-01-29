@@ -25,24 +25,31 @@ public class DiscSocket {
 	 */
 	public DiscLoader loader;
 
+	private DiscSocketListener socketListener;
 	/**
 	 * 
 	 */
 	public WebSocket ws;
 
+	public String sessionID;
+	
 	public int s;
-
+	public int status;
+	
+	public boolean lastHeartbeatAck;
+	public boolean first = true;
+	public boolean normalReady = false;
+	public boolean reconnecting = false;
+	
 	private TimerTask heartbeatInterval;
 
 	public Timer timer = new Timer();
 
-	public boolean lastHeartbeatAck;
-
 	public Gson gson = new Gson();
 
-	private DiscSocketListener socketListener;
 
-	public int status;
+	
+	
 
 	/**
 	 * @param loader
@@ -51,21 +58,19 @@ public class DiscSocket {
 		this.loader = loader;
 
 		this.socketListener = new DiscSocketListener(this);
+		
+		this.status = constants.Status.IDLE;
 	}
 
 	/**
+	 * @throws IOException 
+	 * @throws WebSocketException 
 	 * 
 	 */
-	public void connectSocket(String gateway) {
-		try {
+	public void connectSocket(String gateway) throws WebSocketException, IOException {
 			this.ws = new WebSocketFactory().setConnectionTimeout(15000).createSocket(gateway)
 					.addHeader("Accept-Encoding", "gzip").connect();
 			this.ws.addListener(this.socketListener);
-		} catch (WebSocketException e) {
-			e.printStackTrace();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
 	}
 
 	public void keepAlive(int interval) {

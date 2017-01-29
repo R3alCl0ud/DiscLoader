@@ -1,12 +1,10 @@
 package io.disc.DiscLoader.objects.structures;
 
-import java.time.Instant;
 import java.util.Date;
 import java.util.HashMap;
 
 import io.disc.DiscLoader.DiscLoader;
 import io.disc.DiscLoader.objects.gateway.MemberJSON;
-import io.disc.DiscLoader.objects.gateway.RoleJSON;
 
 public class GuildMember {
 	
@@ -25,11 +23,9 @@ public class GuildMember {
 		this.loader = guild.loader;
 		this.user = this.loader.addUser(guildUser.user);
 		this.id = this.user.id;
-		System.out.println(this.toString());
 		this.guild = guild;
-		this.nick = guildUser.nick;
-		this.joinedAt = Date.from(Instant.parse(guildUser.joined_at));
-		
+		this.nick = guildUser.nick != null ? guildUser.nick : this.user.username;
+//		this.joinedAt = Date.from(Instant.parse(guildUser.joined_at));
 		this.roles = new HashMap<String, Role>();
 
 		this.deaf = guildUser.deaf;

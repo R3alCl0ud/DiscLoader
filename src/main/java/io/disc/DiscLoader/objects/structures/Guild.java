@@ -16,7 +16,7 @@ public class Guild {
 	public String icon;
 	public boolean available;
 	
-	public DiscLoader loader;
+	public final DiscLoader loader;
 	
 	public HashMap<String, GuildMember> members;
 	
@@ -35,34 +35,29 @@ public class Guild {
 		this.presences = new HashMap<String, Presence>();
 		
 		if (guild.unavailable == true) {
-			System.out.println("unavailable");
 			this.available = false;
 			this.id = guild.id;
 		} else {
-			System.out.println("Available");
 			this.available = true;
-			this.id = guild.id;
 			this.setup(guild);
-		}
-		
+		}	
 	}
 	
-	public void setup(GuildJSON guild) {
-		System.out.println("setup");
-		this.name = guild.name;
-		this.icon = guild.icon != null ? guild.icon : null;
-		/*if (guild.roles != null) {
-			for (RoleJSON role : guild.roles) {
-				System.out.println(role.name);
+	public void setup(GuildJSON data) {
+		this.id = data.id;
+		this.name = data.name;
+		this.icon = data.icon != null ? data.icon : null;
+		if (data.roles.length > 0) {
+			for (RoleJSON role : data.roles) {
 				this.addRole(role);
 			}
 		}
-		if (guild.members != null) {
-			for (MemberJSON member : guild.members) {
+		if (data.members != null) {
+			for (MemberJSON member : data.members) {
 				this.addMember(member);
 			}
-		}*/
-		this.loader.checkReady();
+		}
+		this.available = !data.unavailable;
 	}
 	
 	public GuildMember addMember(MemberJSON guildUser) {

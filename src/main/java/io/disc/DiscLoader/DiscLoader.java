@@ -1,5 +1,6 @@
 package io.disc.DiscLoader;
 
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.concurrent.CompletableFuture;
 
@@ -62,13 +63,16 @@ public class DiscLoader {
 	public CompletableFuture<String> login(String token) {
 		this.token = token;
 		// this.modh.beginLoader();
-		CompletableFuture<String> future = this.rest.makeRequest(constants.Endpoints.gateway, constants.Methods.GET,
-				true);
+		CompletableFuture<String> future = this.rest.makeRequest(constants.Endpoints.gateway, constants.Methods.GET, true);
 		future.thenAcceptAsync(text -> {
 			System.out.println(text);
 			Gson gson = new Gson();
 			Gateway gateway = (Gateway) gson.fromJson(text, Gateway.class);
-			this.discSocket.connectSocket(gateway.url + "?v=6&encoding=json");
+			try {
+				this.discSocket.connectSocket(gateway.url + "?v=6&encoding=json");
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
 		});
 		return future;
 	}
@@ -116,9 +120,23 @@ public class DiscLoader {
 	}
 
 	public void checkReady() {
-		int unavailable = 0;
-		// Guild[] guilds = this.guilds.get
+		if (this.discSocket.status != constants.Status.READY && this.discSocket.status != constants.Status.NEARLY) {
+			int unavailable = 0;
+			Collection<Guild> guilds = this.guilds.values();
+			for (Guild guild : guilds) {
+				unavailable += guild.available ? 0 : 1;
+			}
+			if (unavailable == 0) {
+				this.discSocket.status = constants.Status.NEARLY;
+				this.emitReady();
+			}
+		}
+	}
 
+	public void emitReady() {
+		this.discSocket.status = constants.Status.READY;
+		this.ready = true;
+		this.emit(constants.Events.READY, this);
 	}
 
 }

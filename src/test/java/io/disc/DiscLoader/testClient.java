@@ -24,7 +24,7 @@ public class testClient {
 	}
 	
 	@eventHandler
-	public void ready() {
-		
+	public void ready(DiscLoader loader) {
+		System.out.println("Hey looks like we're ready");
 	}
 }

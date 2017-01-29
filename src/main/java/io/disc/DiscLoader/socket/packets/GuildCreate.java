@@ -3,6 +3,7 @@ package io.disc.DiscLoader.socket.packets;
 import com.google.gson.Gson;
 
 import io.disc.DiscLoader.objects.gateway.*;
+import io.disc.DiscLoader.objects.structures.Guild;
 import io.disc.DiscLoader.socket.DiscSocket;
 
 public class GuildCreate extends DiscPacket {
@@ -16,9 +17,19 @@ public class GuildCreate extends DiscPacket {
 		Gson gson = new Gson();
 		System.out.println("Loading guild");
 		String d = gson.toJson(packet.d);
-		GuildJSON guild = gson.fromJson(d, GuildJSON.class);
-		System.out.println(guild.id);
-		this.socket.loader.addGuild(guild);
+		GuildJSON data = gson.fromJson(d, GuildJSON.class);
+		Guild guild = null;
+		if (this.socket.loader.guilds.containsKey(data.id)) guild = this.socket.loader.guilds.get(data.id);
+		if (guild != null) {
+			if (!guild.available && !data.unavailable) {
+				guild.setup(data);
+				this.socket.loader.checkReady();
+			}
+		} else {
+			// a brand new guild
+			this.socket.loader.addGuild(data);
+		}
+		
 	}
 
 }

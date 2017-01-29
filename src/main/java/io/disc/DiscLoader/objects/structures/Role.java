@@ -25,7 +25,6 @@ public class Role {
 		this.position = new BigDecimal(role.position).intValue();
 		this.hoist = role.hoist;
 		this.managed = role.managed;
-		System.out.println(this.permissions);
 	}
 
 }
