@@ -139,9 +139,35 @@ public class constants {
 		public static final String CHANNEL_DELETE = "ChannelDelete";
 		public static final String CHANNEL_UPDATE = "ChannelUpdate";
 		public static final String CHANNEL_PINS_UPDATE = "ChannelPinsUpdate";
+		public static final String PRESENCE_UPDATE = "PresenceUpdate";	
+	}
+	
+	public static final class Permissions {
+		public static final int CREATE_INSTANT_INVITE = 0x00000001;
+		public static final int KICK_MEMBERS = 0x00000002;
+		public static final int BAN_MEMBERS = 0x00000004;
+		public static final int ADMINISTRATOR = 0x00000008;
+		public static final int MANAGE_CHANNELS = 0x00000010;
+		public static final int MANAGE_GUILD = 0x00000020;
+		public static final int ADD_REACTION = 0x00000040;
+		public static final int READ_MESSAGES = 0x00000400;
+		public static final int SEND_MESSAGES = 0x00000800;
+		public static final int SEND_TTS_MESSAGES = 0x00001000;
+		public static final int MANAGE_MESSAGES = 0x00002000;
+	}
+	
+	public static final class PermissionFlags { 
+		public static final int CREATE_INSTANT_INVITE = 1 << 0;
+		public static final int KICK_MEMBERS = 1 << 1;
+		public static final int BAN_MEMBERS = 1 << 2;
+		public static final int ADMINISTRATOR = 1 << 3;
+		public static final int MANAGE_CHANNELS = 1 << 4;
+		public static final int MANAGE_GUILD = 1 << 5;
+		public static final int ADD_REACTION = 1 << 6;
 		
-		
-		public static final String PRESENCE_UPDATE = "PresenceUpdate";
-		
+		public static final int READ_MESSAGES = 1 << 10;
+		public static final int SEND_MESSAGES = 1 << 11;
+		public static final int SEND_TTS_MESSAGES = 1 << 12;
+		public static final int MANAGE_MESSAGES = 1 << 13;
 	}
 }

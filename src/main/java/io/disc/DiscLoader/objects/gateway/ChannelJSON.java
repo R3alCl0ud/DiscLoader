@@ -4,7 +4,15 @@ public class ChannelJSON {
 	public String id;
 	public String type;
 	public String name;
-	public boolean is_private;
-	public UserJSON[] recipients;
+	public String topic;
 	public String last_message_id;
+	
+	public int user_limit;
+	public int position;
+	public int bitrate;
+	
+	public boolean is_private;
+	
+	public OverwriteJSON[] permission_overwrites;
+	public UserJSON[] recipients;
 }

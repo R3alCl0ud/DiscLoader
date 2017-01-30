@@ -103,7 +103,7 @@ public class DiscLoader {
 	public Channel addChannel(ChannelJSON channel) {
 		boolean exists = this.channels.containsKey(channel.id);
 
-		Channel newChannel = new Channel(channel);
+		Channel newChannel = new Channel(this, channel);
 		this.channels.put(newChannel.id, newChannel);
 		if (!exists && this.ready) {
 

@@ -3,6 +3,7 @@ package io.disc.DiscLoader.objects.structures;
 import java.util.HashMap;
 
 import io.disc.DiscLoader.DiscLoader;
+import io.disc.DiscLoader.objects.gateway.ChannelJSON;
 import io.disc.DiscLoader.objects.gateway.GuildJSON;
 import io.disc.DiscLoader.objects.gateway.MemberJSON;
 import io.disc.DiscLoader.objects.gateway.PresenceJSON;
@@ -57,6 +58,12 @@ public class Guild {
 				this.addMember(member);
 			}
 		}
+		
+		if (data.channels != null) {
+			for (ChannelJSON channel : data.channels) {
+				this.addChannel(channel);
+			}
+		}
 		this.available = !data.unavailable;
 	}
 	
@@ -87,5 +94,12 @@ public class Guild {
 		}
 		Presence presence = new Presence(guildPresence);
 		this.presences.put(guildPresence.user.id, presence);
+	}
+	
+	public Channel addChannel(ChannelJSON data) {
+		if (this.channels.containsKey(data.id)) {
+			
+		}
+		return null;
 	}
 }

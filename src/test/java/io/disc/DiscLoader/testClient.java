@@ -2,15 +2,16 @@ package io.disc.DiscLoader;
 
 import io.disc.DiscLoader.events.eventHandler;
 import io.disc.DiscLoader.objects.loader.Mod;
+import io.disc.DiscLoader.util.constants;
 
 @Mod(modid = "Test Client", version = "0.0.1_a", desc = "A test client for DiscLoader API")
 public class testClient {
 	public static ClientFrame frame;
 
 	public static void main(String... args) {
-		DiscLoader client = new DiscLoader();
+//		DiscLoader client = new DiscLoader();
 //		 frame = new ClientFrame(client);
-		 client.login("MjcxNjYwMzYxMTMwODM1OTcx.C2gSGw.pCPSCH3b_lIvsrTjMl8QmZ_iPjs");
+//		 client.login("MjcxNjYwMzYxMTMwODM1OTcx.C2gSGw.pCPSCH3b_lIvsrTjMl8QmZ_iPjs");
 	}
 
 	@eventHandler

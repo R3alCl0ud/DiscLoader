@@ -23,17 +23,26 @@ public class Channel {
 	
 	public boolean is_private;
 	
-	public Guild guild;
+
 	
-	public DiscLoader loader;
+	public final DiscLoader loader;
 	
 	public User user;
 	
 	public HashMap<String, Message> messages;
 	public HashMap<String, User> recipients;
-	public HashMap<String, GuildMember> members;
+
 	
-	public Channel(ChannelJSON channel) {
+	public Channel(DiscLoader loader, ChannelJSON channel) {
 		this.id = channel.id;
+		this.loader = loader;
+	}
+	
+	public void setup(ChannelJSON data) {
+		if (data.name != null) this.name = data.name;
+		if (data.topic != null) this.topic = data.topic;
+		if (data.type != null) this.type = data.type;
+		if (data.is_private == true || data.is_private == false) this.is_private = data.is_private;
+		
 	}
 }
