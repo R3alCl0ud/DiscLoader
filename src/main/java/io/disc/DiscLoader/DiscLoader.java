@@ -1,5 +1,6 @@
 package io.disc.DiscLoader;
 
+import java.lang.reflect.Field;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.concurrent.CompletableFuture;
@@ -63,7 +64,8 @@ public class DiscLoader {
 	public CompletableFuture<String> login(String token) {
 		this.token = token;
 		// this.modh.beginLoader();
-		CompletableFuture<String> future = this.rest.makeRequest(constants.Endpoints.gateway, constants.Methods.GET, true);
+		CompletableFuture<String> future = this.rest.makeRequest(constants.Endpoints.gateway, constants.Methods.GET,
+				true);
 		future.thenAcceptAsync(text -> {
 			System.out.println(text);
 			Gson gson = new Gson();
@@ -117,6 +119,28 @@ public class DiscLoader {
 		User user = new User(this, data);
 		this.users.put(user.id, user);
 		return user;
+	}
+
+	public int resolvePermission(String permission) {
+		int resolved = 0;
+		try {
+			Class permFlags = Class.forName("constants.PermissionFlags");
+			Field[] flags = permFlags.getFields();
+			for (Field f : flags) {
+				if (permission == f.getName()) {
+					try {
+						resolved = f.getInt(f);
+					} catch (IllegalArgumentException e) {
+						e.printStackTrace();
+					} catch (IllegalAccessException e) {
+						e.printStackTrace();
+					}
+				}
+			}
+		} catch (ClassNotFoundException e) {
+			e.printStackTrace();
+		}
+		return resolved;
 	}
 
 	public void checkReady() {

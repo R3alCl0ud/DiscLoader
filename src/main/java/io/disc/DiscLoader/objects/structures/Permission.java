@@ -24,4 +24,10 @@ public class Permission {
 		if (!explicit && (this.raw & constants.PermissionFlags.ADMINISTRATOR) > 0) return true;
 		return (this.raw & permission) > 0;
 	}
+	
+	public boolean hasPermission(String permission, boolean explicit) {
+		int num = this.member.loader.resolvePermission(permission);
+		if (!explicit && (this.raw & constants.PermissionFlags.ADMINISTRATOR) > 0) return true;
+		return (this.raw & num) > 0;
+	}
 }
