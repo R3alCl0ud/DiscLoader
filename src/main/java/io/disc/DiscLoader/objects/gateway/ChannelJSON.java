@@ -2,11 +2,11 @@ package io.disc.DiscLoader.objects.gateway;
 
 public class ChannelJSON {
 	public String id;
-	public String type;
 	public String name;
 	public String topic;
 	public String last_message_id;
 	
+	public String type;
 	public int user_limit;
 	public int position;
 	public int bitrate;

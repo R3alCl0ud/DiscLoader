@@ -142,6 +142,13 @@ public class constants {
 		public static final String PRESENCE_UPDATE = "PresenceUpdate";	
 	}
 	
+	public static final class ChannelTypes {
+		public static final int text = 0;
+		public static final int DM = 1;
+		public static final int voice = 2;
+		public static final int groupDM = 3;
+	}
+	
 	public static final class Permissions {
 		public static final int CREATE_INSTANT_INVITE = 0x00000001;
 		public static final int KICK_MEMBERS = 0x00000002;

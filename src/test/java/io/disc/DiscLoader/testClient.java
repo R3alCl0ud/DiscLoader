@@ -9,7 +9,7 @@ public class testClient {
 
 	public static void main(String... args) {
 		DiscLoader client = new DiscLoader();
-//		frame = new ClientFrame(client);
+		frame = new ClientFrame(client);
 		client.login("MjcxNjYwMzYxMTMwODM1OTcx.C2gSGw.pCPSCH3b_lIvsrTjMl8QmZ_iPjs");
 	}
 
@@ -25,6 +25,7 @@ public class testClient {
 
 	@eventHandler
 	public void ready(DiscLoader loader) {
+		frame.tree.ready();
 		System.out.println("Hey looks like we're ready");
 	}
 }
