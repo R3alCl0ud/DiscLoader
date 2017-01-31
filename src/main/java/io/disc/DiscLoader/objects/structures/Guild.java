@@ -49,19 +49,22 @@ public class Guild {
 		this.name = data.name;
 		this.icon = data.icon != null ? data.icon : null;
 		if (data.roles.length > 0) {
+			this.roles.clear();
 			for (RoleJSON role : data.roles) {
 				this.addRole(role);
 			}
 		}
 		if (data.members != null) {
+			this.members.clear();
 			for (MemberJSON member : data.members) {
 				this.addMember(member);
 			}
 		}
 		
 		if (data.channels != null) {
+			this.channels.clear();
 			for (ChannelJSON channel : data.channels) {
-				this.addChannel(channel);
+				this.loader.addChannel(channel, this);
 			}
 		}
 		this.available = !data.unavailable;
@@ -96,10 +99,4 @@ public class Guild {
 		this.presences.put(guildPresence.user.id, presence);
 	}
 	
-	public Channel addChannel(ChannelJSON data) {
-		if (this.channels.containsKey(data.id)) {
-			
-		}
-		return null;
-	}
 }

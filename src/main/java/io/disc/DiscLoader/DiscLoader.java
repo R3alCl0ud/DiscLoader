@@ -15,6 +15,7 @@ import io.disc.DiscLoader.objects.loader.Mod;
 import io.disc.DiscLoader.objects.loader.ModHandler;
 import io.disc.DiscLoader.objects.structures.Channel;
 import io.disc.DiscLoader.objects.structures.Guild;
+import io.disc.DiscLoader.objects.structures.GuildChannel;
 import io.disc.DiscLoader.objects.structures.User;
 import io.disc.DiscLoader.rest.DiscREST;
 import io.disc.DiscLoader.socket.DiscSocket;
@@ -113,6 +114,19 @@ public class DiscLoader {
 		return newChannel;
 	}
 
+	public Channel addChannel(ChannelJSON channel, Guild guild) {
+		boolean exists = this.channels.containsKey(channel.id);
+		guild.channels.put(channel.id, new GuildChannel(this, guild, channel));
+		
+		Channel newChannel = new Channel(this, channel);
+		this.channels.put(newChannel.id, newChannel);
+		if (!exists && this.ready) {
+			this.emit(constants.Events.CHANNEL_CREATE, newChannel);
+		}
+		return newChannel;
+	}
+
+	
 	public User addUser(UserJSON data) {
 		if (this.users.containsKey(data.id))
 			return this.users.get(data.id);
@@ -124,6 +138,7 @@ public class DiscLoader {
 	public int resolvePermission(String permission) {
 		int resolved = 0;
 		try {
+			@SuppressWarnings("rawtypes")
 			Class permFlags = Class.forName("constants.PermissionFlags");
 			Field[] flags = permFlags.getFields();
 			for (Field f : flags) {

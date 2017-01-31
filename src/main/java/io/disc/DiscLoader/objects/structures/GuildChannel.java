@@ -1,6 +1,7 @@
 package io.disc.DiscLoader.objects.structures;
 
 import java.util.HashMap;
+import java.util.concurrent.CompletableFuture;
 
 import io.disc.DiscLoader.DiscLoader;
 import io.disc.DiscLoader.objects.gateway.ChannelJSON;
@@ -25,5 +26,9 @@ public class GuildChannel extends Channel {
 			
 		}
 		return this.members;
+	}
+	
+	public CompletableFuture<Message> sendMessage(String content) {
+		return this.loader.rest.sendMessage(this, content);
 	}
 }

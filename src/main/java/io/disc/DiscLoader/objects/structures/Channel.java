@@ -32,10 +32,13 @@ public class Channel {
 	public HashMap<String, Message> messages;
 	public HashMap<String, User> recipients;
 
+	public Guild guild;
+
 	
 	public Channel(DiscLoader loader, ChannelJSON channel) {
 		this.id = channel.id;
 		this.loader = loader;
+		this.guild = null;
 	}
 	
 	public void setup(ChannelJSON data) {

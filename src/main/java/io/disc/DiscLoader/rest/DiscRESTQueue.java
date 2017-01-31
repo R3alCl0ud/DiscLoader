@@ -1,6 +1,3 @@
-/**
- * 
- */
 package io.disc.DiscLoader.rest;
 
 import java.util.ArrayList;
@@ -22,32 +19,32 @@ import io.disc.DiscLoader.DiscLoader;
  */
 public class DiscRESTQueue {
 	public List<APIRequest> queue;
-	
+
 	public DiscREST rest;
-	
+
 	public DiscLoader loader;
-	
+
 	public boolean waiting;
-	
+
 	public DiscRESTQueue(DiscREST discREST) {
 		this.rest = discREST;
 		this.loader = this.rest.loader;
-		
+
 		this.waiting = false;
-		
+
 		this.queue = new ArrayList<APIRequest>();
 	}
-	
+
 	public void handle() {
 		if (this.waiting) {
 			this.handle();
 			return;
 		}
-		
+
 		final APIRequest apiRequest = queue.get(0);
-		
+
 		BaseRequest request = apiRequest.createRequest();
-		
+
 		request = this.addHeaders(request, apiRequest.auth);
 		request.asStringAsync(new Callback<String>() {
 
@@ -65,14 +62,14 @@ public class DiscRESTQueue {
 				apiRequest.future.completeExceptionally(e);
 			}
 		});
-		
+
 	}
-	
+
 	public void addToQueue(APIRequest request) {
 		queue.add(request);
 		this.handle();
 	}
-	
+
 	public <T extends BaseRequest> T addHeaders(T baseRequest, boolean auth) {
 		HttpRequest request = baseRequest.getHttpRequest();
 		if (auth && this.loader.token != null)
@@ -84,6 +81,4 @@ public class DiscRESTQueue {
 		return baseRequest;
 	}
 
-	
-	
 }
