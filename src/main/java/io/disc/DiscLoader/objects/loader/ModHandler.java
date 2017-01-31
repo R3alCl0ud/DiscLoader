@@ -44,7 +44,15 @@ public class ModHandler {
 			System.exit(1);
 		}
 		
+		// This will print out the working directory.
 		System.out.println(System.getProperty("user.dir"));
+		
+		// Hopefully it will be jar files
+		File jars[] = dir.listFiles();
+		
+		for (int i = 0; i < jars.length; i++) {
+			
+		}
 	}
 	
 	public void beginLoader() {
