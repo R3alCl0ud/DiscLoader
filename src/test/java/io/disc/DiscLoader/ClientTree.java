@@ -72,6 +72,9 @@ public class ClientTree extends JPanel implements TreeSelectionListener {
 		this.user.add(createNode("id: " + this.loader.user.id));
 		this.user.add(createNode("username: " + this.loader.user.username));
 		this.user.add(createNode("discriminator: " + this.loader.user.discriminator));
+		for (Guild guild : this.loader.guilds.values()) {
+			this.guilds.add(createGuildNode(guild, false));
+		}
 		System.out.println(this.loader.user.username);
 	}
 	
@@ -89,20 +92,30 @@ public class ClientTree extends JPanel implements TreeSelectionListener {
 		node.add(prop);
 		prop = createNode("type: " + channel.type);
 		node.add(prop);
-		if (channel.type.equalsIgnoreCase("text")) {
-			GuildChannel chan = (GuildChannel) channel;
-			prop = createNode("topic: " + chan.topic);
+		if (channel.type.equalsIgnoreCase("0.0")) {
+			prop = createNode("topic: " + channel.topic);
 			node.add(prop);
-			prop = createNode("Members");
-			for (GuildMember mem : chan.getMembers().values()) {
-				prop.add(createMember(mem));
-			}
+		}
+		return node;
+	}
+	
+	public DefaultMutableTreeNode createGuildChannelNode(GuildChannel channel, boolean guild) {
+		DefaultMutableTreeNode node = new DefaultMutableTreeNode(channel.id);
+		DefaultMutableTreeNode prop = null;
+		prop = createNode("id: " + channel.id);
+		node.add(prop);
+		prop = createNode("name: " + channel.name);
+		node.add(prop);
+		prop = createNode("type: " + channel.type);
+		node.add(prop);
+		if (channel.type.equalsIgnoreCase("0.0")) {
+			prop = createNode("topic: " + channel.topic);
 			node.add(prop);
-			if (guild) {
-				node.add(createGuildNode(chan.guild, true));
-			}
-		} 
-
+		}
+		for (GuildMember member : channel.getMembers().values()) {
+			prop.add(createMember(member));
+		}
+		
 		return node;
 	}
 	
@@ -117,6 +130,7 @@ public class ClientTree extends JPanel implements TreeSelectionListener {
 		}
 		node.add(prop);
 		prop = createNode("channels");
+		prop.add(createNode("length: " + guild.channels.size()));
 		for (Channel chan : guild.channels.values()) {
 			prop.add(createChannelNode(chan, false));
 		}
