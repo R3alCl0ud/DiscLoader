@@ -51,6 +51,12 @@ public class ModHandler {
 		File jars[] = dir.listFiles();
 		
 		for (int i = 0; i < jars.length; i++) {
+			String file_ext = jars[i].getName().split(".")[jars[i].getName().split(".").length - 1];
+			
+			if (file_ext == "jar" || file_ext == "zip") {
+				System.out.println("Jarfile/Zip Name: " + jars[i].getName());
+			}
+			
 			
 		}
 	}
