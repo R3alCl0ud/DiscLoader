@@ -16,7 +16,10 @@ import io.disc.DiscLoader.objects.loader.ModHandler;
 import io.disc.DiscLoader.objects.structures.Channel;
 import io.disc.DiscLoader.objects.structures.Guild;
 import io.disc.DiscLoader.objects.structures.GuildChannel;
+import io.disc.DiscLoader.objects.structures.PrivateChannel;
+import io.disc.DiscLoader.objects.structures.TextChannel;
 import io.disc.DiscLoader.objects.structures.User;
+import io.disc.DiscLoader.objects.structures.VoiceChannel;
 import io.disc.DiscLoader.rest.DiscREST;
 import io.disc.DiscLoader.socket.DiscSocket;
 import io.disc.DiscLoader.util.constants;
@@ -103,30 +106,40 @@ public class DiscLoader {
 		return newGuild;
 	}
 
-	public Channel addChannel(ChannelJSON channel) {
-		boolean exists = this.channels.containsKey(channel.id);
-
-		Channel newChannel = new Channel(this, channel);
-		this.channels.put(newChannel.id, newChannel);
-		if (!exists && this.ready) {
-
-		}
-		return newChannel;
+	public Channel addChannel(ChannelJSON data) {
+		return this.addChannel(data, null);
 	}
 
-	public Channel addChannel(ChannelJSON channel, Guild guild) {
-		boolean exists = this.channels.containsKey(channel.id);
-		guild.channels.put(channel.id, new GuildChannel(this, guild, channel));
-		
-		Channel newChannel = new Channel(this, channel);
-		this.channels.put(newChannel.id, newChannel);
-		if (!exists && this.ready) {
-			this.emit(constants.Events.CHANNEL_CREATE, newChannel);
+	public Channel addChannel(ChannelJSON data, Guild guild) {
+		boolean exists = this.channels.containsKey(data.id);
+		Channel channel = null;
+		if (data.type == constants.ChannelTypes.DM) {
+			channel = new PrivateChannel(this, data);
+		} else if (data.type == constants.ChannelTypes.groupDM) {
+			channel = new Channel(this, data);
+		} else {
+			if (guild != null) {
+				if (data.type == constants.ChannelTypes.text) {
+					channel = new TextChannel(guild, data);
+					guild.channels.put(channel.id, (GuildChannel) channel);					
+				} else if (data.type == constants.ChannelTypes.voice) {
+					channel = new VoiceChannel(guild, data);
+					guild.channels.put(channel.id, (GuildChannel) channel);	
+				}
+			}
 		}
-		return newChannel;
+
+		if (channel != null) {
+			this.channels.put(channel.id, channel);
+			if (!exists && this.ready) {
+				this.emit(constants.Events.CHANNEL_CREATE, channel);
+			}
+			return channel;
+		}
+
+		return null;
 	}
 
-	
 	public User addUser(UserJSON data) {
 		if (this.users.containsKey(data.id))
 			return this.users.get(data.id);

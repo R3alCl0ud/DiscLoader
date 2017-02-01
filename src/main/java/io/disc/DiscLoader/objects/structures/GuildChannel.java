@@ -12,12 +12,22 @@ public class GuildChannel extends Channel {
 	public final Guild guild;
 	
 	public Permissions permission;
+
+	public int position;
 	
 	
-	public GuildChannel(DiscLoader loader, Guild guild, ChannelJSON channel) {
-		super(loader, channel);
-		this.name = channel.name;
+	public GuildChannel(Guild guild, ChannelJSON channel) {
+		super(guild.loader, channel);
+
 		this.guild = guild;
+	}
+	
+	public void setup(ChannelJSON data) {
+		super.setup(data);
+		
+		this.name = data.name;
+		
+		this.position = data.position;
 	}
 	
 	public HashMap<String, GuildMember> getMembers() {
@@ -33,7 +43,5 @@ public class GuildChannel extends Channel {
 		return new Permission(member, constants.Permissions.READ_MESSAGES);
 	}
 	
-	public CompletableFuture<Message> sendMessage(String content) {
-		return this.loader.rest.sendMessage(this, content);
-	}
+
 }

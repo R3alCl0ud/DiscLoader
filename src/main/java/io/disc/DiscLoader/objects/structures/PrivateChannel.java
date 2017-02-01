@@ -5,8 +5,9 @@ import io.disc.DiscLoader.objects.gateway.ChannelJSON;
 
 public class PrivateChannel extends Channel {
 
-	public PrivateChannel(DiscLoader loader, ChannelJSON channel) {
-		super(loader, channel);
+	public PrivateChannel(DiscLoader loader, ChannelJSON data) {
+		super(loader, data);
+		this.type = "dm";
 	}
 
 }

@@ -6,7 +6,7 @@ public class ChannelJSON {
 	public String topic;
 	public String last_message_id;
 	
-	public String type;
+	public int type;
 	public int user_limit;
 	public int position;
 	public int bitrate;

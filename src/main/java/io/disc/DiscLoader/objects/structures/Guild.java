@@ -21,7 +21,7 @@ public class Guild {
 	
 	public HashMap<String, GuildMember> members;
 	
-	public HashMap<String, Channel> channels;
+	public HashMap<String, GuildChannel> channels;
 	
 	public HashMap<String, Role> roles;
 	
@@ -31,7 +31,7 @@ public class Guild {
 		this.loader = loader;
 		
 		this.members = new HashMap<String, GuildMember>();
-		this.channels = new HashMap<String, Channel>();
+		this.channels = new HashMap<String, GuildChannel>();
 		this.roles = new HashMap<String, Role>();
 		this.presences = new HashMap<String, Presence>();
 		

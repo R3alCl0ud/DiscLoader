@@ -15,6 +15,7 @@ public class testClient {
 
 	@eventHandler
 	public void raw(String raw) {
+//		frame.tree.ready();
 		System.out.println(raw);
 	}
 

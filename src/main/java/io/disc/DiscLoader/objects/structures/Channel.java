@@ -4,7 +4,6 @@ import java.util.HashMap;
 
 import io.disc.DiscLoader.DiscLoader;
 import io.disc.DiscLoader.objects.gateway.ChannelJSON;
-import io.disc.DiscLoader.util.constants;
 
 public class Channel {
 
@@ -33,22 +32,15 @@ public class Channel {
 
 	public Guild guild;
 
-	public Channel(DiscLoader loader, ChannelJSON channel) {
-		this.id = channel.id;
+	public Channel(DiscLoader loader, ChannelJSON data) {
 		this.loader = loader;
-		this.guild = null;
-		this.setup(channel);
+		
+		this.type = null;
+		
+		if (data != null) this.setup(data);
 	}
 
 	public void setup(ChannelJSON data) {
-		if (data.name != null)
-			this.name = data.name;
-		if (data.topic != null)
-			this.topic = data.topic;
-		if (data.type != null) this.type = data.type;
-
-		if (data.is_private == true || data.is_private == false)
-			this.is_private = data.is_private;
-
+		this.id = data.id;
 	}
 }
