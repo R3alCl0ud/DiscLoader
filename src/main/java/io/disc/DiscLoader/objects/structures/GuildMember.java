@@ -1,5 +1,6 @@
 package io.disc.DiscLoader.objects.structures;
 
+import java.time.Instant;
 import java.util.Date;
 import java.util.HashMap;
 
@@ -19,17 +20,17 @@ public class GuildMember {
 	
 	public Date joinedAt;
 	
-	public GuildMember(Guild guild, MemberJSON guildUser) {
+	public GuildMember(Guild guild, MemberJSON data) {
 		this.loader = guild.loader;
-		this.user = this.loader.addUser(guildUser.user);
+		this.user = this.loader.addUser(data.user);
 		this.id = this.user.id;
 		this.guild = guild;
-		this.nick = guildUser.nick != null ? guildUser.nick : this.user.username;
-//		this.joinedAt = Date.from(Instant.parse(guildUser.joined_at));
+		this.nick = data.nick != null ? data.nick : this.user.username;
+//		this.joinedAt = Date.from(Instant.parse(data.joined_at));
 		this.roles = new HashMap<String, Role>();
 
-		this.deaf = guildUser.deaf;
-		this.mute = this.deaf ? true : guildUser.mute;
+		this.deaf = data.deaf;
+		this.mute = this.deaf ? true : data.mute;
 		
 	}
 	

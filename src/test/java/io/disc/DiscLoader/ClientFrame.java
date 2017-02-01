@@ -18,7 +18,7 @@ public class ClientFrame extends JFrame {
 	public ClientFrame(DiscLoader loader) {
 		this.loader = loader;
 		this.panels = new ArrayList<OpenPanel>();
-		this.setSize(1280, 720);
+		this.setSize(400, 400);
 		this.setTitle("Re-bug");
 		this.add(this.tree = new ClientTree(loader));
 		this.setVisible(true);

@@ -48,32 +48,32 @@ public class Guild {
 		this.id = data.id;
 		this.name = data.name;
 		this.icon = data.icon != null ? data.icon : null;
+		System.out.println("here?");
 		if (data.roles.length > 0) {
-			this.roles.clear();
 			for (RoleJSON role : data.roles) {
 				this.addRole(role);
 			}
 		}
-		if (data.members != null) {
-			this.members.clear();
+		System.out.println("hello?");
+		if (data.members != null && data.members.length > 0) {
 			for (MemberJSON member : data.members) {
 				this.addMember(member);
 			}
 		}
-		
-		if (data.channels != null) {
-			this.channels.clear();
+		System.out.println("five?");
+		if (data.channels != null && data.channels.length > 0) {
 			for (ChannelJSON channel : data.channels) {
 				this.loader.addChannel(channel, this);
 			}
 		}
+		System.out.println("Hmm");
 		this.available = !data.unavailable;
 	}
 	
-	public GuildMember addMember(MemberJSON guildUser) {
-		boolean exists = this.members.containsKey(guildUser.user.id);
-		GuildMember member = new GuildMember(this, guildUser);
-		this.members.put(member.user.id, member);
+	public GuildMember addMember(MemberJSON data) {
+		boolean exists = this.members.containsKey(data.user.id);
+		GuildMember member = new GuildMember(this, data);
+		this.members.put(member.id, member);
 		if (!exists && this.loader.ready) {
 			this.loader.emit(constants.Events.GUILD_MEMBER_ADD, member);
 		}

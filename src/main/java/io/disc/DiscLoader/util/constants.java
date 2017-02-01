@@ -139,6 +139,7 @@ public class constants {
 		public static final String CHANNEL_DELETE = "ChannelDelete";
 		public static final String CHANNEL_UPDATE = "ChannelUpdate";
 		public static final String CHANNEL_PINS_UPDATE = "ChannelPinsUpdate";
+		public static final String USER_UPDATE = "UserUpdate";
 		public static final String PRESENCE_UPDATE = "PresenceUpdate";	
 	}
 	

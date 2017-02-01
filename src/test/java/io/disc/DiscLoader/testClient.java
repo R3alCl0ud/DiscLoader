@@ -1,5 +1,6 @@
 package io.disc.DiscLoader;
 
+import io.disc.DiscLoader.events.UserUpdateEvent;
 import io.disc.DiscLoader.events.eventHandler;
 import io.disc.DiscLoader.objects.loader.Mod;
 
@@ -26,7 +27,13 @@ public class testClient {
 
 	@eventHandler
 	public void ready(DiscLoader loader) {
-		frame.tree.ready();
 		System.out.println("Hey looks like we're ready");
+		frame.tree.ready();
+		System.out.println(loader.channels.get("190559195031011330").name);
+	}
+	
+	@eventHandler
+	public void UserUpdate(UserUpdateEvent e) {
+		System.out.printf(e.user.username, e.oldUser.username, "\n");
 	}
 }

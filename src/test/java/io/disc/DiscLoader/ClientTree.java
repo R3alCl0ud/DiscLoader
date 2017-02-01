@@ -20,6 +20,8 @@ import io.disc.DiscLoader.objects.structures.Presence;
 import io.disc.DiscLoader.objects.structures.TextChannel;
 import io.disc.DiscLoader.objects.structures.User;
 import io.disc.DiscLoader.objects.structures.VoiceChannel;
+import io.disc.DiscLoader.tree.UserNodes;
+import io.disc.DiscLoader.tree.UserTree;
 
 /**
  * @author Perry Berman
@@ -30,19 +32,20 @@ public class ClientTree extends JPanel implements TreeSelectionListener {
 	private static final long serialVersionUID = -1699355010437939560L;
 
 	private DiscLoader loader;
-	public DefaultMutableTreeNode user;
-	public DefaultMutableTreeNode users;
+	public UserTree user;
+	public UserNodes users;
 	public DefaultMutableTreeNode channels;
 	public DefaultMutableTreeNode guilds;
+	public DefaultMutableTreeNode top;
 
 	public HashMap<String, HashMap<String, DefaultMutableTreeNode>> members;
 	
 	public ClientTree(DiscLoader loader) {
 		super(new GridLayout(1, 0));
 		this.loader = loader;
-		DefaultMutableTreeNode top = new DefaultMutableTreeNode("DiscLoader");
-		createNodes(top);
-		JTree tree = new JTree(top);
+		this.top = new DefaultMutableTreeNode("DiscLoader");
+		createNodes(this.top);
+		JTree tree = new JTree(this.top);
 		tree.getSelectionModel().setSelectionMode(TreeSelectionModel.SINGLE_TREE_SELECTION);
 
 		// Listen for when the selection changes.
@@ -58,14 +61,14 @@ public class ClientTree extends JPanel implements TreeSelectionListener {
 		this.users = null;
 		this.channels = null;
 		this.guilds = null;
-		this.user = new DefaultMutableTreeNode("User");
-		this.users = new DefaultMutableTreeNode("Users");
+		this.user = new UserTree("User", null);
+		this.users = new UserNodes("Users");
 		this.channels = new DefaultMutableTreeNode("Channels");
 		this.guilds = new DefaultMutableTreeNode("Guilds");
-		top.add(user);
-		top.add(users);
-		top.add(channels);
-		top.add(guilds);
+		this.top.add(this.user);
+		this.top.add(this.users);
+		this.top.add(this.channels);
+		this.top.add(this.guilds);
 	}
 
 	public void ready() {
@@ -77,13 +80,12 @@ public class ClientTree extends JPanel implements TreeSelectionListener {
 			channel = createChannelNode(chan, true);
 			this.channels.add(channel);
 		}
-		this.user.add(createNode("id: " + this.loader.user.id));
-		this.user.add(createNode("username: " + this.loader.user.username));
-		this.user.add(createNode("discriminator: " + this.loader.user.discriminator));
-		this.user.add(createNode("avatar: " + this.loader.user.avatar));
-		this.user.add(createNode("bot: " + this.loader.user.bot));
+		this.user.updateNode(this.loader.user);
 		for (Guild guild : this.loader.guilds.values()) {
 			this.guilds.add(createGuildNode(guild, false));
+		}
+		for (User data : this.loader.users.values()) {
+			this.users.createUserNode(data);
 		}
 		System.out.println(this.loader.user.username);
 	}

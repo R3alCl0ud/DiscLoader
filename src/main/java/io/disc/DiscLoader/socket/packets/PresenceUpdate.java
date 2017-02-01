@@ -1,5 +1,6 @@
 package io.disc.DiscLoader.socket.packets;
 
+import io.disc.DiscLoader.events.UserUpdateEvent;
 import io.disc.DiscLoader.objects.gateway.PresenceJSON;
 import io.disc.DiscLoader.objects.structures.Guild;
 import io.disc.DiscLoader.objects.structures.Presence;
@@ -33,7 +34,7 @@ public class PresenceUpdate extends DiscPacket {
 		User oldUser = new User(this.socket.loader, user);
 		user.patch(data.user);
 		if (!user.equals(oldUser)) {
-			this.socket.loader.emit(constants.Events.PRESENCE_UPDATE, user);
+			this.socket.loader.emit(constants.Events.USER_UPDATE, new UserUpdateEvent(user, oldUser));
 		}
 		
 		Guild guild = data.guild_id != null ? this.socket.loader.guilds.get(data.guild_id) : null;
