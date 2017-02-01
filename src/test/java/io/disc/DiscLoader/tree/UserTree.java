@@ -3,7 +3,10 @@
  */
 package io.disc.DiscLoader.tree;
 
+import javax.swing.JLabel;
+import javax.swing.JPanel;
 import javax.swing.tree.DefaultMutableTreeNode;
+import javax.swing.tree.MutableTreeNode;
 
 import io.disc.DiscLoader.objects.structures.User;
 
@@ -41,9 +44,9 @@ public class UserTree extends DefaultMutableTreeNode {
 		else {
 			this.add(this.id = this.createNode("id: null"));
 			this.add(this.username = this.createNode("username: null"));
-			this.add(this.discriminator = this.createNode("discriminator: " + data.discriminator));
-			this.add(this.avatar = this.createNode("avatar: " + data.avatar));
-			this.add(this.bot = this.createNode("bot: " + data.bot));
+			this.add(this.discriminator = this.createNode("discriminator: null"));
+			this.add(this.avatar = this.createNode("avatar: null"));
+			this.add(this.bot = this.createNode("bot: null"));
 		}
 	}
 

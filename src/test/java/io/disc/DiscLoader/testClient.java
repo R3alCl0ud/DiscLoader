@@ -1,5 +1,7 @@
 package io.disc.DiscLoader;
 
+import java.util.Collection;
+
 import io.disc.DiscLoader.events.UserUpdateEvent;
 import io.disc.DiscLoader.events.eventHandler;
 import io.disc.DiscLoader.objects.loader.Mod;
@@ -12,6 +14,7 @@ public class testClient {
 		DiscLoader client = new DiscLoader();
 		frame = new ClientFrame(client);
 		client.login("MjcxNjYwMzYxMTMwODM1OTcx.C2gSGw.pCPSCH3b_lIvsrTjMl8QmZ_iPjs");
+
 	}
 
 	@eventHandler

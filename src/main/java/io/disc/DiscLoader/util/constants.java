@@ -1,6 +1,8 @@
 package io.disc.DiscLoader.util;
 
 import java.text.MessageFormat;
+import java.util.ArrayList;
+import java.util.Arrays;
 
 public class constants {
 	public static final String HOST = "https://discordapp.com";
@@ -52,7 +54,8 @@ public class constants {
 		}
 
 		public static final String currentUser = MessageFormat.format("%s/users/@me", new Object[] { API });
-		public static final String currentUserGuilds = MessageFormat.format("%s/users/@me/guilds", new Object[] { API });
+		public static final String currentUserGuilds = MessageFormat.format("%s/users/@me/guilds",
+				new Object[] { API });
 
 		// public static final String
 		// public static final String
@@ -115,10 +118,14 @@ public class constants {
 		public static final String CHANNEL_DELETE = "CHANNEL_DELETE";
 		public static final String CHANNEL_UPDATE = "CHANNEL_UPDATE";
 		public static final String CHANNEL_PINS_UPDATE = "CHANNEL_PINS_UPDATE";
-		
-		
 		public static final String PRESENCE_UPDATE = "PRESENCE_UPDATE";
 	}
+
+//	public static final ArrayList<String> PreReadyWhitelist = new ArrayList<String>();
+	
+	public static final ArrayList<String> EventWhitelist = new ArrayList<String>(Arrays.asList(WSEvents.HELLO, WSEvents.READY, WSEvents.GUILD_CREATE,
+			WSEvents.GUILD_DELETE, WSEvents.GUILD_MEMBER_ADD, WSEvents.GUILD_MEMBER_REMOVE,
+			WSEvents.GUILD_MEMBER_UPDATE));
 
 	public static final class Events {
 		public static final String READY = "ready";
@@ -140,16 +147,16 @@ public class constants {
 		public static final String CHANNEL_UPDATE = "ChannelUpdate";
 		public static final String CHANNEL_PINS_UPDATE = "ChannelPinsUpdate";
 		public static final String USER_UPDATE = "UserUpdate";
-		public static final String PRESENCE_UPDATE = "PresenceUpdate";	
+		public static final String PRESENCE_UPDATE = "PresenceUpdate";
 	}
-	
+
 	public static final class ChannelTypes {
 		public static final int text = 0;
 		public static final int DM = 1;
 		public static final int voice = 2;
 		public static final int groupDM = 3;
 	}
-	
+
 	public static final class Permissions {
 		public static final int CREATE_INSTANT_INVITE = 0x00000001;
 		public static final int KICK_MEMBERS = 0x00000002;
@@ -163,8 +170,8 @@ public class constants {
 		public static final int SEND_TTS_MESSAGES = 0x00001000;
 		public static final int MANAGE_MESSAGES = 0x00002000;
 	}
-	
-	public static final class PermissionFlags { 
+
+	public static final class PermissionFlags {
 		public static final int CREATE_INSTANT_INVITE = 1 << 0;
 		public static final int KICK_MEMBERS = 1 << 1;
 		public static final int BAN_MEMBERS = 1 << 2;
@@ -172,7 +179,7 @@ public class constants {
 		public static final int MANAGE_CHANNELS = 1 << 4;
 		public static final int MANAGE_GUILD = 1 << 5;
 		public static final int ADD_REACTION = 1 << 6;
-		
+
 		public static final int READ_MESSAGES = 1 << 10;
 		public static final int SEND_MESSAGES = 1 << 11;
 		public static final int SEND_TTS_MESSAGES = 1 << 12;
