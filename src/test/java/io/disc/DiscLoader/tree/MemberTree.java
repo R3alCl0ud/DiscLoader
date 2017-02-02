@@ -6,6 +6,7 @@ package io.disc.DiscLoader.tree;
 import javax.swing.tree.DefaultMutableTreeNode;
 
 import io.disc.DiscLoader.objects.structures.GuildMember;
+import io.disc.DiscLoader.objects.structures.Presence;
 
 /**
  * @author Perry Berman
@@ -22,7 +23,7 @@ public class MemberTree extends DefaultMutableTreeNode {
 	private DefaultMutableTreeNode id; 
 	private DefaultMutableTreeNode user;
 	private DefaultMutableTreeNode nick;
-	private DefaultMutableTreeNode presence;
+	private PresenceNode presence;
 	private DefaultMutableTreeNode roles;
 
 	
@@ -36,9 +37,10 @@ public class MemberTree extends DefaultMutableTreeNode {
 	public MemberTree(Object userObject, GuildMember data) {
 		super(userObject);
 		this.add(this.id = this.createNode("id: " + data.id));
-		this.add(this.nick = this.createNode("username: " + data.nick));
+		this.add(this.nick = this.createNode("nick: " + data.nick));
 		this.add(this.user = new UserTree("user", data.user));
-//		this.add(this.presence = this.createNode("avatar: " + data.avatar));
+		Presence status = data.getPresence();
+		if (status != null) this.add(this.presence = new PresenceNode("presence", status));
 //		this.add(this.roles = this.createNode("bot: " + data.bot));
 	}
 

@@ -21,6 +21,11 @@ public class Presence {
 		this.status = "offline";
 	}
 	
+	public Presence(Presence data) {
+		this.game = data.game != null ? new Game(data.game) : null;
+		this.status = data.status;
+	}
+	
 	public void update(PresenceJSON presence) {
 		this.game = presence.game != null ? new Game(presence.game) : null;
 		this.status = presence.status != null ? presence.status : this.status;

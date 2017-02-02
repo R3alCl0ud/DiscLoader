@@ -8,10 +8,23 @@ public class Game {
 	public String url;
 	public boolean streaming;
 	
+	/**
+	 * @param game
+	 */
 	public Game(GameJSON game) {
 		this.name = game.name;
 		this.type = game.type;
 		this.url = game.url;
-		this.streaming = this.type != 0 || this.type != 1 || this.type != 2 ? false : true;
+		this.streaming = this.type != 0 && (this.type == 1 || this.type == 2) ? true : false;
+	}
+
+	/**
+	 * @param game
+	 */
+	public Game(Game game) {
+		this.name = game.name;
+		this.type = game.type;
+		this.url = game.url;
+		this.streaming = this.type != 0 && (this.type == 1 || this.type == 2) ? true : false;
 	}
 }

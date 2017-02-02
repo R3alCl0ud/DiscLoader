@@ -134,6 +134,7 @@ public class constants {
 		public static final String GUILD_UPDATE = "GuildUpdate";
 		public static final String GUILD_MEMBERS_CHUNK = "GuildMembersChunk";
 		public static final String GUILD_MEMBER_ADD = "GuildMemberAdd";
+		public static final String GUILD_MEMBER_AVAILABLE = "GuildMemberAvailable";
 		public static final String GUILD_MEMBER_REMOVE = "GuildMemberRemove";
 		public static final String GUILD_MEMBER_UPDATE = "GuildMemberUpdate";
 		public static final String GUILD_BAN_ADD = "GuildBanAdd";

@@ -1,8 +1,10 @@
 package io.disc.DiscLoader.socket.packets;
 
+import io.disc.DiscLoader.events.GuildMemberUpdateEvent;
 import io.disc.DiscLoader.events.UserUpdateEvent;
 import io.disc.DiscLoader.objects.gateway.PresenceJSON;
 import io.disc.DiscLoader.objects.structures.Guild;
+import io.disc.DiscLoader.objects.structures.GuildMember;
 import io.disc.DiscLoader.objects.structures.Presence;
 import io.disc.DiscLoader.objects.structures.User;
 import io.disc.DiscLoader.socket.DiscSocket;
@@ -39,11 +41,22 @@ public class PresenceUpdate extends DiscPacket {
 		
 		Guild guild = data.guild_id != null ? this.socket.loader.guilds.get(data.guild_id) : null;
 		if (guild != null) {
-			if (guild.presences.containsKey(user.id)) {
-				guild.presences.get(user.id).update(data);
-			} else if (data.status != "offline") {
+			GuildMember member = guild.members.get(user.id);
+			if (member == null && !data.status.equalsIgnoreCase("offline")) {
+				member = guild.addMember(user, data.roles, false, false, false);
+				this.socket.loader.emit(constants.Events.GUILD_MEMBER_AVAILABLE, member);
+			}
+			if (member != null) {
+				GuildMember oldMember = new GuildMember(member);
+				if (member.getPresence() != null) {
+					oldMember.frozenPresence = new Presence(member.getPresence());
+				}
+				guild.setPresence(data);
+				this.socket.loader.emit(constants.Events.PRESENCE_UPDATE, new GuildMemberUpdateEvent(member, oldMember, guild));
+			} else {
 				guild.setPresence(data);
 			}
+
 		}
 	}
 

@@ -80,6 +80,15 @@ public class Guild {
 		return member;
 	}
 	
+	public GuildMember addMember(User user, String[] roles, boolean deaf, boolean mute, boolean emitEvent) {
+		boolean exists = this.members.containsKey(user.id);
+		GuildMember member = new GuildMember(this, user, deaf, mute, null);
+		if (this.loader.ready == true && emitEvent && !exists) {
+			this.loader.emit(constants.Events.GUILD_MEMBER_ADD, member);
+		}
+		return member;
+	}
+	
 	public Role addRole(RoleJSON guildRole) {
 		boolean exists = this.roles.containsKey(guildRole.id);
 		Role role = new Role(this, guildRole);

@@ -1,5 +1,6 @@
 package io.disc.DiscLoader;
 
+import io.disc.DiscLoader.events.GuildMemberUpdateEvent;
 import io.disc.DiscLoader.events.UserUpdateEvent;
 import io.disc.DiscLoader.events.eventHandler;
 import io.disc.DiscLoader.objects.loader.Mod;
@@ -35,6 +36,12 @@ public class testClient {
 	
 	@eventHandler
 	public void UserUpdate(UserUpdateEvent e) {
-		System.out.printf("%s, %s\n",e.user.username, e.oldUser.username);
+		frame.tree.users.updateUserNode(e.user);
+//		System.out.printf("%s, %s\n",e.user.username, e.oldUser.username);
+	}
+	
+	@eventHandler
+	public void PresenceUpdate(GuildMemberUpdateEvent e) {
+		
 	}
 }

@@ -75,7 +75,7 @@ public class ClientTree extends JPanel implements TreeSelectionListener {
 	}
 
 	public void ready() {
-		this.user.removeAllChildren();
+//		this.user.removeAllChildren();
 		this.channels.removeAllChildren();
 		this.guilds.removeAllChildren();
 		for (Channel channel : this.loader.channels.values()) {
