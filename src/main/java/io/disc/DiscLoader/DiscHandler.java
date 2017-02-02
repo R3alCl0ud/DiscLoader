@@ -32,8 +32,6 @@ public class DiscHandler {
 					for (int n = 0; n < methods.length; n++) {
 						eventHandler event = methods[n].getAnnotation(io.disc.DiscLoader.objects.annotations.eventHandler.class);
 						if (event != null) {
-							System.out.println("found an event handler");
-							System.out.println(methods[n].getName());
 							if (!this.events.containsKey(methods[n].getName())) {
 								this.events.put(methods[n].getName(), new ArrayList<Method>());
 							}

@@ -9,6 +9,7 @@ import io.disc.DiscLoader.DiscLoader;
  *
  */
 public class WindowFrame extends JFrame {
+	private static final long serialVersionUID = -6329873205165995031L;
 	public DiscLoader loader;
 	public WindowPanel panel;
 	public WindowFrame(DiscLoader loader) {
@@ -17,8 +18,6 @@ public class WindowFrame extends JFrame {
 		this.setSize(720, 600);
 		this.add(this.panel);
 		this.setTitle("DiscLoader");
-		
-//		this.pack();
 		this.setVisible(true);
 	}
 

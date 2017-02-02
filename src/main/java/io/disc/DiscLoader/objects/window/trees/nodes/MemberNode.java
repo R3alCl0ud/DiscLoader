@@ -62,6 +62,8 @@ public class MemberNode extends DefaultMutableTreeNode {
 		this.add(this.id = this.createNode("id: " + data.id));
 		this.add(this.nick = this.createNode("username: " + data.nick));
 		this.add(this.user = new UserNode("user", data.user));
+		Presence status = data.getPresence();
+		if (status != null) this.add(this.presence = new PresenceNode("presence", status));
 	}
 	
 	public DefaultMutableTreeNode createNode(String content) {

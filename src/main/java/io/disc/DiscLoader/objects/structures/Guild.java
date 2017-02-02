@@ -48,25 +48,21 @@ public class Guild {
 		this.id = data.id;
 		this.name = data.name;
 		this.icon = data.icon != null ? data.icon : null;
-		System.out.println("here?");
 		if (data.roles.length > 0) {
 			for (RoleJSON role : data.roles) {
 				this.addRole(role);
 			}
 		}
-		System.out.println("hello?");
 		if (data.members != null && data.members.length > 0) {
 			for (MemberJSON member : data.members) {
 				this.addMember(member);
 			}
 		}
-		System.out.println("five?");
 		if (data.channels != null && data.channels.length > 0) {
 			for (ChannelJSON channel : data.channels) {
 				this.loader.addChannel(channel, this);
 			}
 		}
-		System.out.println("Hmm");
 		this.available = !data.unavailable;
 	}
 	

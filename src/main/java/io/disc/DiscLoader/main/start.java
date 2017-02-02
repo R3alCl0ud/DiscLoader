@@ -30,11 +30,22 @@ public class start {
 		DiscLoader loader = new DiscLoader();
 		if (options.useWindow == true)
 			window = new WindowFrame(loader);
+		loader.login(options.auth.token);
 	}
 
 	@eventHandler
-	public void Ready() {
-//		window.loader
+	public void ready(DiscLoader loader) {
+		System.out.println("Test");
+		window.panel.load();
 	}
 
+	@eventHandler
+	public void raw(String text) {
+		System.out.println(text);
+	}
+	
+	@eventHandler
+	public void debug(String debug) {
+		System.out.println(debug);
+	}
 }

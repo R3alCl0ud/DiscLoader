@@ -15,7 +15,6 @@ public class GuildCreate extends DiscPacket {
 	@Override
 	public void handle(SocketPacket packet) {
 		Gson gson = new Gson();
-		System.out.println("Loading guild");
 		String d = gson.toJson(packet.d);
 		GuildJSON data = gson.fromJson(d, GuildJSON.class);
 		Guild guild = null;
