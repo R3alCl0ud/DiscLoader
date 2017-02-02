@@ -2,7 +2,12 @@ package io.disc.DiscLoader.objects.loader;
 
 import java.io.File;
 import java.lang.reflect.Method;
-import java.util.Optional;
+import java.net.URL;
+import java.net.URLClassLoader;
+import java.util.ArrayList;
+import java.util.Enumeration;
+import java.util.jar.JarEntry;
+import java.util.jar.JarFile;
 
 public class ModHandler {
 	private ClassLoader modhandler;
@@ -12,8 +17,9 @@ public class ModHandler {
 	// Set annotation class name
 	private String ann_class = "io.disc.DiscLoader.objects.loader.Mod.class";
 	
+	protected Enumeration<JarEntry> e;
+	
 	public void beginLoader(String customAnnotationPath) {
-		Method entryPoint;
 		if (customAnnotationPath != null) this.ann_class = customAnnotationPath;
 		
 		// Determine if mod loading folder exists already
@@ -51,13 +57,46 @@ public class ModHandler {
 		File jars[] = dir.listFiles();
 		
 		for (int i = 0; i < jars.length; i++) {
-			String file_ext = jars[i].getName().split(".")[jars[i].getName().split(".").length - 1];
-			
-			if (file_ext == "jar" || file_ext == "zip") {
-				System.out.println("Jarfile/Zip Name: " + jars[i].getName());
-			}
-			
-			
+			String file_ext = jars[i].getName().split("\\.")[jars[i].getName().split("\\.").length - 1];
+			/* Emergency Code Latch
+			 * IN CASE OF EMERGENCY UN-COMMENT CODE
+			 * -------------------------------------------------
+			 * System.out.println(jars[i].getName() + " " + file_ext + " IS JAR? " + (file_ext.toLowerCase().equals("jar") && !jars[i].equals("jar") ? "TRUE" : "FALSE"));
+			 */
+			if ((file_ext.toLowerCase().equals("jar")) && !jars[i].equals("jar")) {
+				System.out.println("\tJarfile/Zip Name: " + jars[i].getName());
+				try {
+					JarFile jf = new JarFile(jars[i]);
+					this.e = jf.entries();
+					
+					URL[] urls = { new URL("jar:file:" + jars[i].getPath() + "!/") };
+					URLClassLoader cl = URLClassLoader.newInstance(urls);
+					
+					while (this.e.hasMoreElements()) {
+						JarEntry je = e.nextElement();
+						if (je.isDirectory() || !je.getName().endsWith(".class")) {
+							continue;
+						}
+						
+						String className = je.getName().substring(0, je.getName().length() - 6);
+						className = className.replace('/', '.');
+						
+						try {
+							this.instance = cl.loadClass(className);
+							System.out.println(this.instance.getName());
+							for (int j = 0, n = this.instance.getMethods().length; j < n; j++) {
+								System.out.println("\tMethod Name: " + this.instance.getMethods()[i].getName());
+							}
+						} catch (Exception ce) {
+							System.out.println("Class unable to load: " + className);
+						}
+					}
+					
+					jf.close();
+				} catch (Exception e) {
+					System.out.println("Unable to add JarFile" + jars[i].getName());
+				}
+			}	
 		}
 	}
 	

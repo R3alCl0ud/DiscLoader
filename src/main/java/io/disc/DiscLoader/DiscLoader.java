@@ -61,6 +61,8 @@ public class DiscLoader {
 		this.mods = new HashMap<String, Mod>();
 
 		this.modh = new ModHandler();
+		
+		modh.beginLoader();
 
 		this.ready = false;
 	}
