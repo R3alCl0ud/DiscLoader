@@ -1,22 +1,23 @@
 /**
  * 
  */
-package io.disc.DiscLoader.tree;
+package io.disc.DiscLoader.objects.window.trees;
 
 import java.util.HashMap;
 
 import javax.swing.tree.DefaultMutableTreeNode;
 
 import io.disc.DiscLoader.objects.structures.GuildMember;
+import io.disc.DiscLoader.objects.window.trees.nodes.MemberNode;
 
 /**
  * @author Perry Berman
  *
  */
-public class MemberNodes extends DefaultMutableTreeNode {
+public class MemberTree extends DefaultMutableTreeNode {
 
 	private static final long serialVersionUID = 4204684450462184938L;
-	public HashMap<String, MemberTree> members;
+	public HashMap<String, MemberNode> members;
 	@SuppressWarnings("unused")
 	private DefaultMutableTreeNode length;
 	
@@ -24,14 +25,14 @@ public class MemberNodes extends DefaultMutableTreeNode {
 	/**
 	 * @param userObject
 	 */
-	public MemberNodes(Object userObject) {
+	public MemberTree(Object userObject) {
 		super(userObject);
-		this.members = new HashMap<String, MemberTree>();
+		this.members = new HashMap<String, MemberNode>();
 		this.add(this.length = createNode("length: " + this.members.size())); 
 	}
 	
 	public void createMemberNode(GuildMember data) {
-		MemberTree member = new MemberTree(data.id, data);
+		MemberNode member = new MemberNode(data.id, data);
 		this.members.put(data.id, member);
 		this.add(member);
 	}

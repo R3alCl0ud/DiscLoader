@@ -1,33 +1,34 @@
 /**
  * 
  */
-package io.disc.DiscLoader.tree;
+package io.disc.DiscLoader.objects.window.trees;
 
 import java.util.HashMap;
 
 import javax.swing.tree.DefaultMutableTreeNode;
 
 import io.disc.DiscLoader.objects.structures.Guild;
+import io.disc.DiscLoader.objects.window.trees.nodes.GuildNode;
 
 /**
  * @author Perry Berman
  *
  */
-public class GuildNodes extends DefaultMutableTreeNode {
+public class GuildTree extends DefaultMutableTreeNode {
 
-	public HashMap<String, GuildTree> guilds;
+	public HashMap<String, GuildNode> guilds;
 	private DefaultMutableTreeNode length;
 
 	private static final long serialVersionUID = 8662315363268991611L;
 
-	public GuildNodes(Object userObject) {
+	public GuildTree(Object userObject) {
 		super(userObject);
-		this.guilds = new HashMap<String, GuildTree>();
+		this.guilds = new HashMap<String, GuildNode>();
 		this.add(this.length = this.createNode("length: " + this.guilds.size()));
 	}
 
 	public void createGuildNode(Guild data) {
-		GuildTree user = new GuildTree(data.id, data);
+		GuildNode user = new GuildNode(data.id, data);
 		this.guilds.put(data.id, user);
 		this.length.setUserObject("length: " + this.guilds.size());
 		this.add(user);

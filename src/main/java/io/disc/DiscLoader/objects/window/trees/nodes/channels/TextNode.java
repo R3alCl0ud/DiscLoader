@@ -1,15 +1,12 @@
-/**
- * 
- */
-package io.disc.DiscLoader.tree.channels;
+package io.disc.DiscLoader.objects.window.trees.nodes.channels;
 
 import javax.swing.tree.DefaultMutableTreeNode;
 
 import io.disc.DiscLoader.objects.structures.GuildMember;
 import io.disc.DiscLoader.objects.structures.TextChannel;
 import io.disc.DiscLoader.objects.structures.VoiceChannel;
-import io.disc.DiscLoader.tree.GuildTree;
-import io.disc.DiscLoader.tree.MemberNodes;
+import io.disc.DiscLoader.objects.window.trees.nodes.GuildNode;
+import io.disc.DiscLoader.objects.window.trees.MemberTree;
 
 /**
  * @author Perry Berman
@@ -17,7 +14,7 @@ import io.disc.DiscLoader.tree.MemberNodes;
  */
 
 @SuppressWarnings("unused")
-public class TextTree extends ChannelTree {
+public class TextNode extends ChannelNode {
 
 	/**
 	 * 
@@ -26,8 +23,8 @@ public class TextTree extends ChannelTree {
 	private DefaultMutableTreeNode id;
 	private DefaultMutableTreeNode name;
 	private DefaultMutableTreeNode bitrate;
-	private MemberNodes members;
-	private GuildTree guild;
+	private MemberTree members;
+	private GuildNode guild;
 	
 	
 
@@ -36,16 +33,16 @@ public class TextTree extends ChannelTree {
 	 * @param data
 	 * @param guild
 	 */
-	public TextTree(String userObject, TextChannel data, boolean displayGuild) {
+	public TextNode(String userObject, TextChannel data, boolean displayGuild) {
 		super(userObject);
 		this.add(this.id = createNode("id: " + data.id));
 		this.add(this.name = createNode("name: " + data.name));
 		this.add(this.bitrate = createNode("topic: " + data.topic));
-		this.add(this.members = new MemberNodes("members"));
+		this.add(this.members = new MemberTree("members"));
 		for (GuildMember member : data.getMembers().values()) {
 			this.members.createMemberNode(member);
 		}
-		if (displayGuild) this.add(this.guild = new GuildTree("guild", data.guild));
+		if (displayGuild) this.add(this.guild = new GuildNode("guild", data.guild));
 	}
 	
 	public DefaultMutableTreeNode createNode(String content) {

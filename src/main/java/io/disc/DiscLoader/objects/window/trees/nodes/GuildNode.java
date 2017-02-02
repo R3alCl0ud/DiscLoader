@@ -1,40 +1,42 @@
-package io.disc.DiscLoader.tree;
+package io.disc.DiscLoader.objects.window.trees.nodes;
 
 import javax.swing.tree.DefaultMutableTreeNode;
 
 import io.disc.DiscLoader.objects.structures.Guild;
 import io.disc.DiscLoader.objects.structures.GuildChannel;
 import io.disc.DiscLoader.objects.structures.GuildMember;
+import io.disc.DiscLoader.objects.window.trees.ChannelTree;
+import io.disc.DiscLoader.objects.window.trees.MemberTree;
 
 /**
  * @author Perry Berman
  *
  */
 
-public class GuildTree extends DefaultMutableTreeNode {
+public class GuildNode extends DefaultMutableTreeNode {
 
 	private DefaultMutableTreeNode id; 
 	private DefaultMutableTreeNode name;
 	private DefaultMutableTreeNode owner;
 	private DefaultMutableTreeNode icon;
-	private MemberNodes members;
-	private ChannelNodes channels;
+	private MemberTree members;
+	private ChannelTree channels;
 	
 	private static final long serialVersionUID = -5501035825628371530L;
 
 	
-	public GuildTree(String content, Guild data) {
+	public GuildNode(String content, Guild data) {
 		super(content);
 		this.add(this.id = createNode("id: " + data.id));
 		this.add(this.name = createNode("name: " + data.name));
 		if (data.icon != null) this.add(this.icon = createNode("icon: " + data.icon));
 		else this.add(this.icon = createNode("icon: null"));
-		this.add(this.members = new MemberNodes("members"));
+		this.add(this.members = new MemberTree("members"));
 		for (GuildMember member : data.members.values()) {
-//			this.members.
+			this.members.createMemberNode(member);
 		}
 		
-		this.channels = new ChannelNodes("channels");
+		this.channels = new ChannelTree("channels");
 	}
 	
 	public void updateNode(Guild data) {
@@ -42,7 +44,7 @@ public class GuildTree extends DefaultMutableTreeNode {
 	}
 	
 	public void updateMemberNode(GuildMember member) {
-		
+		this.members.updateMemberNode(member);
 	}
 	
 	public void updateChannelNode(GuildChannel channel) {

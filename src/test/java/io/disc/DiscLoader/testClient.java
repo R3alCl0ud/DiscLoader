@@ -2,8 +2,8 @@ package io.disc.DiscLoader;
 
 import io.disc.DiscLoader.events.GuildMemberUpdateEvent;
 import io.disc.DiscLoader.events.UserUpdateEvent;
-import io.disc.DiscLoader.events.eventHandler;
-import io.disc.DiscLoader.objects.loader.Mod;
+import io.disc.DiscLoader.objects.annotations.Mod;
+import io.disc.DiscLoader.objects.annotations.eventHandler;
 
 @Mod(modid = "Test Client", version = "0.0.1_a", desc = "A test client for DiscLoader API")
 public class testClient {
@@ -36,12 +36,12 @@ public class testClient {
 	
 	@eventHandler
 	public void UserUpdate(UserUpdateEvent e) {
-		frame.tree.users.updateUserNode(e.user);
+//		frame.tree.users.updateUserNode(e.user);
 //		System.out.printf("%s, %s\n",e.user.username, e.oldUser.username);
 	}
 	
 	@eventHandler
 	public void PresenceUpdate(GuildMemberUpdateEvent e) {
-		
+//		frame.tree.guilds.guilds.get(e.guild.id).updateMemberNode(e.member);
 	}
 }

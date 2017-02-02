@@ -1,40 +1,41 @@
 /**
  * 
  */
-package io.disc.DiscLoader.tree;
+package io.disc.DiscLoader.objects.window.trees;
 
 import java.util.HashMap;
 
 import javax.swing.tree.DefaultMutableTreeNode;
 
 import io.disc.DiscLoader.objects.structures.User;
+import io.disc.DiscLoader.objects.window.trees.nodes.UserNode;
 
 /**
  * @author Perry Berman
  *
  */
-public class UserNodes extends DefaultMutableTreeNode {
+public class UserTree extends DefaultMutableTreeNode {
 
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = -6710691349739462130L;
-	public HashMap<String, UserTree> users;
+	public HashMap<String, UserNode> users;
 	private DefaultMutableTreeNode length;
 	/**
 	 * 
 	 * 
 	 */
-	public UserNodes() {
+	public UserTree() {
 		
 	}
 
 	/**
 	 * @param userObject
 	 */
-	public UserNodes(Object userObject) {
+	public UserTree(Object userObject) {
 		super(userObject);
-		this.users = new HashMap<String, UserTree>();
+		this.users = new HashMap<String, UserNode>();
 		this.add(this.length = this.createNode("length: " + this.users.size()));
 	}
 
@@ -42,12 +43,12 @@ public class UserNodes extends DefaultMutableTreeNode {
 	 * @param userObject
 	 * @param allowsChildren
 	 */
-	public UserNodes(Object userObject, boolean allowsChildren) {
+	public UserTree(Object userObject, boolean allowsChildren) {
 		super(userObject, allowsChildren);
 	}
 	
 	public void createUserNode(User data) {
-		UserTree user = new UserTree(data.id, data);
+		UserNode user = new UserNode(data.id, data);
 		this.users.put(data.id, user);
 		this.length.setUserObject("length: " + this.users.size());
 		this.add(user);

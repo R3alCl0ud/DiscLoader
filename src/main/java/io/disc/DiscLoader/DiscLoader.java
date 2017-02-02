@@ -7,11 +7,10 @@ import java.util.concurrent.CompletableFuture;
 
 import com.google.gson.Gson;
 
-import io.disc.DiscLoader.events.DiscHandler;
+import io.disc.DiscLoader.objects.annotations.Mod;
 import io.disc.DiscLoader.objects.gateway.ChannelJSON;
 import io.disc.DiscLoader.objects.gateway.GuildJSON;
 import io.disc.DiscLoader.objects.gateway.UserJSON;
-import io.disc.DiscLoader.objects.loader.Mod;
 import io.disc.DiscLoader.objects.loader.ModHandler;
 import io.disc.DiscLoader.objects.structures.Channel;
 import io.disc.DiscLoader.objects.structures.Guild;

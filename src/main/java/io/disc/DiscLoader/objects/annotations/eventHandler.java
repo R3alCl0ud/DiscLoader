@@ -1,4 +1,4 @@
-package io.disc.DiscLoader.events;
+package io.disc.DiscLoader.objects.annotations;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;

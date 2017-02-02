@@ -1,17 +1,17 @@
 package io.disc.DiscLoader;
 
-import java.awt.*;
-import java.awt.event.*;
-import java.awt.font.*;
-import java.util.ArrayList;
+import java.awt.GridLayout;
 import java.util.HashMap;
-import java.util.List;
 
-import javax.swing.*;
-import javax.swing.event.*;
-import javax.swing.tree.*;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JSplitPane;
+import javax.swing.JTree;
+import javax.swing.event.TreeSelectionEvent;
+import javax.swing.event.TreeSelectionListener;
+import javax.swing.tree.DefaultMutableTreeNode;
+import javax.swing.tree.TreeSelectionModel;
 
-import io.disc.DiscLoader.events.eventHandler;
 import io.disc.DiscLoader.objects.structures.Channel;
 import io.disc.DiscLoader.objects.structures.Guild;
 import io.disc.DiscLoader.objects.structures.GuildChannel;
@@ -21,10 +21,10 @@ import io.disc.DiscLoader.objects.structures.PrivateChannel;
 import io.disc.DiscLoader.objects.structures.TextChannel;
 import io.disc.DiscLoader.objects.structures.User;
 import io.disc.DiscLoader.objects.structures.VoiceChannel;
-import io.disc.DiscLoader.tree.ChannelNodes;
-import io.disc.DiscLoader.tree.GuildNodes;
-import io.disc.DiscLoader.tree.UserNodes;
-import io.disc.DiscLoader.tree.UserTree;
+import io.disc.DiscLoader.objects.window.trees.ChannelTree;
+import io.disc.DiscLoader.objects.window.trees.GuildTree;
+import io.disc.DiscLoader.objects.window.trees.UserTree;
+import io.disc.DiscLoader.objects.window.trees.nodes.UserNode;
 
 /**
  * @author Perry Berman
@@ -35,10 +35,10 @@ public class ClientTree extends JPanel implements TreeSelectionListener {
 	private static final long serialVersionUID = -1699355010437939560L;
 
 	private DiscLoader loader;
-	public UserTree user;
-	public UserNodes users;
-	public ChannelNodes channels;
-	public GuildNodes guilds;
+	public UserNode user;
+	public UserTree users;
+	public ChannelTree channels;
+	public GuildTree guilds;
 	public DefaultMutableTreeNode top;
 
 	public HashMap<String, HashMap<String, DefaultMutableTreeNode>> members;
@@ -64,10 +64,10 @@ public class ClientTree extends JPanel implements TreeSelectionListener {
 		this.users = null;
 		this.channels = null;
 		this.guilds = null;
-		this.user = new UserTree("User", null);
-		this.users = new UserNodes("Users");
-		this.channels = new ChannelNodes("Channels");
-		this.guilds = new GuildNodes("Guilds");
+		this.user = new UserNode("User", null);
+		this.users = new UserTree("Users");
+		this.channels = new ChannelTree("Channels");
+		this.guilds = new GuildTree("Guilds");
 		this.top.add(this.user);
 		this.top.add(this.users);
 		this.top.add(this.channels);
@@ -75,7 +75,6 @@ public class ClientTree extends JPanel implements TreeSelectionListener {
 	}
 
 	public void ready() {
-//		this.user.removeAllChildren();
 		this.channels.removeAllChildren();
 		this.guilds.removeAllChildren();
 		for (Channel channel : this.loader.channels.values()) {

@@ -1,7 +1,7 @@
 /**
  * 
  */
-package io.disc.DiscLoader.tree;
+package io.disc.DiscLoader.objects.window.trees.nodes;
 
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -14,7 +14,7 @@ import io.disc.DiscLoader.objects.structures.User;
  * @author Perry Berman
  *
  */
-public class UserTree extends DefaultMutableTreeNode {
+public class UserNode extends DefaultMutableTreeNode {
 
 	/**
 	 * 
@@ -24,7 +24,7 @@ public class UserTree extends DefaultMutableTreeNode {
 	/**
 	 * 
 	 */
-	public UserTree() {
+	public UserNode() {
 		// TODO Auto-generated constructor stub
 	}
 
@@ -38,7 +38,7 @@ public class UserTree extends DefaultMutableTreeNode {
 	/**
 	 * @param userObject
 	 */
-	public UserTree(Object userObject, User data) {
+	public UserNode(Object userObject, User data) {
 		super(userObject);
 		if (data != null) this.setup(data);
 		else {
@@ -62,7 +62,7 @@ public class UserTree extends DefaultMutableTreeNode {
 	 * @param userObject
 	 * @param allowsChildren
 	 */
-	public UserTree(Object userObject, boolean allowsChildren) {
+	public UserNode(Object userObject, boolean allowsChildren) {
 		super(userObject, allowsChildren);
 	}
 

@@ -1,7 +1,7 @@
 /**
  * 
  */
-package io.disc.DiscLoader.tree;
+package io.disc.DiscLoader.objects.window.trees.nodes;
 
 import javax.swing.tree.DefaultMutableTreeNode;
 

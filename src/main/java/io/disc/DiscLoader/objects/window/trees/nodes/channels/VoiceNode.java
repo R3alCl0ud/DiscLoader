@@ -1,13 +1,10 @@
-/**
- * 
- */
-package io.disc.DiscLoader.tree.channels;
+package io.disc.DiscLoader.objects.window.trees.nodes.channels;
 
 import javax.swing.tree.DefaultMutableTreeNode;
 
 import io.disc.DiscLoader.objects.structures.Channel;
 import io.disc.DiscLoader.objects.structures.VoiceChannel;
-import io.disc.DiscLoader.tree.GuildTree;
+import io.disc.DiscLoader.objects.window.trees.nodes.GuildNode;
 
 /**
  * @author Perry Berman
@@ -15,7 +12,7 @@ import io.disc.DiscLoader.tree.GuildTree;
  */
 
 @SuppressWarnings("unused")
-public class VoiceTree extends ChannelTree {
+public class VoiceNode extends ChannelNode {
 
 	private static final long serialVersionUID = -1915867794359095355L;
 
@@ -29,7 +26,7 @@ public class VoiceTree extends ChannelTree {
 	 * @param userObject
 	 * @param displayGuild
 	 */
-	public VoiceTree(Object userObject, VoiceChannel data, boolean displayGuild) {
+	public VoiceNode(Object userObject, VoiceChannel data, boolean displayGuild) {
 		super(userObject);
 		this.id = null;
 		this.name = null;
@@ -37,7 +34,7 @@ public class VoiceTree extends ChannelTree {
 		this.add(this.name = createNode("name: " + data.name));
 		this.add(this.bitrate = createNode("bitrate: " + data.bitrate));
 		this.add(this.userLimit = createNode("userLimit: " + data.userLimit));
-		if (displayGuild) this.add(this.guild = new GuildTree("guild", data.guild));
+		if (displayGuild) this.add(this.guild = new GuildNode("guild", data.guild));
 	}
 	
 	public DefaultMutableTreeNode createNode(String content) {

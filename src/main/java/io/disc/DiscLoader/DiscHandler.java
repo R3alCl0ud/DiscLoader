@@ -1,11 +1,11 @@
-package io.disc.DiscLoader.events;
+package io.disc.DiscLoader;
 
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-import io.disc.DiscLoader.DiscLoader;
 import io.disc.DiscLoader.testClient;
+import io.disc.DiscLoader.objects.annotations.eventHandler;
 
 public class DiscHandler {
 
@@ -30,7 +30,7 @@ public class DiscHandler {
 					loaded = classLoader.loadClass(traces[i].getClassName());
 					Method methods[] = loaded.getDeclaredMethods();
 					for (int n = 0; n < methods.length; n++) {
-						eventHandler event = methods[n].getAnnotation(io.disc.DiscLoader.events.eventHandler.class);
+						eventHandler event = methods[n].getAnnotation(io.disc.DiscLoader.objects.annotations.eventHandler.class);
 						if (event != null) {
 							System.out.println("found an event handler");
 							System.out.println(methods[n].getName());
