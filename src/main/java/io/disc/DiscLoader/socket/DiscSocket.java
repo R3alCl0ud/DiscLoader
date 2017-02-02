@@ -69,8 +69,9 @@ public class DiscSocket {
 	 */
 	public void connectSocket(String gateway) throws WebSocketException, IOException {
 			this.ws = new WebSocketFactory().setConnectionTimeout(15000).createSocket(gateway)
-					.addHeader("Accept-Encoding", "gzip").connect();
+					.addHeader("Accept-Encoding", "gzip");
 			this.ws.addListener(this.socketListener);
+			this.ws.connect();
 	}
 
 	public void keepAlive(int interval) {

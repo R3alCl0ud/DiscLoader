@@ -17,9 +17,12 @@ import io.disc.DiscLoader.objects.structures.Guild;
 import io.disc.DiscLoader.objects.structures.GuildChannel;
 import io.disc.DiscLoader.objects.structures.GuildMember;
 import io.disc.DiscLoader.objects.structures.Presence;
+import io.disc.DiscLoader.objects.structures.PrivateChannel;
 import io.disc.DiscLoader.objects.structures.TextChannel;
 import io.disc.DiscLoader.objects.structures.User;
 import io.disc.DiscLoader.objects.structures.VoiceChannel;
+import io.disc.DiscLoader.tree.ChannelNodes;
+import io.disc.DiscLoader.tree.GuildNodes;
 import io.disc.DiscLoader.tree.UserNodes;
 import io.disc.DiscLoader.tree.UserTree;
 
@@ -34,8 +37,8 @@ public class ClientTree extends JPanel implements TreeSelectionListener {
 	private DiscLoader loader;
 	public UserTree user;
 	public UserNodes users;
-	public DefaultMutableTreeNode channels;
-	public DefaultMutableTreeNode guilds;
+	public ChannelNodes channels;
+	public GuildNodes guilds;
 	public DefaultMutableTreeNode top;
 
 	public HashMap<String, HashMap<String, DefaultMutableTreeNode>> members;
@@ -63,8 +66,8 @@ public class ClientTree extends JPanel implements TreeSelectionListener {
 		this.guilds = null;
 		this.user = new UserTree("User", null);
 		this.users = new UserNodes("Users");
-		this.channels = new DefaultMutableTreeNode("Channels");
-		this.guilds = new DefaultMutableTreeNode("Guilds");
+		this.channels = new ChannelNodes("Channels");
+		this.guilds = new GuildNodes("Guilds");
 		this.top.add(this.user);
 		this.top.add(this.users);
 		this.top.add(this.channels);
@@ -75,14 +78,31 @@ public class ClientTree extends JPanel implements TreeSelectionListener {
 		this.user.removeAllChildren();
 		this.channels.removeAllChildren();
 		this.guilds.removeAllChildren();
-		DefaultMutableTreeNode channel = null;
-		for (Channel chan : this.loader.channels.values()) {
-			channel = createChannelNode(chan, true);
-			this.channels.add(channel);
+		for (Channel channel : this.loader.channels.values()) {
+			System.out.println(channel.type);
+			switch(channel.type) {
+			case "dm":
+				
+				this.channels.createPrivateNode((PrivateChannel)channel);
+				break;
+			case "groupDM":
+				this.channels.createChannelNode(channel);
+				break;
+			case "text":
+				System.out.println(channel.name);
+				this.channels.createTextNode((TextChannel)channel, true);
+				break;
+			case "voice":
+
+				this.channels.createVoiceNode((VoiceChannel)channel, true);
+				break;
+			default:
+				break;
+			}
 		}
 		this.user.updateNode(this.loader.user);
 		for (Guild guild : this.loader.guilds.values()) {
-			this.guilds.add(createGuildNode(guild, false));
+			this.guilds.createGuildNode(guild);
 		}
 		for (User data : this.loader.users.values()) {
 			this.users.createUserNode(data);

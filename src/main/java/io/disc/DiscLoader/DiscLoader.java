@@ -62,7 +62,7 @@ public class DiscLoader {
 
 		this.modh = new ModHandler();
 		
-		modh.beginLoader();
+//		this.modh.beginLoader();
 
 		this.ready = false;
 	}

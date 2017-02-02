@@ -15,6 +15,10 @@ import io.disc.DiscLoader.objects.structures.User;
  */
 public class UserNodes extends DefaultMutableTreeNode {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -6710691349739462130L;
 	public HashMap<String, UserTree> users;
 	private DefaultMutableTreeNode length;
 	/**
@@ -31,8 +35,7 @@ public class UserNodes extends DefaultMutableTreeNode {
 	public UserNodes(Object userObject) {
 		super(userObject);
 		this.users = new HashMap<String, UserTree>();
-		this.add(this.length = this.createNode("" + this.users.size()));
-		this.length.setUserObject("" + this.users.size());
+		this.add(this.length = this.createNode("length: " + this.users.size()));
 	}
 
 	/**

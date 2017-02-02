@@ -77,10 +77,10 @@ public class DiscSocketListener extends WebSocketAdapter implements WebSocketLis
 
 		if (packet.op == constants.OPCodes.DISPATCH) {
 			if (!this.handlers.containsKey(packet.t)) return;
-			if (!this.loader.ready && constants.EventWhitelist.indexOf(packet.t) == -1) {
-				this.queue.add(packet);
-				return;
-			}
+//			if (!this.loader.ready && constants.EventWhitelist.indexOf(packet.t) == -1) {
+//				this.queue.add(packet);
+//				return;
+//			}
 			System.out.println(packet.t);
 			this.handlers.get(packet.t).handle(packet);
 		}

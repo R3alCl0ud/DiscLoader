@@ -18,9 +18,6 @@ public class GuildNodes extends DefaultMutableTreeNode {
 	public HashMap<String, GuildTree> guilds;
 	private DefaultMutableTreeNode length;
 
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = 8662315363268991611L;
 
 	public GuildNodes(Object userObject) {

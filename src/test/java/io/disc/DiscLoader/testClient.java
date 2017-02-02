@@ -1,7 +1,5 @@
 package io.disc.DiscLoader;
 
-import java.util.Collection;
-
 import io.disc.DiscLoader.events.UserUpdateEvent;
 import io.disc.DiscLoader.events.eventHandler;
 import io.disc.DiscLoader.objects.loader.Mod;
@@ -37,6 +35,6 @@ public class testClient {
 	
 	@eventHandler
 	public void UserUpdate(UserUpdateEvent e) {
-		System.out.printf(e.user.username, e.oldUser.username, "\n");
+		System.out.printf("%s, %s\n",e.user.username, e.oldUser.username);
 	}
 }

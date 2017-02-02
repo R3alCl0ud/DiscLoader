@@ -1,9 +1,11 @@
 /**
  * 
  */
-package io.disc.DiscLoader.tree;
+package io.disc.DiscLoader.tree.channels;
 
 import javax.swing.tree.DefaultMutableTreeNode;
+
+import io.disc.DiscLoader.objects.structures.Channel;
 
 /**
  * @author Perry Berman
@@ -11,28 +13,27 @@ import javax.swing.tree.DefaultMutableTreeNode;
  */
 public class ChannelTree extends DefaultMutableTreeNode {
 
-	/**
-	 * 
-	 */
-	public ChannelTree() {
-		// TODO Auto-generated constructor stub
-	}
+	private static final long serialVersionUID = -1915867794359095355L;
 
 	/**
 	 * @param userObject
 	 */
 	public ChannelTree(Object userObject) {
 		super(userObject);
-		// TODO Auto-generated constructor stub
+		
 	}
 
 	/**
 	 * @param userObject
 	 * @param allowsChildren
 	 */
-	public ChannelTree(Object userObject, boolean allowsChildren) {
-		super(userObject, allowsChildren);
-		// TODO Auto-generated constructor stub
+	public ChannelTree(Object userObject, Channel data) {
+		super(userObject);
+
+	}
+	
+	public void updateNode(Channel data) {
+		
 	}
 
 }
