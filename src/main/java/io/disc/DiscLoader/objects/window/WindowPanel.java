@@ -27,14 +27,16 @@ import io.disc.DiscLoader.objects.window.trees.nodes.UserNode;
 public class WindowPanel extends JPanel implements TreeSelectionListener {
 	private static final long serialVersionUID = 185799926365274718L;
 
-	public DiscLoader loader;
+	public final DiscLoader loader;
 	
-	public UserNode user;
-	public UserTree users;
-	public ChannelTree channels;
-	public GuildTree guilds;
-	public DefaultMutableTreeNode rootNode;
-	public JTree root;
+	public final UserNode user;
+	public final UserTree users;
+	public final ChannelTree channels;
+	public final GuildTree guilds;
+	public final DefaultMutableTreeNode rootNode;
+	public final JTree root;
+	public final JScrollPane treeView;
+	public TreePath path;
 	
 	/**
 	 * @param loader
@@ -51,7 +53,7 @@ public class WindowPanel extends JPanel implements TreeSelectionListener {
 		this.root = new JTree(this.rootNode);
 		this.root.getSelectionModel().setSelectionMode(TreeSelectionModel.SINGLE_TREE_SELECTION);
 		this.root.addTreeSelectionListener(this);
-		JScrollPane treeView = new JScrollPane(this.root);
+		this.treeView = new JScrollPane(this.root);
 		JSplitPane splitPane = new JSplitPane(JSplitPane.VERTICAL_SPLIT);
 		splitPane.setTopComponent(treeView);
 		this.add(splitPane);
@@ -59,7 +61,7 @@ public class WindowPanel extends JPanel implements TreeSelectionListener {
 	
 	@Override
 	public void valueChanged(TreeSelectionEvent e) {
-
+		this.path = e.getPath();
 	}
 	
 	public void load() {
@@ -88,7 +90,6 @@ public class WindowPanel extends JPanel implements TreeSelectionListener {
 		for (User data : this.loader.users.values()) {
 			this.users.createUserNode(data);
 		}
-		System.out.println(this.loader.user.username);
 	}
 	
 	

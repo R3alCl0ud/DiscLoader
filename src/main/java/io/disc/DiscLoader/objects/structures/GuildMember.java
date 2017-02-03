@@ -14,7 +14,7 @@ public class GuildMember {
 	public final String id;
 	public final User user;
 	public final Guild guild;
-	public HashMap<String, Role> roles;
+	private String[] roleIDs;
 	public boolean mute;
 	public boolean deaf;
 	
@@ -29,20 +29,20 @@ public class GuildMember {
 		this.guild = guild;
 		this.nick = data.nick != null ? data.nick : this.user.username;
 //		this.joinedAt = Date.from(Instant.parse(data.joined_at));
-		this.roles = new HashMap<String, Role>();
-
+		this.roleIDs = data.roles;
+		
 		this.deaf = data.deaf;
 		this.mute = this.deaf ? true : data.mute;
 		
 	}
 	
-	public GuildMember(Guild guild, User user, boolean deaf, boolean mute, String nick) {
+	public GuildMember(Guild guild, User user, String[] roles, boolean deaf, boolean mute, String nick) {
 		this.id = user.id;
 		this.user = user;
 		this.guild = guild;
 		this.loader = guild.loader;
 		this.nick = nick != null ? nick : this.user.username;
-		this.roles = new HashMap<String, Role>();
+		this.roleIDs = roles;
 
 		this.deaf = deaf;
 		this.mute = this.deaf == true ? true : mute;
@@ -54,7 +54,7 @@ public class GuildMember {
 		this.user = data.user;
 		this.guild = data.guild;
 		this.nick = data.nick;
-		this.roles = new HashMap<String, Role>();
+		this.roleIDs = data.roleIDs;
 		
 		this.deaf = data.deaf;
 		this.mute = this.deaf ? true : data.mute;
@@ -66,5 +66,13 @@ public class GuildMember {
 	
 	public Presence getPresence() {
 		return this.guild.presences.get(this.user.id);
+	}
+	
+	public HashMap<String, Role> getRoleList() {
+		HashMap<String, Role> roles = new HashMap<String, Role>();
+		for (String id : this.roleIDs) {
+			roles.put(id, this.guild.roles.get(id));
+		}
+		return roles;
 	}
 }

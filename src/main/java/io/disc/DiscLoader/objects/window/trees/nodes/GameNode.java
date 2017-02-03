@@ -32,6 +32,7 @@ public class GameNode extends DefaultMutableTreeNode {
 	}
 
 	public void setup(Game data) {
+		if (data == null) return;
 		if (data.name != null) this.name.setUserObject("name: " + data.name);
 		this.type.setUserObject("type: " + data.type);
 		if (data.streaming == true || data.streaming == false) this.streaming.setUserObject("streaming: " + data.streaming);

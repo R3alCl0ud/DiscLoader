@@ -32,5 +32,10 @@ public class PresenceNode extends DefaultMutableTreeNode {
 	public DefaultMutableTreeNode createNode(String content) {
 		return new DefaultMutableTreeNode(content);
 	}
-
+	
+	public void updateNode(Presence data) {
+		this.status.setUserObject(data.status);
+		this.game.setup(data.game);
+	}
+	
 }

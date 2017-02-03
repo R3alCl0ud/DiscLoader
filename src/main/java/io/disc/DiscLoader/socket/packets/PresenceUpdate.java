@@ -43,7 +43,7 @@ public class PresenceUpdate extends DiscPacket {
 		if (guild != null) {
 			GuildMember member = guild.members.get(user.id);
 			if (member == null && !data.status.equalsIgnoreCase("offline")) {
-				member = guild.addMember(user, data.roles, false, false, false);
+				member = guild.addMember(user, data.roles, false, false, data.nick, false);
 				this.socket.loader.emit(constants.Events.GUILD_MEMBER_AVAILABLE, member);
 			}
 			if (member != null) {
