@@ -7,6 +7,7 @@ import io.disc.DiscLoader.objects.gateway.MessageJSON;
 import io.disc.DiscLoader.objects.structures.Channel;
 import io.disc.DiscLoader.objects.structures.Message;
 import io.disc.DiscLoader.socket.DiscSocket;
+import io.disc.DiscLoader.util.constants;
 
 /**
  * @author Perry Berman
@@ -25,7 +26,9 @@ public class MessageCreate extends DiscPacket{
 	public void handle(SocketPacket packet) {
 		MessageJSON messageJSON = this.gson.fromJson(gson.toJson(packet.d), MessageJSON.class);
 		Channel channel = this.socket.loader.channels.get(messageJSON.channel_id);
-		channel.messages.put(messageJSON.id, new Message(this.socket.loader, channel, messageJSON));
+		Message message = new Message(this.socket.loader, channel, messageJSON);
+		channel.messages.put(messageJSON.id, message);			
+		this.socket.loader.emit(constants.Events.MESSAGE_CREATE, message);
 	}
 
 }

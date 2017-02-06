@@ -53,8 +53,8 @@ public class constants {
 			return MessageFormat.format("{0}/channels/{1}/messages/{2}", new Object[] { API, channelID, messageID });
 		}
 
-		public static final String currentUser = MessageFormat.format("%s/users/@me", new Object[] { API });
-		public static final String currentUserGuilds = MessageFormat.format("%s/users/@me/guilds",
+		public static final String currentUser = MessageFormat.format("{0}/users/@me", new Object[] { API });
+		public static final String currentUserGuilds = MessageFormat.format("{0}/users/@me/guilds",
 				new Object[] { API });
 
 		// public static final String
@@ -118,6 +118,9 @@ public class constants {
 		public static final String CHANNEL_DELETE = "CHANNEL_DELETE";
 		public static final String CHANNEL_UPDATE = "CHANNEL_UPDATE";
 		public static final String CHANNEL_PINS_UPDATE = "CHANNEL_PINS_UPDATE";
+		public static final String MESSAGE_CREATE = "MESSAGE_CREATE";
+		public static final String MESSAGE_UPDATE = "MESSAGE_UPDATE";
+		public static final String MESSAGE_DELETE = "MESSAGE_DELETE";
 		public static final String PRESENCE_UPDATE = "PRESENCE_UPDATE";
 	}
 
@@ -147,6 +150,9 @@ public class constants {
 		public static final String CHANNEL_DELETE = "ChannelDelete";
 		public static final String CHANNEL_UPDATE = "ChannelUpdate";
 		public static final String CHANNEL_PINS_UPDATE = "ChannelPinsUpdate";
+		public static final String MESSAGE_CREATE = "MessageCreate";
+		public static final String MESSAGE_DELETE = "MessageDelete";
+		public static final String MESSAGE_UPDATE = "MessageUpdate";
 		public static final String USER_UPDATE = "UserUpdate";
 		public static final String PRESENCE_UPDATE = "PresenceUpdate";
 	}
