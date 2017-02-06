@@ -68,19 +68,24 @@ public class DiscSocketListener extends WebSocketAdapter implements WebSocketLis
 
 		if (packet.op == constants.OPCodes.HEARTBEAT_ACK) {
 			this.socket.lastHeartbeatAck = true;
+			this.loader.emit("debug", "Heartbeat Acknowledged");
 		} else if (packet.op == constants.OPCodes.HEARTBEAT) {
 			JSONObject payload = new JSONObject().put("op", constants.OPCodes.HEARTBEAT).put("d", this.socket.s);
 			this.socket.send(payload);
+			this.loader.emit("debug", "Recieved gateway heartbeat");
 		}
 		
 		this.setSequence(packet.s);
 
+		if (this.socket.status != constants.Status.READY) {
+			if (constants.EventWhitelist.indexOf(packet.t) == -1) {
+				this.queue.add(packet);
+				return;
+			}
+		}
+		
 		if (packet.op == constants.OPCodes.DISPATCH) {
 			if (!this.handlers.containsKey(packet.t)) return;
-//			if (!this.loader.ready && constants.EventWhitelist.indexOf(packet.t) == -1) {
-//				this.queue.add(packet);
-//				return;
-//			}
 			System.out.println(packet.t);
 			this.handlers.get(packet.t).handle(packet);
 		}
@@ -160,7 +165,6 @@ public class DiscSocketListener extends WebSocketAdapter implements WebSocketLis
 	@Override
 	public void onTextMessage(WebSocket ws, String text) throws Exception {
 		this.socket.loader.emit("raw", text);
-//		System.out.println(text);
 		SocketPacket packet = gson.fromJson(text, SocketPacket.class);
 		this.handle(packet);
 	}

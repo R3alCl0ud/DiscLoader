@@ -51,7 +51,7 @@ public class DiscREST {
 		if (content.length() < 1) return null; 
 		CompletableFuture<Message> msgSent = new CompletableFuture<Message>();
 		this.makeRequest(constants.Endpoints.messages(channel.id), constants.Methods.POST, true,
-				new JSONObject().put("content", content)).thenAcceptAsync(action -> {
+				new JSONObject().put("content", content).toString()).thenAcceptAsync(action -> {
 					System.out.println(action);
 					msgSent.complete(new Message(this.loader, channel,this.gson.fromJson(action, MessageJSON.class)));
 				});

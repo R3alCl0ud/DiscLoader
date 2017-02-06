@@ -87,14 +87,15 @@ public class DiscSocket {
 	}
 
 	public void sendHeartbeat(boolean normal) {
-		this.loader.emit("debug", "Attempting heartbeat");
 		if (normal && !this.lastHeartbeatAck) {
 			this.ws.disconnect(1007);
 			return;
 		}
+		this.loader.emit("debug", "Attempting heartbeat");
 		JSONObject payload = new JSONObject();
 		payload.put("op", constants.OPCodes.HEARTBEAT).put("d", this.s);
 		this.send(payload, true);
+		this.lastHeartbeatAck = false;
 	}
 
 	public void send(JSONObject payload, boolean force) {

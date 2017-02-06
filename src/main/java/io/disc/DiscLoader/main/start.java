@@ -1,13 +1,10 @@
 package io.disc.DiscLoader.main;
 
-import java.awt.Rectangle;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 
-import javax.swing.JScrollPane;
 import javax.swing.tree.DefaultTreeModel;
-import javax.swing.tree.TreePath;
 
 import com.google.gson.Gson;
 
@@ -15,6 +12,7 @@ import io.disc.DiscLoader.DiscLoader;
 import io.disc.DiscLoader.events.GuildMemberUpdateEvent;
 import io.disc.DiscLoader.events.UserUpdateEvent;
 import io.disc.DiscLoader.objects.annotations.eventHandler;
+import io.disc.DiscLoader.objects.structures.TextChannel;
 import io.disc.DiscLoader.objects.window.WindowFrame;
 
 /**
@@ -35,16 +33,17 @@ public class start {
 			content += line;
 		options options = gson.fromJson(content, options.class);
 		DiscLoader loader = new DiscLoader();
-		if (options.useWindow == true)
-			window = new WindowFrame(loader);
+//		if (options.useWindow == true)
+//			window = new WindowFrame(loader);
 		loader.login(options.auth.token);
 	}
 
 	@eventHandler
 	public void ready(DiscLoader loader) {
 		System.out.println("Test");
-		window.panel.load();
-		updateViewPanel();
+//		((TextChannel)loader.channels.get("219354544046342145")).sendMessage("Test");
+//		window.panel.load();
+//		updateViewPanel();
 	}
 
 	@eventHandler
@@ -64,8 +63,8 @@ public class start {
 
 	@eventHandler
 	public void PresenceUpdate(GuildMemberUpdateEvent e) {
-		window.panel.guilds.guilds.get(e.guild.id).updateMemberNode(e.member);
-		updateViewPanel();
+//		window.panel.guilds.guilds.get(e.guild.id).updateMemberNode(e.member);
+//		updateViewPanel();
 	}
 	
 	public void updateViewPanel() {

@@ -69,7 +69,7 @@ public class GuildChannel extends Channel {
 		}
 		if (this.overwrites.get(member.id) != null)
 			Overwrites.put(member.id, this.overwrites.get(member.id));
-		return null;
+		return Overwrites;
 	}
 
 }

@@ -61,7 +61,8 @@ public class APIRequest {
 		case constants.Methods.GET:
 			request = Unirest.get(this.route);
 			break;
-
+		case constants.Methods.POST:
+			request = Unirest.post(this.route).body(this.data);
 		default:
 			request = Unirest.get(this.route);
 		}

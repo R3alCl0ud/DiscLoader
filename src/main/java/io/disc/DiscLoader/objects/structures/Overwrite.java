@@ -15,9 +15,13 @@ public class Overwrite {
 	public int deny;
 	public String type;
 	public String id;
-	public Role role;
-	public GuildMember member;
 	
+	public Role role;
+	
+	public GuildMember member;
+
+	public GuildChannel channel;
+
 	public Overwrite(OverwriteJSON data) {
 		this.allow = data.allow;
 		this.deny = data.deny;

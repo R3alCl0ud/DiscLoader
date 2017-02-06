@@ -76,7 +76,7 @@ public class DiscRESTQueue {
 			request.header("authorization", this.loader.token);
 		if (!(request instanceof GetRequest) && !(baseRequest instanceof MultipartBody))
 			request.header("Content-Type", "application/json");
-		request.header("user-agent", "DiscLoader");
+		request.header("user-agent", "DiscordBot (https://gitlab.com/R3alCl0ud/DiscLoader, v0.0.1)");
 		request.header("Accept-Encoding", "gzip");
 		return baseRequest;
 	}
