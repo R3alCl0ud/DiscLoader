@@ -4,6 +4,7 @@ import java.util.concurrent.CompletableFuture;
 
 import com.mashape.unirest.http.Unirest;
 import com.mashape.unirest.request.BaseRequest;
+import com.mashape.unirest.request.HttpRequestWithBody;
 
 import io.disc.DiscLoader.util.constants;
 
@@ -62,7 +63,8 @@ public class APIRequest {
 			request = Unirest.get(this.route);
 			break;
 		case constants.Methods.POST:
-			request = Unirest.post(this.route).body(this.data);
+			request = Unirest.post(this.route);
+			((HttpRequestWithBody)request).body(this.data);
 		default:
 			request = Unirest.get(this.route);
 		}

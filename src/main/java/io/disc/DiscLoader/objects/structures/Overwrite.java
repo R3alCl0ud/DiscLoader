@@ -25,8 +25,8 @@ public class Overwrite {
 	public Overwrite(OverwriteJSON data) {
 		this.allow = data.allow;
 		this.deny = data.deny;
-		this.id = data.id;
-		this.type = data.type;
+		if (data.id != null) this.id = data.id;
+		if (data.type != null) this.type = data.type;
 	}
 
 	public Overwrite(Overwrite data, GuildMember member) {

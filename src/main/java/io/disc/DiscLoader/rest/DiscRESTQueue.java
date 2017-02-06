@@ -26,6 +26,8 @@ public class DiscRESTQueue {
 
 	public boolean waiting;
 
+	public int times;
+	
 	public DiscRESTQueue(DiscREST discREST) {
 		this.rest = discREST;
 		this.loader = this.rest.loader;
@@ -33,13 +35,15 @@ public class DiscRESTQueue {
 		this.waiting = false;
 
 		this.queue = new ArrayList<APIRequest>();
+		this.times = 0;
 	}
 
 	public void handle() {
 		if (this.waiting) {
-			this.handle();
 			return;
 		}
+		
+		this.waiting = true;
 
 		final APIRequest apiRequest = queue.get(0);
 
@@ -53,9 +57,11 @@ public class DiscRESTQueue {
 			}
 
 			public void completed(HttpResponse<String> response) {
-				System.out.println("APIResponse: " + response.getBody());
+				queue.remove(0);
+				System.out.println("APIResponse: " + response.getBody() + ", times: " + times);
 				apiRequest.future.complete(response.getBody());
-
+				waiting = false;
+				handle();
 			}
 
 			public void failed(UnirestException e) {

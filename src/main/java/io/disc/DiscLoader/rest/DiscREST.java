@@ -37,8 +37,8 @@ public class DiscREST {
 			this.queues.put(url, new DiscRESTQueue(this));
 		}
 
-		this.queues.get(url).addToQueue(request);
 		request.setFuture(future);
+		this.queues.get(url).addToQueue(request);
 		this.handleQueue(url);
 		return future;
 	}
@@ -52,7 +52,7 @@ public class DiscREST {
 		CompletableFuture<Message> msgSent = new CompletableFuture<Message>();
 		this.makeRequest(constants.Endpoints.messages(channel.id), constants.Methods.POST, true,
 				new JSONObject().put("content", content).toString()).thenAcceptAsync(action -> {
-					System.out.println(action);
+					System.out.println("hmm" + action);
 					msgSent.complete(new Message(this.loader, channel,this.gson.fromJson(action, MessageJSON.class)));
 				});
 		return msgSent;
