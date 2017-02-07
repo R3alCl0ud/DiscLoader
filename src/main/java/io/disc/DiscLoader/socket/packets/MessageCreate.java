@@ -24,10 +24,10 @@ public class MessageCreate extends DiscPacket{
 	
 	@Override
 	public void handle(SocketPacket packet) {
-		MessageJSON messageJSON = this.gson.fromJson(gson.toJson(packet.d), MessageJSON.class);
-		Channel channel = this.socket.loader.channels.get(messageJSON.channel_id);
-		Message message = new Message(this.socket.loader, channel, messageJSON);
-		channel.messages.put(messageJSON.id, message);			
+		MessageJSON data = this.gson.fromJson(gson.toJson(packet.d), MessageJSON.class);
+		Channel channel = this.socket.loader.channels.get(data.channel_id);
+		Message message = new Message(this.socket.loader, channel, data);
+		channel.messages.put(message.id, message);			
 		this.socket.loader.emit(constants.Events.MESSAGE_CREATE, message);
 	}
 

@@ -45,24 +45,23 @@ public class constants {
 					new Object[] { Endpoints.CDN, id, avatar, avatar.startsWith("a_") ? ".gif" : ".jpg" });
 		}
 
+		public static final String channel(String channelID) {
+			return MessageFormat.format("{0}/channels/{1}", new Object[] {API, channelID});
+		}
+		
 		public static final String messages(String channelID) {
-			return MessageFormat.format("{0}/channels/{1}/messages", new Object[] { API, channelID });
+			return MessageFormat.format("{0}/messages", new Object[] { Endpoints.channel(channelID) });
 		}
 
 		public static final String message(String channelID, String messageID) {
-			return MessageFormat.format("{0}/channels/{1}/messages/{2}", new Object[] { API, channelID, messageID });
+			return MessageFormat.format("{0}/messages/{1}", new Object[] { Endpoints.messages(channelID), messageID });
 		}
+		
 
+		
 		public static final String currentUser = MessageFormat.format("{0}/users/@me", new Object[] { API });
 		public static final String currentUserGuilds = MessageFormat.format("{0}/users/@me/guilds",
 				new Object[] { API });
-
-		// public static final String
-		// public static final String
-		// public static final String
-		// public static final String
-		// public static final String
-		// public static final String
 
 	}
 
@@ -123,8 +122,6 @@ public class constants {
 		public static final String MESSAGE_DELETE = "MESSAGE_DELETE";
 		public static final String PRESENCE_UPDATE = "PRESENCE_UPDATE";
 	}
-
-//	public static final ArrayList<String> PreReadyWhitelist = new ArrayList<String>();
 	
 	public static final ArrayList<String> EventWhitelist = new ArrayList<String>(Arrays.asList(WSEvents.HELLO, WSEvents.READY, WSEvents.GUILD_CREATE,
 			WSEvents.GUILD_DELETE, WSEvents.GUILD_MEMBER_ADD, WSEvents.GUILD_MEMBER_REMOVE,

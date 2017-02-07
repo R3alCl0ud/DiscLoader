@@ -22,7 +22,7 @@ public class DiscREST {
 		this.loader = loader;
 
 		this.gson = new Gson();
-		
+
 		this.queues = new HashMap<String, DiscRESTQueue>();
 	}
 
@@ -48,13 +48,33 @@ public class DiscREST {
 	}
 
 	public CompletableFuture<Message> sendMessage(Channel channel, String content) {
-		if (content.length() < 1) return null; 
+		if (content.length() < 1)
+			return null;
 		CompletableFuture<Message> msgSent = new CompletableFuture<Message>();
 		this.makeRequest(constants.Endpoints.messages(channel.id), constants.Methods.POST, true,
 				new JSONObject().put("content", content).toString()).thenAcceptAsync(action -> {
-					System.out.println("hmm" + action);
-					msgSent.complete(new Message(this.loader, channel,this.gson.fromJson(action, MessageJSON.class)));
+					msgSent.complete(new Message(this.loader, channel, this.gson.fromJson(action, MessageJSON.class)));
 				});
 		return msgSent;
+	}
+
+	public CompletableFuture<Message> editMessage(Channel channel, Message message, String content) {
+		if (content.length() < 1)
+			return null;
+		CompletableFuture<Message> future = new CompletableFuture<Message>();
+		this.makeRequest(constants.Endpoints.message(channel.id, message.id), constants.Methods.PATCH, true,
+				new JSONObject().put("content", content).toString()).thenAcceptAsync(action -> {
+					future.complete(new Message(this.loader, channel, this.gson.fromJson(action, MessageJSON.class)));
+				});
+		return future;
+	}
+
+	public CompletableFuture<Message> deleteMessage(Channel channel, Message message) {
+		CompletableFuture<Message> future = new CompletableFuture<Message>();
+		this.makeRequest(constants.Endpoints.message(channel.id, message.id), constants.Methods.DELETE, true)
+				.thenAcceptAsync(action -> {
+					future.complete(message);
+				});
+		return future;
 	}
 }

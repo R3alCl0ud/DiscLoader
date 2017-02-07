@@ -34,7 +34,7 @@ public class GuildChannel extends Channel {
 
 		if (data.permission_overwrites != null) {
 			for (OverwriteJSON overwrite : data.permission_overwrites) {
-				this.overwrites.put(overwrite.id, new Overwrite(overwrite));
+//				this.overwrites.put(overwrite.id, new Overwrite(overwrite));
 			}
 		}
 	}

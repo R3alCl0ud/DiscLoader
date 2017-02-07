@@ -33,6 +33,7 @@ public class APIRequest {
 		this.auth = auth;
 		this.data = data;
 		this.route = this.getRoute(this.url);
+		if (data != null) System.out.println(data);
 	}
 
 	/**
@@ -64,7 +65,19 @@ public class APIRequest {
 			break;
 		case constants.Methods.POST:
 			request = Unirest.post(this.route);
-			((HttpRequestWithBody)request).body(this.data);
+			((HttpRequestWithBody)request).body(this.data.toString());
+			break;
+		case constants.Methods.PATCH:
+			request = Unirest.patch(this.route);
+			((HttpRequestWithBody)request).body(this.data.toString());
+			break;
+		case constants.Methods.DELETE:
+			request = Unirest.delete(this.route);
+			break;
+		case constants.Methods.PUT:
+			request = Unirest.put(this.route);
+			((HttpRequestWithBody)request).body(this.data.toString());
+			break;
 		default:
 			request = Unirest.get(this.route);
 		}

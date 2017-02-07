@@ -22,6 +22,7 @@ public class ReadyPacket extends DiscPacket {
 
 		// setup the Loaders user object
 		this.socket.loader.user = this.socket.loader.addUser(ready.user);
+		if (this.socket.loader.user.bot == true) this.socket.loader.token = "Bot " + this.socket.loader.token; 
 
 		// System.out.println(ready.v);
 		GuildJSON[] guilds = ready.guilds;

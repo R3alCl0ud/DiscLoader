@@ -34,6 +34,10 @@ public class TextChannel extends GuildChannel {
 
 	}
 
+	/**
+	 * @param content the content to change the content to
+	 * @return CompletableFuture<Message> a completable future 
+	 */
 	public CompletableFuture<Message> sendMessage(String content) {
 		return this.loader.rest.sendMessage(this, content);
 	}

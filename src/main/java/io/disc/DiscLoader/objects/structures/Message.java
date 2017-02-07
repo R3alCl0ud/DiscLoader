@@ -1,10 +1,12 @@
 package io.disc.DiscLoader.objects.structures;
 
+import java.util.concurrent.CompletableFuture;
+
 import io.disc.DiscLoader.DiscLoader;
 import io.disc.DiscLoader.objects.gateway.MessageJSON;
 
 public class Message {
-	public final String id;
+	public String id = null;
 	public String content;
 	public String timestamp;
 	public String edited_timestamp;
@@ -17,24 +19,53 @@ public class Message {
 
 	public Mentions mentions;
 
+	public final DiscLoader loader;
+	
 	public final Channel channel;
 	public final Guild guild;
+	
+	
+	public final User author;
+	public GuildMember member;
 
-	public Message(DiscLoader loader, Channel channel, MessageJSON message) {
-		this.id = message.id;
+	public Message(DiscLoader loader, Channel channel, MessageJSON data) {
+		if (data.id != null) this.id = data.id;
 		
-		this.content = message.content;
+		if (data.content != null) this.content = data.content;
 		
-		this.timestamp = message.timestamp;
+		if (data.timestamp != null) this.timestamp = data.timestamp;
 		
-		this.edited_timestamp = message.edited_timestamp;
+		if (data.edited_timestamp != null) this.edited_timestamp = data.edited_timestamp;
 
-		this.nonce = message.nonce;
+		if (data.nonce != null) this.nonce = data.nonce;
 		
-		this.tts = message.tts;
-
+		this.tts = data.tts;
+		
+		this.loader = loader;
+		if (data.webhook_id == null) {			
+			this.author = this.loader.addUser(data.author);
+		} else {
+			this.author = null;
+		}
+		
 		this.channel = channel;
 
 		this.guild = channel.guild != null ? channel.guild : null;
+	}
+	
+	public CompletableFuture<Message> reply(String content) {
+		return ((TextChannel)this.channel).sendMessage(this.author.toString() + ", " + content);
+	}
+	
+	public CompletableFuture<Message> edit(String content) {
+		return this.loader.rest.editMessage(this.channel, this, content);
+	}
+	
+	public CompletableFuture<Message> delete() {
+		return this.loader.rest.deleteMessage(this.channel, this);
+	}
+	
+	public boolean isDeletable() {
+		return false;
 	}
 }

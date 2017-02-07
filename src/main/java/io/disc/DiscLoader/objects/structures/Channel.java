@@ -37,6 +37,8 @@ public class Channel {
 		
 		this.type = null;
 		
+		this.messages = new HashMap<String, Message>();
+		
 		if (data != null) this.setup(data);
 	}
 

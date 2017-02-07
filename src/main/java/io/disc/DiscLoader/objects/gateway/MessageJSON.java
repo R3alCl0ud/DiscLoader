@@ -13,6 +13,8 @@ public class MessageJSON {
 	public boolean mention_everyone;
 	public boolean pinned;
 	
+	public UserJSON author;
+	
 	public UserJSON[] mentions;
 	public RoleJSON[] mention_roles;
 

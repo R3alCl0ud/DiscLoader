@@ -38,6 +38,7 @@ public class DiscSocketListener extends WebSocketAdapter implements WebSocketLis
 		this.register(constants.WSEvents.READY, new ReadyPacket(this.socket));
 		this.register(constants.WSEvents.GUILD_CREATE, new GuildCreate(this.socket));
 		this.register(constants.WSEvents.PRESENCE_UPDATE, new PresenceUpdate(this.socket));
+		this.register(constants.WSEvents.MESSAGE_CREATE, new MessageCreate(this.socket));
 	}
 
 	public void setSequence(int s) {

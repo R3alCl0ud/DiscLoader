@@ -12,6 +12,7 @@ import io.disc.DiscLoader.DiscLoader;
 import io.disc.DiscLoader.events.GuildMemberUpdateEvent;
 import io.disc.DiscLoader.events.UserUpdateEvent;
 import io.disc.DiscLoader.objects.annotations.eventHandler;
+import io.disc.DiscLoader.objects.structures.Message;
 import io.disc.DiscLoader.objects.structures.TextChannel;
 import io.disc.DiscLoader.objects.window.WindowFrame;
 
@@ -41,11 +42,19 @@ public class start {
 	@eventHandler
 	public void ready(DiscLoader loader) {
 		System.out.println("Test");
-//		((TextChannel)loader.channels.get("219354544046342145")).sendMessage("Test");
+//		((TextChannel)loader.channels.get("219354544046342145")).sendMessage("Hello\nThis message was sent using DiscLoader <http://gitlab.com/R3alCl0ud/DiscLoader>");
 //		window.panel.load();
 //		updateViewPanel();
 	}
 
+	@eventHandler
+	public void MessageCreate(Message message) {
+		System.out.println(message.content);
+		if (message.content.equalsIgnoreCase("//test")) {
+			message.reply("hello there!");
+		}
+	}
+	
 	@eventHandler
 	public void raw(String text) {
 		System.out.println(text);

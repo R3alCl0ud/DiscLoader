@@ -25,17 +25,15 @@ public class DiscRESTQueue {
 	public DiscLoader loader;
 
 	public boolean waiting;
-
-	public int times;
 	
 	public DiscRESTQueue(DiscREST discREST) {
 		this.rest = discREST;
+		
 		this.loader = this.rest.loader;
 
 		this.waiting = false;
 
 		this.queue = new ArrayList<APIRequest>();
-		this.times = 0;
 	}
 
 	public void handle() {
@@ -58,7 +56,8 @@ public class DiscRESTQueue {
 
 			public void completed(HttpResponse<String> response) {
 				queue.remove(0);
-				System.out.println("APIResponse: " + response.getBody() + ", times: " + times);
+				
+				loader.emit("raw", response.getBody());
 				apiRequest.future.complete(response.getBody());
 				waiting = false;
 				handle();
