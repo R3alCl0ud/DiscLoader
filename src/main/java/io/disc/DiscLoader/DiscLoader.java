@@ -14,7 +14,6 @@ import io.disc.DiscLoader.objects.gateway.UserJSON;
 import io.disc.DiscLoader.objects.loader.ModHandler;
 import io.disc.DiscLoader.objects.structures.Channel;
 import io.disc.DiscLoader.objects.structures.Guild;
-import io.disc.DiscLoader.objects.structures.GuildChannel;
 import io.disc.DiscLoader.objects.structures.PrivateChannel;
 import io.disc.DiscLoader.objects.structures.TextChannel;
 import io.disc.DiscLoader.objects.structures.User;
@@ -42,6 +41,9 @@ public class DiscLoader {
 
 	public HashMap<String, User> users;
 	public HashMap<String, Channel> channels;
+	public HashMap<String, PrivateChannel> privateChannels;
+	public HashMap<String, TextChannel> textChannels;
+	public HashMap<String, VoiceChannel> voiceChannels;
 	public HashMap<String, Guild> guilds;
 	public HashMap<String, Mod> mods;
 
@@ -56,6 +58,9 @@ public class DiscLoader {
 		this.users = new HashMap<String, User>();
 
 		this.channels = new HashMap<String, Channel>();
+		this.privateChannels = new HashMap<String, PrivateChannel>();
+		this.textChannels = new HashMap<String, TextChannel>();
+		this.voiceChannels = new HashMap<String, VoiceChannel>();
 		this.guilds = new HashMap<String, Guild>();
 		this.mods = new HashMap<String, Mod>();
 
@@ -122,15 +127,29 @@ public class DiscLoader {
 			if (guild != null) {
 				if (data.type == constants.ChannelTypes.text) {
 					channel = new TextChannel(guild, data);
-					guild.channels.put(channel.id, (GuildChannel) channel);					
+					guild.textChannels.put(channel.id, (TextChannel) channel);					
 				} else if (data.type == constants.ChannelTypes.voice) {
 					channel = new VoiceChannel(guild, data);
-					guild.channels.put(channel.id, (GuildChannel) channel);	
+					guild.voiceChannels.put(channel.id, (VoiceChannel) channel);	
 				}
 			}
 		}
 
 		if (channel != null) {
+			switch (channel.type) {
+			case "text":
+				this.textChannels.put(channel.id, (TextChannel) channel);
+				break;
+			case "dm":
+//				this.textChannels.put(channel.id, (TextChannel) channel);
+				this.privateChannels.put(channel.id, (PrivateChannel) channel);
+				break;
+			case "voice":
+				this.voiceChannels.put(channel.id, (VoiceChannel) channel);
+				break;
+			default:					
+				this.channels.put(channel.id, channel);
+			}
 			this.channels.put(channel.id, channel);
 			if (!exists && this.ready) {
 				this.emit(constants.Events.CHANNEL_CREATE, channel);

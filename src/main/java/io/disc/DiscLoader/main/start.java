@@ -13,7 +13,6 @@ import io.disc.DiscLoader.events.GuildMemberUpdateEvent;
 import io.disc.DiscLoader.events.UserUpdateEvent;
 import io.disc.DiscLoader.objects.annotations.eventHandler;
 import io.disc.DiscLoader.objects.structures.Message;
-import io.disc.DiscLoader.objects.structures.TextChannel;
 import io.disc.DiscLoader.objects.window.WindowFrame;
 
 /**
@@ -49,9 +48,9 @@ public class start {
 
 	@eventHandler
 	public void MessageCreate(Message message) {
-		System.out.println(message.content);
+		System.out.println(message.channel.id);
 		if (message.content.equalsIgnoreCase("//test")) {
-			message.reply("hello there!");
+			message.channel.sendMessage("Hello there!\nGuild: " + (message.guild != null));
 		}
 	}
 	

@@ -11,6 +11,7 @@ import io.disc.DiscLoader.DiscLoader;
 import io.disc.DiscLoader.objects.gateway.MessageJSON;
 import io.disc.DiscLoader.objects.structures.Channel;
 import io.disc.DiscLoader.objects.structures.Message;
+import io.disc.DiscLoader.objects.structures.TextChannel;
 import io.disc.DiscLoader.util.constants;
 
 public class DiscREST {
@@ -47,29 +48,31 @@ public class DiscREST {
 		return this.makeRequest(url, method, auth, null);
 	}
 
-	public CompletableFuture<Message> sendMessage(Channel channel, String content) {
+	public CompletableFuture<Message> sendMessage(TextChannel channel, String content) {
 		if (content.length() < 1)
 			return null;
 		CompletableFuture<Message> msgSent = new CompletableFuture<Message>();
 		this.makeRequest(constants.Endpoints.messages(channel.id), constants.Methods.POST, true,
 				new JSONObject().put("content", content).toString()).thenAcceptAsync(action -> {
-					msgSent.complete(new Message(this.loader, channel, this.gson.fromJson(action, MessageJSON.class)));
+					msgSent.complete(new Message(channel, this.gson.fromJson(action, MessageJSON.class)));
 				});
 		return msgSent;
 	}
 
-	public CompletableFuture<Message> editMessage(Channel channel, Message message, String content) {
+	public CompletableFuture<Message> editMessage(TextChannel channel, Message message, String content) {
 		if (content.length() < 1)
 			return null;
+		System.out.println(constants.Endpoints.message(channel.id, message.id));
 		CompletableFuture<Message> future = new CompletableFuture<Message>();
 		this.makeRequest(constants.Endpoints.message(channel.id, message.id), constants.Methods.PATCH, true,
 				new JSONObject().put("content", content).toString()).thenAcceptAsync(action -> {
-					future.complete(new Message(this.loader, channel, this.gson.fromJson(action, MessageJSON.class)));
+					future.complete(new Message(channel, this.gson.fromJson(action, MessageJSON.class)));
 				});
 		return future;
 	}
 
-	public CompletableFuture<Message> deleteMessage(Channel channel, Message message) {
+	public CompletableFuture<Message> deleteMessage(TextChannel channel, Message message) {
+		System.out.println(constants.Endpoints.message(channel.id, message.id));
 		CompletableFuture<Message> future = new CompletableFuture<Message>();
 		this.makeRequest(constants.Endpoints.message(channel.id, message.id), constants.Methods.DELETE, true)
 				.thenAcceptAsync(action -> {
@@ -77,4 +80,5 @@ public class DiscREST {
 				});
 		return future;
 	}
+	
 }

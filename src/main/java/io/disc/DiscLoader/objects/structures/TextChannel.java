@@ -6,14 +6,14 @@ package io.disc.DiscLoader.objects.structures;
 import java.util.HashMap;
 import java.util.concurrent.CompletableFuture;
 
+import io.disc.DiscLoader.DiscLoader;
 import io.disc.DiscLoader.objects.gateway.ChannelJSON;
 
 /**
  * @author Perry Berman
  *
  */
-public class TextChannel extends GuildChannel {
-
+public class TextChannel extends Channel {
 	public final HashMap<String, Message> messages;
 
 	/**
@@ -27,6 +27,14 @@ public class TextChannel extends GuildChannel {
 		this.messages = new HashMap<String, Message>();
 	}
 
+	public TextChannel(DiscLoader loader, ChannelJSON data) {
+		super(loader, data);
+		
+		this.type = "dm";
+		
+		this.messages = new HashMap<String, Message>();
+	}
+	
 	public void setup(ChannelJSON data) {
 		super.setup(data);
 

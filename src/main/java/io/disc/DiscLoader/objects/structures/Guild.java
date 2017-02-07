@@ -23,7 +23,9 @@ public class Guild {
 
 	public HashMap<String, GuildMember> members;
 
-	public HashMap<String, GuildChannel> channels;
+	public HashMap<String, TextChannel> textChannels;
+	
+	public HashMap<String, VoiceChannel> voiceChannels; 
 
 	public HashMap<String, Role> roles;
 
@@ -33,7 +35,8 @@ public class Guild {
 		this.loader = loader;
 
 		this.members = new HashMap<String, GuildMember>();
-		this.channels = new HashMap<String, GuildChannel>();
+		this.textChannels = new HashMap<String, TextChannel>();
+		this.voiceChannels = new HashMap<String, VoiceChannel>();
 		this.roles = new HashMap<String, Role>();
 		this.presences = new HashMap<String, Presence>();
 

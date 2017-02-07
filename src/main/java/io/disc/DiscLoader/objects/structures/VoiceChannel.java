@@ -11,7 +11,7 @@ import io.disc.DiscLoader.objects.gateway.ChannelJSON;
  * @author Perry Berman
  *
  */
-public class VoiceChannel extends GuildChannel {
+public class VoiceChannel extends Channel {
 
 	public final HashMap<String, GuildMember> members;
 	

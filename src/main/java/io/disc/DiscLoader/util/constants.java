@@ -46,19 +46,39 @@ public class constants {
 		}
 
 		public static final String channel(String channelID) {
-			return MessageFormat.format("{0}/channels/{1}", new Object[] {API, channelID});
+			return MessageFormat.format("{0}/channels/{1}", new Object[] { API, channelID });
 		}
-		
+
 		public static final String messages(String channelID) {
 			return MessageFormat.format("{0}/messages", new Object[] { Endpoints.channel(channelID) });
 		}
 
 		public static final String message(String channelID, String messageID) {
-			return MessageFormat.format("{0}/messages/{1}", new Object[] { Endpoints.messages(channelID), messageID });
+			return MessageFormat.format("{0}/{1}", new Object[] { Endpoints.messages(channelID), messageID });
 		}
-		
 
-		
+		public static final String guilds = MessageFormat.format("{0}/guilds", new Object[] { API });
+
+		public static final String guild(String guildID) {
+			return MessageFormat.format("{0}/{1}", new Object[] { Endpoints.guilds, guildID });
+		}
+
+		public static final String guildChannels(String guildID) {
+			return MessageFormat.format("{0}/channels", new Object[] { Endpoints.guild(guildID) });
+		}
+
+		public static final String guildMembers(String guildID) {
+			return MessageFormat.format("{0}/members", new Object[] { Endpoints.guild(guildID) });
+		}
+
+		public static final String guildMember(String guildID, String memberID) {
+			return MessageFormat.format("{0}/{1}", new Object[] { Endpoints.guildMembers(guildID), memberID });
+		}
+
+		public static final String guildMemberNick(String guildID, String memberID) {
+			return MessageFormat.format("{0}/nick", new Object[] { Endpoints.guildMember(guildID, memberID) });
+		}
+
 		public static final String currentUser = MessageFormat.format("{0}/users/@me", new Object[] { API });
 		public static final String currentUserGuilds = MessageFormat.format("{0}/users/@me/guilds",
 				new Object[] { API });
@@ -122,10 +142,10 @@ public class constants {
 		public static final String MESSAGE_DELETE = "MESSAGE_DELETE";
 		public static final String PRESENCE_UPDATE = "PRESENCE_UPDATE";
 	}
-	
-	public static final ArrayList<String> EventWhitelist = new ArrayList<String>(Arrays.asList(WSEvents.HELLO, WSEvents.READY, WSEvents.GUILD_CREATE,
-			WSEvents.GUILD_DELETE, WSEvents.GUILD_MEMBER_ADD, WSEvents.GUILD_MEMBER_REMOVE,
-			WSEvents.GUILD_MEMBER_UPDATE));
+
+	public static final ArrayList<String> EventWhitelist = new ArrayList<String>(
+			Arrays.asList(WSEvents.HELLO, WSEvents.READY, WSEvents.GUILD_CREATE, WSEvents.GUILD_DELETE,
+					WSEvents.GUILD_MEMBER_ADD, WSEvents.GUILD_MEMBER_REMOVE, WSEvents.GUILD_MEMBER_UPDATE));
 
 	public static final class Events {
 		public static final String READY = "ready";
@@ -150,6 +170,9 @@ public class constants {
 		public static final String MESSAGE_CREATE = "MessageCreate";
 		public static final String MESSAGE_DELETE = "MessageDelete";
 		public static final String MESSAGE_UPDATE = "MessageUpdate";
+		public static final String PRIVATE_MESSAGE_CREATE = "PrivateMessageCreate";
+		public static final String PRIVATE_MESSAGE_DELETE = "PrivateMessageDelete";
+		public static final String PRIVATE_MESSAGE_UPDATE = "PrivateMessageUpdate";
 		public static final String USER_UPDATE = "UserUpdate";
 		public static final String PRESENCE_UPDATE = "PresenceUpdate";
 	}
