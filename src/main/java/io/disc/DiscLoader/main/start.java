@@ -49,6 +49,8 @@ public class start {
 	@eventHandler
 	public void MessageCreate(Message message) {
 		System.out.println(message.channel.id);
+		if (!message.loader.user.bot && message.author.id != message.loader.user.id) return;
+		
 		if (message.content.equalsIgnoreCase("//test")) {
 			message.channel.sendMessage("Hello there!\nGuild: " + (message.guild != null));
 		}
