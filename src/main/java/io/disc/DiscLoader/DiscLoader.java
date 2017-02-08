@@ -3,6 +3,7 @@ package io.disc.DiscLoader;
 import java.lang.reflect.Field;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.Timer;
 import java.util.concurrent.CompletableFuture;
 
 import com.google.gson.Gson;
@@ -48,6 +49,8 @@ public class DiscLoader {
 	public HashMap<String, Mod> mods;
 
 	public User user;
+	
+	public Timer timer;
 
 	public DiscLoader() {
 		this.discSocket = new DiscSocket(this);
@@ -68,6 +71,8 @@ public class DiscLoader {
 		
 //		this.modh.beginLoader();
 
+		this.timer = new Timer();
+		
 		this.ready = false;
 	}
 

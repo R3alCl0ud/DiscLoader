@@ -1,5 +1,6 @@
 package io.disc.DiscLoader.objects.structures;
 
+import java.util.Date;
 import java.util.concurrent.CompletableFuture;
 
 import io.disc.DiscLoader.DiscLoader;
@@ -23,6 +24,8 @@ public class Message {
 	public boolean mention_everyone;
 	public boolean pinned;
 
+//	public final Date timestamp;
+	
 	public Mentions mentions;
 	public final DiscLoader loader;
 	public final TextChannel channel;
@@ -37,8 +40,11 @@ public class Message {
 		this.channel = channel;
 		
 		this.guild = channel.guild != null ? channel.guild : null;
-		
-		this.author = this.loader.addUser(data.author);
+		if (!this.loader.users.containsKey(data.author.id)) {			
+			this.author = this.loader.addUser(data.author);
+		} else {
+			this.author = this.loader.users.get(data.author.id);
+		}
 
 		this.editable = this.loader.user.id == this.author.id;
 

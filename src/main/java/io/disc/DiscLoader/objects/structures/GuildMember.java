@@ -3,6 +3,7 @@ package io.disc.DiscLoader.objects.structures;
 import java.time.Instant;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.concurrent.CompletableFuture;
 
 import io.disc.DiscLoader.DiscLoader;
 import io.disc.DiscLoader.objects.gateway.MemberJSON;
@@ -74,5 +75,10 @@ public class GuildMember {
 			roles.put(id, this.guild.roles.get(id));
 		}
 		return roles;
+	}
+	
+	public CompletableFuture<GuildMember> setNick(String nick) {
+		CompletableFuture<GuildMember> future = new CompletableFuture<GuildMember>();
+		return future;
 	}
 }
