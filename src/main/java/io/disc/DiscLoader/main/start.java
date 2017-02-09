@@ -41,7 +41,6 @@ public class start {
 	@eventHandler
 	public void ready(DiscLoader loader) {
 		System.out.println("Test");
-//		((TextChannel)loader.channels.get("219354544046342145")).sendMessage("Hello\nThis message was sent using DiscLoader <http://gitlab.com/R3alCl0ud/DiscLoader>");
 //		window.panel.load();
 //		updateViewPanel();
 	}
@@ -53,6 +52,9 @@ public class start {
 		
 		if (message.content.equalsIgnoreCase("//test")) {
 			message.channel.sendMessage("Hello there!\nGuild: " + (message.guild != null));
+		} else if (message.content.startsWith("//nick") && message.guild != null && message.author.id.equals("104063667351322624")) {
+			String nick = message.content.split(" ")[1];
+			message.guild.members.get(message.loader.user.id).setNick(nick);
 		}
 	}
 	

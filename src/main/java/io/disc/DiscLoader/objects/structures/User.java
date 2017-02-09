@@ -1,6 +1,7 @@
 package io.disc.DiscLoader.objects.structures;
 
 import java.text.MessageFormat;
+import java.util.concurrent.CompletableFuture;
 
 import io.disc.DiscLoader.DiscLoader;
 import io.disc.DiscLoader.objects.gateway.UserJSON;
@@ -64,11 +65,17 @@ public class User {
 		return MessageFormat.format("<@{0}>", new Object[] {this.id});
 	}
 
+	
+	public CompletableFuture<User> setUsername(String username) {
+		return this.loader.rest.setUsername(username);
+	}
+	
 
 	/**
-	 * @param user
+	 * @param data
+	 * @return this 
 	 */
-	public void patch(UserJSON data) {
+	public User patch(UserJSON data) {
 		if (data.username != null) this.username = data.username;
 
 		if (data.discriminator != null) this.discriminator = data.discriminator;
@@ -77,6 +84,8 @@ public class User {
 
 		if (data.password != null) this.avatar = data.avatar;
 
-		if (data.bot == true || data.bot == false) this.bot = data.bot;	
+		if (data.bot == true || data.bot == false) this.bot = data.bot;
+		
+		return this;
 	}
 }

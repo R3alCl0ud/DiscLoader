@@ -75,8 +75,8 @@ public class constants {
 			return MessageFormat.format("{0}/{1}", new Object[] { Endpoints.guildMembers(guildID), memberID });
 		}
 
-		public static final String guildMemberNick(String guildID, String memberID) {
-			return MessageFormat.format("{0}/nick", new Object[] { Endpoints.guildMember(guildID, memberID) });
+		public static final String guildNick(String guildID) {
+			return MessageFormat.format("{0}/@me/nick", new Object[] { Endpoints.guildMembers(guildID) });
 		}
 
 		public static final String currentUser = MessageFormat.format("{0}/users/@me", new Object[] { API });

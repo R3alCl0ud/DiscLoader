@@ -77,8 +77,7 @@ public class GuildMember {
 		return roles;
 	}
 	
-	public CompletableFuture<GuildMember> setNick(String nick) {
-		CompletableFuture<GuildMember> future = new CompletableFuture<GuildMember>();
-		return future;
+	public CompletableFuture<GuildMember> setNick(String nick) {  
+		return this.loader.rest.setNick(this, nick);
 	}
 }

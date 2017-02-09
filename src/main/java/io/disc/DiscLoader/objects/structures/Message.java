@@ -21,7 +21,6 @@ public class Message {
 
 	public final boolean tts;
 	public final boolean editable;
-	public boolean mention_everyone;
 	public boolean pinned;
 
 //	public final Date timestamp;
@@ -31,6 +30,7 @@ public class Message {
 	public final TextChannel channel;
 	public final User author;
 	public final Guild guild;
+	public final GuildMember member;
 
 	public Message(TextChannel channel, MessageJSON data) {
 		this.id = data.id;
@@ -40,12 +40,15 @@ public class Message {
 		this.channel = channel;
 		
 		this.guild = channel.guild != null ? channel.guild : null;
+		
 		if (!this.loader.users.containsKey(data.author.id)) {			
 			this.author = this.loader.addUser(data.author);
 		} else {
 			this.author = this.loader.users.get(data.author.id);
 		}
 
+		this.member = this.guild != null ? this.guild.members.get(this.author.id) : null;
+		
 		this.editable = this.loader.user.id == this.author.id;
 
 		this.tts = data.tts;
@@ -57,8 +60,16 @@ public class Message {
 		this.mentions = new Mentions(this, data.mentions, data.mention_roles, data.mention_everyone);
 	}
 	
-	public void patch(MessageJSON data) {
+	/**
+	 * @param data
+	 * @return this
+	 */
+	public Message patch(MessageJSON data) {
 		this.content = data.content;
+		
+		this.mentions.patch(data.mentions, data.mention_roles, data.mention_everyone);
+		
+		return this;
 	}
 
 	public CompletableFuture<Message> edit(String content) {
