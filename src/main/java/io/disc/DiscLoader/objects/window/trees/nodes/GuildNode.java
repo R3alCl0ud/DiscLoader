@@ -5,6 +5,8 @@ import javax.swing.tree.DefaultMutableTreeNode;
 import io.disc.DiscLoader.objects.structures.Guild;
 import io.disc.DiscLoader.objects.structures.GuildChannel;
 import io.disc.DiscLoader.objects.structures.GuildMember;
+import io.disc.DiscLoader.objects.structures.TextChannel;
+import io.disc.DiscLoader.objects.structures.VoiceChannel;
 import io.disc.DiscLoader.objects.window.trees.ChannelTree;
 import io.disc.DiscLoader.objects.window.trees.MemberTree;
 
@@ -38,6 +40,12 @@ public class GuildNode extends DefaultMutableTreeNode {
 		}
 		
 		this.channels = new ChannelTree("channels");
+		for (TextChannel channel : data.textChannels.values()) {
+			
+		}
+		for (VoiceChannel channel : data.voiceChannels.values()) {
+			
+		}
 	}
 	
 	public void updateNode(Guild data) {

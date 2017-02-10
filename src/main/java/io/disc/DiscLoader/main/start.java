@@ -40,12 +40,12 @@ public class start {
 
 	@eventHandler
 	public void ready(DiscLoader loader) {
-		System.out.println("Test");
+//		System.out.println("Test");
 		window.panel.load();
 		updateViewPanel();
 	}
 
-	@eventHandler
+//	@eventHandler
 	public void MessageCreate(Message message) {
 		System.out.println(message.channel.id);
 		if (!message.loader.user.bot && message.author.id != message.loader.user.id) return;
@@ -58,22 +58,22 @@ public class start {
 		}
 	}
 	
-	@eventHandler
+//	@eventHandler
 	public void raw(String text) {
 		System.out.println(text);
 	}
 
-	@eventHandler
+//	@eventHandler
 	public void debug(String debug) {
 		System.out.println(debug);
 	}
 
-	@eventHandler
+//	@eventHandler
 	public void UserUpdate(UserUpdateEvent e) {
 		
 	}
 
-	@eventHandler
+//	@eventHandler
 	public void PresenceUpdate(GuildMemberUpdateEvent e) {
 //		window.panel.guilds.guilds.get(e.guild.id).updateMemberNode(e.member);
 //		updateViewPanel();

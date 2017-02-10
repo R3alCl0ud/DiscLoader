@@ -4,7 +4,6 @@ import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-import io.disc.DiscLoader.testClient;
 import io.disc.DiscLoader.objects.annotations.eventHandler;
 
 public class DiscHandler {
