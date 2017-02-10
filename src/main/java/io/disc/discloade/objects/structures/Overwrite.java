@@ -1,0 +1,48 @@
+/**
+ * 
+ */
+package io.disc.discloader.objects.structures;
+
+import io.disc.discloader.objects.gateway.OverwriteJSON;
+
+/**
+ * @author Perry Berman
+ *
+ */
+public class Overwrite {
+
+	public int allow;
+	public int deny;
+	public String type;
+	public String id;
+
+	public Role role;
+
+	public GuildMember member;
+
+	public GuildChannel channel;
+
+	public Overwrite(OverwriteJSON data) {
+		this.allow = data.allow;
+		this.deny = data.deny;
+		if (data.id != null)
+			this.id = data.id;
+		if (data.type != null)
+			this.type = data.type;
+	}
+
+	public Overwrite(Overwrite data, GuildMember member) {
+		this.allow = data.allow;
+		this.deny = data.deny;
+		this.type = data.type;
+		this.member = member;
+	}
+
+	public Overwrite(Overwrite data, Role role) {
+		this.allow = data.allow;
+		this.deny = data.deny;
+		this.type = data.type;
+		this.role = role;
+	}
+
+}

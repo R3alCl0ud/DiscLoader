@@ -1,0 +1,18 @@
+package io.disc.discloader.objects.gateway;
+
+public class ChannelJSON {
+	public String id;
+	public String name;
+	public String topic;
+	public String last_message_id;
+
+	public int type;
+	public int user_limit;
+	public int position;
+	public int bitrate;
+
+	public boolean is_private;
+
+	public OverwriteJSON[] permission_overwrites;
+	public UserJSON[] recipients;
+}
