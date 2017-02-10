@@ -10,9 +10,9 @@ import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 
 public class ModHandler {
-	private ClassLoader modhandler;
+	private Object modhandler;
 	private Class<?> instance;
-	private Method methods[];
+	private Method method;
 	
 	// Set annotation class name
 	private String ann_class = "io.disc.DiscLoader.objects.loader.Mod.class";
@@ -84,8 +84,21 @@ public class ModHandler {
 						try {
 							this.instance = cl.loadClass(className);
 							System.out.println(this.instance.getName());
-							for (int j = 0, n = this.instance.getMethods().length; j < n; j++) {
-								System.out.println("\tMethod Name: " + this.instance.getMethods()[i].getName());
+							for (int j = 0, n = this.instance.getDeclaredMethods().length; j < n; j++) {
+								System.out.println("\tMethod Name: " + this.instance.getDeclaredMethods()[i].getName() + " Method Num: " + (j + 1) + " out of " + n);
+								if (this.instance.getDeclaredMethods()[j].getName().equals("main")) {
+									this.method = (this.instance.getDeclaredMethod("main", this.instance));
+									System.out.println("Invoking JAR Method");
+									try {
+										this.method.setAccessible(true);
+										this.modhandler = this.instance.newInstance();
+										Object o = this.method.invoke(this.modhandler, (Object[])null);
+										System.out.format("%s() returned %b%n", this.method.getName(), (Boolean) o);
+									} catch(Exception e) {
+										System.out.println("Method Loading FAILED! Abort");
+										System.out.println(e.getCause());
+									}
+								}
 							}
 						} catch (Exception ce) {
 							System.out.println("Class unable to load: " + className);
