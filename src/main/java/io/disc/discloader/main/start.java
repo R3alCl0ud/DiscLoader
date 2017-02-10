@@ -40,12 +40,13 @@ public class start {
 
 	@eventHandler
 	public void ready(DiscLoader loader) {
-		// System.out.println("Test");
-		window.panel.load();
-		updateViewPanel();
+		 System.out.println("Test");
+		// loader.user.setGame("test game please ignore: TGPI");
+//		window.panel.load();
+//		updateViewPanel();
 	}
 
-	// @eventHandler
+	@eventHandler
 	public void MessageCreate(Message message) {
 		System.out.println(message.channel.id);
 		if (!message.loader.user.bot && message.author.id != message.loader.user.id)
@@ -57,10 +58,14 @@ public class start {
 				&& message.author.id.equals("104063667351322624")) {
 			String nick = message.content.split(" ")[1];
 			message.guild.members.get(message.loader.user.id).setNick(nick);
+		} else if (message.content.startsWith("//game") && message.author.id.equals("104063667351322624")) {
+			String game = message.content.substring(7);
+			message.loader.user.setGame(game);
+			System.out.printf("Playing game set to: %s\n", game);
 		}
 	}
 
-	// @eventHandler
+	@eventHandler
 	public void raw(String text) {
 		System.out.println(text);
 	}

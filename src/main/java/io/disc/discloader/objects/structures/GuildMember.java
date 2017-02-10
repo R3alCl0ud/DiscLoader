@@ -8,6 +8,12 @@ import java.util.concurrent.CompletableFuture;
 import io.disc.discloader.DiscLoader;
 import io.disc.discloader.objects.gateway.MemberJSON;
 
+/**
+ * Represents a member in a {@link Guild}
+ * @author Perry Berman
+ * @see User 
+ * @see Guild
+ */
 public class GuildMember {
 
 	public final DiscLoader loader;

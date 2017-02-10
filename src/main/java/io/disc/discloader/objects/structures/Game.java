@@ -1,5 +1,7 @@
 package io.disc.discloader.objects.structures;
 
+import org.json.JSONObject;
+
 import io.disc.discloader.objects.gateway.GameJSON;
 
 public class Game {
@@ -26,5 +28,16 @@ public class Game {
 		this.type = game.type;
 		this.url = game.url;
 		this.streaming = this.type != 0 && (this.type == 1 || this.type == 2) ? true : false;
+	}
+	
+	public Game(String name) {
+		this.name = name;
+		this.type = 0;
+		this.url = null;
+		this.streaming = this.type != 0 && (this.type == 1 || this.type == 2) ? true : false;
+	}
+	
+	public String toJsonString() {
+		return new JSONObject().put("name", this.name).put("type", this.type).put("url", this.url).toString();
 	}
 }

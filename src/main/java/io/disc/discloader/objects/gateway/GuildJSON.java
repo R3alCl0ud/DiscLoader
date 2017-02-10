@@ -15,6 +15,7 @@ public class GuildJSON {
 
 	public int verification_level;
 	public int default_message_notifications;
+	public int member_count;
 
 	public boolean large;
 	public boolean embed_enabled;

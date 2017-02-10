@@ -69,7 +69,7 @@ public class DiscLoader {
 
 		this.modh = new ModHandler();
 
-		this.modh.beginLoader();
+//		this.modh.beginLoader();
 
 		this.timer = new Timer();
 
@@ -212,6 +212,7 @@ public class DiscLoader {
 
 	public void emitReady() {
 		this.discSocket.status = constants.Status.READY;
+//		System.out.println(this.discSocket.status);
 		this.ready = true;
 		this.emit(constants.Events.READY, this);
 	}

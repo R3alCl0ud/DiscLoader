@@ -17,6 +17,11 @@ import io.disc.discloader.objects.gateway.PresenceJSON;
 import io.disc.discloader.objects.gateway.RoleJSON;
 import io.disc.discloader.util.constants;
 
+/**
+ * This object represents a Guild in discord's api
+ * @author Perry Berman
+ *
+ */
 public class Guild {
 	public final String id;
 	public String name;
@@ -65,6 +70,7 @@ public class Guild {
 		this.name = data.name;
 		this.icon = data.icon != null ? data.icon : null;
 		this.ownerID = data.owner_id;
+		this.memberCount = data.member_count;
 		if (data.roles.length > 0) {
 			this.roles.clear();
 			for (RoleJSON role : data.roles) {
@@ -134,24 +140,32 @@ public class Guild {
 			return;
 		}
 		Presence presence = new Presence(guildPresence);
+		if (guildPresence.user.id.equals(this.loader.user.id))
+			this.loader.user.presence.update(guildPresence);
 		this.presences.put(guildPresence.user.id, presence);
 	}
 
+	/**
+	 * Deletes the {@link Guild} if loader has suffiecent permissions
+	 * @return CompletableFuture<Guild>
+	 */
 	public CompletableFuture<Guild> delete() {
 		return null;
 	}
 
 	/**
+	 * Sets the {@link Guild}'s name if the loader has suffiecent permissions
 	 * @param name
-	 * @return
+	 * @return CompletableFuture<this>
 	 */
 	public CompletableFuture<Guild> setName(String name) {
 		return this.loader.rest.modifyGuild(this, new JSONObject().put("name", name));
 	}
 
 	/**
-	 * @param icon
-	 * @return
+	 * Sets the {@link Guild}'s icon if the loader has suffiecent permissions
+	 * @param icon location of icon file on disk
+	 * @return CompletableFuture<this>
 	 * @throws IOException
 	 */
 	public CompletableFuture<Guild> setIcon(String icon) throws IOException {

@@ -77,7 +77,9 @@ public class DiscSocketListener extends WebSocketAdapter implements WebSocketLis
 		}
 
 		this.setSequence(packet.s);
-
+		
+//		System.out.printf("Socket Status: %d\n", this.socket.status);
+		
 		if (this.socket.status != constants.Status.READY) {
 			if (constants.EventWhitelist.indexOf(packet.t) == -1) {
 				this.queue.add(packet);
