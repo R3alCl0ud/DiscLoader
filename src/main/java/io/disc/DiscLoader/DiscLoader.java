@@ -69,7 +69,7 @@ public class DiscLoader {
 
 		this.modh = new ModHandler();
 		
-//		this.modh.beginLoader();
+		this.modh.beginLoader();
 
 		this.timer = new Timer();
 		
