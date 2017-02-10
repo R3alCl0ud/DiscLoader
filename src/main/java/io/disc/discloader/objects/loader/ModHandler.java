@@ -15,7 +15,7 @@ public class ModHandler {
 	private Method method;
 
 	// Set annotation class name
-	private String ann_class = "io.disc.DiscLoader.objects.loader.Mod.class";
+	private String ann_class = "io.disc.discloader.objects.loader.Mod.class";
 
 	protected Enumeration<JarEntry> e;
 

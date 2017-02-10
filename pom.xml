@@ -3,9 +3,8 @@
   <modelVersion>4.0.0</modelVersion>
 
   <groupId>io.disc</groupId>
-  <artifactId>DiscLoader</artifactId>
+  <artifactId>discloader</artifactId>
   <version>0.0.1-SNAPSHOT</version>
-  <packaging>jar</packaging>
 
   <name>DiscLoader</name>
 
