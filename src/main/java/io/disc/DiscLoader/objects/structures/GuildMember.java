@@ -80,4 +80,13 @@ public class GuildMember {
 	public CompletableFuture<GuildMember> setNick(String nick) {  
 		return this.loader.rest.setNick(this, nick);
 	}
+	
+	public CompletableFuture<GuildMember> ban() {
+		return null;
+	}
+	
+	public CompletableFuture<GuildMember> kick() {
+		return null;
+	}
 }
+

@@ -22,6 +22,9 @@ public class Guild {
 	public String name;
 	public String ownerID;
 	public String icon;
+	
+	public int memberCount;
+	
 	public boolean available;
 
 	public GuildMember owner;

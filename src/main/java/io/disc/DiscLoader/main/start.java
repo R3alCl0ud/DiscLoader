@@ -26,23 +26,23 @@ public class start {
 	 * @param args
 	 * @throws IOException
 	 */
-	public static void main(String[] args) throws IOException {
+	public static void main(String... args) throws IOException {
 		String content = "";
 		Object[] lines = Files.readAllLines(Paths.get("./options.json")).toArray();
 		for (Object line : lines)
 			content += line;
 		options options = gson.fromJson(content, options.class);
 		DiscLoader loader = new DiscLoader();
-//		if (options.useWindow == true)
-//			window = new WindowFrame(loader);
+		if (args.length == 0 || !args[0].equals("nogui"))
+			window = new WindowFrame(loader);
 		loader.login(options.auth.token);
 	}
 
 	@eventHandler
 	public void ready(DiscLoader loader) {
 		System.out.println("Test");
-//		window.panel.load();
-//		updateViewPanel();
+		window.panel.load();
+		updateViewPanel();
 	}
 
 	@eventHandler
