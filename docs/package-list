@@ -1,0 +1,15 @@
+io.disc.discloader
+io.disc.discloader.events
+io.disc.discloader.main
+io.disc.discloader.objects.annotations
+io.disc.discloader.objects.gateway
+io.disc.discloader.objects.loader
+io.disc.discloader.objects.structures
+io.disc.discloader.objects.window
+io.disc.discloader.objects.window.trees
+io.disc.discloader.objects.window.trees.nodes
+io.disc.discloader.objects.window.trees.nodes.channels
+io.disc.discloader.rest
+io.disc.discloader.socket
+io.disc.discloader.socket.packets
+io.disc.discloader.util

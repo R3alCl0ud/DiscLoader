@@ -27,9 +27,9 @@ public class TextNode extends ChannelNode {
 	private GuildNode guild;
 
 	/**
-	 * @param id
+	 * @param userObject
 	 * @param data
-	 * @param guild
+	 * @param displayGuild
 	 */
 	public TextNode(String userObject, TextChannel data, boolean displayGuild) {
 		super(userObject);

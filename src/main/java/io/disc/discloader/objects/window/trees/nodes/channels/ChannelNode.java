@@ -25,7 +25,7 @@ public class ChannelNode extends DefaultMutableTreeNode {
 
 	/**
 	 * @param userObject
-	 * @param allowsChildren
+	 * @param data
 	 */
 	public ChannelNode(Object userObject, Channel data) {
 		super(userObject);

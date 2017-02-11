@@ -1,14 +1,13 @@
 package io.disc.discloader.objects.structures;
 
 import java.util.HashMap;
-import java.util.concurrent.CompletableFuture;
 
-import io.disc.discloader.DiscLoader;
 import io.disc.discloader.objects.gateway.ChannelJSON;
 import io.disc.discloader.objects.gateway.OverwriteJSON;
 import io.disc.discloader.util.constants;
 import io.disc.discloader.util.constants.Permissions;
 
+@Deprecated
 public class GuildChannel extends Channel {
 	public final Guild guild;
 

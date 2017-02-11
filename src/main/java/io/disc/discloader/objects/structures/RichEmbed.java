@@ -1,6 +1,3 @@
-/**
- * 
- */
 package io.disc.discloader.objects.structures;
 
 /**
@@ -8,12 +5,12 @@ package io.disc.discloader.objects.structures;
  *
  */
 public class RichEmbed {
-
+	
 	/**
 	 * 
 	 */
 	public RichEmbed() {
-		// TODO Auto-generated constructor stub
+		
 	}
 
 }

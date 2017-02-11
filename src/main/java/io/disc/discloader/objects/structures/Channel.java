@@ -16,7 +16,8 @@ public class Channel {
 
 	public int bitrate;
 	public int userLimit;
-
+	public int position;
+	
 	public boolean isPrivate;
 
 	public final DiscLoader loader;
@@ -66,6 +67,9 @@ public class Channel {
 		this.id = data.id;
 	}
 
+	/**
+	 * @return
+	 */
 	public HashMap<String, GuildMember> getMembers() {
 		HashMap<String, GuildMember> members = new HashMap<String, GuildMember>();
 		for (GuildMember member : this.guild.members.values()) {
@@ -75,6 +79,10 @@ public class Channel {
 		return members;
 	}
 
+	/**
+	 * @param member
+	 * @return
+	 */
 	public Permission permissionsFor(GuildMember member) {
 		int raw = 0;
 		if (member.id == this.guild.ownerID)
@@ -88,6 +96,10 @@ public class Channel {
 		return new Permission(member, raw);
 	}
 
+	/**
+	 * @param member
+	 * @return
+	 */
 	public HashMap<String, Overwrite> overwritesOf(GuildMember member) {
 		HashMap<String, Overwrite> Overwrites = new HashMap<String, Overwrite>();
 		for (Role role : member.getRoleList().values()) {

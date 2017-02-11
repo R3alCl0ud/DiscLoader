@@ -1,26 +1,52 @@
-/**
- * 
- */
 package io.disc.discloader.objects.structures;
 
 import io.disc.discloader.objects.gateway.OverwriteJSON;
 
 /**
+ * Permission Overwrite object
  * @author Perry Berman
  *
  */
 public class Overwrite {
 
-	public int allow;
-	public int deny;
-	public String type;
+	/**
+	 * The id of the {@link Role} or {@link GuildMember} the overwrite applies to.
+	 */
 	public String id;
+	
+	
+	/**
+	 * The 53bit integer of allowed permissions
+	 */
+	public int allow;
+	
+	
+	/**
+	 * The 53bit integer of denied permissions
+	 */
+	public int deny;
+	
+	
+	/**
+	 * 	either "role" or "member"
+	 */
+	public String type;
 
-	public Role role;
+	/**
+	 * The {@link Role} the overwrite applies to. null if type is {@literal "member"} 
+	 */
+	public final Role role;
 
-	public GuildMember member;
+	/**
+	 * The {@link GuildMember} the overwrite applies to. null if type is {@literal "role"}
+	 * @author cloud
+	 */
+	public final GuildMember member;
 
-	public GuildChannel channel;
+	/**
+	 * The {@link Channel} the overwrite belongs to
+	 */
+	public Channel channel;
 
 	public Overwrite(OverwriteJSON data) {
 		this.allow = data.allow;
@@ -29,6 +55,8 @@ public class Overwrite {
 			this.id = data.id;
 		if (data.type != null)
 			this.type = data.type;
+		this.role = null;
+		this.member = null;
 	}
 
 	public Overwrite(Overwrite data, GuildMember member) {
@@ -36,6 +64,7 @@ public class Overwrite {
 		this.deny = data.deny;
 		this.type = data.type;
 		this.member = member;
+		this.role = null;
 	}
 
 	public Overwrite(Overwrite data, Role role) {
@@ -43,6 +72,7 @@ public class Overwrite {
 		this.deny = data.deny;
 		this.type = data.type;
 		this.role = role;
+		this.member = null;
 	}
 
 }

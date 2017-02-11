@@ -5,7 +5,7 @@ import io.disc.discloader.objects.gateway.PresenceJSON;
 
 public class Presence {
 	/**
-	 * The {@link Game} the user is currently playing, or {@link null} if user isn't playing a game
+	 * The {@link Game} the user is currently playing, or null if user isn't playing a game
 	 * @author Perry Berman
 	 * @see Game
 	 * @see User

@@ -28,7 +28,7 @@ public class ServiceLoader {
 	}
 	
 	
-	public ArrayList<Method> loadEventHandlers(Class cls) {
+	public ArrayList<Method> loadEventHandlers(Class<?> cls) {
 		return null;
 	}
 	

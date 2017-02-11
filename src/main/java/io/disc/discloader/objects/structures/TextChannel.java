@@ -1,6 +1,3 @@
-/**
- * 
- */
 package io.disc.discloader.objects.structures;
 
 import java.util.HashMap;
@@ -14,11 +11,14 @@ import io.disc.discloader.objects.gateway.ChannelJSON;
  *
  */
 public class TextChannel extends Channel {
+	/**
+	 * A HashMap of the channel's cached messages. Indexed by 
+	 */
 	public final HashMap<String, Message> messages;
 
 	/**
 	 * @param guild
-	 * @param channel
+	 * @param data
 	 */
 	public TextChannel(Guild guild, ChannelJSON data) {
 		super(guild, data);
@@ -45,7 +45,7 @@ public class TextChannel extends Channel {
 	/**
 	 * @param content
 	 *            the content to change the content to
-	 * @return CompletableFuture<Message> a completable future
+	 * @return CompletableFuture
 	 */
 	public CompletableFuture<Message> sendMessage(String content) {
 		return this.loader.rest.sendMessage(this, content);

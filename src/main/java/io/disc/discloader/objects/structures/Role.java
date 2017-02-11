@@ -14,6 +14,9 @@ public class Role {
 	public final boolean managed;
 	public boolean mentionable;
 
+	/**
+	 * The {@link Guild} the role belongs to.
+	 */
 	public final Guild guild;
 
 	public Role(Guild guild, RoleJSON role) {

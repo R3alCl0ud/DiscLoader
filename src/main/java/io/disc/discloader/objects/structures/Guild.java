@@ -18,32 +18,91 @@ import io.disc.discloader.objects.gateway.RoleJSON;
 import io.disc.discloader.util.constants;
 
 /**
- * This object represents a Guild in discord's api
+ * This represents a Guild in Discord's API
  * @author Perry Berman
- *
+ * 
  */
 public class Guild {
+	
+	/**
+	 * The guild's Snowflake ID.
+	 */
 	public final String id;
+	
+	/**
+	 * 
+	 */
 	public String name;
+	
+	/**
+	 * 
+	 */
 	public String ownerID;
+	
+	/**
+	 * 
+	 */
 	public String icon;
 
+	/**
+	 * The amount of members in the guild. Does not reflect this.members.size()
+	 */
 	public int memberCount;
 
+	/**
+	 * Whether or not the guild is currently available
+	 */
 	public boolean available;
 
+	/**
+	 * 
+	 */
 	public GuildMember owner;
 
+	/**
+	 * 
+	 */
 	public final DiscLoader loader;
 
+	/**
+	 * A HashMap of the guild's cached members. Indexed by member ID.
+	 * @see GuildMember
+	 * @see HashMap
+	 * @author Perry Berman
+	 */
 	public HashMap<String, GuildMember> members;
 
+	/**
+	 * A HashMap of the guild's TextChannels. Indexed by channel ID.
+	 * @see TextChannel
+	 * @see HashMap
+	 * @author Perry Berman
+	 */
 	public HashMap<String, TextChannel> textChannels;
 
+	/**
+	 * A HashMap of the guild's VoiceChannels. Indexed by channel ID.
+	 * @see VoiceChannel
+	 * @see HashMap
+	 * @author Perry Berman
+	 */
 	public HashMap<String, VoiceChannel> voiceChannels;
 
+	/**
+	 * A HashMap of the guild's roles. Indexed by role ID.
+	 * @see Role
+	 * @see HashMap
+	 * @author Perry Berman
+	 */
 	public HashMap<String, Role> roles;
 
+	/**
+	 * A HashMap of the presences of the guild's members
+	 * @see GuildMember
+	 * @see Presence
+	 * @see HashMap
+	 * @author Perry Berman
+	 */
 	public HashMap<String, Presence> presences;
 
 	public Guild(DiscLoader loader, GuildJSON data) {
@@ -146,26 +205,26 @@ public class Guild {
 	}
 
 	/**
-	 * Deletes the {@link Guild} if loader has suffiecent permissions
-	 * @return CompletableFuture<Guild>
+	 * Deletes the Guild if loader has sufficient permissions
+	 * @return CompletableFuture
 	 */
 	public CompletableFuture<Guild> delete() {
 		return null;
 	}
 
 	/**
-	 * Sets the {@link Guild}'s name if the loader has suffiecent permissions
+	 * Sets the guild's name if the loader has sufficient permissions
 	 * @param name
-	 * @return CompletableFuture<this>
+	 * @return CompletableFuture
 	 */
 	public CompletableFuture<Guild> setName(String name) {
 		return this.loader.rest.modifyGuild(this, new JSONObject().put("name", name));
 	}
 
 	/**
-	 * Sets the {@link Guild}'s icon if the loader has suffiecent permissions
+	 * Sets the guild's icon if the loader has sufficient permissions
 	 * @param icon location of icon file on disk
-	 * @return CompletableFuture<this>
+	 * @return CompletableFuture
 	 * @throws IOException
 	 */
 	public CompletableFuture<Guild> setIcon(String icon) throws IOException {
@@ -175,25 +234,28 @@ public class Guild {
 	}
 
 	/**
-	 * @param region
-	 * @return
+	 * Sets the Guild's voice region to the specified region
+	 * @param region The new voice region
+	 * @return {@link CompletableFuture}
 	 */
 	public CompletableFuture<Guild> setVoiceRegion(String region) {
 		return this.loader.rest.modifyGuild(this, new JSONObject().put("region", region));
 	}
 
 	/**
-	 * @param memberID
-	 * @return
+	 * loads a 
+	 * @param memberID the ID of the member to load
+	 * @return CompletableFuture.GuildMember
 	 */
 	public CompletableFuture<GuildMember> loadMember(String memberID) {
 		return this.loader.rest.loadGuildMember(this, memberID);
 	}
 
 	/**
-	 * @param limit
+	 * 
+	 * @param limit The number of members to load. 
 	 * @param before
-	 * @return
+	 * @return A CompletableFuture that completes with a HashMap of GuildMembers if successful, null otherwise. 
 	 */
 	public CompletableFuture<HashMap<String, GuildMember>> loadMembers(int limit, String before) {
 		return null;

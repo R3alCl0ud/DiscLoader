@@ -1,6 +1,3 @@
-/**
- * 
- */
 package io.disc.discloader.objects.structures;
 
 import io.disc.discloader.util.constants;
@@ -10,25 +7,31 @@ import io.disc.discloader.util.constants;
  *
  */
 public class Permission {
-	public GuildMember member;
+	
+	
+	/**
+	 * The GuildMember this belongs to. 
+	 */
+	public final GuildMember member;
 
-	public int raw;
+	/**
+	 * The raw 53bit permissions integer
+	 */
+	public final int raw;
 
 	public Permission(GuildMember member, int raw) {
 		this.member = member;
 		this.raw = raw;
 	}
 
+	/**
+	 * @param permission A {@link constants.PermissionFlags Permission Flag}
+	 * @param explicit Whether or not the member explicitly has the permission
+	 * @return true, if the user has the specified permission
+	 */
 	public boolean hasPermission(int permission, boolean explicit) {
 		if (!explicit && (this.raw & constants.PermissionFlags.ADMINISTRATOR) > 0)
 			return true;
 		return (this.raw & permission) > 0;
-	}
-
-	public boolean hasPermission(String permission, boolean explicit) {
-		int num = this.member.loader.resolvePermission(permission);
-		if (!explicit && (this.raw & constants.PermissionFlags.ADMINISTRATOR) > 0)
-			return true;
-		return (this.raw & num) > 0;
 	}
 }

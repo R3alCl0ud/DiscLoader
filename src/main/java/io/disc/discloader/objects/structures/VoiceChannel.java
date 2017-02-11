@@ -1,6 +1,3 @@
-/**
- * 
- */
 package io.disc.discloader.objects.structures;
 
 import java.util.HashMap;

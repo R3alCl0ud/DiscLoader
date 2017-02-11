@@ -79,7 +79,7 @@ public class User {
 
 	/**
 	 * @param username
-	 * @return CompletableFuture<User>
+	 * @return CompletableFuture
 	 */
 	public CompletableFuture<User> setUsername(String username) {
 		return this.loader.rest.setUsername(username);

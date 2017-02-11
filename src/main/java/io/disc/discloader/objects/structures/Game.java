@@ -5,7 +5,15 @@ import org.json.JSONObject;
 import io.disc.discloader.objects.gateway.GameJSON;
 
 public class Game {
+	
+	/**
+	 * The name of the game being played or streamed
+	 */
 	public String name;
+	
+	/**
+	 * 
+	 */
 	public int type;
 	public String url;
 	public boolean streaming;
@@ -17,7 +25,7 @@ public class Game {
 		this.name = game.name;
 		this.type = game.type;
 		this.url = game.url;
-		this.streaming = this.type != 0 && (this.type == 1 || this.type == 2) ? true : false;
+		this.streaming = this.type != 0 && this.type == 1 ? true : false;
 	}
 
 	/**
@@ -27,16 +35,17 @@ public class Game {
 		this.name = game.name;
 		this.type = game.type;
 		this.url = game.url;
-		this.streaming = this.type != 0 && (this.type == 1 || this.type == 2) ? true : false;
+		this.streaming = this.type != 0 && this.type == 1 ? true : false;
 	}
 	
 	public Game(String name) {
 		this.name = name;
 		this.type = 0;
 		this.url = null;
-		this.streaming = this.type != 0 && (this.type == 1 || this.type == 2) ? true : false;
+		this.streaming = this.type != 0 && this.type == 1 ? true : false;
 	}
 	
+
 	public String toJsonString() {
 		return new JSONObject().put("name", this.name).put("type", this.type).put("url", this.url).toString();
 	}

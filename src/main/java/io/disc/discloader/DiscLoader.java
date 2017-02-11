@@ -8,7 +8,6 @@ import java.util.concurrent.CompletableFuture;
 
 import com.google.gson.Gson;
 
-import io.disc.discloader.objects.annotations.Mod;
 import io.disc.discloader.objects.gateway.ChannelJSON;
 import io.disc.discloader.objects.gateway.GuildJSON;
 import io.disc.discloader.objects.gateway.UserJSON;
@@ -16,6 +15,7 @@ import io.disc.discloader.objects.loader.ModHandler;
 import io.disc.discloader.objects.structures.Channel;
 import io.disc.discloader.objects.structures.Guild;
 import io.disc.discloader.objects.structures.PrivateChannel;
+import io.disc.discloader.objects.structures.Mod;
 import io.disc.discloader.objects.structures.TextChannel;
 import io.disc.discloader.objects.structures.User;
 import io.disc.discloader.objects.structures.VoiceChannel;
@@ -25,7 +25,6 @@ import io.disc.discloader.util.constants;
 
 /**
  * @author Perry Berman, Zachary Waldron
- * 
  */
 public class DiscLoader {
 
@@ -40,14 +39,68 @@ public class DiscLoader {
 
 	public ModHandler modh;
 
+	/**
+	 * A HashMap of the client's cached users. Indexed by user ID.
+	 * @author Perry Berman
+	 * @see User
+	 * @see HashMap
+	 */
 	public HashMap<String, User> users;
+	
+	/**
+	 * A HashMap of the client's cached channels. Indexed by channel ID.
+	 * @author Perry Berman
+	 * @see Channel
+	 * @see HashMap
+	 */
 	public HashMap<String, Channel> channels;
+	
+	/**
+	 * A HashMap of the client's cached PrivateChannels. Indexed by channel ID.
+	 * @see Channel
+	 * @see PrivateChannel
+	 * @see HashMap
+	 * @author Perry Berman
+	 */
 	public HashMap<String, PrivateChannel> privateChannels;
+	
+	/**
+	 * A HashMap of the client's cached TextChannels. Indexed by channel ID.
+	 * @see Channel
+	 * @see TextChannel
+	 * @see HashMap
+	 * @author Perry Berman
+	 */
 	public HashMap<String, TextChannel> textChannels;
+	
+	/**
+	 * A HashMap of the client's cached VoiceChannels. Indexed by channel ID.
+	 * @see Channel
+	 * @see VoiceChannel
+	 * @see HashMap
+	 * @author Perry Berman
+	 */
 	public HashMap<String, VoiceChannel> voiceChannels;
+	
+	/**
+	 * A HashMap of the client's cached Guilds. Indexed by guild ID.
+	 * @see Guild
+	 * @see HashMap
+	 * @author Perry Berman
+	 */
 	public HashMap<String, Guild> guilds;
+	
+	/**
+	 * A HashMap of the client's loaded mods.
+	 * @see Mod
+	 * @see HashMap
+	 * @author Zachary Waldron 
+	 */
 	public HashMap<String, Mod> mods;
 
+	/**
+	 * The User we are currently logged in as.
+	 */
 	public User user;
 
 	public Timer timer;
@@ -76,6 +129,11 @@ public class DiscLoader {
 		this.ready = false;
 	}
 
+	/**
+	 * Logs the {@link DiscLoader loader} into 
+	 * @param token your API token
+	 * @return {@literal CompletableFuture<String>}
+	 */
 	public CompletableFuture<String> login(String token) {
 		this.token = token;
 		// this.modh.beginLoader();

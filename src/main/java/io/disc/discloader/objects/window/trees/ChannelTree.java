@@ -39,7 +39,7 @@ public class ChannelTree extends DefaultMutableTreeNode {
 	}
 
 	/**
-	 * @param channel
+	 * @param data
 	 */
 	public void createChannelNode(Channel data) {
 		ChannelNode channel = new ChannelNode(data.id, data);
@@ -48,16 +48,11 @@ public class ChannelTree extends DefaultMutableTreeNode {
 		this.length.setUserObject("length: " + this.channels.size());
 	}
 
-	/**
-	 * @param channel
-	 */
+
 	public void createVoiceNode(VoiceChannel data, boolean guild) {
 		VoiceNode voice = new VoiceNode(data.id, data, guild);
 	}
 
-	/**
-	 * @param channel
-	 */
 	public void createTextNode(TextChannel data, boolean guild) {
 		TextNode text = new TextNode(data.id, data, guild);
 		this.channels.put(data.id, text);

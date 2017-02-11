@@ -16,7 +16,9 @@ import io.disc.discloader.objects.structures.Message;
 import io.disc.discloader.objects.window.WindowFrame;
 
 /**
- * @author Perry Berman DiscLoader client entry point
+ * DiscLoader client entry point
+ * @author Perry Berman
+ * @see DiscLoader
  */
 public class start {
 	public static final Gson gson = new Gson();
