@@ -10,18 +10,54 @@ import io.disc.discloader.objects.gateway.UserJSON;
 import io.disc.discloader.util.constants;
 
 public class User {
+	/**
+	 * The loader instance that cached the user.
+	 */
 	public final DiscLoader loader;
+	/**
+	 * The user's unique Snowflake ID.
+	 */
 	public final String id;
+	/**
+	 * The currently loggedin user's email address. Only applies to user
+	 * accounts
+	 */
 	public String email;
+	/**
+	 * The currently loggedin user's password. Only applies to user accounts
+	 */
 	public String password;
+	/**
+	 * The user's username
+	 */
 	public String username;
+	/**
+	 * The hash of the user's avatar
+	 */
 	public String avatar;
+	/**
+	 * The user's four digit discriminator
+	 */
 	public String discriminator;
+	/**
+	 * Whether or not the user is a bot account
+	 */
 	public boolean bot;
+	/**
+	 * Whether or not the user has verified their email address
+	 */
 	public boolean verified;
+	/**
+	 * Whethor or not the user has 2FA enabled
+	 */
 	public boolean mfa;
+	
+	
 	private boolean afk;
 
+	/**
+	 * User's persence. shows as default if {@code user.id != loader.user.id}
+	 */
 	public final Presence presence;
 
 	public User(DiscLoader loader, UserJSON user) {
@@ -32,7 +68,7 @@ public class User {
 		this.presence = new Presence();
 
 		this.afk = false;
-		
+
 		if (user.username != null) {
 			this.setup(user);
 		}
@@ -57,7 +93,7 @@ public class User {
 		this.bot = user.bot;
 
 		this.presence = new Presence();
-		
+
 		this.afk = false;
 	}
 
@@ -73,11 +109,18 @@ public class User {
 		this.bot = data.bot;
 	}
 
+	/**
+	 * toStrings the user in mention format
+	 * 
+	 * @return <@ this.id >
+	 */
 	public String toString() {
 		return MessageFormat.format("<@{0}>", new Object[] { this.id });
 	}
 
 	/**
+	 * Set's the currently logged in user's username.
+	 * 
 	 * @param username
 	 * @return CompletableFuture
 	 */
@@ -86,6 +129,20 @@ public class User {
 	}
 
 	/**
+	 * Sets the currently logged in user's avatar
+	 * 
+	 * @param avatarLocation
+	 *            The location on disk of the new avatar image
+	 * @return A CompletableFuture that completes with {@code this} if
+	 *         successfull, or the error response if failed. Returns null if
+	 *         {@code this.id != this.loader.user.id}
+	 */
+	public CompletableFuture<User> setAvatar(String avatarLocation) {
+		return this.loader.rest.setAvatar(avatarLocation);
+	}
+
+	/**
+	 * Set's the currently logged in user's presence
 	 * @param status
 	 * @param game
 	 * @param afk
@@ -102,22 +159,27 @@ public class User {
 	}
 
 	/**
+	 * Sets the currently loggedin user's game
+	 * 
 	 * @param game
 	 * @return this
 	 */
 	public User setGame(String game) {
 		return this.setPresence(null, game != null ? new Game(game) : null, this.afk);
 	}
-	
+
 	/**
+	 * Sets the user's status.
+	 * 
 	 * @param status
 	 * @return this
 	 */
 	public User setStatus(String status) {
 		return this.setPresence(status, null, this.afk);
 	}
-	
+
 	/**
+	 * 
 	 * @param afk
 	 * @return this
 	 */
@@ -126,6 +188,8 @@ public class User {
 	}
 
 	/**
+	 * Updates a user's information
+	 * 
 	 * @param data
 	 * @return this
 	 */

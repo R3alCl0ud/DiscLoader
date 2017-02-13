@@ -12,6 +12,7 @@ import io.disc.discloader.objects.gateway.ChannelJSON;
 import io.disc.discloader.objects.gateway.GuildJSON;
 import io.disc.discloader.objects.gateway.UserJSON;
 import io.disc.discloader.objects.loader.ModHandler;
+import io.disc.discloader.objects.loader.ServiceLoader;
 import io.disc.discloader.objects.structures.Channel;
 import io.disc.discloader.objects.structures.Guild;
 import io.disc.discloader.objects.structures.PrivateChannel;
@@ -36,6 +37,8 @@ public class DiscLoader {
 	public DiscHandler handler;
 
 	public DiscREST rest;
+	
+	public ServiceLoader service;
 
 	public ModHandler modh;
 
@@ -121,6 +124,9 @@ public class DiscLoader {
 		this.mods = new HashMap<String, Mod>();
 
 		this.modh = new ModHandler();
+		
+		this.service = new ServiceLoader(this);
+		this.service.loadMods();
 
 //		this.modh.beginLoader();
 
@@ -130,7 +136,7 @@ public class DiscLoader {
 	}
 
 	/**
-	 * Logs the {@link DiscLoader loader} into 
+	 * Connects the current instance of the {@link DiscLoader loader} into Discord's gateway servers 
 	 * @param token your API token
 	 * @return {@literal CompletableFuture<String>}
 	 */

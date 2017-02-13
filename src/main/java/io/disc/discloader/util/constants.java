@@ -1,10 +1,30 @@
 package io.disc.discloader.util;
 
 import java.text.MessageFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.time.Instant;
+import java.time.OffsetDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Date;
 
+/**
+ * A collection of all useful constants for DiscLoader
+ * @author Perry Berman
+ *
+ */
 public class constants {
+	
+	/**
+	 * Converts a ISO-8601 DateTime string to a {@link Date} object.
+	 * @param datetime A DateTime string in ISO-8601 format
+	 * @return Date from datetime string
+	 */
+	public static final Date parseISO8601(String datetime) {
+		return Date.from(OffsetDateTime.parse(datetime).toInstant());
+	}
+	
 	public static final String HOST = "https://discordapp.com";
 	public static final String API = MessageFormat.format("{0}/api/v6", new Object[] { HOST });
 	public static final String LoaderVersion = "0.0.1_a";
@@ -177,6 +197,10 @@ public class constants {
 		public static final String PRESENCE_UPDATE = "PresenceUpdate";
 	}
 
+	/**
+	 * An object containing {@link Integer} representations of the different types of channels in Discord's API
+	 * @author Perry Berman
+	 */
 	public static final class ChannelTypes {
 		public static final int text = 0;
 		public static final int DM = 1;

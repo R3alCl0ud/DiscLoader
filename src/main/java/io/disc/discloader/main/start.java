@@ -10,13 +10,15 @@ import com.google.gson.Gson;
 
 import io.disc.discloader.DiscLoader;
 import io.disc.discloader.events.GuildMemberUpdateEvent;
+import io.disc.discloader.events.MessageCreateEvent;
 import io.disc.discloader.events.UserUpdateEvent;
-import io.disc.discloader.objects.annotations.eventHandler;
+import io.disc.discloader.objects.annotations.EventHandler;
 import io.disc.discloader.objects.structures.Message;
 import io.disc.discloader.objects.window.WindowFrame;
 
 /**
  * DiscLoader client entry point
+ * 
  * @author Perry Berman
  * @see DiscLoader
  */
@@ -37,37 +39,22 @@ public class start {
 		DiscLoader loader = new DiscLoader();
 		if (args.length == 0 || !args[0].equals("nogui"))
 			window = new WindowFrame(loader);
-		loader.login(options.auth.token);
+//		loader.login(options.auth.token);
+
 	}
 
-	@eventHandler
+	@EventHandler
 	public void ready(DiscLoader loader) {
-		 System.out.println("Test");
-		// loader.user.setGame("test game please ignore: TGPI");
-//		window.panel.load();
-//		updateViewPanel();
+		System.out.println("Test");
+		loader.user.setGame("test game please ignore: TGPI");
 	}
 
-	@eventHandler
-	public void MessageCreate(Message message) {
-		System.out.println(message.channel.id);
-		if (!message.loader.user.bot && message.author.id != message.loader.user.id)
-			return;
+	@EventHandler
+	public void MessageCreate(MessageCreateEvent e) {
 
-		if (message.content.equalsIgnoreCase("//test")) {
-			message.channel.sendMessage("Hello there!\nGuild: " + (message.guild != null));
-		} else if (message.content.startsWith("//nick") && message.guild != null
-				&& message.author.id.equals("104063667351322624")) {
-			String nick = message.content.split(" ")[1];
-			message.guild.members.get(message.loader.user.id).setNick(nick);
-		} else if (message.content.startsWith("//game") && message.author.id.equals("104063667351322624")) {
-			String game = message.content.substring(7);
-			message.loader.user.setGame(game);
-			System.out.printf("Playing game set to: %s\n", game);
-		}
 	}
 
-	@eventHandler
+	@EventHandler
 	public void raw(String text) {
 		System.out.println(text);
 	}

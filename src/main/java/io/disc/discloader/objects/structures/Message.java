@@ -5,6 +5,7 @@ import java.util.concurrent.CompletableFuture;
 
 import io.disc.discloader.DiscLoader;
 import io.disc.discloader.objects.gateway.MessageJSON;
+import io.disc.discloader.util.constants;
 
 /**
  * @author Perry Berman
@@ -14,7 +15,7 @@ public class Message {
 
 	public final String id;
 	public String content;
-	public String timestamp;
+	// public String timestamp;
 	public String edited_timestamp;
 	public String nonce;
 	public String webhookID;
@@ -23,8 +24,10 @@ public class Message {
 	public final boolean editable;
 	public boolean pinned;
 
-	// public final Date timestamp;
-
+	public final Date timestamp;
+	public Date editedAt;
+	
+	
 	public Mentions mentions;
 	public final DiscLoader loader;
 	public final TextChannel channel;
@@ -58,6 +61,10 @@ public class Message {
 		this.nonce = data.nonce;
 
 		this.mentions = new Mentions(this, data.mentions, data.mention_roles, data.mention_everyone);
+		
+		this.timestamp = constants.parseISO8601(data.timestamp);
+		
+		this.editedAt = data.edited_timestamp != null ? constants.parseISO8601(data.edited_timestamp) : null;
 	}
 
 	/**
@@ -69,6 +76,8 @@ public class Message {
 
 		this.mentions.patch(data.mentions, data.mention_roles, data.mention_everyone);
 
+		this.editedAt = constants.parseISO8601(data.edited_timestamp);
+		
 		return this;
 	}
 

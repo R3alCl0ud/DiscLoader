@@ -20,7 +20,7 @@ import io.disc.discloader.util.constants;
 /**
  * This represents a Guild in Discord's API
  * @author Perry Berman
- * 
+ * @since 0.0.1_Alpha
  */
 public class Guild {
 	
@@ -30,17 +30,17 @@ public class Guild {
 	public final String id;
 	
 	/**
-	 * 
+	 * The guild's name
 	 */
 	public String name;
 	
 	/**
-	 * 
+	 * The guild's owner's Snowflake ID.
 	 */
 	public String ownerID;
 	
 	/**
-	 * 
+	 * The hash code of the guild's icon
 	 */
 	public String icon;
 
@@ -55,12 +55,13 @@ public class Guild {
 	public boolean available;
 
 	/**
-	 * 
+	 * A GuildMember object repersenting the guild's owner
+	 * @see GuildMember
 	 */
 	public GuildMember owner;
 
 	/**
-	 * 
+	 * The instance of the {@link DiscLoader loader} the cached the guild
 	 */
 	public final DiscLoader loader;
 

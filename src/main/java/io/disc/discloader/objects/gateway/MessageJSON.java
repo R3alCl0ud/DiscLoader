@@ -17,5 +17,7 @@ public class MessageJSON {
 
 	public UserJSON[] mentions;
 	public RoleJSON[] mention_roles;
+	
+	public EmbedJSON[] embeds;
 
 }

@@ -4,7 +4,7 @@ import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-import io.disc.discloader.objects.annotations.eventHandler;
+import io.disc.discloader.objects.annotations.EventHandler;
 
 public class DiscHandler {
 
@@ -29,8 +29,8 @@ public class DiscHandler {
 					loaded = classLoader.loadClass(traces[i].getClassName());
 					Method methods[] = loaded.getDeclaredMethods();
 					for (int n = 0; n < methods.length; n++) {
-						eventHandler event = methods[n]
-								.getAnnotation(io.disc.discloader.objects.annotations.eventHandler.class);
+						EventHandler event = methods[n]
+								.getAnnotation(io.disc.discloader.objects.annotations.EventHandler.class);
 						if (event != null) {
 							System.out.println(methods[n].getName());
 							if (!this.events.containsKey(methods[n].getName())) {
