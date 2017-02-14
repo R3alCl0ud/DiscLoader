@@ -36,12 +36,10 @@ public class ModHandler {
 		this.beginLoader(null);
 	}
 
-	
 	public void emit(String event, Object e) {
 		for (ModContainer mod : this.mods.values()) {
 			mod.ExecuteHandler(event, e);
 		}
 	}
-
 
 }

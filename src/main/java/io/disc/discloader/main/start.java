@@ -47,10 +47,11 @@ public class start {
 					System.exit(1);
 				}
 			} else if (args[i].equals("-p")) {
-				if (i+1 < args.length) {
-					DiscRegistry.prefix = args[i+1];
+				if (i + 1 < args.length) {
+					DiscRegistry.prefix = args[i + 1];
 				} else {
 					System.out.println("Expected argument after -p");
+					System.exit(1);
 				}
 			}
 		}
