@@ -1,11 +1,6 @@
-/**
- * 
- */
 package io.disc.discloader.objects.loader;
 
 import java.io.File;
-import java.lang.annotation.Annotation;
-import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.net.URL;
 import java.net.URLClassLoader;
@@ -14,7 +9,7 @@ import java.util.Enumeration;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 
-import io.disc.discloader.DiscLoader;
+import io.disc.discloader.objects.annotations.EventHandler;
 import io.disc.discloader.objects.annotations.Mod;
 
 /**
@@ -23,22 +18,13 @@ import io.disc.discloader.objects.annotations.Mod;
  */
 public class ServiceLoader {
 
-	public final DiscLoader loader;
+	private static Class<?> potentMod;
 
-	private Class<?> instance;
+	protected static Enumeration<JarEntry> e;
 
-	protected Enumeration<JarEntry> e;
-
-	/**
-	 * 
-	 */
-	public ServiceLoader(DiscLoader loader) {
-		this.loader = loader;
-	}
-
-	public ArrayList<Class<?>> loadMods() {
-		ArrayList<Class<?>> list = new ArrayList<Class<?>>();
-		// Determine if mod loading folder exists already
+	public static ArrayList<ModContainer> loadMods() {
+		ArrayList<ModContainer> list = new ArrayList<ModContainer>();
+		// Determine if the mods folder exists already
 		File dir = (new File("mods"));
 		if (!dir.exists() || !dir.isDirectory()) {
 			try {
@@ -65,14 +51,13 @@ public class ServiceLoader {
 			System.out.println("\tReported as: NOT A DIR");
 			System.exit(1);
 		}
-		
+
 		// This will print out the working directory.
 		System.out.println(System.getProperty("user.dir"));
 
 		// Hopefully it will be jar files
 		File jars[] = dir.listFiles();
-		
-		
+
 		for (int i = 0; i < jars.length; i++) {
 			String file_ext = jars[i].getName().split("\\.")[jars[i].getName().split("\\.").length - 1];
 			/*
@@ -86,12 +71,12 @@ public class ServiceLoader {
 				System.out.println("\tJarfile/Zip Name: " + jars[i].getName());
 				try {
 					JarFile jf = new JarFile(jars[i]);
-					this.e = jf.entries();
+					e = jf.entries();
 
 					URL[] urls = { new URL("jar:file:" + jars[i].getPath() + "!/") };
 					URLClassLoader cl = URLClassLoader.newInstance(urls);
 
-					while (this.e.hasMoreElements()) {
+					while (e.hasMoreElements()) {
 						JarEntry je = e.nextElement();
 						if (je.isDirectory() || !je.getName().endsWith(".class")) {
 							continue;
@@ -99,38 +84,33 @@ public class ServiceLoader {
 
 						String className = je.getName().substring(0, je.getName().length() - 6);
 						className = className.replace('/', '.');
-						
-						this.instance = cl.loadClass(className);
-						for (Field fld : this.instance.getFields()) {
-							System.out.println(fld.getName());
-						}
-						
-						
-						if (this.instance.getClass().isAnnotationPresent(Mod.class)) {
-							System.out.printf("Found a mod: %s\n", this.instance.getName());
-						}
-						
-						
-						if (this.instance.isAnnotationPresent(Mod.class)) {
-							Mod mod = this.instance.getAnnotation(Mod.class);
-							System.out.println(mod.modid());
-						}
 
+						potentMod = cl.loadClass(className);
+						
+						if (potentMod.isAnnotationPresent(Mod.class)) {
+							System.out.printf("Found a mod: %s\n", potentMod.getName());
+							list.add(new ModContainer(potentMod));
+						}
 					}
 
 					jf.close();
 				} catch (Exception e) {
-					System.out.println("Unable to add JarFile" + jars[i].getName());
+					System.out.println("Unable to add JarFile " + jars[i].getName());
 				}
 			}
 		}
-		
-		
+
 		return list;
 	}
 
-	public ArrayList<Method> loadEventHandlers(Class<?> cls) {
-		return null;
+	public static ArrayList<Method> loadEventHandlers(ModContainer modContainer) {
+		ArrayList<Method> eventHandlers = new ArrayList<Method>();
+		for (Method method : modContainer.modClass.getDeclaredMethods()) {
+			if (method.isAnnotationPresent(EventHandler.class)) {
+				eventHandlers.add(method);
+			}
+		}
+		return eventHandlers;
 	}
 
 }

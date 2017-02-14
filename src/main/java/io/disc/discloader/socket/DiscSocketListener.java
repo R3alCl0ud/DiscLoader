@@ -39,6 +39,8 @@ public class DiscSocketListener extends WebSocketAdapter implements WebSocketLis
 		this.register(constants.WSEvents.GUILD_CREATE, new GuildCreate(this.socket));
 		this.register(constants.WSEvents.PRESENCE_UPDATE, new PresenceUpdate(this.socket));
 		this.register(constants.WSEvents.MESSAGE_CREATE, new MessageCreate(this.socket));
+		this.register(constants.WSEvents.MESSAGE_UPDATE, new MessageUpdate(this.socket));
+		this.register(constants.WSEvents.MESSAGE_DELETE, new MessageDelete(this.socket));
 	}
 
 	public void setSequence(int s) {
@@ -78,8 +80,6 @@ public class DiscSocketListener extends WebSocketAdapter implements WebSocketLis
 
 		this.setSequence(packet.s);
 		
-//		System.out.printf("Socket Status: %d\n", this.socket.status);
-		
 		if (this.socket.status != constants.Status.READY) {
 			if (constants.EventWhitelist.indexOf(packet.t) == -1) {
 				this.queue.add(packet);
@@ -90,7 +90,6 @@ public class DiscSocketListener extends WebSocketAdapter implements WebSocketLis
 		if (packet.op == constants.OPCodes.DISPATCH) {
 			if (!this.handlers.containsKey(packet.t))
 				return;
-			System.out.println(packet.t);
 			this.handlers.get(packet.t).handle(packet);
 		}
 	}

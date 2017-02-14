@@ -5,6 +5,7 @@ package io.disc.discloader.socket.packets;
 
 import io.disc.discloader.events.MessageCreateEvent;
 import io.disc.discloader.objects.gateway.MessageJSON;
+import io.disc.discloader.objects.loader.DiscRegistry;
 import io.disc.discloader.objects.structures.Message;
 import io.disc.discloader.objects.structures.TextChannel;
 import io.disc.discloader.socket.DiscSocket;
@@ -31,7 +32,9 @@ public class MessageCreate extends DiscPacket {
 			channel = this.socket.loader.privateChannels.get(data.channel_id);
 		Message message = new Message(channel, data);
 		channel.messages.put(message.id, message);
-		this.socket.loader.emit(constants.Events.MESSAGE_CREATE, new MessageCreateEvent(message));
+		MessageCreateEvent e = new MessageCreateEvent(message);
+		this.socket.loader.emit(constants.Events.MESSAGE_CREATE, e);
+		DiscRegistry.executeCommand(e);
 	}
 
 }

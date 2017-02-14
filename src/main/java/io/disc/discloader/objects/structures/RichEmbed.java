@@ -6,9 +6,6 @@ package io.disc.discloader.objects.structures;
  */
 public class RichEmbed {
 	
-	/**
-	 * 
-	 */
 	public RichEmbed() {
 		
 	}

@@ -11,12 +11,12 @@ import com.google.gson.Gson;
 import io.disc.discloader.objects.gateway.ChannelJSON;
 import io.disc.discloader.objects.gateway.GuildJSON;
 import io.disc.discloader.objects.gateway.UserJSON;
+import io.disc.discloader.objects.loader.DiscRegistry;
 import io.disc.discloader.objects.loader.ModHandler;
-import io.disc.discloader.objects.loader.ServiceLoader;
 import io.disc.discloader.objects.structures.Channel;
 import io.disc.discloader.objects.structures.Guild;
-import io.disc.discloader.objects.structures.PrivateChannel;
 import io.disc.discloader.objects.structures.Mod;
+import io.disc.discloader.objects.structures.PrivateChannel;
 import io.disc.discloader.objects.structures.TextChannel;
 import io.disc.discloader.objects.structures.User;
 import io.disc.discloader.objects.structures.VoiceChannel;
@@ -36,9 +36,9 @@ public class DiscLoader {
 
 	public DiscHandler handler;
 
-	public DiscREST rest;
+	public DiscRegistry registry;
 	
-	public ServiceLoader service;
+	public DiscREST rest;
 
 	public ModHandler modh;
 
@@ -112,8 +112,10 @@ public class DiscLoader {
 		this.discSocket = new DiscSocket(this);
 		this.handler = new DiscHandler(this);
 		this.rest = new DiscREST(this);
-		this.handler.loadEvents();
+//		this.handler.loadEvents();
 
+		this.registry = new DiscRegistry(this);
+		
 		this.users = new HashMap<String, User>();
 
 		this.channels = new HashMap<String, Channel>();
@@ -123,10 +125,7 @@ public class DiscLoader {
 		this.guilds = new HashMap<String, Guild>();
 		this.mods = new HashMap<String, Mod>();
 
-		this.modh = new ModHandler();
-		
-		this.service = new ServiceLoader(this);
-		this.service.loadMods();
+		this.modh = new ModHandler(this);
 
 //		this.modh.beginLoader();
 
@@ -163,7 +162,7 @@ public class DiscLoader {
 	}
 
 	public void emit(String event, Object data) {
-		this.handler.emit(event, data);
+		this.modh.emit(event, data);
 	}
 
 	public void emit(String event) {
@@ -276,7 +275,6 @@ public class DiscLoader {
 
 	public void emitReady() {
 		this.discSocket.status = constants.Status.READY;
-//		System.out.println(this.discSocket.status);
 		this.ready = true;
 		this.emit(constants.Events.READY, this);
 	}

@@ -9,11 +9,8 @@ import javax.swing.tree.DefaultTreeModel;
 import com.google.gson.Gson;
 
 import io.disc.discloader.DiscLoader;
-import io.disc.discloader.events.GuildMemberUpdateEvent;
-import io.disc.discloader.events.MessageCreateEvent;
-import io.disc.discloader.events.UserUpdateEvent;
 import io.disc.discloader.objects.annotations.EventHandler;
-import io.disc.discloader.objects.structures.Message;
+import io.disc.discloader.objects.loader.DiscRegistry;
 import io.disc.discloader.objects.window.WindowFrame;
 
 /**
@@ -37,42 +34,41 @@ public class start {
 			content += line;
 		options options = gson.fromJson(content, options.class);
 		DiscLoader loader = new DiscLoader();
-		if (args.length == 0 || !args[0].equals("nogui"))
+		boolean useWindow = options.useWindow;
+		String token = options.auth.token;
+		for (int i = 0; i < args.length; i++) {
+			if (args[i].equalsIgnoreCase("nogui")) {
+				useWindow = false;
+			} else if (args[i].equals("-t")) {
+				if (i + 1 < args.length) {
+					token = args[i + 1];
+				} else {
+					System.out.println("Expected argument after -t");
+					System.exit(1);
+				}
+			} else if (args[i].equals("-p")) {
+				if (i+1 < args.length) {
+					DiscRegistry.prefix = args[i+1];
+				} else {
+					System.out.println("Expected argument after -p");
+				}
+			}
+		}
+		if (useWindow) {
 			window = new WindowFrame(loader);
-//		loader.login(options.auth.token);
-
+		}
+		loader.modh.beginLoader();
+		loader.login(token);
 	}
 
 	@EventHandler
 	public void ready(DiscLoader loader) {
 		System.out.println("Test");
-		loader.user.setGame("test game please ignore: TGPI");
-	}
-
-	@EventHandler
-	public void MessageCreate(MessageCreateEvent e) {
-
 	}
 
 	@EventHandler
 	public void raw(String text) {
 		System.out.println(text);
-	}
-
-	// @eventHandler
-	public void debug(String debug) {
-		System.out.println(debug);
-	}
-
-	// @eventHandler
-	public void UserUpdate(UserUpdateEvent e) {
-
-	}
-
-	// @eventHandler
-	public void PresenceUpdate(GuildMemberUpdateEvent e) {
-		// window.panel.guilds.guilds.get(e.guild.id).updateMemberNode(e.member);
-		// updateViewPanel();
 	}
 
 	public void updateViewPanel() {

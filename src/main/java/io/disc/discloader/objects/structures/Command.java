@@ -1,5 +1,7 @@
 package io.disc.discloader.objects.structures;
 
+import io.disc.discloader.events.MessageCreateEvent;
+
 /**
  * @author Perry Berman
  *
@@ -24,9 +26,9 @@ public class Command {
 	/**
 	 * executes the command
 	 * 
-	 * @param message
+	 * @param e
 	 */
-	public void execute(Message message) {
+	public void execute(MessageCreateEvent e) {
 		return;
 	}
 
