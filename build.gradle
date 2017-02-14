@@ -2,7 +2,7 @@ apply plugin: 'java'
 apply plugin: 'eclipse'
 apply plugin: 'application'
 
-mainClassName = 'io.disc.discloader.main.start'
+mainClassName = 'io.discloader.discloader.main.start'
 
 // tag::repositories[]
 repositories { 
@@ -62,7 +62,7 @@ task buildInfo {
 }
 
 task build {
-
+	
 }
 
 

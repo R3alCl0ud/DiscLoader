@@ -1,9 +1,9 @@
 package xyz.r3alb0t.help;
 
-import io.disc.discloader.events.DiscPreInitEvent;
-import io.disc.discloader.objects.annotations.EventHandler;
-import io.disc.discloader.objects.annotations.Mod;
-import io.disc.discloader.objects.annotations.Mod.Instance;
+import io.discloader.discloader.events.DiscPreInitEvent;
+import io.discloader.discloader.objects.annotations.EventHandler;
+import io.discloader.discloader.objects.annotations.Mod;
+import io.discloader.discloader.objects.annotations.Mod.Instance;
 import xyz.r3alb0t.help.common.ObjectHandler;
 
 /**

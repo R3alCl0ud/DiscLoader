@@ -1,7 +1,7 @@
 package xyz.r3alb0t.help.common;
 
-import io.disc.discloader.objects.loader.DiscRegistry;
-import io.disc.discloader.objects.structures.Command;
+import io.discloader.discloader.objects.loader.DiscRegistry;
+import io.discloader.discloader.objects.structures.Command;
 import xyz.r3alb0t.help.common.commands.HelpCommand;
 
 /**

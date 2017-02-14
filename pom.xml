@@ -2,42 +2,30 @@
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 
-	<groupId>io.disc</groupId>
+	<groupId>io.discloader</groupId>
 	<artifactId>discloader </artifactId>
-	<version>0.0.1-SNAPSHOT</version>
+	<version>0.0.1</version>
 
 	<name>DiscLoader</name>
 
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-		<github.global.server>github</github.global.server>
 	</properties>
+	<distributionManagement>
+		<repository>
+			<id>maven</id>
+			<name>DiscLoader Maven Repo</name>
+			<url>http://discloader.io:8080/repository/maven/</url>
+		</repository>
+		<snapshotRepository>
+			<id>archiva.snapshots</id>
+			<name>Internal Snapshot Repository</name>
+			<url>http://discloader.io:8080/repository/snapshots/</url>
+		</snapshotRepository>
+	</distributionManagement>
+
 	<build>
 		<plugins>
-			<plugin>
-				<groupId>com.github.github</groupId>
-				<artifactId>site-maven-plugin</artifactId>
-				<version>0.11</version>
-				<configuration>
-					<message>Maven artifacts for ${project.version}</message>  <!-- git commit message -->
-					<noJekyll>true</noJekyll>                                  <!-- disable webpage processing -->
-					<outputDirectory>${project.build.directory}/mvn-repo</outputDirectory> <!-- matches distribution management repository url above -->
-					<branch>refs/heads/mvn-repo</branch>                       <!-- remote branch name -->
-					<includes>
-						<include>**/*</include>
-					</includes>
-					<repositoryName>DiscLoader</repositoryName>      <!-- github repo name -->
-					<repositoryOwner>R3alCl0ud</repositoryOwner>    <!-- github username -->
-				</configuration>
-				<executions>
-					<execution>
-						<goals>
-							<goal>site</goal>
-						</goals>
-						<phase>deploy</phase>
-					</execution>
-				</executions>
-			</plugin>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-compiler-plugin</artifactId>
@@ -90,5 +78,4 @@
 		</dependency>
 	</dependencies>
 	<url>http://discloader.io</url>
-	<packaging>war</packaging>
 </project>

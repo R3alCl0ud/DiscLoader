@@ -3,9 +3,9 @@
  */
 package xyz.r3alb0t.help.common.commands;
 
-import io.disc.discloader.events.MessageCreateEvent;
-import io.disc.discloader.objects.structures.Command;
-import io.disc.discloader.objects.structures.Message;
+import io.discloader.discloader.events.MessageCreateEvent;
+import io.discloader.discloader.objects.structures.Command;
+import io.discloader.discloader.objects.structures.Message;
 
 /**
  * @author Perry Berman
