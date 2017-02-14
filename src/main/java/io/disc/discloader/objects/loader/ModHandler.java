@@ -28,6 +28,7 @@ public class ModHandler {
 	public void beginLoader(String customAnnotationPath) {
 		ArrayList<ModContainer> mods = ServiceLoader.loadMods();
 		for (ModContainer mod : mods) {
+			System.out.println(mod.ModInfo.modid());
 			this.loadMod(mod);
 		}
 	}
