@@ -2,8 +2,8 @@ package io.discloader.discloader.objects.window.trees.nodes.channels;
 
 import javax.swing.tree.DefaultMutableTreeNode;
 
-import io.discloader.discloader.objects.structures.Channel;
-import io.discloader.discloader.objects.structures.VoiceChannel;
+import io.discloader.discloader.objects.structures.channels.Channel;
+import io.discloader.discloader.objects.structures.channels.VoiceChannel;
 import io.discloader.discloader.objects.window.trees.nodes.GuildNode;
 
 /**

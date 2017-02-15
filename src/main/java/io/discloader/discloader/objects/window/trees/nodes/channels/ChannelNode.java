@@ -5,7 +5,7 @@ package io.discloader.discloader.objects.window.trees.nodes.channels;
 
 import javax.swing.tree.DefaultMutableTreeNode;
 
-import io.discloader.discloader.objects.structures.Channel;
+import io.discloader.discloader.objects.structures.channels.Channel;
 
 /**
  * @author Perry Berman

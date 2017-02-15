@@ -8,12 +8,12 @@ import javax.swing.*;
 import javax.swing.tree.*;
 
 import io.discloader.discloader.DiscLoader;
-import io.discloader.discloader.objects.structures.Channel;
 import io.discloader.discloader.objects.structures.Guild;
-import io.discloader.discloader.objects.structures.PrivateChannel;
-import io.discloader.discloader.objects.structures.TextChannel;
 import io.discloader.discloader.objects.structures.User;
-import io.discloader.discloader.objects.structures.VoiceChannel;
+import io.discloader.discloader.objects.structures.channels.Channel;
+import io.discloader.discloader.objects.structures.channels.PrivateChannel;
+import io.discloader.discloader.objects.structures.channels.TextChannel;
+import io.discloader.discloader.objects.structures.channels.VoiceChannel;
 import io.discloader.discloader.objects.window.trees.ChannelTree;
 import io.discloader.discloader.objects.window.trees.GuildTree;
 import io.discloader.discloader.objects.window.trees.UserTree;

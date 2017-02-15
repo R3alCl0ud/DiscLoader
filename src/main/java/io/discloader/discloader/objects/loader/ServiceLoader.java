@@ -8,9 +8,12 @@ import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import io.discloader.discloader.objects.annotations.EventHandler;
 import io.discloader.discloader.objects.annotations.Mod;
+import io.discloader.discloader.objects.mods.ModContainer;
 
 /**
  * @author Perry Berman
@@ -21,6 +24,8 @@ public class ServiceLoader {
 	private static Class<?> potentMod;
 
 	protected static Enumeration<JarEntry> e;
+
+	private static Pattern modExt = Pattern.compile(".(jar|zip)");
 
 	public static ArrayList<ModContainer> loadMods() {
 		ArrayList<ModContainer> list = new ArrayList<ModContainer>();
@@ -58,35 +63,33 @@ public class ServiceLoader {
 		// Hopefully it will be jar files
 		File jars[] = dir.listFiles();
 
-		for (int i = 0; i < jars.length; i++) {
-			String file_ext = jars[i].getName().split("\\.")[jars[i].getName().split("\\.").length - 1];
-			/*
-			 * Emergency Code Latch IN CASE OF EMERGENCY UN-COMMENT CODE
-			 * -------------------------------------------------
-			 * System.out.println(jars[i].getName() + " " + file_ext +
-			 * " IS JAR? " + (file_ext.toLowerCase().equals("jar") &&
-			 * !jars[i].equals("jar") ? "TRUE" : "FALSE"));
-			 */
-			if ((file_ext.toLowerCase().equals("jar")) && !jars[i].equals("jar")) {
-				System.out.println("\tJarfile/Zip Name: " + jars[i].getName());
+		for (File jar : jars) {
+			Matcher modMatch = modExt.matcher(jar.getName());
+			System.out.println("hmm");
+			String file_ext = null;//modMatch.groupCount() == 1 ? modMatch.group(0) : "";
+			System.out.println(jar.getName());
+			if (file_ext == null) continue;
+			System.out.println(file_ext);
+			if ((file_ext.toLowerCase().equals("jar")) && !jar.equals("jar")) {
+				System.out.println("\tJarfile/Zip Name: " + jar.getName());
 				try {
-					JarFile jf = new JarFile(jars[i]);
+					JarFile jf = new JarFile(jar);
 					e = jf.entries();
 
-					URL[] urls = { new URL("jar:file:" + jars[i].getPath() + "!/") };
+					URL[] urls = { new URL("jar:file:" + jar.getPath() + "!/") };
 					URLClassLoader cl = URLClassLoader.newInstance(urls);
 
 					while (e.hasMoreElements()) {
-						JarEntry je = e.nextElement();
-						if (je.isDirectory() || !je.getName().endsWith(".class")) {
+						JarEntry jarEntry = e.nextElement();
+						if (jarEntry.isDirectory() || !jarEntry.getName().endsWith(".class")) {
 							continue;
 						}
 
-						String className = je.getName().substring(0, je.getName().length() - 6);
+						String className = jarEntry.getName().substring(0, jarEntry.getName().length() - 6);
 						className = className.replace('/', '.');
 
 						potentMod = cl.loadClass(className);
-						
+
 						if (potentMod.isAnnotationPresent(Mod.class)) {
 							System.out.printf("Found a mod: %s\n", potentMod.getName());
 							list.add(new ModContainer(potentMod));
@@ -95,7 +98,7 @@ public class ServiceLoader {
 
 					jf.close();
 				} catch (Exception e) {
-					System.out.println("Unable to add JarFile " + jars[i].getName());
+					System.out.println("Unable to add JarFile " + jar.getName());
 				}
 			}
 		}

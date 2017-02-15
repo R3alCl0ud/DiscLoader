@@ -5,6 +5,7 @@ import java.util.concurrent.CompletableFuture;
 
 import io.discloader.discloader.DiscLoader;
 import io.discloader.discloader.objects.gateway.MessageJSON;
+import io.discloader.discloader.objects.structures.channels.TextChannel;
 import io.discloader.discloader.util.constants;
 
 /**
@@ -81,10 +82,39 @@ public class Message {
 		return this;
 	}
 
+	/**
+	 * Edit's the messages content. Only possible if the {@link DiscLoader loader} is the message's {@link #author}
+	 * @param content The new content of the message
+	 * @param embed The new embed for the message
+	 * @return A Future that completes with {@literal this} when sucessfull
+	 */
+	public CompletableFuture<Message> edit(String content, RichEmbed embed) {
+		return this.loader.rest.editMessage(this.channel, this, content, embed);
+	}
+	
+	/**
+	 * Edit's the messages content. Only possible if the {@link DiscLoader loader} is the message's {@link #author}
+	 * @param content The new content of the message
+	 * @return A Future that completes with {@literal this} when sucessfull
+	 */
 	public CompletableFuture<Message> edit(String content) {
-		return this.loader.rest.editMessage(this.channel, this, content);
+		return this.edit(content, null);
+	}
+	
+	/**
+	 * Edit's the messages content. Only possible if the {@link DiscLoader loader} is the message's {@link #author}
+	 * @param embed The new embed for the message
+	 * @return A Future that completes with {@literal this} when sucessfull
+	 */
+	public CompletableFuture<Message> edit(RichEmbed embed) {
+		return this.edit(null, embed);
 	}
 
+	/**
+	 * Deletes the message if the loader has suficient permissions
+	 * @see constants.PermissionFlags
+	 * @return A Future that completes with {@literal this} when sucessfull
+	 */
 	public CompletableFuture<Message> delete() {
 		return this.loader.rest.deleteMessage(this.channel, this);
 	}

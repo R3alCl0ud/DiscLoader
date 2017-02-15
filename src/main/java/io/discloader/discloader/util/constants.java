@@ -1,9 +1,6 @@
 package io.discloader.discloader.util;
 
 import java.text.MessageFormat;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.time.Instant;
 import java.time.OffsetDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -11,23 +8,29 @@ import java.util.Date;
 
 /**
  * A collection of all useful constants for DiscLoader
+ * 
  * @author Perry Berman
- *
+ * @since v0.0.1
+ * @version First draft
  */
 public class constants {
-	
+
+	public static final String PERMISSIONS_DOCS = "https://discordapp.com/developers/docs/topics/permissions#bitwise-permission-flags";
+
 	/**
 	 * Converts a ISO-8601 DateTime string to a {@link Date} object.
-	 * @param datetime A DateTime string in ISO-8601 format
+	 * 
+	 * @param datetime
+	 *            A DateTime string in ISO-8601 format
 	 * @return Date from datetime string
 	 */
 	public static final Date parseISO8601(String datetime) {
 		return Date.from(OffsetDateTime.parse(datetime).toInstant());
 	}
-	
+
 	public static final String HOST = "https://discordapp.com";
 	public static final String API = MessageFormat.format("{0}/api/v6", new Object[] { HOST });
-	public static final String LoaderVersion = "0.0.1_a";
+	public static final String LoaderVersion = "0.0.1";
 
 	public static final class Endpoints {
 		public static final String login = API + "/auth/login";
@@ -163,10 +166,39 @@ public class constants {
 		public static final String PRESENCE_UPDATE = "PRESENCE_UPDATE";
 	}
 
+	/**
+	 * An {@link ArrayList} of {@link WSEvents} that are handled by the
+	 * {@link DiscSocketListener SocketListener} before the {@link DiscLoader
+	 * loader} has emitted ready.
+	 * 
+	 * @author Perry Berman
+	 * @since v0.0.1
+	 * @version First draft
+	 */
 	public static final ArrayList<String> EventWhitelist = new ArrayList<String>(
 			Arrays.asList(WSEvents.HELLO, WSEvents.READY, WSEvents.GUILD_CREATE, WSEvents.GUILD_DELETE,
 					WSEvents.GUILD_MEMBER_ADD, WSEvents.GUILD_MEMBER_REMOVE, WSEvents.GUILD_MEMBER_UPDATE));
 
+	/**
+	 * The list of events that could possibly be emitted <br>
+	 * Events include: <br>
+	 * <ul>
+	 * <li>{@value #READY}</li>
+	 * <li>{@value #GUILD_CREATE}</li>
+	 * <li>{@value #GUILD_DELETE}</li>
+	 * <li>{@value #GUILD_UPDATE}</li>
+	 * <li>{@value #GUILD_MEMBERS_CHUNK}</li>
+	 * <li>{@value #GUILD_MEMBER_ADD}</li>
+	 * <li>{@value #GUILD_MEMBER_AVAILABLE}</li>
+	 * <li>{@value #GUILD_MEMBER_REMOVE}</li>
+	 * <li>{@value #GUILD_MEMBER_UPDATE}</li>
+	 * <li
+	 * <ul>
+	 * 
+	 * @author Perry Berman
+	 * @since v0.0.1
+	 * @version First draft
+	 */
 	public static final class Events {
 		public static final String READY = "ready";
 		public static final String GUILD_CREATE = "GuildCreate";
@@ -198,7 +230,9 @@ public class constants {
 	}
 
 	/**
-	 * An object containing {@link Integer} representations of the different types of channels in Discord's API
+	 * An object containing {@link Integer} representations of the different
+	 * types of channels in Discord's API
+	 * 
 	 * @author Perry Berman
 	 */
 	public static final class ChannelTypes {
@@ -208,6 +242,15 @@ public class constants {
 		public static final int groupDM = 3;
 	}
 
+	/**
+	 * This object contains every 53bit {@link Permission} {@link Integer} as
+	 * specified in Discord's API. Visit <a href=
+	 * "https://discordapp.com/developers/docs/topics/permissions#bitwise-permission-flags">
+	 * here</a> to view the official list of permissions and their descriptions
+	 * 
+	 * @author Perry Berman
+	 * @since 0.0.1
+	 */
 	public static final class Permissions {
 		public static final int CREATE_INSTANT_INVITE = 0x00000001;
 		public static final int KICK_MEMBERS = 0x00000002;
@@ -216,12 +259,39 @@ public class constants {
 		public static final int MANAGE_CHANNELS = 0x00000010;
 		public static final int MANAGE_GUILD = 0x00000020;
 		public static final int ADD_REACTION = 0x00000040;
+
 		public static final int READ_MESSAGES = 0x00000400;
 		public static final int SEND_MESSAGES = 0x00000800;
 		public static final int SEND_TTS_MESSAGES = 0x00001000;
 		public static final int MANAGE_MESSAGES = 0x00002000;
+		public static final int EMBED_LINKS = 0x00004000;
+		public static final int ATTACH_FILES = 0x00008000;
+		public static final int READ_MESSAGE_HISTORY = 0x00010000;
+		public static final int MENTION_EVERYONE = 0x00020000;
+		public static final int USE_EXTERNAL_EMOJIS = 0x00040000;
+
+		public static final int CONNECT = 0x00100000;
+		public static final int SPEAK = 0x00200000;
+		public static final int MUTE_MEMBERS = 0x00400000;
+		public static final int DEAFEN_MEMBERS = 0x00800000;
+		public static final int MOVE_MEMBERS = 0x01000000;
+		public static final int USE_VAD = 0x02000000;
+		public static final int CHANGE_NICKNAME = 0x04000000;
+		public static final int MANAGE_NICKNAMES = 0x08000000;
+		public static final int MANAGE_ROLES = 0x10000000;
+		public static final int MANAGE_WEBHOOKS = 0x20000000;
+		public static final int MANAGE_EMOJIS = 0x40000000;
 	}
 
+	/**
+	 * This object contains the values needed to test a raw 53bit permissions
+	 * integer against. Visit <a href=
+	 * "https://discordapp.com/developers/docs/topics/permissions#bitwise-permission-flags">
+	 * here</a> to view the official list of permissions and their descriptions
+	 * 
+	 * @author Perry Berman
+	 * @since 0.0.1
+	 */
 	public static final class PermissionFlags {
 		public static final int CREATE_INSTANT_INVITE = 1 << 0;
 		public static final int KICK_MEMBERS = 1 << 1;
@@ -235,5 +305,22 @@ public class constants {
 		public static final int SEND_MESSAGES = 1 << 11;
 		public static final int SEND_TTS_MESSAGES = 1 << 12;
 		public static final int MANAGE_MESSAGES = 1 << 13;
+		public static final int EMBED_LINKS = 1 << 14;
+		public static final int ATTACH_FILES = 1 << 15;
+		public static final int READ_MESSAGE_HISTORY = 1 << 16;
+		public static final int MENTION_EVERYONE = 1 << 17;
+		public static final int USE_EXTERNAL_EMOJIS = 1 << 18;
+
+		public static final int CONNECT = 1 << 20;
+		public static final int SPEAK = 1 << 21;
+		public static final int MUTE_MEMBERS = 1 << 22;
+		public static final int DEAFEN_MEMBERS = 1 << 23;
+		public static final int MOVE_MEMBERS = 1 << 24;
+		public static final int USE_VAD = 1 << 25;
+		public static final int CHANGE_NICKNAME = 1 << 26;
+		public static final int MANAGE_NICKNAMES = 1 << 27;
+		public static final int MANAGE_ROLES = 1 << 28;
+		public static final int MANAGE_WEBHOOKS = 1 << 29;
+		public static final int MANAGE_EMOJIS = 1 << 30;
 	}
 }

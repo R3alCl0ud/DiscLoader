@@ -1,6 +1,6 @@
 package io.discloader.discloader.objects.structures;
 
-import io.discloader.discloader.objects.loader.ModHandler;;
+import io.discloader.discloader.objects.mods.ModHandler;;
 
 public class Mod {
 	public String modid;

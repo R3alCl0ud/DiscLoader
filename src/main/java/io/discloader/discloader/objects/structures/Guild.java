@@ -15,6 +15,8 @@ import io.discloader.discloader.objects.gateway.GuildJSON;
 import io.discloader.discloader.objects.gateway.MemberJSON;
 import io.discloader.discloader.objects.gateway.PresenceJSON;
 import io.discloader.discloader.objects.gateway.RoleJSON;
+import io.discloader.discloader.objects.structures.channels.TextChannel;
+import io.discloader.discloader.objects.structures.channels.VoiceChannel;
 import io.discloader.discloader.util.constants;
 
 /**

@@ -4,7 +4,7 @@
 package io.discloader.discloader.socket.packets;
 
 import io.discloader.discloader.objects.gateway.MessageJSON;
-import io.discloader.discloader.objects.structures.TextChannel;
+import io.discloader.discloader.objects.structures.channels.TextChannel;
 import io.discloader.discloader.socket.DiscSocket;
 import io.discloader.discloader.util.constants;
 

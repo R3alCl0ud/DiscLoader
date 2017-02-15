@@ -3,8 +3,8 @@ package io.discloader.discloader.objects.window.trees.nodes.channels;
 import javax.swing.tree.DefaultMutableTreeNode;
 
 import io.discloader.discloader.objects.structures.GuildMember;
-import io.discloader.discloader.objects.structures.TextChannel;
-import io.discloader.discloader.objects.structures.VoiceChannel;
+import io.discloader.discloader.objects.structures.channels.TextChannel;
+import io.discloader.discloader.objects.structures.channels.VoiceChannel;
 import io.discloader.discloader.objects.window.trees.MemberTree;
 import io.discloader.discloader.objects.window.trees.nodes.GuildNode;
 
