@@ -22,7 +22,9 @@ import io.discloader.discloader.objects.window.WindowFrame;
 public class start {
 	public static final Gson gson = new Gson();
 	public static WindowFrame window;
-
+	public static final DiscLoader loader = new DiscLoader();
+	public static boolean useWindow = true;
+	
 	/**
 	 * @param args
 	 * @throws IOException
@@ -33,8 +35,7 @@ public class start {
 		for (Object line : lines)
 			content += line;
 		options options = gson.fromJson(content, options.class);
-		DiscLoader loader = new DiscLoader();
-		boolean useWindow = options.useWindow;
+		useWindow = options.useWindow;
 		String token = options.auth.token;
 		for (int i = 0; i < args.length; i++) {
 			if (args[i].equalsIgnoreCase("nogui")) {
@@ -57,9 +58,10 @@ public class start {
 		}
 		if (useWindow) {
 			window = new WindowFrame(loader);
+		} else {			
+			loader.modh.beginLoader();
+			loader.login(token);
 		}
-		loader.modh.beginLoader();
-//		loader.login(token);
 	}
 
 	@EventHandler

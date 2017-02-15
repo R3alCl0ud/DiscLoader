@@ -5,9 +5,11 @@ import java.util.HashMap;
 
 import io.discloader.discloader.DiscLoader;
 import io.discloader.discloader.events.DiscPreInitEvent;
+import io.discloader.discloader.main.start;
 import io.discloader.discloader.objects.annotations.Mod;
 import io.discloader.discloader.objects.loader.DiscRegistry;
 import io.discloader.discloader.objects.loader.ServiceLoader;
+import io.discloader.discloader.objects.window.LoadingPanel;
 
 public class ModHandler {
 
@@ -25,20 +27,27 @@ public class ModHandler {
 		this.mods = new HashMap<String, ModContainer>();
 	}
 
-	public void loadMod(ModContainer mod) {
+	public void loadModHandlers(ModContainer mod) {
 		if (this.mods.containsKey(mod.ModInfo.modid()))
 			return;
 		this.mods.put(mod.ModInfo.modid(), mod);
 		mod.loadHandlers();
-		DiscRegistry.setCurrentActiveMod(mod);
-		mod.preInit(new DiscPreInitEvent(this.loader));
+	}
+	
+	public void loadMod(ModContainer mod) {
+		
 	}
 
 	public void beginLoader(String customAnnotationPath) {
+		if (start.window != null) {
+			LoadingPanel.setStage(1, 3, "Mod Discovery");
+		}
 		ArrayList<ModContainer> mods = ServiceLoader.loadMods();
+		if (start.window != null) {
+			LoadingPanel.setStage(2, 3, "Registering mod event handlers");
+		}
 		for (ModContainer mod : mods) {
-			System.out.println(mod.ModInfo.modid());
-			this.loadMod(mod);
+			this.loadModHandlers(mod);
 		}
 	}
 

@@ -6,6 +6,7 @@ import java.awt.LayoutManager;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JProgressBar;
+import io.discloader.discloader.main.start;
 
 /**
  * @author Perry Berman
@@ -13,42 +14,43 @@ import javax.swing.JProgressBar;
  */
 public class LoadingPanel extends JPanel {
 
-	
 	private static final long serialVersionUID = 704573790954978688L;
-	public static JProgressBar phase;
-	public static JLabel phaseLabel;
-	public static JProgressBar step;
-	public static JLabel stepLabel;
-	public static JProgressBar progress;
-	public static JLabel progressLabel;
-	
+	public static ProgressPanel phasePanel;
+	public static ProgressPanel stagePanel;
+	public static ProgressPanel stepPanel;
+	public static ProgressPanel progressPanel;
+
 	public LoadingPanel() {
 		super(new GridLayout(0, 1));
-		this.add(phase = new JProgressBar());
-		this.add(step = new JProgressBar());
-		this.add(progress = new JProgressBar());
-		phase.add(phaseLabel = new JLabel("0: starting")); 
-		phase.setMinimum(0);
-		phase.setMaximum(3);
-		phase.setValue(1);
-		phase.setSize(200, 10);
-		phase.setString("TEST");
-		step.setSize(200, 10);
-		progress.setSize(200, 10);
-		this.revalidate();
-		this.repaint();
-	}
-	
-	public static void setPhase(int phaseNum, String text) {
-		
+		this.add(phasePanel = new ProgressPanel(0, 2));
+		this.add(stagePanel = new ProgressPanel(0, 0));
+		this.add(stepPanel = new ProgressPanel(0, 0));
+		this.add(progressPanel = new  ProgressPanel(0,0)); 
+		setPhase(1, 2, "Begin Loader");
+		start.loader.modh.beginLoader();
 	}
 
-	public static void setProgess(int progressNum, String text) {
-		
+	public static void setPhase(int phase, int maxPhase, String text) {
+		phasePanel.bar.setMaximum(maxPhase);
+		phasePanel.bar.setValue(phase);
+		phasePanel.bar.setString(String.format("[%d:%d]: %s", phase, maxPhase, text));
 	}
 	
-	public static void setStep(int stepNum, String text) {
-		
+	public static void setStage(int stage, int maxStage, String text) {
+		stagePanel.bar.setMaximum(maxStage);
+		stagePanel.bar.setValue(stage);
+		stagePanel.bar.setString(String.format("[%d:%d]: %s", stage, maxStage, text));
 	}
-	
+
+	public static void setStep(int step, int maxStep, String text) {
+		stepPanel.bar.setMaximum(maxStep);
+		stepPanel.bar.setValue(step);
+		stepPanel.bar.setString(String.format("[%d:%d]: %s", step, maxStep, text));
+	}
+
+	public static void setProgess(int progress, int maxProgress, String text) {
+		progressPanel.bar.setMaximum(maxProgress);
+		progressPanel.bar.setValue(progress);
+		progressPanel.bar.setString(String.format("[%d:%d]: %s", progress, maxProgress, text));
+	}
 }
