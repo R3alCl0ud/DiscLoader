@@ -7,7 +7,7 @@ import io.discloader.discloader.events.MessageCreateEvent;
 import io.discloader.discloader.objects.gateway.MessageJSON;
 import io.discloader.discloader.objects.loader.DiscRegistry;
 import io.discloader.discloader.objects.structures.Message;
-import io.discloader.discloader.objects.structures.TextChannel;
+import io.discloader.discloader.objects.structures.channels.TextChannel;
 import io.discloader.discloader.socket.DiscSocket;
 import io.discloader.discloader.util.constants;
 

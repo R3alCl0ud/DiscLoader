@@ -12,14 +12,13 @@ import io.discloader.discloader.objects.gateway.ChannelJSON;
 import io.discloader.discloader.objects.gateway.GuildJSON;
 import io.discloader.discloader.objects.gateway.UserJSON;
 import io.discloader.discloader.objects.loader.DiscRegistry;
-import io.discloader.discloader.objects.loader.ModHandler;
-import io.discloader.discloader.objects.structures.Channel;
+import io.discloader.discloader.objects.mods.ModHandler;
 import io.discloader.discloader.objects.structures.Guild;
-import io.discloader.discloader.objects.structures.Mod;
-import io.discloader.discloader.objects.structures.PrivateChannel;
-import io.discloader.discloader.objects.structures.TextChannel;
 import io.discloader.discloader.objects.structures.User;
-import io.discloader.discloader.objects.structures.VoiceChannel;
+import io.discloader.discloader.objects.structures.channels.Channel;
+import io.discloader.discloader.objects.structures.channels.PrivateChannel;
+import io.discloader.discloader.objects.structures.channels.TextChannel;
+import io.discloader.discloader.objects.structures.channels.VoiceChannel;
 import io.discloader.discloader.rest.DiscREST;
 import io.discloader.discloader.socket.DiscSocket;
 import io.discloader.discloader.util.constants;
@@ -43,7 +42,7 @@ public class DiscLoader {
 	public ModHandler modh;
 
 	/**
-	 * A HashMap of the client's cached users. Indexed by user ID.
+	 * A HashMap of the client's cached users. Indexed by {@link User#id}.
 	 * @author Perry Berman
 	 * @see User
 	 * @see HashMap
@@ -51,7 +50,7 @@ public class DiscLoader {
 	public HashMap<String, User> users;
 	
 	/**
-	 * A HashMap of the client's cached channels. Indexed by channel ID.
+	 * A HashMap of the client's cached channels. Indexed by {@link Channel#id}.
 	 * @author Perry Berman
 	 * @see Channel
 	 * @see HashMap
@@ -59,7 +58,7 @@ public class DiscLoader {
 	public HashMap<String, Channel> channels;
 	
 	/**
-	 * A HashMap of the client's cached PrivateChannels. Indexed by channel ID.
+	 * A HashMap of the client's cached PrivateChannels. Indexed by {@link Channel#id}.
 	 * @see Channel
 	 * @see PrivateChannel
 	 * @see HashMap
@@ -68,7 +67,7 @@ public class DiscLoader {
 	public HashMap<String, PrivateChannel> privateChannels;
 	
 	/**
-	 * A HashMap of the client's cached TextChannels. Indexed by channel ID.
+	 * A HashMap of the client's cached TextChannels. Indexed by {@link Channel#id}.
 	 * @see Channel
 	 * @see TextChannel
 	 * @see HashMap
@@ -77,7 +76,7 @@ public class DiscLoader {
 	public HashMap<String, TextChannel> textChannels;
 	
 	/**
-	 * A HashMap of the client's cached VoiceChannels. Indexed by channel ID.
+	 * A HashMap of the client's cached VoiceChannels. Indexed by {@link Channel#id}.
 	 * @see Channel
 	 * @see VoiceChannel
 	 * @see HashMap
@@ -86,20 +85,12 @@ public class DiscLoader {
 	public HashMap<String, VoiceChannel> voiceChannels;
 	
 	/**
-	 * A HashMap of the client's cached Guilds. Indexed by guild ID.
+	 * A HashMap of the client's cached Guilds. Indexed by {@link Guild#id}
 	 * @see Guild
 	 * @see HashMap
 	 * @author Perry Berman
 	 */
 	public HashMap<String, Guild> guilds;
-	
-	/**
-	 * A HashMap of the client's loaded mods.
-	 * @see Mod
-	 * @see HashMap
-	 * @author Zachary Waldron 
-	 */
-	public HashMap<String, Mod> mods;
 
 	/**
 	 * The User we are currently logged in as.
@@ -123,7 +114,6 @@ public class DiscLoader {
 		this.textChannels = new HashMap<String, TextChannel>();
 		this.voiceChannels = new HashMap<String, VoiceChannel>();
 		this.guilds = new HashMap<String, Guild>();
-		this.mods = new HashMap<String, Mod>();
 
 		this.modh = new ModHandler(this);
 
@@ -161,10 +151,18 @@ public class DiscLoader {
 		public String url;
 	}
 
+	/**
+	 * 
+	 * @param event
+	 * @param data
+	 */
 	public void emit(String event, Object data) {
 		this.modh.emit(event, data);
 	}
 
+	/**
+	 * @param event
+	 */
 	public void emit(String event) {
 		this.emit(event, null);
 	}

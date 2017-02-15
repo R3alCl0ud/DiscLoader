@@ -11,6 +11,7 @@ import java.util.jar.JarFile;
 
 import io.discloader.discloader.objects.annotations.EventHandler;
 import io.discloader.discloader.objects.annotations.Mod;
+import io.discloader.discloader.objects.mods.ModContainer;
 
 /**
  * @author Perry Berman

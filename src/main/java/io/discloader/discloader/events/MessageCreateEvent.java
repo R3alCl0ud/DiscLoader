@@ -12,7 +12,6 @@ import io.discloader.discloader.objects.structures.Message;
  * @since 0.0.1_Alpha
  * @see Message
  * @see DiscLoader
- * @see EventHandler
  */
 public class MessageCreateEvent {
 

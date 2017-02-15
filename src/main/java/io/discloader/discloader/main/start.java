@@ -59,7 +59,7 @@ public class start {
 			window = new WindowFrame(loader);
 		}
 		loader.modh.beginLoader();
-		loader.login(token);
+//		loader.login(token);
 	}
 
 	@EventHandler

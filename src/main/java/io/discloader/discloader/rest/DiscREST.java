@@ -19,8 +19,9 @@ import io.discloader.discloader.objects.gateway.UserJSON;
 import io.discloader.discloader.objects.structures.Guild;
 import io.discloader.discloader.objects.structures.GuildMember;
 import io.discloader.discloader.objects.structures.Message;
-import io.discloader.discloader.objects.structures.TextChannel;
+import io.discloader.discloader.objects.structures.RichEmbed;
 import io.discloader.discloader.objects.structures.User;
+import io.discloader.discloader.objects.structures.channels.TextChannel;
 import io.discloader.discloader.util.constants;
 
 public class DiscREST {
@@ -57,7 +58,7 @@ public class DiscREST {
 		return this.makeRequest(url, method, auth, null);
 	}
 
-	public CompletableFuture<Message> sendMessage(TextChannel channel, String content) {
+	public CompletableFuture<Message> sendMessage(TextChannel channel, String content, RichEmbed embed) {
 		if (content.length() < 1)
 			return null;
 		CompletableFuture<Message> msgSent = new CompletableFuture<Message>();
@@ -68,12 +69,12 @@ public class DiscREST {
 		return msgSent;
 	}
 
-	public CompletableFuture<Message> editMessage(TextChannel channel, Message message, String content) {
+	public CompletableFuture<Message> editMessage(TextChannel channel, Message message, String content, RichEmbed embed) {
 		if (content.length() < 1)
 			return null;
 		CompletableFuture<Message> future = new CompletableFuture<Message>();
 		this.makeRequest(constants.Endpoints.message(channel.id, message.id), constants.Methods.PATCH, true,
-				new JSONObject().put("content", content).toString()).thenAcceptAsync(action -> {
+				new JSONObject().put("content", content).put("embed", embed).toString()).thenAcceptAsync(action -> {
 					future.complete(new Message(channel, this.gson.fromJson(action, MessageJSON.class)));
 				});
 		return future;

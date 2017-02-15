@@ -4,6 +4,7 @@ import java.util.HashMap;
 
 import io.discloader.discloader.DiscLoader;
 import io.discloader.discloader.events.MessageCreateEvent;
+import io.discloader.discloader.objects.mods.ModContainer;
 import io.discloader.discloader.objects.structures.Command;
 
 /**
