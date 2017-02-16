@@ -15,7 +15,7 @@ import com.google.gson.Gson;
  * @since v0.0.1
  * @version First draft
  */
-public class Constant {
+public class Constants {
 
 	/**
 	 * A useful JSON String deserializer.

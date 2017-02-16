@@ -9,8 +9,8 @@ import io.discloader.discloader.common.structures.Permission;
 import io.discloader.discloader.common.structures.Role;
 import io.discloader.discloader.network.gateway.json.ChannelJSON;
 import io.discloader.discloader.network.gateway.json.OverwriteJSON;
-import io.discloader.discloader.util.Constant;
-import io.discloader.discloader.util.Constant.Permissions;
+import io.discloader.discloader.util.Constants;
+import io.discloader.discloader.util.Constants.Permissions;
 
 @Deprecated
 public class GuildChannel extends Channel {
@@ -46,7 +46,7 @@ public class GuildChannel extends Channel {
 	public HashMap<String, GuildMember> getMembers() {
 		HashMap<String, GuildMember> members = new HashMap<String, GuildMember>();
 		for (GuildMember member : this.guild.members.values()) {
-			if (this.permissionsFor(member).hasPermission(Constant.PermissionFlags.READ_MESSAGES, false))
+			if (this.permissionsFor(member).hasPermission(Constants.PermissionFlags.READ_MESSAGES, false))
 				members.put(member.id, member);
 		}
 		return members;

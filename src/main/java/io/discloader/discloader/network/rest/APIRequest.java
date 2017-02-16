@@ -6,7 +6,7 @@ import com.mashape.unirest.http.Unirest;
 import com.mashape.unirest.request.BaseRequest;
 import com.mashape.unirest.request.HttpRequestWithBody;
 
-import io.discloader.discloader.util.Constant;
+import io.discloader.discloader.util.Constants;
 
 public class APIRequest {
 	public String url;
@@ -41,7 +41,7 @@ public class APIRequest {
 	 * Converts the {@link APIRequest} URL to the corresponding API Endpoint
 	 * 
 	 * @param url
-	 * @return API Endpoint {@link Constant.Endpoints}
+	 * @return API Endpoint {@link Constants.Endpoints}
 	 */
 	public String getRoute(String url) {
 		String route = url.split("[?]")[0];
@@ -61,21 +61,21 @@ public class APIRequest {
 	public BaseRequest createRequest() {
 		BaseRequest request = null;
 		switch (this.method) {
-		case Constant.Methods.GET:
+		case Constants.Methods.GET:
 			request = Unirest.get(this.route);
 			break;
-		case Constant.Methods.POST:
+		case Constants.Methods.POST:
 			request = Unirest.post(this.route);
 			((HttpRequestWithBody) request).body(this.data.toString());
 			break;
-		case Constant.Methods.PATCH:
+		case Constants.Methods.PATCH:
 			request = Unirest.patch(this.route);
 			((HttpRequestWithBody) request).body(this.data.toString());
 			break;
-		case Constant.Methods.DELETE:
+		case Constants.Methods.DELETE:
 			request = Unirest.delete(this.route);
 			break;
-		case Constant.Methods.PUT:
+		case Constants.Methods.PUT:
 			request = Unirest.put(this.route);
 			((HttpRequestWithBody) request).body(this.data.toString());
 			break;

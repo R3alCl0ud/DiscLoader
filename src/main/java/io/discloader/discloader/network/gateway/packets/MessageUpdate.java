@@ -6,7 +6,7 @@ package io.discloader.discloader.network.gateway.packets;
 import io.discloader.discloader.common.structures.channels.TextChannel;
 import io.discloader.discloader.network.gateway.DiscSocket;
 import io.discloader.discloader.network.gateway.json.MessageJSON;
-import io.discloader.discloader.util.Constant;
+import io.discloader.discloader.util.Constants;
 
 /**
  * @author Perry Berman
@@ -26,7 +26,7 @@ public class MessageUpdate extends DiscPacket {
 		TextChannel channel = this.socket.loader.textChannels.get(data.channel_id);
 		if (channel == null)
 			channel = this.socket.loader.privateChannels.get(data.channel_id);
-		this.socket.loader.emit(Constant.Events.MESSAGE_UPDATE, channel.messages.get(data.id).patch(data));
+		this.socket.loader.emit(Constants.Events.MESSAGE_UPDATE, channel.messages.get(data.id).patch(data));
 	}
 
 }

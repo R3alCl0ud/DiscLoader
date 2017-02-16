@@ -20,7 +20,7 @@ import io.discloader.discloader.network.gateway.json.ChannelJSON;
 import io.discloader.discloader.network.gateway.json.GuildJSON;
 import io.discloader.discloader.network.gateway.json.UserJSON;
 import io.discloader.discloader.network.rest.RESTManager;
-import io.discloader.discloader.util.Constant;
+import io.discloader.discloader.util.Constants;
 
 /**
  * @author Perry Berman, Zachary Waldron
@@ -131,7 +131,7 @@ public class DiscLoader {
 	public CompletableFuture<String> login(String token) {
 		this.token = token;
 		// this.modh.beginLoader();
-		CompletableFuture<String> future = this.rest.makeRequest(Constant.Endpoints.gateway, Constant.Methods.GET,
+		CompletableFuture<String> future = this.rest.makeRequest(Constants.Endpoints.gateway, Constants.Methods.GET,
 				true);
 		future.thenAcceptAsync(text -> {
 			System.out.println(text);
@@ -171,8 +171,8 @@ public class DiscLoader {
 
 		Guild newGuild = new Guild(this, guild);
 		this.guilds.put(newGuild.id, newGuild);
-		if (!exists && this.discSocket.status == Constant.Status.READY) {
-			this.emit(Constant.Events.GUILD_CREATE, newGuild);
+		if (!exists && this.discSocket.status == Constants.Status.READY) {
+			this.emit(Constants.Events.GUILD_CREATE, newGuild);
 		}
 		return newGuild;
 	}
@@ -184,16 +184,16 @@ public class DiscLoader {
 	public Channel addChannel(ChannelJSON data, Guild guild) {
 		boolean exists = this.channels.containsKey(data.id);
 		Channel channel = null;
-		if (data.type == Constant.ChannelTypes.DM) {
+		if (data.type == Constants.ChannelTypes.DM) {
 			channel = new PrivateChannel(this, data);
-		} else if (data.type == Constant.ChannelTypes.groupDM) {
+		} else if (data.type == Constants.ChannelTypes.groupDM) {
 			channel = new Channel(this, data);
 		} else {
 			if (guild != null) {
-				if (data.type == Constant.ChannelTypes.text) {
+				if (data.type == Constants.ChannelTypes.text) {
 					channel = new TextChannel(guild, data);
 					guild.textChannels.put(channel.id, (TextChannel) channel);
-				} else if (data.type == Constant.ChannelTypes.voice) {
+				} else if (data.type == Constants.ChannelTypes.voice) {
 					channel = new VoiceChannel(guild, data);
 					guild.voiceChannels.put(channel.id, (VoiceChannel) channel);
 				}
@@ -217,7 +217,7 @@ public class DiscLoader {
 			}
 			this.channels.put(channel.id, channel);
 			if (!exists && this.ready) {
-				this.emit(Constant.Events.CHANNEL_CREATE, channel);
+				this.emit(Constants.Events.CHANNEL_CREATE, channel);
 			}
 			return channel;
 		}
@@ -234,23 +234,23 @@ public class DiscLoader {
 	}
 
 	public void checkReady() {
-		if (this.discSocket.status != Constant.Status.READY && this.discSocket.status != Constant.Status.NEARLY) {
+		if (this.discSocket.status != Constants.Status.READY && this.discSocket.status != Constants.Status.NEARLY) {
 			int unavailable = 0;
 			Collection<Guild> guilds = this.guilds.values();
 			for (Guild guild : guilds) {
 				unavailable += guild.available ? 0 : 1;
 			}
 			if (unavailable == 0) {
-				this.discSocket.status = Constant.Status.NEARLY;
+				this.discSocket.status = Constants.Status.NEARLY;
 				this.emitReady();
 			}
 		}
 	}
 
 	public void emitReady() {
-		this.discSocket.status = Constant.Status.READY;
+		this.discSocket.status = Constants.Status.READY;
 		this.ready = true;
-		this.emit(Constant.Events.READY, this);
+		this.emit(Constants.Events.READY, this);
 	}
 
 }
