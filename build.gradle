@@ -2,11 +2,11 @@ apply plugin: 'java'
 apply plugin: 'eclipse'
 apply plugin: 'application'
 
-mainClassName = 'io.discloader.discloader.main.start'
+mainClassName = 'io.discloader.discloader.common.start.Start'
 
 // tag::repositories[]
-repositories { 
-    mavenCentral() 
+repositories {
+    mavenCentral()
 }
 // end::repositories[]
 
@@ -62,7 +62,7 @@ task buildInfo {
 }
 
 task build {
-	
+
 }
 
 

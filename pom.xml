@@ -78,4 +78,5 @@
 		</dependency>
 	</dependencies>
 	<url>http://discloader.io</url>
+	<description>A simple easy to use Discord API rest/gateway client</description>
 </project>
