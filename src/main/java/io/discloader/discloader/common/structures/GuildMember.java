@@ -8,7 +8,7 @@ import java.util.concurrent.CompletableFuture;
 
 import io.discloader.discloader.common.DiscLoader;
 import io.discloader.discloader.network.gateway.json.MemberJSON;
-import io.discloader.discloader.util.Constants;
+import io.discloader.discloader.util.Constant;
 
 /**
  * Represents a member in a {@link Guild}
@@ -76,7 +76,7 @@ public class GuildMember {
 		this.id = this.user.id;
 		this.guild = guild;
 		this.nick = data.nick != null ? data.nick : this.user.username;
-		this.joinedAt = Constants.parseISO8601(data.joined_at);
+		this.joinedAt = Constant.parseISO8601(data.joined_at);
 		this.roleIDs = data.roles;
 
 		this.deaf = data.deaf;

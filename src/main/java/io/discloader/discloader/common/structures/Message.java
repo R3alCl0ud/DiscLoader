@@ -6,7 +6,7 @@ import java.util.concurrent.CompletableFuture;
 import io.discloader.discloader.common.DiscLoader;
 import io.discloader.discloader.common.structures.channels.TextChannel;
 import io.discloader.discloader.network.gateway.json.MessageJSON;
-import io.discloader.discloader.util.Constants;
+import io.discloader.discloader.util.Constant;
 
 /**
  * @author Perry Berman
@@ -63,9 +63,9 @@ public class Message {
 
 		this.mentions = new Mentions(this, data.mentions, data.mention_roles, data.mention_everyone);
 		
-		this.timestamp = Constants.parseISO8601(data.timestamp);
+		this.timestamp = Constant.parseISO8601(data.timestamp);
 		
-		this.editedAt = data.edited_timestamp != null ? Constants.parseISO8601(data.edited_timestamp) : null;
+		this.editedAt = data.edited_timestamp != null ? Constant.parseISO8601(data.edited_timestamp) : null;
 	}
 
 	/**
@@ -77,7 +77,7 @@ public class Message {
 
 		this.mentions.patch(data.mentions, data.mention_roles, data.mention_everyone);
 
-		this.editedAt = Constants.parseISO8601(data.edited_timestamp);
+		this.editedAt = Constant.parseISO8601(data.edited_timestamp);
 		
 		return this;
 	}
@@ -112,7 +112,7 @@ public class Message {
 
 	/**
 	 * Deletes the message if the loader has suficient permissions
-	 * @see Constants.PermissionFlags
+	 * @see Constant.PermissionFlags
 	 * @return A Future that completes with {@literal this} when sucessfull
 	 */
 	public CompletableFuture<Message> delete() {

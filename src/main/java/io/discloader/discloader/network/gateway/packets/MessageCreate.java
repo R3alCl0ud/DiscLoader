@@ -9,7 +9,7 @@ import io.discloader.discloader.common.structures.Message;
 import io.discloader.discloader.common.structures.channels.TextChannel;
 import io.discloader.discloader.network.gateway.DiscSocket;
 import io.discloader.discloader.network.gateway.json.MessageJSON;
-import io.discloader.discloader.util.Constants;
+import io.discloader.discloader.util.Constant;
 
 /**
  * @author Perry Berman
@@ -33,7 +33,7 @@ public class MessageCreate extends DiscPacket {
 		Message message = new Message(channel, data);
 		channel.messages.put(message.id, message);
 		MessageCreateEvent e = new MessageCreateEvent(message);
-		this.socket.loader.emit(Constants.Events.MESSAGE_CREATE, e);
+		this.socket.loader.emit(Constant.Events.MESSAGE_CREATE, e);
 		DiscRegistry.executeCommand(e);
 	}
 

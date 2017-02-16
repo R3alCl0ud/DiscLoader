@@ -12,7 +12,7 @@ import com.neovisionaries.ws.client.WebSocketException;
 import com.neovisionaries.ws.client.WebSocketFactory;
 
 import io.discloader.discloader.common.DiscLoader;
-import io.discloader.discloader.util.Constants;
+import io.discloader.discloader.util.Constant;
 
 /**
  * @author Perry Berman
@@ -55,7 +55,7 @@ public class DiscSocket {
 
 		this.socketListener = new DiscSocketListener(this);
 
-		this.status = Constants.Status.IDLE;
+		this.status = Constant.Status.IDLE;
 	}
 
 	/**
@@ -89,7 +89,7 @@ public class DiscSocket {
 		}
 		this.loader.emit("debug", "Attempting heartbeat");
 		JSONObject payload = new JSONObject();
-		payload.put("op", Constants.OPCodes.HEARTBEAT).put("d", this.s);
+		payload.put("op", Constant.OPCodes.HEARTBEAT).put("d", this.s);
 		this.send(payload, true);
 		this.lastHeartbeatAck = false;
 	}

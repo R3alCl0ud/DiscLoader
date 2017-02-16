@@ -1,13 +1,13 @@
 package io.discloader.discloader.common.structures;
 
 import io.discloader.discloader.common.structures.channels.Channel;
-import io.discloader.discloader.util.Constants;
+import io.discloader.discloader.util.Constant;
 
 /**
  * This object contains the {@link #member}'s evaulated permissions integer for the {@link #channel}.
  * @author Perry Berman
  * @since 0.0.1
- * @see Constants.PermissionFlags
+ * @see Constant.PermissionFlags
  */
 public class Permission {
 	
@@ -40,19 +40,19 @@ public class Permission {
 	/**
 	 * Checks if the member has the specified permission.
 	 * <br>{@code boolean sendMessages = channel.permissionsFor(member).hasPermission(PermissionFlags.SEND_MESSAGES);}
-	 * @param permission A {@link Constants.PermissionFlags Permission Flag}
+	 * @param permission A {@link Constant.PermissionFlags Permission Flag}
 	 * @param explicit Whether or not the member explicitly has the permission
 	 * @return {@code true}, if the user has the specified permission. Otherwise {@code false}.
 	 */
 	public boolean hasPermission(int permission, boolean explicit) {
-		if (!explicit && (this.raw & Constants.PermissionFlags.ADMINISTRATOR) > 0)
+		if (!explicit && (this.raw & Constant.PermissionFlags.ADMINISTRATOR) > 0)
 			return true;
 		return (this.raw & permission) > 0;
 	}
 	
 	/**
 	 * Checks if the member has the specified permission.
-	 * @param permission A {@link Constants.PermissionFlags Permission Flag}
+	 * @param permission A {@link Constant.PermissionFlags Permission Flag}
 	 * @return {@code true}, if the user has the specified permission. Otherwise {@code false}.
 	 */
 	public boolean hasPermission(int permission) {

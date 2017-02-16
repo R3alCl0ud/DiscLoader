@@ -22,7 +22,7 @@ import io.discloader.discloader.network.gateway.json.GuildJSON;
 import io.discloader.discloader.network.gateway.json.MemberJSON;
 import io.discloader.discloader.network.gateway.json.MessageJSON;
 import io.discloader.discloader.network.gateway.json.UserJSON;
-import io.discloader.discloader.util.Constants;
+import io.discloader.discloader.util.Constant;
 
 public class RESTManager {
 	public Gson gson;
@@ -62,7 +62,7 @@ public class RESTManager {
 		if (content.length() < 1)
 			return null;
 		CompletableFuture<Message> msgSent = new CompletableFuture<Message>();
-		this.makeRequest(Constants.Endpoints.messages(channel.id), Constants.Methods.POST, true,
+		this.makeRequest(Constant.Endpoints.messages(channel.id), Constant.Methods.POST, true,
 				new JSONObject().put("content", content).toString()).thenAcceptAsync(action -> {
 					msgSent.complete(new Message(channel, this.gson.fromJson(action, MessageJSON.class)));
 				});
@@ -73,7 +73,7 @@ public class RESTManager {
 		if (content.length() < 1)
 			return null;
 		CompletableFuture<Message> future = new CompletableFuture<Message>();
-		this.makeRequest(Constants.Endpoints.message(channel.id, message.id), Constants.Methods.PATCH, true,
+		this.makeRequest(Constant.Endpoints.message(channel.id, message.id), Constant.Methods.PATCH, true,
 				new JSONObject().put("content", content).put("embed", embed).toString()).thenAcceptAsync(action -> {
 					future.complete(new Message(channel, this.gson.fromJson(action, MessageJSON.class)));
 				});
@@ -82,7 +82,7 @@ public class RESTManager {
 
 	public CompletableFuture<Message> deleteMessage(TextChannel channel, Message message) {
 		CompletableFuture<Message> future = new CompletableFuture<Message>();
-		this.makeRequest(Constants.Endpoints.message(channel.id, message.id), Constants.Methods.DELETE, true)
+		this.makeRequest(Constant.Endpoints.message(channel.id, message.id), Constant.Methods.DELETE, true)
 				.thenAcceptAsync(action -> {
 					future.complete(message);
 				});
@@ -91,7 +91,7 @@ public class RESTManager {
 
 	public CompletableFuture<User> setUsername(String username) {
 		CompletableFuture<User> future = new CompletableFuture<User>();
-		this.makeRequest(Constants.Endpoints.currentUser, Constants.Methods.PATCH, true,
+		this.makeRequest(Constant.Endpoints.currentUser, Constant.Methods.PATCH, true,
 				new JSONObject().put("username", username)).thenAcceptAsync(action -> {
 					future.complete(this.loader.user.patch(this.gson.fromJson(action, UserJSON.class)));
 				});
@@ -103,7 +103,7 @@ public class RESTManager {
 		try {
 			String base64 = new String(
 					"data:image/jpg;base64," + Base64.encodeBase64String(Files.readAllBytes(Paths.get(avatar))));
-			this.makeRequest(Constants.Endpoints.currentUser, Constants.Methods.PATCH, true,
+			this.makeRequest(Constant.Endpoints.currentUser, Constant.Methods.PATCH, true,
 					new JSONObject().put("avatar", base64)).thenAcceptAsync(action -> {
 						future.complete(this.loader.user.patch(this.gson.fromJson(action, UserJSON.class)));
 					});
@@ -115,9 +115,9 @@ public class RESTManager {
 
 	public CompletableFuture<GuildMember> setNick(GuildMember member, String nick) {
 		CompletableFuture<GuildMember> future = new CompletableFuture<GuildMember>();
-		String endpoint = member.id == this.loader.user.id ? Constants.Endpoints.guildNick(member.guild.id)
-				: Constants.Endpoints.guildMember(member.guild.id, member.id);
-		this.makeRequest(endpoint, Constants.Methods.PATCH, true, new JSONObject().put("nick", nick))
+		String endpoint = member.id == this.loader.user.id ? Constant.Endpoints.guildNick(member.guild.id)
+				: Constant.Endpoints.guildMember(member.guild.id, member.id);
+		this.makeRequest(endpoint, Constant.Methods.PATCH, true, new JSONObject().put("nick", nick))
 				.thenAcceptAsync(action -> {
 					member.nick = nick;
 					future.complete(member);
@@ -127,7 +127,7 @@ public class RESTManager {
 
 	public CompletableFuture<Guild> modifyGuild(Guild guild, JSONObject data) {
 		CompletableFuture<Guild> future = new CompletableFuture<Guild>();
-		this.makeRequest(Constants.Endpoints.guild(guild.id), Constants.Methods.PATCH, true, data)
+		this.makeRequest(Constant.Endpoints.guild(guild.id), Constant.Methods.PATCH, true, data)
 				.thenAcceptAsync(action -> {
 					guild.setup(this.gson.fromJson(action, GuildJSON.class));
 					future.complete(guild);
@@ -137,7 +137,7 @@ public class RESTManager {
 
 	public CompletableFuture<GuildMember> loadGuildMember(Guild guild, String memberID) {
 		CompletableFuture<GuildMember> future = new CompletableFuture<GuildMember>();
-		this.makeRequest(Constants.Endpoints.guildMember(guild.id, memberID), Constants.Methods.GET, true)
+		this.makeRequest(Constant.Endpoints.guildMember(guild.id, memberID), Constant.Methods.GET, true)
 				.thenAcceptAsync(action -> {
 					future.complete(guild.addMember(this.gson.fromJson(action, MemberJSON.class)));
 				});

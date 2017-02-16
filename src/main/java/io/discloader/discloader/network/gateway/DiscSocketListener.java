@@ -17,7 +17,7 @@ import com.neovisionaries.ws.client.WebSocketState;
 
 import io.discloader.discloader.common.DiscLoader;
 import io.discloader.discloader.network.gateway.packets.*;
-import io.discloader.discloader.util.Constants;
+import io.discloader.discloader.util.Constant;
 
 public class DiscSocketListener extends WebSocketAdapter implements WebSocketListener {
 	public Gson gson = new Gson();
@@ -34,13 +34,13 @@ public class DiscSocketListener extends WebSocketAdapter implements WebSocketLis
 		this.handlers = new HashMap<String, DiscPacket>();
 		this.queue = new ArrayList<SocketPacket>();
 
-		this.register(Constants.WSEvents.HELLO, new HelloPacket(this.socket));
-		this.register(Constants.WSEvents.READY, new ReadyPacket(this.socket));
-		this.register(Constants.WSEvents.GUILD_CREATE, new GuildCreate(this.socket));
-		this.register(Constants.WSEvents.PRESENCE_UPDATE, new PresenceUpdate(this.socket));
-		this.register(Constants.WSEvents.MESSAGE_CREATE, new MessageCreate(this.socket));
-		this.register(Constants.WSEvents.MESSAGE_UPDATE, new MessageUpdate(this.socket));
-		this.register(Constants.WSEvents.MESSAGE_DELETE, new MessageDelete(this.socket));
+		this.register(Constant.WSEvents.HELLO, new HelloPacket(this.socket));
+		this.register(Constant.WSEvents.READY, new ReadyPacket(this.socket));
+		this.register(Constant.WSEvents.GUILD_CREATE, new GuildCreate(this.socket));
+		this.register(Constant.WSEvents.PRESENCE_UPDATE, new PresenceUpdate(this.socket));
+		this.register(Constant.WSEvents.MESSAGE_CREATE, new MessageCreate(this.socket));
+		this.register(Constant.WSEvents.MESSAGE_UPDATE, new MessageUpdate(this.socket));
+		this.register(Constant.WSEvents.MESSAGE_DELETE, new MessageDelete(this.socket));
 	}
 
 	public void setSequence(int s) {
@@ -60,34 +60,34 @@ public class DiscSocketListener extends WebSocketAdapter implements WebSocketLis
 	}
 
 	public void handle(SocketPacket packet) {
-		if (packet.op == Constants.OPCodes.RECONNECT) {
+		if (packet.op == Constant.OPCodes.RECONNECT) {
 			this.setSequence(packet.s);
 			return;
 		}
 
-		if (packet.op == Constants.OPCodes.HELLO) {
-			this.handlers.get(Constants.WSEvents.HELLO).handle(packet);
+		if (packet.op == Constant.OPCodes.HELLO) {
+			this.handlers.get(Constant.WSEvents.HELLO).handle(packet);
 		}
 
-		if (packet.op == Constants.OPCodes.HEARTBEAT_ACK) {
+		if (packet.op == Constant.OPCodes.HEARTBEAT_ACK) {
 			this.socket.lastHeartbeatAck = true;
 			this.loader.emit("debug", "Heartbeat Acknowledged");
-		} else if (packet.op == Constants.OPCodes.HEARTBEAT) {
-			JSONObject payload = new JSONObject().put("op", Constants.OPCodes.HEARTBEAT).put("d", this.socket.s);
+		} else if (packet.op == Constant.OPCodes.HEARTBEAT) {
+			JSONObject payload = new JSONObject().put("op", Constant.OPCodes.HEARTBEAT).put("d", this.socket.s);
 			this.socket.send(payload);
 			this.loader.emit("debug", "Recieved gateway heartbeat");
 		}
 
 		this.setSequence(packet.s);
 		
-		if (this.socket.status != Constants.Status.READY) {
-			if (Constants.EventWhitelist.indexOf(packet.t) == -1) {
+		if (this.socket.status != Constant.Status.READY) {
+			if (Constant.EventWhitelist.indexOf(packet.t) == -1) {
 				this.queue.add(packet);
 				return;
 			}
 		}
 
-		if (packet.op == Constants.OPCodes.DISPATCH) {
+		if (packet.op == Constant.OPCodes.DISPATCH) {
 			if (!this.handlers.containsKey(packet.t))
 				return;
 			this.handlers.get(packet.t).handle(packet);

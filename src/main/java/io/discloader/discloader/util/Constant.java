@@ -6,6 +6,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 
+import com.google.gson.Gson;
+
 /**
  * A collection of all useful constants for DiscLoader
  * 
@@ -13,8 +15,15 @@ import java.util.Date;
  * @since v0.0.1
  * @version First draft
  */
-public class constants {
+public class Constant {
 
+	/**
+	 * A useful JSON String deserializer.
+	 * @author Perry Berman
+	 * @since 0.0.1
+	 */
+	public static final Gson gson = new Gson();
+	
 	public static final String PERMISSIONS_DOCS = "https://discordapp.com/developers/docs/topics/permissions#bitwise-permission-flags";
 
 	/**
@@ -22,7 +31,7 @@ public class constants {
 	 * 
 	 * @param datetime
 	 *            A DateTime string in ISO-8601 format
-	 * @return Date from datetime string
+	 * @return Date from DateTime string
 	 */
 	public static final Date parseISO8601(String datetime) {
 		return Date.from(OffsetDateTime.parse(datetime).toInstant());
@@ -192,8 +201,8 @@ public class constants {
 	 * <li>{@value #GUILD_MEMBER_AVAILABLE}</li>
 	 * <li>{@value #GUILD_MEMBER_REMOVE}</li>
 	 * <li>{@value #GUILD_MEMBER_UPDATE}</li>
-	 * <li
-	 * <ul>
+	 * <li>{@value #GUILD_BAN_ADD}</li>
+	 * </ul>
 	 * 
 	 * @author Perry Berman
 	 * @since v0.0.1

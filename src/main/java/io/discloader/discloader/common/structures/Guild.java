@@ -17,7 +17,7 @@ import io.discloader.discloader.network.gateway.json.GuildJSON;
 import io.discloader.discloader.network.gateway.json.MemberJSON;
 import io.discloader.discloader.network.gateway.json.PresenceJSON;
 import io.discloader.discloader.network.gateway.json.RoleJSON;
-import io.discloader.discloader.util.Constants;
+import io.discloader.discloader.util.Constant;
 
 /**
  * This represents a Guild in Discord's API
@@ -168,7 +168,7 @@ public class Guild {
 		if (member.id.equals(this.ownerID))
 			this.owner = member;
 		if (!exists && this.loader.ready) {
-			this.loader.emit(Constants.Events.GUILD_MEMBER_ADD, member);
+			this.loader.emit(Constant.Events.GUILD_MEMBER_ADD, member);
 		}
 		return member;
 	}
@@ -181,7 +181,7 @@ public class Guild {
 		if (member.id.equals(this.ownerID))
 			this.owner = member;
 		if (this.loader.ready == true && emitEvent && !exists) {
-			this.loader.emit(Constants.Events.GUILD_MEMBER_ADD, member);
+			this.loader.emit(Constant.Events.GUILD_MEMBER_ADD, member);
 		}
 		return member;
 	}
@@ -191,7 +191,7 @@ public class Guild {
 		Role role = new Role(this, guildRole);
 		this.roles.put(role.id, role);
 		if (!exists && this.loader.ready) {
-			this.loader.emit(Constants.Events.GUILD_ROLE_CREATE, role);
+			this.loader.emit(Constant.Events.GUILD_ROLE_CREATE, role);
 		}
 		return role;
 	}
