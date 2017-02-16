@@ -38,8 +38,8 @@ public class ModDiscoverer {
 		File[] files = modsDir.listFiles();
 		for (int i = 0; i < files.length; i++) {
 			File modFile = files[i];
-			ProgressLogger.step(i + 1, files.length, modFile.getName());
 			Matcher modMatch = modExt.matcher(modFile.getName());
+			ProgressLogger.step(i + 1, files.length, modFile.getName());
 			if (!modMatch.find()) {
 				System.out.printf("Found non-mod file in mods directory: %s\n", modFile.getName());
 				continue;
@@ -56,13 +56,14 @@ public class ModDiscoverer {
 					for (JarEntry entry : entries) {
 						String className = entry.getName();
 						className = className.substring(0, className.lastIndexOf('.')).replace('/', '.');
-						ProgressLogger.progress(n, entries.size(), String.format("Entry: ", className));
+						ProgressLogger.progress(n, entries.size(), String.format("Entry: %s", className));
 						candidates.add(new ModCandidate(cl.loadClass(className)));
 						n++;
 					}
 					modJar.close();
 				} catch (Exception e) {
 					e.printStackTrace();
+					System.out.printf("Unable to load JarFile: %s\n", modFile.getName());
 				}
 			}
 

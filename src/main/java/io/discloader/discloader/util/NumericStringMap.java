@@ -1,5 +1,6 @@
 package io.discloader.discloader.util;
 
+import java.util.Collection;
 import java.util.HashMap;
 
 /**
@@ -68,6 +69,10 @@ public class NumericStringMap<T> {
 
 	public boolean containsSpecialID(String specialID) {
 		return this.idBySpecial.containsKey(specialID);
+	}
+	
+	public Collection<T> entries() {
+		return this.data.values();
 	}
 
 }

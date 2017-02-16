@@ -79,8 +79,16 @@ public class WindowFrame extends JFrame {
 						ProgressLogger.stage(1, 3, "Mod Discovery");
 						ModDiscoverer.checkModDir();
 						ArrayList<ModCandidate> candidates = ModDiscoverer.discoverMods();
-						ProgressLogger.stage(2, 3, "Discovered Mod Candidates");
-						ModRegistry.checkCandidates(candidates);
+						TimerTask checkCandidates = new TimerTask() {
+
+							@Override
+							public void run() {
+								ProgressLogger.stage(2, 3, "Discovering Mod Containers");
+								ModRegistry.checkCandidates(candidates);
+							}
+							
+						};
+						loader.timer.schedule(checkCandidates, 500);
 					}
 				};
 				loader.timer.schedule(giveItTime, 3000);

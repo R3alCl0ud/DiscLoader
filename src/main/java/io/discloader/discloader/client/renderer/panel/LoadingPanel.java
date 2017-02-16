@@ -4,6 +4,8 @@ import java.awt.GridLayout;
 
 import javax.swing.JPanel;
 
+import io.discloader.discloader.client.logging.ProgressLogger;
+
 /**
  * @author Perry Berman
  *
@@ -22,8 +24,7 @@ public class LoadingPanel extends JPanel {
 		this.add(stagePanel = new ProgressPanel(0, 1));
 		this.add(stepPanel = new ProgressPanel(0, 1));
 		this.add(progressPanel = new ProgressPanel(0, 1));
-		setPhase(1, 2, "LOADING");
-//		start.loader.modh.beginLoader();
+		ProgressLogger.phase(1, 3, "LOADING");
 	}
 
 	public static void setPhase(int phase, int maxPhase, String text) {

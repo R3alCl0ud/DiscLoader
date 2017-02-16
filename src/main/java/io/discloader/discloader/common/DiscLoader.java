@@ -7,7 +7,8 @@ import java.util.concurrent.CompletableFuture;
 
 import com.google.gson.Gson;
 
-import io.discloader.discloader.common.registry.DiscRegistry;
+import io.discloader.discloader.client.command.CommandHandler;
+import io.discloader.discloader.common.discovery.ModContainer;
 import io.discloader.discloader.common.registry.ModRegistry;
 import io.discloader.discloader.common.structures.Guild;
 import io.discloader.discloader.common.structures.User;
@@ -33,7 +34,7 @@ public class DiscLoader {
 
 	public boolean ready;
 
-	public DiscRegistry registry;
+
 	
 	public RESTManager rest;
 
@@ -100,7 +101,6 @@ public class DiscLoader {
 		
 		this.rest = new RESTManager(this);
 
-		this.registry = new DiscRegistry(this);
 		
 		this.users = new HashMap<String, User>();
 
@@ -152,7 +152,9 @@ public class DiscLoader {
 	 * @param data
 	 */
 	public void emit(String event, Object data) {
-//		this.modh.emit(event, data);
+		for (ModContainer mod : ModRegistry.mods.values()) {
+			mod.emit(event, data);
+		}
 	}
 
 	/**
@@ -246,6 +248,7 @@ public class DiscLoader {
 	public void emitReady() {
 		this.discSocket.status = Constants.Status.READY;
 		this.ready = true;
+		CommandHandler.handleCommands = true;
 		this.emit(Constants.Events.READY, this);
 	}
 

@@ -1,7 +1,7 @@
 package xyz.r3alb0t.help.common;
 
 import io.discloader.discloader.client.command.Command;
-import io.discloader.discloader.common.registry.DiscRegistry;
+import io.discloader.discloader.common.registry.CommandRegistry;
 import xyz.r3alb0t.help.common.commands.HelpCommand;
 
 /**
@@ -22,7 +22,7 @@ public class ObjectHandler {
 	}
 	
 	public static void registerCommands() {
-		DiscRegistry.registerCommand(HelpCommand, HelpCommand.getUnlocalizedName());
+		CommandRegistry.registerCommand(HelpCommand, HelpCommand.getUnlocalizedName());
 	}
 
 }

@@ -14,7 +14,7 @@ public class CommandHelp extends Command {
 	}
 	
 	public void execute(MessageCreateEvent e) {
-		
+		e.message.channel.sendMessage("Test");
 	}
 
 }

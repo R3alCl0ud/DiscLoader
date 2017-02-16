@@ -27,7 +27,7 @@ public class DiscRegistry {
 	}
 
 	public static void registerCommand(Command command, String uniqueID) {
-		commands.put(currentActiveMod.ModInfo.modid() + ":" + uniqueID, command);
+		commands.put(currentActiveMod.modInfo.modid() + ":" + uniqueID, command);
 	}
 
 	/**

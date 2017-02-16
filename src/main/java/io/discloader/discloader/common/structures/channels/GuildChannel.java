@@ -8,7 +8,6 @@ import io.discloader.discloader.common.structures.Overwrite;
 import io.discloader.discloader.common.structures.Permission;
 import io.discloader.discloader.common.structures.Role;
 import io.discloader.discloader.network.gateway.json.ChannelJSON;
-import io.discloader.discloader.network.gateway.json.OverwriteJSON;
 import io.discloader.discloader.util.Constants;
 import io.discloader.discloader.util.Constants.Permissions;
 
@@ -36,11 +35,7 @@ public class GuildChannel extends Channel {
 
 		this.position = data.position;
 
-		if (data.permission_overwrites != null) {
-			for (OverwriteJSON overwrite : data.permission_overwrites) {
-				// this.overwrites.put(overwrite.id, new Overwrite(overwrite));
-			}
-		}
+
 	}
 
 	public HashMap<String, GuildMember> getMembers() {

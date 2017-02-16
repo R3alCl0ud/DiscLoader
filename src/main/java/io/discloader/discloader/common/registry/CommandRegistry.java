@@ -1,8 +1,7 @@
 package io.discloader.discloader.common.registry;
 
-import java.util.HashMap;
-
 import io.discloader.discloader.client.command.Command;
+import io.discloader.discloader.client.logging.ProgressLogger;
 import io.discloader.discloader.common.discovery.ModContainer;
 import io.discloader.discloader.util.NumericStringMap;
 
@@ -24,7 +23,7 @@ public class CommandRegistry {
 		ModContainer modContainer = ModRegistry.activeMod;
 
 		if (modContainer != null) {
-			prefix = modContainer.ModInfo.modid();
+			prefix = modContainer.modInfo.modid();
 		} else {
 			prefix = "discloader";
 		}
@@ -38,17 +37,21 @@ public class CommandRegistry {
 
 	public static void registerCommand(Command command, String name, int idHint) {
 		int id = idHint;
-		if (idHint == -1) {
+		if (id == -1) {
 			id = (int) (Math.round(Math.random() * (maxID - minID)) + minID);
 		}
 
-		while (commands.containsID(idHint)) {
+		while (commands.containsID(id)) {
 			id = (int) (Math.round(Math.random() * (maxID - minID)) + minID);
 		}
 		commands.set(id, name, command.getUnlocalizedName(), command);
 	}
 
 	public static void registerCommand(Command command, String name) {
+		if (ProgressLogger.phaseNumber != 2) {
+			System.out.println("HALTING.......\nERROR: Commands must be registered in the PreINIT Phase");
+			System.exit(1);
+		}
 		registerCommand(command, addPrefix(name), -1);
 	}
 

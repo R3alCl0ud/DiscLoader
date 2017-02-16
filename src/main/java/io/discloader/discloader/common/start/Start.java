@@ -9,7 +9,6 @@ import com.google.gson.Gson;
 import io.discloader.discloader.client.command.CommandHandler;
 import io.discloader.discloader.client.renderer.WindowFrame;
 import io.discloader.discloader.common.DiscLoader;
-import io.discloader.discloader.common.registry.DiscRegistry;
 
 /**
  * DiscLoader client entry point
@@ -36,7 +35,8 @@ public class Start {
 		options options = gson.fromJson(content, options.class);
 //		nogui = options.useWindow;
 		token = options.auth.token;
-
+		parseArgs(args);
+		
 		if (!nogui) {
 			window = new WindowFrame(loader);
 		} else {

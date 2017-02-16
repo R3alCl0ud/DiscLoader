@@ -12,8 +12,14 @@ import io.discloader.discloader.common.structures.Message;
 public class CommandHandler {
 
 	public static String prefix = "/";
+	
+	public static boolean handleCommands = false;
 
 	public static void handleMessageCreate(MessageCreateEvent e) {
+		if (!handleCommands) {
+			return;
+		}
+		
 		Message message = e.message;
 		String label = message.content.split(" ")[0].substring(prefix.length());
 

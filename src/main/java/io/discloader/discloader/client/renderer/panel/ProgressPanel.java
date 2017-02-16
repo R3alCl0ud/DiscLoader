@@ -2,17 +2,12 @@ package io.discloader.discloader.client.renderer.panel;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
-import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Graphics2D;
-import java.awt.GridLayout;
-import java.awt.image.BufferedImage;
 
-import javax.swing.BoxLayout;
 import javax.swing.JPanel;
 import javax.swing.JProgressBar;
 import javax.swing.Painter;
-import javax.swing.SwingConstants;
 import javax.swing.UIDefaults;
 
 /**
@@ -46,7 +41,7 @@ public class ProgressPanel extends JPanel {
 		this.add(this.right, BorderLayout.EAST);
 		this.setSize(720, 150);
 		this.validate();
-		System.out.println(this.getSize().getHeight());
+		System.out.println(this.getSize().getWidth());
 	}
 
 	public void setBarColor() {
