@@ -11,6 +11,7 @@ import io.discloader.discloader.common.events.MessageCreateEvent;
  * @author Perry Berman
  *
  */
+@Deprecated
 public class DiscRegistry {
 
 	public final DiscLoader loader;

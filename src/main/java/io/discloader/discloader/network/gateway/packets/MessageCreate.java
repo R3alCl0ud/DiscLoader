@@ -3,8 +3,8 @@
  */
 package io.discloader.discloader.network.gateway.packets;
 
+import io.discloader.discloader.client.command.CommandHandler;
 import io.discloader.discloader.common.events.MessageCreateEvent;
-import io.discloader.discloader.common.registry.DiscRegistry;
 import io.discloader.discloader.common.structures.Message;
 import io.discloader.discloader.common.structures.channels.TextChannel;
 import io.discloader.discloader.network.gateway.DiscSocket;
@@ -34,7 +34,7 @@ public class MessageCreate extends DiscPacket {
 		channel.messages.put(message.id, message);
 		MessageCreateEvent e = new MessageCreateEvent(message);
 		this.socket.loader.emit(Constants.Events.MESSAGE_CREATE, e);
-		DiscRegistry.executeCommand(e);
+		CommandHandler.handleMessageCreate(e);
 	}
 
 }

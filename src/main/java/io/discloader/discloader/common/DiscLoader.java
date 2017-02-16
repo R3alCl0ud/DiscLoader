@@ -37,8 +37,6 @@ public class DiscLoader {
 	
 	public RESTManager rest;
 
-	public ModRegistry modh;
-
 	/**
 	 * A HashMap of the client's cached users. Indexed by {@link User#id}.
 	 * @author Perry Berman
@@ -115,8 +113,6 @@ public class DiscLoader {
 		this.voiceChannels = new HashMap<String, VoiceChannel>();
 		
 		this.guilds = new HashMap<String, Guild>();
-
-		this.modh = new ModRegistry(this);
 
 		this.timer = new Timer();
 

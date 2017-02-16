@@ -14,50 +14,42 @@ public class CommandRegistry {
 
 	private static int minID = 128;
 	private static int maxID = 2048;
-	
-	public static final NumericStringMap<Command> commands = new NumericStringMap<Command>();
-	
-	public CommandRegistry() {
 
-	}
-	
+	public static final NumericStringMap<Command> commands = new NumericStringMap<Command>();
+
 	public static String addPrefix(String name) {
 		int index = name.lastIndexOf(":");
 		String oldPrefix = index == -1 ? "" : name.substring(0, index), prefix;
-		
+
 		ModContainer modContainer = ModRegistry.activeMod;
-		
+
 		if (modContainer != null) {
-			prefix = modContainer.ModInfo.modid();			
+			prefix = modContainer.ModInfo.modid();
 		} else {
 			prefix = "discloader";
 		}
-		
+
 		if (!oldPrefix.equals(prefix)) {
 			name = prefix + ":" + name;
 		}
-		
+
 		return name;
 	}
-	
-	
+
 	public static void registerCommand(Command command, String name, int idHint) {
-		int id;
+		int id = idHint;
 		if (idHint == -1) {
-			idHint = (int) (Math.round(Math.random() * (maxID - minID)) + minID);
+			id = (int) (Math.round(Math.random() * (maxID - minID)) + minID);
 		}
-		
-		
-		
-		id = idHint;
-		
-		commands.addItemData(id, name, command);
+
+		while (commands.containsID(idHint)) {
+			id = (int) (Math.round(Math.random() * (maxID - minID)) + minID);
+		}
+		commands.set(id, name, command.getUnlocalizedName(), command);
 	}
-	
-	
+
 	public static void registerCommand(Command command, String name) {
 		registerCommand(command, addPrefix(name), -1);
 	}
-	
-	
+
 }

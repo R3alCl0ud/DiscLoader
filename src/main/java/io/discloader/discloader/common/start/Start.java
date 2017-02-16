@@ -6,6 +6,7 @@ import java.nio.file.Paths;
 
 import com.google.gson.Gson;
 
+import io.discloader.discloader.client.command.CommandHandler;
 import io.discloader.discloader.client.renderer.WindowFrame;
 import io.discloader.discloader.common.DiscLoader;
 import io.discloader.discloader.common.registry.DiscRegistry;
@@ -33,7 +34,7 @@ public class Start {
 		for (Object line : lines)
 			content += line;
 		options options = gson.fromJson(content, options.class);
-		nogui = options.useWindow;
+//		nogui = options.useWindow;
 		token = options.auth.token;
 
 		if (!nogui) {
@@ -56,7 +57,7 @@ public class Start {
 				}
 			} else if (args[i].equals("-p")) {
 				if (i + 1 < args.length) {
-					DiscRegistry.prefix = args[i + 1];
+					CommandHandler.prefix = args[i + 1];
 				} else {
 					System.out.println("Expected argument after -p");
 					System.exit(1);

@@ -22,7 +22,7 @@ public class LoadingPanel extends JPanel {
 		this.add(stagePanel = new ProgressPanel(0, 1));
 		this.add(stepPanel = new ProgressPanel(0, 1));
 		this.add(progressPanel = new ProgressPanel(0, 1));
-		setPhase(1, 2, "Configuring Loader");
+		setPhase(1, 2, "LOADING");
 //		start.loader.modh.beginLoader();
 	}
 

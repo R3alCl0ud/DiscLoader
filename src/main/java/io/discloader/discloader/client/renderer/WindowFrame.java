@@ -2,13 +2,18 @@ package io.discloader.discloader.client.renderer;
 
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
+import java.util.ArrayList;
 import java.util.TimerTask;
 
 import javax.swing.*;
 
+import io.discloader.discloader.client.logging.ProgressLogger;
 import io.discloader.discloader.client.renderer.panel.LoadingPanel;
 import io.discloader.discloader.client.renderer.panel.WindowPanel;
 import io.discloader.discloader.common.DiscLoader;
+import io.discloader.discloader.common.discovery.ModCandidate;
+import io.discloader.discloader.common.discovery.ModDiscoverer;
+import io.discloader.discloader.common.registry.ModRegistry;
 
 /**
  * @author Perry Berman
@@ -27,6 +32,7 @@ public class WindowFrame extends JFrame {
 		this.add(loading);
 		this.setTitle("DiscLoader");
 		this.setVisible(true);
+		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		this.addWindowListener(new WindowListener() {
 
 			@Override
@@ -61,11 +67,20 @@ public class WindowFrame extends JFrame {
 
 			@Override
 			public void windowOpened(WindowEvent arg0) {
+				LoadingPanel.phasePanel.setBarColor();
+				LoadingPanel.stagePanel.setBarColor();
+				LoadingPanel.stepPanel.setBarColor();
+				LoadingPanel.progressPanel.setBarColor();
+				loading.repaint();
 				TimerTask giveItTime = new TimerTask() {
 
 					@Override
 					public void run() {
-						
+						ProgressLogger.stage(1, 3, "Mod Discovery");
+						ModDiscoverer.checkModDir();
+						ArrayList<ModCandidate> candidates = ModDiscoverer.discoverMods();
+						ProgressLogger.stage(2, 3, "Discovered Mod Candidates");
+						ModRegistry.checkCandidates(candidates);
 					}
 				};
 				loader.timer.schedule(giveItTime, 3000);
