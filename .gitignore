@@ -1,11 +1,8 @@
 /target/
-
-auth.json
-
 options.json
-
-options.json
-options.json
-options.json
-
 payload.json
+build
+build/*
+.project
+.gradle/*
+.classpath

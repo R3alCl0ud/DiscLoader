@@ -32,7 +32,7 @@ public class CommandHelp extends Command {
 		}
 		
 		
-		embed.setColor(0x08a2ff).setThumbnail(new File(Paths.get("Floppy_Disk.png").toFile().getAbsolutePath()))
+		embed.setColor(0x08a2ff).setThumbnail("https://github.com/R3alCl0ud/DiscLoader/blob/master/Floppy_Disk.png?raw=true")
 				.setFooter("Generated using DiscLoader", e.loader.user.avatarURL)
 				.setAuthor(e.loader.user.username, null, e.loader.user.avatarURL);
 		String mods = "";

@@ -4,20 +4,16 @@ apply plugin: 'application'
 
 mainClassName = 'io.discloader.discloader.common.start.Start'
 
-// tag::repositories[]
+
 repositories {
     mavenCentral()
 }
-// end::repositories[]
 
-// tag::jar[]
 jar {
     baseName = 'discloader'
-    version =  '0.0.1'
+    version =  '0.0.2'
 }
-// end::jar[]
 
-// tag::dependencies[]
 sourceCompatibility = 1.8
 targetCompatibility = 1.8
 
@@ -27,21 +23,26 @@ dependencies {
 	compile 'com.google.code.gson:gson:2.8.0'
 	compile 'com.neovisionaries:nv-websocket-client:1.31'
 	compile group: 'com.neovisionaries', name: 'nv-websocket-client', version: '1.31'
-    compile "joda-time:joda-time:2.2"
-    testCompile "junit:junit:4.12"
+  compile "joda-time:joda-time:2.2"
+  testCompile "junit:junit:4.12"
 }
-// end::dependencies[]
+
 
 sourceSets {
 	main {
 		resources {
-			srcDir 'resources'
+			srcDir 'assets'
 		}
 		java {
 			srcDir 'src'
 		}
 	}
 }
+
+compileJava {
+
+}
+
 
 // Finds and sets version data
 task buildInfo {
@@ -60,11 +61,3 @@ task buildInfo {
         ext.buildNum = "DEV.${project.buildInfo.revision}"
     }
 }
-
-task build {
-
-}
-
-
-// tag::wrapper[]
-// end::wrapper[]
