@@ -87,16 +87,14 @@ public class APIRequest {
 						file.getPath(), Constants.gson.toJson(dData));
 				System.out.println(payload);
 
-				// byte[] fileBytes =
-				// Files.readAllBytes(Paths.get(file.getPath()));
-				// byte[] array = new byte[fileBytes.length +
-				// payload.getBytes().length];
-				// System.arraycopy(array, 0, array, 0, array.length);
-				// System.arraycopy(payload.getBytes(), 0, array, array.length,
-				// payload.getBytes().length);
-				((HttpRequestWithBody) request).header("accept", "application/json").header("cache-control", "no-cache")
-						.header("content-type", "multipart/form-data; boundary=----WebKitFormBoundary7MA4YWxkTrZu0gW")
-						.body(payload);
+				try {
+					byte[] bytes = Constants.readAllBytes(file);
+					((HttpRequestWithBody) request).header("accept", "application/json").header("cache-control", "no-cache")
+					.header("content-type", "multipart/form-data; boundary=----WebKitFormBoundary7MA4YWxkTrZu0gW")
+					.body(payload);
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
 
 			} else {
 				((HttpRequestWithBody) request).body(Constants.gson.toJson(this.data));
