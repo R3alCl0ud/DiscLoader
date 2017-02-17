@@ -1,5 +1,6 @@
 package io.discloader.discloader.network.rest;
 
+import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -12,10 +13,12 @@ import org.json.JSONObject;
 import com.google.gson.Gson;
 
 import io.discloader.discloader.common.DiscLoader;
+import io.discloader.discloader.common.structures.Attachment;
 import io.discloader.discloader.common.structures.Guild;
 import io.discloader.discloader.common.structures.GuildMember;
 import io.discloader.discloader.common.structures.Message;
 import io.discloader.discloader.common.structures.RichEmbed;
+import io.discloader.discloader.common.structures.SendableMessage;
 import io.discloader.discloader.common.structures.User;
 import io.discloader.discloader.common.structures.channels.TextChannel;
 import io.discloader.discloader.network.gateway.json.GuildJSON;
@@ -58,23 +61,22 @@ public class RESTManager {
 		return this.makeRequest(url, method, auth, null);
 	}
 
-	public CompletableFuture<Message> sendMessage(TextChannel channel, String content, RichEmbed embed) {
-		if (content.length() < 1)
+	public CompletableFuture<Message> sendMessage(TextChannel channel, String content, RichEmbed embed, Attachment attachment, File file) {
+		if (content.length() < 1 && (embed == null && attachment == null))
 			return null;
 		CompletableFuture<Message> msgSent = new CompletableFuture<Message>();
-		this.makeRequest(Constants.Endpoints.messages(channel.id), Constants.Methods.POST, true,
-				new JSONObject().put("content", content).toString()).thenAcceptAsync(action -> {
+		this.makeRequest(Constants.Endpoints.messages(channel.id), Constants.Methods.POST, true, new SendableMessage(content, embed, attachment, file)).thenAcceptAsync(action -> {
 					msgSent.complete(new Message(channel, this.gson.fromJson(action, MessageJSON.class)));
 				});
 		return msgSent;
 	}
 
-	public CompletableFuture<Message> editMessage(TextChannel channel, Message message, String content, RichEmbed embed) {
-		if (content.length() < 1)
+	public CompletableFuture<Message> editMessage(TextChannel channel, Message message, String content, RichEmbed embed, Attachment attachment, File file) {
+		if (content.length() < 1 && (embed == null || attachment == null))
 			return null;
 		CompletableFuture<Message> future = new CompletableFuture<Message>();
 		this.makeRequest(Constants.Endpoints.message(channel.id, message.id), Constants.Methods.PATCH, true,
-				new JSONObject().put("content", content).put("embed", embed).toString()).thenAcceptAsync(action -> {
+				new SendableMessage(content, embed, attachment, file)).thenAcceptAsync(action -> {
 					future.complete(new Message(channel, this.gson.fromJson(action, MessageJSON.class)));
 				});
 		return future;

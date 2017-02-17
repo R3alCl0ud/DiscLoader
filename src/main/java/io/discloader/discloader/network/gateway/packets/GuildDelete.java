@@ -9,11 +9,8 @@ package io.discloader.discloader.network.gateway.packets;
  */
 public class GuildDelete {
 
-	/**
-	 * 
-	 */
 	public GuildDelete() {
-		// TODO Auto-generated constructor stub
+		
 	}
 
 }

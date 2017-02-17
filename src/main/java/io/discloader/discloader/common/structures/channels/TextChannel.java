@@ -1,9 +1,11 @@
 package io.discloader.discloader.common.structures.channels;
 
+import java.io.File;
 import java.util.HashMap;
 import java.util.concurrent.CompletableFuture;
 
 import io.discloader.discloader.common.DiscLoader;
+import io.discloader.discloader.common.structures.Attachment;
 import io.discloader.discloader.common.structures.Guild;
 import io.discloader.discloader.common.structures.Message;
 import io.discloader.discloader.common.structures.RichEmbed;
@@ -50,19 +52,42 @@ public class TextChannel extends Channel {
 	/**
 	 * Sends a {@link Message} to the channel.
 	 * @param content The content to change the content to
-	 * @return A Future that completes with a {@link Message} if successfull,  
+	 * @return A Future that completes with a {@link Message} if successful,  
 	 */
 	public CompletableFuture<Message> sendMessage(String content) {
-		return this.loader.rest.sendMessage(this, content, null);
+		return this.loader.rest.sendMessage(this, content, null, null, null);
 	}
 
 	/**
 	 * Sends a {@link Message} to the channel.
 	 * @param content The content to change the content to
-	 * @return A Future that completes with a {@link Message} if successfull,  
+	 * @return A Future that completes with a {@link Message} if successful,  
 	 */
 	public CompletableFuture<Message> sendEmbed(RichEmbed embed) {
-		return this.loader.rest.sendMessage(this, null, embed);
+		File file = null;
+		Attachment attachment = null;
+		if (embed.thumbnail != null && embed.thumbnail.file != null) {
+			file = embed.thumbnail.file;
+			embed.thumbnail.file = null;
+			attachment = new Attachment(file.getName());
+		}
+		return this.loader.rest.sendMessage(this, " ", embed, attachment, file);
+	}
+
+	/**
+	 * Sends a {@link Message} to the channel.
+	 * @param content The content to change the content to
+	 * @return A Future that completes with a {@link Message} if successful,  
+	 */
+	public CompletableFuture<Message> sendMessage(String content, RichEmbed embed) {
+		File file = null;
+		Attachment attachment = null;
+		if (embed.thumbnail != null && embed.thumbnail.file != null) {
+			file = embed.thumbnail.file;
+			embed.thumbnail.file = null;
+			attachment = new Attachment(file.getName());
+		}
+		return this.loader.rest.sendMessage(this, content, embed, attachment, file);
 	}
 	
 }

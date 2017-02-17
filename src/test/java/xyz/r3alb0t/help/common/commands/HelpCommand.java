@@ -14,7 +14,7 @@ import io.discloader.discloader.common.structures.Message;
 public class HelpCommand  extends Command {
 	public HelpCommand() {
 		super();
-		this.setUnlocalizedName("help");
+		this.setUnlocalizedName("helpBot");
 	}
 	
 	public void execute(MessageCreateEvent e) {

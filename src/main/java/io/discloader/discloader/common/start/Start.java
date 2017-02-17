@@ -32,6 +32,8 @@ public class Start {
 		Object[] lines = Files.readAllLines(Paths.get("./options.json")).toArray();
 		for (Object line : lines)
 			content += line;
+		char[] chars = {'a', 'b', 'c'};
+		System.out.println(chars.toString().indexOf('b'));
 		options options = gson.fromJson(content, options.class);
 //		nogui = options.useWindow;
 		token = options.auth.token;

@@ -16,7 +16,15 @@ import com.neovisionaries.ws.client.WebSocketListener;
 import com.neovisionaries.ws.client.WebSocketState;
 
 import io.discloader.discloader.common.DiscLoader;
-import io.discloader.discloader.network.gateway.packets.*;
+import io.discloader.discloader.network.gateway.packets.DiscPacket;
+import io.discloader.discloader.network.gateway.packets.GuildCreate;
+import io.discloader.discloader.network.gateway.packets.HelloPacket;
+import io.discloader.discloader.network.gateway.packets.MessageCreate;
+import io.discloader.discloader.network.gateway.packets.MessageDelete;
+import io.discloader.discloader.network.gateway.packets.MessageUpdate;
+import io.discloader.discloader.network.gateway.packets.PresenceUpdate;
+import io.discloader.discloader.network.gateway.packets.ReadyPacket;
+import io.discloader.discloader.network.gateway.packets.SocketPacket;
 import io.discloader.discloader.util.Constants;
 
 public class DiscSocketListener extends WebSocketAdapter implements WebSocketListener {

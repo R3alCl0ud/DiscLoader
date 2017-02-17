@@ -89,7 +89,7 @@ public class Message {
 	 * @return A Future that completes with {@literal this} when sucessfull
 	 */
 	public CompletableFuture<Message> edit(String content, RichEmbed embed) {
-		return this.loader.rest.editMessage(this.channel, this, content, embed);
+		return this.loader.rest.editMessage(this.channel, this, content, embed, null, null);
 	}
 	
 	/**

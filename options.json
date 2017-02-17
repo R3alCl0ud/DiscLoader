@@ -1,6 +1,6 @@
 {
 	"auth": {
-    	"token": "TOKEN"
+		"token": "TOKEN"
 	},
 	"useWindow": true
 }

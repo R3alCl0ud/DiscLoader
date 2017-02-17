@@ -7,6 +7,7 @@ import java.util.TimerTask;
 
 import io.discloader.discloader.client.command.Command;
 import io.discloader.discloader.client.logging.ProgressLogger;
+import io.discloader.discloader.client.renderer.panel.LoadingPanel;
 import io.discloader.discloader.common.discovery.Mod;
 import io.discloader.discloader.common.discovery.ModCandidate;
 import io.discloader.discloader.common.discovery.ModContainer;
@@ -14,25 +15,29 @@ import io.discloader.discloader.common.events.DiscPreInitEvent;
 import io.discloader.discloader.common.start.Start;
 
 public class ModRegistry {
-	
+
 	/**
-	 * The mod currently being loaded in any given phase of the {@link DiscLoader loader's} startup
+	 * The mod currently being loaded in any given phase of the
+	 * {@link DiscLoader loader's} startup
+	 * 
 	 * @author Perry Berman
 	 * @since 0.0.1
 	 */
 	public static ModContainer activeMod = null;
-	
+
 	/**
-	 * A {@link HashMap} of the mods loaded by the client. Indexed by {@link Mod#modid()}
+	 * A {@link HashMap} of the mods loaded by the client. Indexed by
+	 * {@link Mod#modid()}
+	 * 
 	 * @author Zachary Waldron
 	 * @since 0.0.1
 	 */
 	public static final HashMap<String, ModContainer> mods = new HashMap<String, ModContainer>();
-	
+
 	private static final HashMap<String, ModContainer> preInitMods = new HashMap<String, ModContainer>();
-	
+
 	private static final HashMap<String, String> loadMod = new HashMap<String, String>();
-	
+
 	public static void checkCandidates(ArrayList<ModCandidate> mcs) {
 		ProgressLogger.step(1, 2, "Checking candidates for @Mod annotation");
 		ArrayList<ModContainer> containers = new ArrayList<ModContainer>();
@@ -43,7 +48,7 @@ public class ModRegistry {
 			ProgressLogger.progress(i + 1, mcs.size(), cls.getName());
 			boolean isMod = cls.isAnnotationPresent(Mod.class);
 			if (isMod) {
-				ProgressLogger.progress(i + 1,  mcs.size(), String.format("Found @Mod Annotation: ", cls.getName()));
+				ProgressLogger.progress(i + 1, mcs.size(), String.format("Found @Mod Annotation: ", cls.getName()));
 				ModContainer mc = new ModContainer(candidate);
 				activeMod = mc;
 				containers.add(mc);
@@ -55,7 +60,8 @@ public class ModRegistry {
 			activeMod = mc;
 			ProgressLogger.progress(i + 1, containers.size(), mc.modInfo.modid());
 			if (preInitMods.containsKey(mc.modInfo.modid())) {
-				System.out.printf("Mod with duplicate id found. \nHALTING STARTUP\nDuplicate ID: %s\n", mc.modInfo.modid());
+				System.out.printf("Mod with duplicate id found. \nHALTING STARTUP\nDuplicate ID: %s\n",
+						mc.modInfo.modid());
 				System.exit(1);
 			}
 			preInitMods.put(mc.modInfo.modid(), mc);
@@ -69,14 +75,14 @@ public class ModRegistry {
 			mc.discoverHandlers();
 			n++;
 		}
-		
+
 		activeMod = null;
 		ProgressLogger.phase(2, 3, "PreINIT");
 		ProgressLogger.stage(1, 2, "Begin PreInit");
 		ProgressLogger.stage(1, 1, "Registering DiscLoader Commands");
 		Command.registerCommands();
 		ProgressLogger.progress(0, 0, "");
-		
+
 		TimerTask pre = new TimerTask() {
 			@Override
 			public void run() {
@@ -100,7 +106,10 @@ public class ModRegistry {
 		}
 		ProgressLogger.phase(3, 3, "Init");
 		ProgressLogger.stage(1, 3, "Logging In");
-		Start.loader.login(Start.token);
+		resetStep();
+		Start.loader.login(Start.token).thenAcceptAsync(action -> {
+			ProgressLogger.stage(2, 3, "Caching API Objects");
+		});
 	}
 
 	public static void load(String modid) {
@@ -111,7 +120,7 @@ public class ModRegistry {
 		}
 		ProgressLogger.progress(2, 3, "Setting active mod");
 		activeMod = mod;
-		
+
 		ProgressLogger.progress(3, 3, "Executing PreInit handler in: " + mod.modInfo.modid());
 		mods.put(mod.modInfo.modid(), mod);
 		mod.emit("preInit", new DiscPreInitEvent(Start.loader));
@@ -122,5 +131,11 @@ public class ModRegistry {
 		}
 		mod.loaded = true;
 	}
-	
+
+	private static void resetStep() {
+		if (Start.nogui)
+			return;
+		LoadingPanel.setProgress(0, 0, "");
+		LoadingPanel.setStep(0, 0, "");
+	}
 }

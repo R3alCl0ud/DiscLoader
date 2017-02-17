@@ -10,15 +10,15 @@ public class EmbedField {
 	/**
 	 * Is the field displayed inline
 	 */
-	private boolean inline;
+	public boolean inline;
 	/**
 	 * The name of the field
 	 */
-	private String name;
+	public String name;
 	/**
 	 * The field's content
 	 */
-	private String value;
+	public String value;
 
 	/**
 	 * @param name The name of the field

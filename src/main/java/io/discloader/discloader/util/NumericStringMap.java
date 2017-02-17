@@ -71,6 +71,14 @@ public class NumericStringMap<T> {
 		return this.idBySpecial.containsKey(specialID);
 	}
 	
+	public Collection<String> collectionCharIDs() {
+		return this.charIDs.values();
+	}
+
+	public Collection<String> collectionSpecialIDs() {
+		return this.charIDs.values();
+	}
+	
 	public Collection<T> entries() {
 		return this.data.values();
 	}

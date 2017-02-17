@@ -8,6 +8,7 @@ import org.json.JSONObject;
 import io.discloader.discloader.common.DiscLoader;
 import io.discloader.discloader.network.gateway.json.UserJSON;
 import io.discloader.discloader.util.Constants;
+import io.discloader.discloader.util.Constants.Endpoints;
 
 public class User {
 	/**
@@ -35,6 +36,9 @@ public class User {
 	 * The hash of the user's avatar
 	 */
 	public String avatar;
+	
+	
+	public String avatarURL;
 	/**
 	 * The user's four digit discriminator
 	 */
@@ -89,6 +93,8 @@ public class User {
 		this.password = user.password;
 
 		this.avatar = user.avatar;
+		
+		this.avatarURL = this.avatar != null ? Endpoints.avatar(this.id, this.avatar) : null;
 
 		this.bot = user.bot;
 
@@ -106,6 +112,8 @@ public class User {
 
 		this.avatar = data.avatar;
 
+		this.avatarURL = this.avatar != null ? Endpoints.avatar(this.id, this.avatar) : null;
+		
 		this.bot = data.bot;
 	}
 
@@ -203,11 +211,13 @@ public class User {
 		if (data.password != null)
 			this.password = data.password;
 
-		if (data.password != null)
+		if (data.avatar != null)
 			this.avatar = data.avatar;
 
 		if (data.bot == true || data.bot == false)
 			this.bot = data.bot;
+		
+		this.avatarURL = this.avatar != null ? Endpoints.avatar(this.id, this.avatar) : null;
 
 		return this;
 	}

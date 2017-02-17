@@ -1,11 +1,13 @@
 package io.discloader.discloader.network.rest;
 
+import java.io.File;
 import java.util.concurrent.CompletableFuture;
 
 import com.mashape.unirest.http.Unirest;
 import com.mashape.unirest.request.BaseRequest;
 import com.mashape.unirest.request.HttpRequestWithBody;
 
+import io.discloader.discloader.common.structures.SendableMessage;
 import io.discloader.discloader.util.Constants;
 
 public class APIRequest {
@@ -16,6 +18,8 @@ public class APIRequest {
 	public int method;
 
 	public boolean auth;
+
+	public final boolean multi;
 
 	public Object data;
 
@@ -33,8 +37,12 @@ public class APIRequest {
 		this.auth = auth;
 		this.data = data;
 		this.route = this.getRoute(this.url);
-		if (data != null)
-			System.out.println(data);
+		if (data != null && this.data instanceof SendableMessage && ((SendableMessage) this.data).file != null) {
+			System.out.println(Constants.gson.toJson(data));
+			this.multi = true;
+		} else {
+			this.multi = false;
+		}
 	}
 
 	/**
@@ -66,18 +74,28 @@ public class APIRequest {
 			break;
 		case Constants.Methods.POST:
 			request = Unirest.post(this.route);
-			((HttpRequestWithBody) request).body(this.data.toString());
+			if (this.data instanceof SendableMessage && ((SendableMessage) this.data).file != null) {
+				SendableMessage data = (SendableMessage) this.data,
+						dData = new SendableMessage(data.content, data.embed, data.attachment, null);
+				File file = data.file;
+				System.out.println(dData.file == null);
+				((HttpRequestWithBody) request).header("accept", "application/json")
+						.field("filename", file.getPath()).field("Content-Type", "image")
+						.field("payload_json", Constants.gson.toJson(dData));
+			} else {
+				((HttpRequestWithBody) request).body(Constants.gson.toJson(this.data));
+			}
 			break;
 		case Constants.Methods.PATCH:
 			request = Unirest.patch(this.route);
-			((HttpRequestWithBody) request).body(this.data.toString());
+			((HttpRequestWithBody) request).body(Constants.gson.toJson(this.data));
 			break;
 		case Constants.Methods.DELETE:
 			request = Unirest.delete(this.route);
 			break;
 		case Constants.Methods.PUT:
 			request = Unirest.put(this.route);
-			((HttpRequestWithBody) request).body(this.data.toString());
+			((HttpRequestWithBody) request).body(Constants.gson.toJson(this.data));
 			break;
 		default:
 			request = Unirest.get(this.route);

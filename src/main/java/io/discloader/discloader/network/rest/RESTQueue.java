@@ -60,7 +60,9 @@ public class RESTQueue {
 
 		BaseRequest request = apiRequest.createRequest();
 
-		request = this.addHeaders(request, apiRequest.auth);
+		request = this.addHeaders(request, apiRequest.auth, apiRequest.multi);
+		
+		
 		final RESTQueue this_arg = this;
 		request.asStringAsync(new Callback<String>() {
 			public void cancelled() {
@@ -136,12 +138,17 @@ public class RESTQueue {
 		this.handle();
 	}
 
-	public <T extends BaseRequest> T addHeaders(T baseRequest, boolean auth) {
+	public <T extends BaseRequest> T addHeaders(T baseRequest, boolean auth, boolean multi) {
 		HttpRequest request = baseRequest.getHttpRequest();
 		if (auth && this.loader.token != null)
 			request.header("authorization", this.loader.token);
-		if (!(request instanceof GetRequest) && !(baseRequest instanceof MultipartBody))
+		if (!(request instanceof GetRequest) && !(baseRequest instanceof MultipartBody) && !multi) {
+			System.out.println("hello");
 			request.header("Content-Type", "application/json");
+		} else {
+			System.out.println("Multipart");
+			request.header("content-type", "multipart/form-data");
+		}
 		request.header("user-agent", "DiscordBot (https://gitlab.com/R3alCl0ud/DiscLoader, v0.0.1)");
 		request.header("Accept-Encoding", "gzip");
 		return baseRequest;

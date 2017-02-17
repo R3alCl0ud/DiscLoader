@@ -45,7 +45,8 @@ public class ProgressPanel extends JPanel {
 	}
 
 	public void setBarColor() {
-		Color color = new Color(255, 20, 20);
+		Color WHITE = new Color(255, 255, 255);
+		Color RED = new Color(220, 0, 0);
 		@SuppressWarnings("rawtypes")
 		Painter p = new Painter() {
 
@@ -62,7 +63,8 @@ public class ProgressPanel extends JPanel {
 		properties.put("ProgressBar[Enabled].backgroundPainter", p);
 		this.bar.putClientProperty("Nimbus.Overrides", properties);
 
-		this.bar.setBackground(color);
+		this.bar.setBackground(WHITE);
+		this.bar.setForeground(RED);
 //		this.bar.revalidate();
 		this.bar.repaint();
 	}
