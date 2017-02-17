@@ -23,7 +23,16 @@ public class CommandHelp extends Command {
 
 	public void execute(MessageCreateEvent e) {
 		RichEmbed embed = new RichEmbed("Help & Bot Info");
-		embed.setColor(0x08a2ff).setThumbnail(e.loader.user.avatarURL)
+		
+		if (e.message.content.split(" ").length > 1) {
+			
+			
+			
+			return;
+		}
+		
+		
+		embed.setColor(0x08a2ff).setThumbnail(new File(Paths.get("Floppy_Disk.png").toFile().getAbsolutePath()))
 				.setFooter("Generated using DiscLoader", e.loader.user.avatarURL)
 				.setAuthor(e.loader.user.username, null, e.loader.user.avatarURL);
 		String mods = "";
@@ -38,6 +47,7 @@ public class CommandHelp extends Command {
 				dCommands += String.format("%s\n", command.getUnlocalizedName());
 			}
 		}
+		embed.addField("Stats", String.format("Guilds: %d, Users: %d", e.loader.guilds.size(), e.loader.users.size()), true);
 		embed.addField("Mods", mods);
 		embed.addField("Default Commands", dCommands);
 		System.out.println(dCommands);

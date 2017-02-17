@@ -143,11 +143,7 @@ public class RESTQueue {
 		if (auth && this.loader.token != null)
 			request.header("authorization", this.loader.token);
 		if (!(request instanceof GetRequest) && !(baseRequest instanceof MultipartBody) && !multi) {
-			System.out.println("hello");
 			request.header("Content-Type", "application/json");
-		} else {
-			System.out.println("Multipart");
-			request.header("content-type", "multipart/form-data");
 		}
 		request.header("user-agent", "DiscordBot (https://gitlab.com/R3alCl0ud/DiscLoader, v0.0.1)");
 		request.header("Accept-Encoding", "gzip");

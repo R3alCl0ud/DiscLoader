@@ -1,6 +1,9 @@
 package io.discloader.discloader.network.rest;
 
 import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.concurrent.CompletableFuture;
 
 import com.mashape.unirest.http.Unirest;
@@ -79,9 +82,22 @@ public class APIRequest {
 						dData = new SendableMessage(data.content, data.embed, data.attachment, null);
 				File file = data.file;
 				System.out.println(dData.file == null);
-				((HttpRequestWithBody) request).header("accept", "application/json")
-						.field("filename", file.getPath()).field("Content-Type", "image")
-						.field("payload_json", Constants.gson.toJson(dData));
+				String payload = String.format(
+						"------WebKitFormBoundary7MA4YWxkTrZu0gW\r\nContent-Disposition: form-data; name=\"\"; filename=\"%s\"\r\nContent-Type: image/png\r\n\r\n\r\n------WebKitFormBoundary7MA4YWxkTrZu0gW\r\nContent-Disposition: form-data; name=\"payload_json\"\r\n\r\n%s\r\n------WebKitFormBoundary7MA4YWxkTrZu0gW--",
+						file.getPath(), Constants.gson.toJson(dData));
+				System.out.println(payload);
+
+				// byte[] fileBytes =
+				// Files.readAllBytes(Paths.get(file.getPath()));
+				// byte[] array = new byte[fileBytes.length +
+				// payload.getBytes().length];
+				// System.arraycopy(array, 0, array, 0, array.length);
+				// System.arraycopy(payload.getBytes(), 0, array, array.length,
+				// payload.getBytes().length);
+				((HttpRequestWithBody) request).header("accept", "application/json").header("cache-control", "no-cache")
+						.header("content-type", "multipart/form-data; boundary=----WebKitFormBoundary7MA4YWxkTrZu0gW")
+						.body(payload);
+
 			} else {
 				((HttpRequestWithBody) request).body(Constants.gson.toJson(this.data));
 			}

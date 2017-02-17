@@ -33,7 +33,7 @@ public class CommandHandler {
 	}
 
 	public static String getGuildRegion(Guild guild) {
-		return "usCentral";
+		return "us-central";
 	}
 
 }
