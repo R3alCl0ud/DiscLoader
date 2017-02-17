@@ -4,7 +4,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.HashMap;
 
-import io.discloader.discloader.client.logging.ProgressLogger;
+import io.discloader.discloader.client.logger.ProgressLogger;
 
 /**
  * @author Perry Berman

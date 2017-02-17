@@ -4,6 +4,7 @@ apply plugin: 'application'
 
 mainClassName = 'io.discloader.discloader.common.start.Start'
 
+version = ""
 
 repositories {
     mavenCentral()
@@ -11,7 +12,7 @@ repositories {
 
 jar {
     baseName = 'discloader'
-    version =  '0.0.2'
+    version =  version
 }
 
 sourceCompatibility = 1.8
@@ -27,24 +28,26 @@ dependencies {
   testCompile "junit:junit:4.12"
 }
 
-
 sourceSets {
 	main {
 		resources {
 			srcDir 'assets'
 		}
 		java {
-			srcDir 'src'
+			srcDir 'java'
 		}
 	}
 }
 
-compileJava {
+build {
+    dependsOn clean
+    dependsOn buildInfo
+    dependsOn jar
 
+    buildInfo.mustRunAfter clean
+    jar.mustRunAfter buildInfo
 }
 
-
-// Finds and sets version data
 task buildInfo {
     def cmd = "git rev-parse --short HEAD"
     def proc = cmd.execute()
@@ -60,4 +63,5 @@ task buildInfo {
     } else {
         ext.buildNum = "DEV.${project.buildInfo.revision}"
     }
+    version = ext.buildNum
 }

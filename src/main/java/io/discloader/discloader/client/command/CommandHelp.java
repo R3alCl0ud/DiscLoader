@@ -1,8 +1,5 @@
 package io.discloader.discloader.client.command;
 
-import java.io.File;
-import java.nio.file.Paths;
-
 import io.discloader.discloader.common.discovery.ModContainer;
 import io.discloader.discloader.common.events.MessageCreateEvent;
 import io.discloader.discloader.common.registry.CommandRegistry;
@@ -20,7 +17,7 @@ public class CommandHelp extends Command {
 		super();
 		this.setTextureName("discloader:help");
 	}
-
+	
 	public void execute(MessageCreateEvent e) {
 		RichEmbed embed = new RichEmbed("Help & Bot Info");
 		

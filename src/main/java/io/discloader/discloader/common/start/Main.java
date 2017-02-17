@@ -9,6 +9,7 @@ import com.google.gson.Gson;
 import io.discloader.discloader.client.command.CommandHandler;
 import io.discloader.discloader.client.renderer.WindowFrame;
 import io.discloader.discloader.common.DiscLoader;
+import io.discloader.discloader.common.logger.FileLogger;
 
 /**
  * DiscLoader client entry point
@@ -16,18 +17,21 @@ import io.discloader.discloader.common.DiscLoader;
  * @author Perry Berman
  * @see DiscLoader
  */
-public class Start {
+public class Main {
 	public static final Gson gson = new Gson();
 	public static WindowFrame window;
 	public static final DiscLoader loader = new DiscLoader();
 	public static boolean nogui = false;
 	public static String token;
-
+	private static FileLogger LOG;
+	
+	
 	/**
 	 * @param args
 	 * @throws IOException
 	 */
 	public static void main(String... args) throws IOException {
+		LOG = new FileLogger();
 		String content = "";
 		Object[] lines = Files.readAllLines(Paths.get("./options.json")).toArray();
 		for (Object line : lines)
@@ -35,10 +39,8 @@ public class Start {
 		char[] chars = {'a', 'b', 'c'};
 		System.out.println(chars.toString().indexOf('b'));
 		options options = gson.fromJson(content, options.class);
-//		nogui = options.useWindow;
 		token = options.auth.token;
 		parseArgs(args);
-		
 		if (!nogui) {
 			window = new WindowFrame(loader);
 		} else {
@@ -66,5 +68,12 @@ public class Start {
 				}
 			}
 		}
+	}
+
+	/**
+	 * @return the lOG
+	 */
+	public static FileLogger getLOGGER() {
+		return LOG;
 	}
 }

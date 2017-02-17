@@ -10,7 +10,7 @@ import java.util.jar.JarFile;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import io.discloader.discloader.client.logging.ProgressLogger;
+import io.discloader.discloader.client.logger.ProgressLogger;
 
 /**
  * 

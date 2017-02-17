@@ -7,7 +7,7 @@ import java.util.TimerTask;
 
 import javax.swing.*;
 
-import io.discloader.discloader.client.logging.ProgressLogger;
+import io.discloader.discloader.client.logger.ProgressLogger;
 import io.discloader.discloader.client.renderer.panel.LoadingPanel;
 import io.discloader.discloader.client.renderer.panel.WindowPanel;
 import io.discloader.discloader.common.DiscLoader;

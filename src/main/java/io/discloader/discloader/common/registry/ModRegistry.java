@@ -6,13 +6,13 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 import io.discloader.discloader.client.command.Command;
-import io.discloader.discloader.client.logging.ProgressLogger;
+import io.discloader.discloader.client.logger.ProgressLogger;
 import io.discloader.discloader.client.renderer.panel.LoadingPanel;
 import io.discloader.discloader.common.discovery.Mod;
 import io.discloader.discloader.common.discovery.ModCandidate;
 import io.discloader.discloader.common.discovery.ModContainer;
 import io.discloader.discloader.common.events.DiscPreInitEvent;
-import io.discloader.discloader.common.start.Start;
+import io.discloader.discloader.common.start.Main;
 
 public class ModRegistry {
 
@@ -107,7 +107,7 @@ public class ModRegistry {
 		ProgressLogger.phase(3, 3, "Init");
 		ProgressLogger.stage(1, 3, "Logging In");
 		resetStep();
-		Start.loader.login(Start.token).thenAcceptAsync(action -> {
+		Main.loader.login(Main.token).thenAcceptAsync(action -> {
 			ProgressLogger.stage(2, 3, "Caching API Objects");
 		});
 	}
@@ -123,7 +123,7 @@ public class ModRegistry {
 
 		ProgressLogger.progress(3, 3, "Executing PreInit handler in: " + mod.modInfo.modid());
 		mods.put(mod.modInfo.modid(), mod);
-		mod.emit("preInit", new DiscPreInitEvent(Start.loader));
+		mod.emit("preInit", new DiscPreInitEvent(Main.loader));
 		if (loadMod.containsKey(mod.modInfo.modid())) {
 			activeMod = preInitMods.get(loadMod.get(mod.modInfo.modid()));
 		} else {
@@ -133,7 +133,7 @@ public class ModRegistry {
 	}
 
 	private static void resetStep() {
-		if (Start.nogui)
+		if (Main.nogui)
 			return;
 		LoadingPanel.setProgress(0, 0, "");
 		LoadingPanel.setStep(0, 0, "");

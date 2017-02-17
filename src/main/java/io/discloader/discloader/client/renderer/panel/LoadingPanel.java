@@ -4,7 +4,7 @@ import java.awt.GridLayout;
 
 import javax.swing.JPanel;
 
-import io.discloader.discloader.client.logging.ProgressLogger;
+import io.discloader.discloader.client.logger.ProgressLogger;
 
 /**
  * @author Perry Berman

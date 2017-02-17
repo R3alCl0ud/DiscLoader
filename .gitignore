@@ -7,3 +7,5 @@ build/*
 .gradle/*
 .classpath
 .settings/*
+/bin/
+logs/*

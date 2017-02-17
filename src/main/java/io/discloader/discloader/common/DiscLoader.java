@@ -8,7 +8,7 @@ import java.util.concurrent.CompletableFuture;
 import com.google.gson.Gson;
 
 import io.discloader.discloader.client.command.CommandHandler;
-import io.discloader.discloader.client.logging.ProgressLogger;
+import io.discloader.discloader.client.logger.ProgressLogger;
 import io.discloader.discloader.common.discovery.ModContainer;
 import io.discloader.discloader.common.registry.ModRegistry;
 import io.discloader.discloader.common.structures.Guild;

@@ -106,8 +106,4 @@ public class RichEmbed {
 		this.color = color;
 		return this;
 	}
-	
-	public String toString() {
-		return new JSONObject().put("title", this.title).put("fields", this.fields.toArray()).toString();
-	}
 }

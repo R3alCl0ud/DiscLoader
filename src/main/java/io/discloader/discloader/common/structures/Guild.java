@@ -9,7 +9,7 @@ import java.util.concurrent.CompletableFuture;
 import org.apache.commons.codec.binary.Base64;
 import org.json.JSONObject;
 
-import io.discloader.discloader.client.logging.ProgressLogger;
+import io.discloader.discloader.client.logger.ProgressLogger;
 import io.discloader.discloader.common.DiscLoader;
 import io.discloader.discloader.common.structures.channels.TextChannel;
 import io.discloader.discloader.common.structures.channels.VoiceChannel;
@@ -145,6 +145,7 @@ public class Guild {
 			this.roles.clear();
 			for (RoleJSON role : data.roles) {
 				this.addRole(role);
+				ProgressLogger.progress(this.roles.size(), data.roles.length, String.format("Cached Role: %s", role.id));
 			}
 		}
 		ProgressLogger.step(2, 4, "Caching Members");
@@ -160,6 +161,7 @@ public class Guild {
 			this.voiceChannels.clear();
 			for (ChannelJSON channel : data.channels) {
 				this.loader.addChannel(channel, this);
+				ProgressLogger.progress(this.textChannels.size() + this.voiceChannels.size(), data.channels.length, String.format("Cached Channel: %s", channel.id));
 			}
 		}
 		ProgressLogger.step(4, 4, "Caching Presences");
@@ -167,6 +169,7 @@ public class Guild {
 			this.presences.clear();
 			for (PresenceJSON presence : data.presences) {
 				this.setPresence(presence);
+				ProgressLogger.progress(this.presences.size(), data.presences.length, String.format("Cached Presence: %s", presence.user.id));
 			}
 		}
 		this.available = !data.unavailable;
