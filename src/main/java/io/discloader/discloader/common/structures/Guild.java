@@ -9,6 +9,7 @@ import java.util.concurrent.CompletableFuture;
 import org.apache.commons.codec.binary.Base64;
 import org.json.JSONObject;
 
+import io.discloader.discloader.client.logging.ProgressLogger;
 import io.discloader.discloader.common.DiscLoader;
 import io.discloader.discloader.common.structures.channels.TextChannel;
 import io.discloader.discloader.common.structures.channels.VoiceChannel;
@@ -55,6 +56,11 @@ public class Guild {
 	 * Whether or not the guild is currently available
 	 */
 	public boolean available;
+	
+	/**
+	 * Whether or not the guild has more than 250 members
+	 */
+	public boolean large;
 
 	/**
 	 * A GuildMember object repersenting the guild's owner
@@ -133,18 +139,22 @@ public class Guild {
 		this.icon = data.icon != null ? data.icon : null;
 		this.ownerID = data.owner_id;
 		this.memberCount = data.member_count;
+		this.large = data.large;
+		ProgressLogger.step(1, 4, "Caching Roles");
 		if (data.roles.length > 0) {
 			this.roles.clear();
 			for (RoleJSON role : data.roles) {
 				this.addRole(role);
 			}
 		}
+		ProgressLogger.step(2, 4, "Caching Members");
 		if (data.members != null && data.members.length > 0) {
 			this.members.clear();
 			for (MemberJSON member : data.members) {
 				this.addMember(member);
 			}
 		}
+		ProgressLogger.step(3, 4, "Caching Channels");
 		if (data.channels != null && data.channels.length > 0) {
 			this.textChannels.clear();
 			this.voiceChannels.clear();
@@ -152,6 +162,7 @@ public class Guild {
 				this.loader.addChannel(channel, this);
 			}
 		}
+		ProgressLogger.step(4, 4, "Caching Presences");
 		if (data.presences != null && data.presences.length > 0) {
 			this.presences.clear();
 			for (PresenceJSON presence : data.presences) {
@@ -170,6 +181,9 @@ public class Guild {
 		if (!exists && this.loader.ready) {
 			this.loader.emit(Constants.Events.GUILD_MEMBER_ADD, member);
 		}
+		if (!this.loader.ready && !exists) {
+			ProgressLogger.progress(this.members.size(), this.large ? 250 : this.memberCount, "Cached Member " + member.id);
+		}
 		return member;
 	}
 
@@ -183,6 +197,10 @@ public class Guild {
 		if (this.loader.ready == true && emitEvent && !exists) {
 			this.loader.emit(Constants.Events.GUILD_MEMBER_ADD, member);
 		}
+		if (!this.loader.ready && !exists) {
+			ProgressLogger.progress(this.members.size(), this.large ? 250 : this.memberCount, "Cached Member " + member.id);
+		}
+		
 		return member;
 	}
 

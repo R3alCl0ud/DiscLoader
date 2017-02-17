@@ -4,7 +4,10 @@ import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics2D;
+import java.awt.Toolkit;
 
+import javax.swing.Box;
+import javax.swing.BoxLayout;
 import javax.swing.JPanel;
 import javax.swing.JProgressBar;
 import javax.swing.Painter;
@@ -19,29 +22,26 @@ public class ProgressPanel extends JPanel {
 	private static final long serialVersionUID = -8832916168143980979L;
 
 	public JProgressBar bar;
-	private JPanel left;
-	private JPanel right;
 
 	public ProgressPanel(int min, int max) {
-		super(new BorderLayout());
-		this.left = new JPanel();
+		super();
+		this.setLayout(new BoxLayout(this, BoxLayout.LINE_AXIS));
 		this.bar = new JProgressBar();
-		this.right = new JPanel();
-		Dimension spacing = new Dimension(100, 200);
-		this.left.setMinimumSize(spacing);
-		this.right.setMinimumSize(spacing);
+		Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
+		double width = screenSize.getWidth();
+		Dimension minSpacing = new Dimension(200, 20), maxSpacing = new Dimension((int) Math.round(width/3) + 20, 20),
+				perfSpacing = new Dimension(240, 20);
 		this.bar.setMaximum(max);
 		this.bar.setMinimum(min);
 		this.bar.setStringPainted(true);
 		this.bar.setMaximumSize(new Dimension(400, 80));
-		this.bar.setMinimumSize(new Dimension(400, 70));
+		this.bar.setMinimumSize(new Dimension(320, 70));
 		this.bar.setSize(400, 40);
-		this.add(this.left, BorderLayout.WEST);
+		this.add(new Box.Filler(minSpacing, perfSpacing, maxSpacing));
 		this.add(this.bar, BorderLayout.CENTER);
-		this.add(this.right, BorderLayout.EAST);
+		this.add(new Box.Filler(minSpacing, perfSpacing, maxSpacing));
 		this.setSize(720, 150);
 		this.validate();
-		System.out.println(this.getSize().getWidth());
 	}
 
 	public void setBarColor() {
@@ -65,7 +65,7 @@ public class ProgressPanel extends JPanel {
 
 		this.bar.setBackground(WHITE);
 		this.bar.setForeground(RED);
-//		this.bar.revalidate();
+		// this.bar.revalidate();
 		this.bar.repaint();
 	}
 }

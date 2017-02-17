@@ -8,6 +8,7 @@ import java.util.concurrent.CompletableFuture;
 import com.google.gson.Gson;
 
 import io.discloader.discloader.client.command.CommandHandler;
+import io.discloader.discloader.client.logging.ProgressLogger;
 import io.discloader.discloader.common.discovery.ModContainer;
 import io.discloader.discloader.common.registry.ModRegistry;
 import io.discloader.discloader.common.structures.Guild;
@@ -20,6 +21,7 @@ import io.discloader.discloader.network.gateway.DiscSocket;
 import io.discloader.discloader.network.gateway.json.ChannelJSON;
 import io.discloader.discloader.network.gateway.json.GuildJSON;
 import io.discloader.discloader.network.gateway.json.UserJSON;
+import io.discloader.discloader.network.gateway.packets.request.RequestGuildMembers;
 import io.discloader.discloader.network.rest.RESTManager;
 import io.discloader.discloader.util.Constants;
 
@@ -234,11 +236,18 @@ public class DiscLoader {
 	public void checkReady() {
 		if (this.discSocket.status != Constants.Status.READY && this.discSocket.status != Constants.Status.NEARLY) {
 			int unavailable = 0;
-			Collection<Guild> guilds = this.guilds.values();
-			for (Guild guild : guilds) {
+			for (Guild guild : this.guilds.values()) {
 				unavailable += guild.available ? 0 : 1;
 			}
+			
+			ProgressLogger.progress(this.guilds.size() - unavailable, this.guilds.size(), "Guilds Cached");
 			if (unavailable == 0) {
+				for (Guild guild : this.guilds.values()) {
+					if (guild.memberCount != guild.members.size() && !guild.large) {
+						this.discSocket.send(new RequestGuildMembers(guild, "", 0), true);
+					}
+				}
+				
 				this.discSocket.status = Constants.Status.NEARLY;
 				this.emitReady();
 			}

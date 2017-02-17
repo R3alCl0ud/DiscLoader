@@ -93,6 +93,10 @@ public class DiscSocket {
 		this.send(payload, true);
 		this.lastHeartbeatAck = false;
 	}
+	
+	public void send(Object payload, boolean force) {
+		this.ws.sendText(Constants.gson.toJson(payload));
+	}
 
 	public void send(JSONObject payload, boolean force) {
 		this.ws.sendText(payload.toString());
