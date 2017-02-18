@@ -6,12 +6,14 @@ import java.awt.Dimension;
 import java.awt.Graphics2D;
 import java.awt.Toolkit;
 
+import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.JPanel;
 import javax.swing.JProgressBar;
 import javax.swing.Painter;
 import javax.swing.UIDefaults;
+import javax.swing.border.Border;
 
 /**
  * @author Perry Berman
@@ -23,30 +25,35 @@ public class ProgressPanel extends JPanel {
 
 	public JProgressBar bar;
 
+	private Border border;
+	
 	public ProgressPanel(int min, int max) {
 		super();
+		this.setOpaque(true);
+		this.setBackground(new Color(0, 0, 0, 0));
 		this.setLayout(new BoxLayout(this, BoxLayout.LINE_AXIS));
 		this.bar = new JProgressBar();
 		Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
 		double width = screenSize.getWidth();
-		Dimension minSpacing = new Dimension(200, 20), maxSpacing = new Dimension((int) Math.round(width/3) + 20, 20),
-				perfSpacing = new Dimension(240, 20);
+		Dimension minSpacing = new Dimension(0, 30), maxSpacing = new Dimension((int) ((width - 550) / 2), 30),
+				perfSpacing = new Dimension(20, 30);
 		this.bar.setMaximum(max);
 		this.bar.setMinimum(min);
 		this.bar.setStringPainted(true);
-		this.bar.setMaximumSize(new Dimension(400, 80));
-		this.bar.setMinimumSize(new Dimension(320, 70));
-		this.bar.setSize(400, 40);
+		this.bar.setMaximumSize(new Dimension(550, 20));
+		this.bar.setMinimumSize(new Dimension(550, 10));
+		this.bar.setPreferredSize(new Dimension(550, 15));
+		this.bar.setBorder(BorderFactory.createLineBorder(Color.BLACK));
 		this.add(new Box.Filler(minSpacing, perfSpacing, maxSpacing));
 		this.add(this.bar, BorderLayout.CENTER);
 		this.add(new Box.Filler(minSpacing, perfSpacing, maxSpacing));
-		this.setSize(720, 150);
+		this.setSize(720, 30);
 		this.validate();
 	}
 
 	public void setBarColor() {
 		Color WHITE = new Color(255, 255, 255);
-		Color RED = new Color(220, 0, 0);
+		Color RED = new Color(0x7289DA);
 		@SuppressWarnings("rawtypes")
 		Painter p = new Painter() {
 

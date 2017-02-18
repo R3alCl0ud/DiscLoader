@@ -3,13 +3,19 @@ package io.discloader.discloader.common.start;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.util.ArrayList;
+import java.util.TimerTask;
 
 import com.google.gson.Gson;
 
 import io.discloader.discloader.client.command.CommandHandler;
+import io.discloader.discloader.client.logger.ProgressLogger;
 import io.discloader.discloader.client.renderer.WindowFrame;
 import io.discloader.discloader.common.DiscLoader;
+import io.discloader.discloader.common.discovery.ModCandidate;
+import io.discloader.discloader.common.discovery.ModDiscoverer;
 import io.discloader.discloader.common.logger.FileLogger;
+import io.discloader.discloader.common.registry.ModRegistry;
 
 /**
  * DiscLoader client entry point
@@ -44,14 +50,26 @@ public class Main {
 		if (!nogui) {
 			window = new WindowFrame(loader);
 		} else {
-			loader.login(token);
+			ProgressLogger.stage(1, 3, "Mod Discovery");
+			ModDiscoverer.checkModDir();
+			ArrayList<ModCandidate> candidates = ModDiscoverer.discoverMods();
+			TimerTask checkCandidates = new TimerTask() {
+
+				@Override
+				public void run() {
+					ProgressLogger.stage(2, 3, "Discovering Mod Containers");
+					ModRegistry.checkCandidates(candidates);
+				}
+				
+			};
+			loader.timer.schedule(checkCandidates, 500);
 		}
 	}
 	
 	public static void parseArgs(String... args) {
 		for (int i = 0; i < args.length; i++) {
 			if (args[i].equalsIgnoreCase("nogui")) {
-				nogui = false;
+				nogui = true;
 			} else if (args[i].equals("-t")) {
 				if (i + 1 < args.length) {
 					token = args[i + 1];

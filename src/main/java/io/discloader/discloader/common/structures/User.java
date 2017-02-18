@@ -5,6 +5,7 @@ import java.util.concurrent.CompletableFuture;
 
 import org.json.JSONObject;
 
+import io.discloader.discloader.client.renderer.texture.UserIcon;
 import io.discloader.discloader.common.DiscLoader;
 import io.discloader.discloader.network.gateway.json.UserJSON;
 import io.discloader.discloader.util.Constants;
@@ -115,6 +116,9 @@ public class User {
 		this.avatarURL = this.avatar != null ? Endpoints.avatar(this.id, this.avatar) : null;
 		
 		this.bot = data.bot;
+		
+//		this.loader.clientRegistry.textureRegistry.registerUserIcon(new UserIcon(this));
+		
 	}
 
 	/**

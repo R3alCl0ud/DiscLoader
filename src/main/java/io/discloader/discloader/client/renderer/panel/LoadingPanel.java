@@ -1,7 +1,13 @@
 package io.discloader.discloader.client.renderer.panel;
 
-import java.awt.GridLayout;
+import java.awt.Color;
+import java.awt.Dimension;
+import java.net.URL;
 
+import javax.swing.Box.Filler;
+import javax.swing.BoxLayout;
+import javax.swing.ImageIcon;
+import javax.swing.JLabel;
 import javax.swing.JPanel;
 
 import io.discloader.discloader.client.logger.ProgressLogger;
@@ -19,12 +25,35 @@ public class LoadingPanel extends JPanel {
 	public static ProgressPanel progressPanel;
 
 	public LoadingPanel() {
-		super(new GridLayout(0, 1));
+		super();
+		this.setOpaque(true);
+		this.setBackground(new Color(0,0,0,0));
+		Dimension min = new Dimension(0, 30), max = new Dimension(0, 150), pref = new Dimension(0, 75);
+		this.setLayout(new BoxLayout(this, BoxLayout.PAGE_AXIS));
+		ImageIcon discLoaderLogo = createImageIcon("texture.gui.logos.discloader","The DiscLoader Logo");
+		JLabel discordLogo = new JLabel(createImageIcon("texture.gui.logos.discord_wordmark", "The Discord Logo"));
+		JLabel poweredBy = new JLabel(createImageIcon("texture.gui.logos.powered_by", "Powered by Discord"));
+		this.add(new Filler(min, pref, new Dimension(0, 200)));
+		this.add(new CenterPanel(new JLabel(discLoaderLogo)));
+//		this.add(new Filler(min, pref, max));
+		this.add(new CenterPanel(poweredBy));
+		this.add(new CenterPanel(discordLogo));
+		this.add(new Filler(min, pref, max));
 		this.add(phasePanel = new ProgressPanel(0, 2));
 		this.add(stagePanel = new ProgressPanel(0, 1));
 		this.add(stepPanel = new ProgressPanel(0, 1));
 		this.add(progressPanel = new ProgressPanel(0, 1));
 		ProgressLogger.phase(1, 3, "LOADING");
+	}
+
+	protected ImageIcon createImageIcon(String path, String description) {
+		URL imgURL = ClassLoader.getSystemResource(String.format("assets/discloader/%s.png", path.replace('.', '/')));
+		if (imgURL != null) {
+			return new ImageIcon(imgURL, description);
+		} else {
+			System.err.println("Couldn't find file: " + path);
+			return null;
+		}
 	}
 
 	public static void setPhase(int phase, int maxPhase, String text) {

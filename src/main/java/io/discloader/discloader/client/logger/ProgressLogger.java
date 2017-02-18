@@ -14,11 +14,12 @@ public class ProgressLogger {
 
 	public static int phaseNumber;
 	private static FileLogger LOG = Main.getLOGGER();
+	public static boolean loading = true;
 
 	public static void phase(int value, int max, String text) {
 		executeLog("phase", value, max, text);
 		phaseNumber = value;
-		if (Main.nogui)
+		if (Main.nogui && loading)
 			return;
 
 		LoadingPanel.setPhase(value, max, text);
@@ -26,7 +27,7 @@ public class ProgressLogger {
 
 	public static void stage(int value, int max, String text) {
 		executeLog("stage", value, max, text);
-		if (Main.nogui)
+		if (Main.nogui && loading)
 			return;
 
 		LoadingPanel.setStage(value, max, text);
@@ -34,7 +35,7 @@ public class ProgressLogger {
 
 	public static void step(int value, int max, String text) {
 		executeLog("step", value, max, text);
-		if (Main.nogui)
+		if (Main.nogui && loading)
 			return;
 
 		LoadingPanel.setStep(value, max, text);
@@ -42,7 +43,7 @@ public class ProgressLogger {
 
 	public static void progress(int value, int max, String text) {
 		executeLog("progress", value, max, text);
-		if (Main.nogui)
+		if (Main.nogui && loading)
 			return;
 
 		LoadingPanel.setProgress(value, max, text);

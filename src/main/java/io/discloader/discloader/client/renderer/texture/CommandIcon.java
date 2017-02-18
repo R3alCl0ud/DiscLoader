@@ -1,5 +1,10 @@
 package io.discloader.discloader.client.renderer.texture;
 
+import java.net.URL;
+
+import javax.swing.ImageIcon;
+
+import io.discloader.discloader.client.command.Command;
 import io.discloader.discloader.client.renderer.util.IIcon;
 
 /**
@@ -7,34 +12,19 @@ import io.discloader.discloader.client.renderer.util.IIcon;
  *
  */
 public class CommandIcon extends AbstractTexture implements IIcon {
-	private int iconHeight;
-	private int iconWidth;
-	private String iconName;
 	
+	public CommandIcon(Command command) {
+		this.setIconName(command.getTextureName());
+		
+	}
 	
-	
-	/* (non-Javadoc)
-	 * @see io.discloader.discloader.client.renderer.util.IIcon#getIconHeight()
-	 */
-	@Override
-	public int getIconHeight() {
-		return this.iconHeight;
+	protected ImageIcon createImageIcon(String path) {
+		URL imgURL = ClassLoader.getSystemResource(String.format("assets/%s.png", path.replace('.', '/')));
+		if (imgURL != null) {
+			return new ImageIcon(imgURL);
+		} else {
+			System.err.println("Couldn't find file: " + path);
+			return null;
+		}
 	}
-
-	/* (non-Javadoc)
-	 * @see io.discloader.discloader.client.renderer.util.IIcon#getIconWidth()
-	 */
-	@Override
-	public int getIconWidth() {
-		return iconWidth;
-	}
-
-	/* (non-Javadoc)
-	 * @see io.discloader.discloader.client.renderer.util.IIcon#getIconName()
-	 */
-	@Override
-	public String getIconName() {
-		return iconName;
-	}
-
 }

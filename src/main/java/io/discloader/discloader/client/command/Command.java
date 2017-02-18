@@ -12,7 +12,10 @@ import io.discloader.discloader.util.NumericStringMap;
 public class Command {
 
 	private String unlocalizedName;
+	
 	private String textureName;
+	
+	private int id;
 	
 	protected IIcon icon;
 
@@ -60,7 +63,8 @@ public class Command {
 	}
 
 	/**
-	 * @param textureName the textureName to set
+	 * 
+	 * @param textureName MODID:icons.commands.unlocalizedName
 	 */
 	public void setTextureName(String textureName) {
 		this.textureName = textureName;
@@ -68,6 +72,20 @@ public class Command {
 	
 	public IIcon getIcon() {
 		return this.icon;
+	}
+
+	/**
+	 * @return the id
+	 */
+	public int getId() {
+		return id;
+	}
+
+	/**
+	 * @param id the id to set
+	 */
+	public void setId(int id) {
+		this.id = id;
 	}
 
 }

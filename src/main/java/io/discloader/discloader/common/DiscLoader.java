@@ -9,8 +9,10 @@ import com.google.gson.Gson;
 
 import io.discloader.discloader.client.command.CommandHandler;
 import io.discloader.discloader.client.logger.ProgressLogger;
+import io.discloader.discloader.client.registry.ClientRegistry;
 import io.discloader.discloader.common.discovery.ModContainer;
 import io.discloader.discloader.common.registry.ModRegistry;
+import io.discloader.discloader.common.start.Main;
 import io.discloader.discloader.common.structures.Guild;
 import io.discloader.discloader.common.structures.User;
 import io.discloader.discloader.common.structures.channels.Channel;
@@ -36,7 +38,7 @@ public class DiscLoader {
 
 	public boolean ready;
 
-
+	public final ClientRegistry clientRegistry;
 	
 	public RESTManager rest;
 
@@ -103,6 +105,7 @@ public class DiscLoader {
 		
 		this.rest = new RESTManager(this);
 
+		this.clientRegistry = new ClientRegistry();
 		
 		this.users = new HashMap<String, User>();
 
@@ -243,8 +246,9 @@ public class DiscLoader {
 			ProgressLogger.progress(this.guilds.size() - unavailable, this.guilds.size(), "Guilds Cached");
 			if (unavailable == 0) {
 				for (Guild guild : this.guilds.values()) {
-					if (guild.memberCount != guild.members.size() && !guild.large) {
-						this.discSocket.send(new RequestGuildMembers(guild, "", 0), true);
+					if (guild.memberCount != guild.members.size()) {
+//						this.discSocket.send(new RequestGuildMembers(guild, "", 0), true);
+//						return;
 					}
 				}
 				
@@ -259,6 +263,7 @@ public class DiscLoader {
 		this.ready = true;
 		CommandHandler.handleCommands = true;
 		this.emit(Constants.Events.READY, this);
+		Main.window.postInit();
 	}
 
 }

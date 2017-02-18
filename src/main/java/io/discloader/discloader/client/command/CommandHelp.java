@@ -15,7 +15,7 @@ public class CommandHelp extends Command {
 
 	public CommandHelp() {
 		super();
-		this.setTextureName("discloader:help");
+		this.setTextureName("discloader:icons.commands.help");
 	}
 	
 	public void execute(MessageCreateEvent e) {

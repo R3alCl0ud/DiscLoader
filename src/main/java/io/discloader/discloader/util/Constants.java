@@ -114,6 +114,10 @@ public class Constants {
 		public static final String guildNick(String guildID) {
 			return MessageFormat.format("{0}/@me/nick", new Object[] { Endpoints.guildMembers(guildID) });
 		}
+		
+		public static final String guildIcon(String guildID, String icon) {
+			return String.format("%s/icons/%s/%s", Endpoints.CDN, guildID, icon);
+		}
 
 		public static final String currentUser = MessageFormat.format("{0}/users/@me", new Object[] { API });
 		public static final String currentUserGuilds = MessageFormat.format("{0}/users/@me/guilds",

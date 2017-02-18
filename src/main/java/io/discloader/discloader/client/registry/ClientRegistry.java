@@ -6,10 +6,10 @@ package io.discloader.discloader.client.registry;
  */
 public class ClientRegistry {
 
-	
+	public final TextureRegistry textureRegistry;
 	
 	public ClientRegistry() {
-		
+		this.textureRegistry = new TextureRegistry();
 	}
 
 }

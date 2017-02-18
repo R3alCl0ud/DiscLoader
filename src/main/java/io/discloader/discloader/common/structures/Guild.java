@@ -10,6 +10,7 @@ import org.apache.commons.codec.binary.Base64;
 import org.json.JSONObject;
 
 import io.discloader.discloader.client.logger.ProgressLogger;
+import io.discloader.discloader.client.renderer.texture.GuildIcon;
 import io.discloader.discloader.common.DiscLoader;
 import io.discloader.discloader.common.structures.channels.TextChannel;
 import io.discloader.discloader.common.structures.channels.VoiceChannel;
@@ -46,6 +47,11 @@ public class Guild {
 	 * The hash code of the guild's icon
 	 */
 	public String icon;
+	
+	/**
+	 * The url to where the {@link #icon} is located 
+	 */
+	public String iconURL;
 
 	/**
 	 * The amount of members in the guild. Does not reflect this.members.size()
@@ -137,41 +143,45 @@ public class Guild {
 
 		this.name = data.name;
 		this.icon = data.icon != null ? data.icon : null;
+		this.iconURL = this.icon != null ? Constants.Endpoints.guildIcon(this.id, this.icon) : null;
 		this.ownerID = data.owner_id;
 		this.memberCount = data.member_count;
 		this.large = data.large;
-		ProgressLogger.step(1, 4, "Caching Roles");
+		ProgressLogger.step(1, 5, "Caching Roles");
 		if (data.roles.length > 0) {
 			this.roles.clear();
 			for (RoleJSON role : data.roles) {
 				this.addRole(role);
-				ProgressLogger.progress(this.roles.size(), data.roles.length, String.format("Cached Role: %s", role.id));
+//				ProgressLogger.progress(this.roles.size(), data.roles.length, String.format("Cached Role: %s", role.id));
 			}
 		}
-		ProgressLogger.step(2, 4, "Caching Members");
+		ProgressLogger.step(2, 5, "Caching Members");
 		if (data.members != null && data.members.length > 0) {
 			this.members.clear();
 			for (MemberJSON member : data.members) {
 				this.addMember(member);
 			}
 		}
-		ProgressLogger.step(3, 4, "Caching Channels");
+		ProgressLogger.step(3, 5, "Caching Channels");
 		if (data.channels != null && data.channels.length > 0) {
 			this.textChannels.clear();
 			this.voiceChannels.clear();
 			for (ChannelJSON channel : data.channels) {
 				this.loader.addChannel(channel, this);
-				ProgressLogger.progress(this.textChannels.size() + this.voiceChannels.size(), data.channels.length, String.format("Cached Channel: %s", channel.id));
+//				ProgressLogger.progress(this.textChannels.size() + this.voiceChannels.size(), data.channels.length, String.format("Cached Channel: %s", channel.id));
 			}
 		}
-		ProgressLogger.step(4, 4, "Caching Presences");
+		ProgressLogger.step(4, 5, "Caching Presences");
 		if (data.presences != null && data.presences.length > 0) {
 			this.presences.clear();
 			for (PresenceJSON presence : data.presences) {
 				this.setPresence(presence);
-				ProgressLogger.progress(this.presences.size(), data.presences.length, String.format("Cached Presence: %s", presence.user.id));
+//				ProgressLogger.progress(this.presences.size(), data.presences.length, String.format("Cached Presence: %s", presence.user.id));
 			}
 		}
+		ProgressLogger.step(5, 5, "Registering Icon");
+//		ProgressLogger.progress(1, 1, String.format("IconURL: %s", this.iconURL));
+//		this.loader.clientRegistry.textureRegistry.registerGuildIcon(new GuildIcon(this));
 		this.available = !data.unavailable;
 	}
 
@@ -185,7 +195,7 @@ public class Guild {
 			this.loader.emit(Constants.Events.GUILD_MEMBER_ADD, member);
 		}
 		if (!this.loader.ready && !exists) {
-			ProgressLogger.progress(this.members.size(), this.large ? 250 : this.memberCount, "Cached Member " + member.id);
+//			ProgressLogger.progress(this.members.size(), this.memberCount, "Cached Member " + member.id);
 		}
 		return member;
 	}
@@ -201,7 +211,7 @@ public class Guild {
 			this.loader.emit(Constants.Events.GUILD_MEMBER_ADD, member);
 		}
 		if (!this.loader.ready && !exists) {
-			ProgressLogger.progress(this.members.size(), this.large ? 250 : this.memberCount, "Cached Member " + member.id);
+//			ProgressLogger.progress(this.members.size(), this.memberCount, "Cached Member " + member.id);
 		}
 		
 		return member;

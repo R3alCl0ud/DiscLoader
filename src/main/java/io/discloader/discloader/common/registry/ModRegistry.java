@@ -78,8 +78,8 @@ public class ModRegistry {
 
 		activeMod = null;
 		ProgressLogger.phase(2, 3, "PreINIT");
-		ProgressLogger.stage(1, 2, "Begin PreInit");
-		ProgressLogger.stage(1, 1, "Registering DiscLoader Commands");
+		ProgressLogger.stage(1, 3, "Begin PreInit");
+//		ProgressLogger.stage(2, 3, "Registering DiscLoader Commands");
 		Command.registerCommands();
 		ProgressLogger.progress(0, 0, "");
 
@@ -104,6 +104,7 @@ public class ModRegistry {
 			load(mod.modInfo.modid());
 			activeMod = null;
 		}
+		
 		ProgressLogger.phase(3, 3, "Init");
 		ProgressLogger.stage(1, 3, "Logging In");
 		resetStep();
