@@ -13,7 +13,6 @@ import javax.swing.JPanel;
 import javax.swing.JProgressBar;
 import javax.swing.Painter;
 import javax.swing.UIDefaults;
-import javax.swing.border.Border;
 
 /**
  * @author Perry Berman
@@ -25,8 +24,6 @@ public class ProgressPanel extends JPanel {
 
 	public JProgressBar bar;
 
-	private Border border;
-	
 	public ProgressPanel(int min, int max) {
 		super();
 		this.setOpaque(true);

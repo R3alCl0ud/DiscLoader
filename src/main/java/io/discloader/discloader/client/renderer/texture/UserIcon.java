@@ -1,5 +1,6 @@
 package io.discloader.discloader.client.renderer.texture;
 
+import java.awt.Image;
 import java.net.MalformedURLException;
 import java.net.URL;
 
@@ -21,10 +22,19 @@ public class UserIcon extends AbstractTexture {
 		this.setIconHeight(128);
 		this.setIconWidth(128);
 		this.setIconName(user.avatar);
-		this.setImageIcon(this.createImageIcon(user.avatarURL));
-		this.setImage(this.getImageIcon().getImage());
+	}
+	
+	@Override
+	public ImageIcon getImageIcon() {
+		return this.createImageIcon(this.user.avatarURL);
 	}
 
+	@Override
+	public Image getImage() {
+		return this.getImageIcon().getImage();
+	}
+
+	
 	protected ImageIcon createImageIcon(String url) {
 		URL imgURL = null;
 		try {

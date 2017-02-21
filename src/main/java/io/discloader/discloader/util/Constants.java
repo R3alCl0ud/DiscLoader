@@ -77,7 +77,7 @@ public class Constants {
 		}
 
 		public static final String avatar(String id, String avatar) {
-			return MessageFormat.format("{0}/avatars/{1}/{2}{3}?size=1024",
+			return MessageFormat.format("{0}/avatars/{1}/{2}{3}",
 					new Object[] { Endpoints.CDN, id, avatar, avatar.startsWith("a_") ? ".gif" : ".jpg" });
 		}
 
@@ -116,7 +116,7 @@ public class Constants {
 		}
 		
 		public static final String guildIcon(String guildID, String icon) {
-			return String.format("%s/icons/%s/%s", Endpoints.CDN, guildID, icon);
+			return String.format("%s/icons/%s/%s.jpg", Endpoints.CDN, guildID, icon);
 		}
 
 		public static final String currentUser = MessageFormat.format("{0}/users/@me", new Object[] { API });

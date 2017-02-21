@@ -1,10 +1,11 @@
-package io.discloader.discloader.client.renderer.texture;
+package io.discloader.discloader.client.renderer.texture.icon;
 
 import java.net.URL;
 
 import javax.swing.ImageIcon;
 
 import io.discloader.discloader.client.command.Command;
+import io.discloader.discloader.client.renderer.texture.AbstractTexture;
 import io.discloader.discloader.client.renderer.util.IIcon;
 
 /**

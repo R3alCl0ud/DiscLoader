@@ -102,6 +102,8 @@ public class User {
 		this.presence = new Presence();
 
 		this.afk = false;
+		
+		this.loader.clientRegistry.textureRegistry.registerUserIcon(new UserIcon(this));
 	}
 
 	public void setup(UserJSON data) {
@@ -117,7 +119,7 @@ public class User {
 		
 		this.bot = data.bot;
 		
-//		this.loader.clientRegistry.textureRegistry.registerUserIcon(new UserIcon(this));
+		this.loader.clientRegistry.textureRegistry.registerUserIcon(new UserIcon(this));
 		
 	}
 

@@ -3,6 +3,8 @@
  */
 package io.discloader.discloader.client.renderer.panel;
 
+import java.awt.Dimension;
+
 import javax.swing.ImageIcon;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -26,19 +28,25 @@ public class FolderPanel extends JPanel {
 	private DiscLoader loader;
 
 	public FolderPanel(DiscLoader loader) {
-		super();
+//		super();
 		this.loader = loader;
 		this.basePane = new JScrollPane();
-		for (GuildIcon icon : this.loader.clientRegistry.textureRegistry.getGuildIcons().values()) {
+		for (GuildIcon guildIcon : this.loader.clientRegistry.textureRegistry.getGuildIcons().values()) {
 			System.out.println("test");
-			Guild guild = icon.guild;
-			System.out.println(icon != null);
-			JLabel guildIcon = new JLabel(guild.id);
-			guildIcon.setIcon(icon.getImageIcon());
-			this.basePane.add(guildIcon);
+			System.out.println(guildIcon != null);
+			JLabel icon = new JLabel(guildIcon.getImageIcon());
+			icon.setToolTipText("Test");
+			this.add(icon);
 		}
-
+		this.basePane.setMinimumSize(new Dimension(200, 200));
+		this.basePane.setSize(new Dimension(500, 500));
+		this.basePane.validate();
+		System.out.printf("width: %d, height: %d\n", this.basePane.getWidth(), this.basePane.getHeight());
 		this.folders = new CenterPanel(this.basePane);
+		this.folders.setSize(new Dimension(720, 400));
+		this.folders.validate();
+		this.add(this.folders);
+//		this.setSize(new Dimension(720, 400));
 		this.validate();
 	}
 

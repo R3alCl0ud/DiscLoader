@@ -4,7 +4,7 @@ import java.util.Collection;
 import java.util.HashMap;
 
 /**
- * Custom hax thingy that
+ * Custom hax thingy that stores stuff
  * 
  * @author Perry Berman
  * @since 0.0.1
@@ -12,11 +12,11 @@ import java.util.HashMap;
 public class NumericStringMap<T> {
 
 	private HashMap<Integer, T> data;
-	private HashMap<String, Integer> idBySpecial;
-	private HashMap<Integer, String> specialIDs;
-	private HashMap<String, Integer> idByChar;
-	private HashMap<Integer, String> charIDs;
 	private HashMap<Integer, Integer> ids;
+	private HashMap<String, Integer> idBySpecial;
+	private HashMap<String, Integer> idByChar;
+	private HashMap<Integer, String> specialIDs;
+	private HashMap<Integer, String> charIDs;
 
 	public NumericStringMap() {
 		this.data = new HashMap<Integer, T>();

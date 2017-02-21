@@ -1,5 +1,6 @@
 package io.discloader.discloader.client.renderer;
 
+import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
@@ -13,6 +14,7 @@ import javax.swing.JFrame;
 import io.discloader.discloader.client.logger.ProgressLogger;
 import io.discloader.discloader.client.renderer.panel.FolderPanel;
 import io.discloader.discloader.client.renderer.panel.LoadingPanel;
+import io.discloader.discloader.client.renderer.panel.TabbedPanel;
 import io.discloader.discloader.common.DiscLoader;
 import io.discloader.discloader.common.discovery.ModCandidate;
 import io.discloader.discloader.common.discovery.ModDiscoverer;
@@ -25,7 +27,7 @@ import io.discloader.discloader.common.registry.ModRegistry;
 public class WindowFrame extends JFrame {
 	private static final long serialVersionUID = -6329873205165995031L;
 	public DiscLoader loader;
-	public FolderPanel panel;
+	public TabbedPanel panel;
 	
 	public static final LoadingPanel loading = new LoadingPanel();
 	
@@ -114,8 +116,9 @@ public class WindowFrame extends JFrame {
 	
 	public void postInit() {
 		this.remove(loading);
-		this.panel = new FolderPanel(this.loader);
-		this.add(this.panel);
+		this.panel = new TabbedPanel(this.loader);
+		this.revalidate();
+		this.add(this.panel, BorderLayout.CENTER);
 		this.revalidate();
 		this.repaint();
 	}

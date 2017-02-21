@@ -181,7 +181,7 @@ public class Guild {
 		}
 		ProgressLogger.step(5, 5, "Registering Icon");
 //		ProgressLogger.progress(1, 1, String.format("IconURL: %s", this.iconURL));
-//		this.loader.clientRegistry.textureRegistry.registerGuildIcon(new GuildIcon(this));
+		this.loader.clientRegistry.textureRegistry.registerGuildIcon(new GuildIcon(this));
 		this.available = !data.unavailable;
 	}
 
