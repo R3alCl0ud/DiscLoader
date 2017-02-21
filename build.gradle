@@ -39,15 +39,6 @@ sourceSets {
 	}
 }
 
-build {
-    dependsOn clean
-    dependsOn buildInfo
-    dependsOn jar
-
-    buildInfo.mustRunAfter clean
-    jar.mustRunAfter buildInfo
-}
-
 task buildInfo {
     def cmd = "git rev-parse --short HEAD"
     def proc = cmd.execute()
@@ -64,4 +55,13 @@ task buildInfo {
         ext.buildNum = "DEV.${project.buildInfo.revision}"
     }
     version = ext.buildNum
+}
+
+build {
+    dependsOn clean
+    dependsOn buildInfo
+    dependsOn jar
+
+    buildInfo.mustRunAfter clean
+    jar.mustRunAfter buildInfo
 }

@@ -21,8 +21,8 @@ public class GuildList extends JScrollPane {
 		}
 		this.folders = new JList(listModel);
 		this.setViewportView(this.folders);
-		this.folders.setSize(500, 500);
-//		this.validate();
+//		this.folders.setSize(500, 500);
+		// this.validate();
 	}
 
 }
