@@ -9,6 +9,7 @@ import java.util.concurrent.CompletableFuture;
 import com.mashape.unirest.http.Unirest;
 import com.mashape.unirest.request.BaseRequest;
 import com.mashape.unirest.request.HttpRequestWithBody;
+import com.mashape.unirest.request.body.MultipartBody;
 
 import io.discloader.discloader.common.structures.SendableMessage;
 import io.discloader.discloader.util.Constants;
@@ -41,7 +42,6 @@ public class APIRequest {
 		this.data = data;
 		this.route = this.getRoute(this.url);
 		if (data != null && this.data instanceof SendableMessage && ((SendableMessage) this.data).file != null) {
-			System.out.println(Constants.gson.toJson(data));
 			this.multi = true;
 		} else {
 			this.multi = false;
@@ -77,26 +77,25 @@ public class APIRequest {
 			break;
 		case Constants.Methods.POST:
 			request = Unirest.post(this.route);
-			if (this.data instanceof SendableMessage && ((SendableMessage) this.data).file != null) {
+			if (this.multi) {
+				System.out.println("check");
 				SendableMessage data = (SendableMessage) this.data,
-						dData = new SendableMessage(data.content, data.embed, data.attachment, null);
+						message = new SendableMessage(data.content, data.embed, data.attachment, null);
 				File file = data.file;
-				System.out.println(dData.file == null);
-				String payload = String.format(
-						"------WebKitFormBoundary7MA4YWxkTrZu0gW\r\nContent-Disposition: form-data; name=\"\"; filename=\"%s\"\r\nContent-Type: image/png\r\n\r\n\r\n------WebKitFormBoundary7MA4YWxkTrZu0gW\r\nContent-Disposition: form-data; name=\"payload_json\"\r\n\r\n%s\r\n------WebKitFormBoundary7MA4YWxkTrZu0gW--",
-						file.getPath(), Constants.gson.toJson(dData));
-				System.out.println(payload);
-
 				try {
 					byte[] bytes = Constants.readAllBytes(file);
-					((HttpRequestWithBody) request).header("accept", "application/json").header("cache-control", "no-cache")
-					.header("content-type", "multipart/form-data; boundary=----WebKitFormBoundary7MA4YWxkTrZu0gW")
-					.body(payload);
+					MultipartBody body = ((HttpRequestWithBody) request).fields(null);
+					body.field("file", bytes, file.getName());
+					if (message.embed != null) {
+//						System.out.printf("%s\n", Constants.gson.toJson(message.embed).toString());
+//						body.field("embed", String.format("%s", Constants.gson.toJson(message.embed).toString()));
+					}
 				} catch (IOException e) {
 					e.printStackTrace();
 				}
 
 			} else {
+				System.out.println("test");
 				((HttpRequestWithBody) request).body(Constants.gson.toJson(this.data));
 			}
 			break;

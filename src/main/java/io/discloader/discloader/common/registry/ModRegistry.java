@@ -34,8 +34,14 @@ public class ModRegistry {
 	 */
 	public static final HashMap<String, ModContainer> mods = new HashMap<String, ModContainer>();
 
+	/**
+	 * 
+	 */
 	private static final HashMap<String, ModContainer> preInitMods = new HashMap<String, ModContainer>();
 
+	/**
+	 * 
+	 */
 	private static final HashMap<String, String> loadMod = new HashMap<String, String>();
 
 	public static void checkCandidates(ArrayList<ModCandidate> mcs) {

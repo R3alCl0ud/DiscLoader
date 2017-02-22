@@ -10,7 +10,7 @@ import org.apache.commons.codec.binary.Base64;
 import org.json.JSONObject;
 
 import io.discloader.discloader.client.logger.ProgressLogger;
-import io.discloader.discloader.client.renderer.texture.GuildIcon;
+import io.discloader.discloader.client.renderer.texture.icon.GuildIcon;
 import io.discloader.discloader.common.DiscLoader;
 import io.discloader.discloader.common.structures.channels.TextChannel;
 import io.discloader.discloader.common.structures.channels.VoiceChannel;
@@ -194,9 +194,6 @@ public class Guild {
 		if (!exists && this.loader.ready) {
 			this.loader.emit(Constants.Events.GUILD_MEMBER_ADD, member);
 		}
-		if (!this.loader.ready && !exists) {
-//			ProgressLogger.progress(this.members.size(), this.memberCount, "Cached Member " + member.id);
-		}
 		return member;
 	}
 
@@ -209,9 +206,6 @@ public class Guild {
 			this.owner = member;
 		if (this.loader.ready == true && emitEvent && !exists) {
 			this.loader.emit(Constants.Events.GUILD_MEMBER_ADD, member);
-		}
-		if (!this.loader.ready && !exists) {
-//			ProgressLogger.progress(this.members.size(), this.memberCount, "Cached Member " + member.id);
 		}
 		
 		return member;
@@ -295,4 +289,8 @@ public class Guild {
 		return null;
 	}
 
+	public CompletableFuture<Role> createRole() {
+		return null;
+	}
+	
 }

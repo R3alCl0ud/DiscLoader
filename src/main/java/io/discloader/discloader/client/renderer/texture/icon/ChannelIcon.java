@@ -1,9 +1,11 @@
 /**
  * 
  */
-package io.discloader.discloader.client.renderer.texture;
+package io.discloader.discloader.client.renderer.texture.icon;
 
 import java.nio.channels.Channel;
+
+import io.discloader.discloader.client.renderer.texture.AbstractTexture;
 
 /**
  * @author Perry Berman

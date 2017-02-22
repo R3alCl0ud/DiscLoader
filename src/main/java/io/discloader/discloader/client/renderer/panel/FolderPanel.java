@@ -10,7 +10,7 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 
-import io.discloader.discloader.client.renderer.texture.GuildIcon;
+import io.discloader.discloader.client.renderer.texture.icon.GuildIcon;
 import io.discloader.discloader.common.DiscLoader;
 import io.discloader.discloader.common.structures.Guild;
 

@@ -1,5 +1,7 @@
 package io.discloader.discloader.client.command;
 
+import java.io.File;
+
 import io.discloader.discloader.common.discovery.ModContainer;
 import io.discloader.discloader.common.events.MessageCreateEvent;
 import io.discloader.discloader.common.registry.CommandRegistry;
@@ -28,8 +30,8 @@ public class CommandHelp extends Command {
 			return;
 		}
 		
-		
-		embed.setColor(0x08a2ff).setThumbnail("https://github.com/R3alCl0ud/DiscLoader/blob/master/Floppy_Disk.png?raw=true")
+		//
+		embed.setColor(0x08a2ff).setThumbnail(new File(ClassLoader.getSystemResource("assets/discloader/texture/icons/commands/help.png").getFile()))
 				.setFooter("Generated using DiscLoader", e.loader.user.avatarURL)
 				.setAuthor(e.loader.user.username, null, e.loader.user.avatarURL);
 		String mods = "";
@@ -38,7 +40,6 @@ public class CommandHelp extends Command {
 		}
 		String dCommands = "";
 		for (String id : CommandRegistry.commands.collectionCharIDs()) {
-			System.out.println(id);
 			if (id.indexOf(":") == -1) {
 				Command command = CommandRegistry.commands.get(id);
 				dCommands += String.format("%s\n", command.getUnlocalizedName());

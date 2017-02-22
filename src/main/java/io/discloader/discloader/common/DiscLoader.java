@@ -1,6 +1,5 @@
 package io.discloader.discloader.common;
 
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.Timer;
 import java.util.concurrent.CompletableFuture;
@@ -23,7 +22,6 @@ import io.discloader.discloader.network.gateway.DiscSocket;
 import io.discloader.discloader.network.gateway.json.ChannelJSON;
 import io.discloader.discloader.network.gateway.json.GuildJSON;
 import io.discloader.discloader.network.gateway.json.UserJSON;
-import io.discloader.discloader.network.gateway.packets.request.RequestGuildMembers;
 import io.discloader.discloader.network.rest.RESTManager;
 import io.discloader.discloader.util.Constants;
 

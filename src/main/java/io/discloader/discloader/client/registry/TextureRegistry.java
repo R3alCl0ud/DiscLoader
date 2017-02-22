@@ -4,9 +4,9 @@ import java.util.HashMap;
 
 import io.discloader.discloader.client.command.Command;
 import io.discloader.discloader.client.renderer.texture.AbstractTexture;
-import io.discloader.discloader.client.renderer.texture.GuildIcon;
-import io.discloader.discloader.client.renderer.texture.UserIcon;
 import io.discloader.discloader.client.renderer.texture.icon.CommandIcon;
+import io.discloader.discloader.client.renderer.texture.icon.GuildIcon;
+import io.discloader.discloader.client.renderer.texture.icon.UserIcon;
 
 /**
  * @author Perry Berman

@@ -1,4 +1,7 @@
-package io.discloader.discloader.client.renderer.texture;
+/**
+ * 
+ */
+package io.discloader.discloader.client.renderer.texture.icon;
 
 import java.awt.Image;
 import java.net.MalformedURLException;
@@ -6,27 +9,28 @@ import java.net.URL;
 
 import javax.swing.ImageIcon;
 
-import io.discloader.discloader.common.structures.User;
+import io.discloader.discloader.client.renderer.texture.AbstractTexture;
+import io.discloader.discloader.common.structures.Guild;
 
 /**
  * @author Perry Berman
  *
  */
-public class UserIcon extends AbstractTexture {
-	
-	public final User user;
-	
-	public UserIcon(User user) {
-		super();
-		this.user = user;
+public class GuildIcon extends AbstractTexture {
+
+	public final Guild guild;
+
+	public GuildIcon(Guild guild) {
+		this.guild = guild;
 		this.setIconHeight(128);
 		this.setIconWidth(128);
-		this.setIconName(user.avatar);
+		this.setIconName(guild.icon != null ? guild.icon : guild.id);
+
 	}
-	
+
 	@Override
 	public ImageIcon getImageIcon() {
-		return this.createImageIcon(this.user.avatarURL);
+		return this.createImageIcon(this.guild.iconURL);
 	}
 
 	@Override
@@ -34,16 +38,16 @@ public class UserIcon extends AbstractTexture {
 		return this.getImageIcon().getImage();
 	}
 
-	
 	protected ImageIcon createImageIcon(String url) {
 		URL imgURL = null;
 		try {
 			imgURL = new URL(url);
 		} catch (MalformedURLException e) {
+			e.printStackTrace();
 			imgURL = ClassLoader.getSystemResource("assets/discloader/texture/gui/icons/missing-icon.png");
 		}
 		if (imgURL != null) {
-			return new ImageIcon(imgURL);
+			return new ImageIcon(imgURL, this.guild.name);
 		} else {
 			System.err.println("Couldn't find file: " + url);
 			return null;

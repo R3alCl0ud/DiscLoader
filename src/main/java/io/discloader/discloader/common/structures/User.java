@@ -5,7 +5,7 @@ import java.util.concurrent.CompletableFuture;
 
 import org.json.JSONObject;
 
-import io.discloader.discloader.client.renderer.texture.UserIcon;
+import io.discloader.discloader.client.renderer.texture.icon.UserIcon;
 import io.discloader.discloader.common.DiscLoader;
 import io.discloader.discloader.network.gateway.json.UserJSON;
 import io.discloader.discloader.util.Constants;

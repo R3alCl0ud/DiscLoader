@@ -1,6 +1,7 @@
 package io.discloader.discloader.client.renderer.panel;
 
 import java.awt.GridLayout;
+import java.awt.Image;
 import java.net.URL;
 
 import javax.swing.ImageIcon;
@@ -20,9 +21,9 @@ public class TabbedPanel extends JPanel {
 		super(new GridLayout(1, 1));
 		this.loader = loader;
 		JTabbedPane tabbedPane = new JTabbedPane();
-		tabbedPane.addTab("Users", createImageIcon("texture.gui.icons.missing-icon", "Missing Icon"),
+		tabbedPane.addTab("Users", resizeImageIcon(createImageIcon("texture.gui.icons.missing-icon", "Missing Icon"), 16, 16),
 				new UserFolders(this.loader), "Users");
-		tabbedPane.addTab("Guilds", createImageIcon("texture.gui.icons.missing-icon", "Missing Icon"),
+		tabbedPane.addTab("Guilds", resizeImageIcon(createImageIcon("texture.gui.icons.missing-icon", "Missing Icon"), 16, 16),
 				new GuildFolders(this.loader), "Guilds");
 
 		tabbedPane.setTabLayoutPolicy(JTabbedPane.SCROLL_TAB_LAYOUT);
@@ -38,6 +39,10 @@ public class TabbedPanel extends JPanel {
 			System.err.println("Couldn't find file: " + path);
 			return null;
 		}
+	}
+	
+	protected ImageIcon resizeImageIcon(ImageIcon imageIcon, int width, int height) {
+		return new ImageIcon(imageIcon.getImage().getScaledInstance(width, height, Image.SCALE_SMOOTH));
 	}
 
 }
