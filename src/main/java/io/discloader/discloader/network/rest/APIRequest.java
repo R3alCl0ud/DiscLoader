@@ -85,7 +85,7 @@ public class APIRequest {
 				try {
 					byte[] bytes = Constants.readAllBytes(file);
 					MultipartBody body = ((HttpRequestWithBody) request).fields(null);
-					body.field("file", bytes, file.getName());
+					body.field("file", bytes, file.getName()).field("payload_json", Constants.gson.toJson(message));
 					if (message.embed != null) {
 //						System.out.printf("%s\n", Constants.gson.toJson(message.embed).toString());
 //						body.field("embed", String.format("%s", Constants.gson.toJson(message.embed).toString()));

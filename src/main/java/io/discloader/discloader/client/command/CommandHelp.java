@@ -2,6 +2,8 @@ package io.discloader.discloader.client.command;
 
 import java.io.File;
 
+import io.discloader.discloader.client.registry.TextureRegistry;
+import io.discloader.discloader.client.render.texture.icon.CommandIcon;
 import io.discloader.discloader.common.discovery.ModContainer;
 import io.discloader.discloader.common.events.MessageCreateEvent;
 import io.discloader.discloader.common.registry.CommandRegistry;
@@ -19,21 +21,27 @@ public class CommandHelp extends Command {
 		super();
 		this.setTextureName("discloader:icon.commands.help");
 	}
-	
+
 	public void execute(MessageCreateEvent e) {
-		RichEmbed embed = new RichEmbed("Help & Bot Info");
-		
+		RichEmbed embed = new RichEmbed("Help");
+
 		if (e.message.content.split(" ").length > 1) {
-			
-			
-			
+			String mod = e.message.content.split(" ")[1];
+			if (ModRegistry.mods.containsKey(mod)) {
+				ModContainer mc = ModRegistry.mods.get(mod);
+				embed.setThumbnail("assets/discloader/texture/icons/missing-icon.png");
+
+			}
 			return;
 		}
-		
-		//
-		embed.setColor(0x08a2ff).setThumbnail(new File(ClassLoader.getSystemResource("assets/discloader/texture/icons/commands/help.png").getFile()))
+
+
+		embed.setColor(0x08a2ff)
+				.setThumbnail(new File(
+						ClassLoader.getSystemResource("assets/discloader/texture/icons/commands/help.png").getFile()))
 				.setFooter("Generated using DiscLoader", e.loader.user.avatarURL)
 				.setAuthor(e.loader.user.username, null, e.loader.user.avatarURL);
+
 		String mods = "";
 		for (ModContainer mod : ModRegistry.mods.values()) {
 			mods += String.format("%s\n    Description: %s\n", mod.modInfo.name(), mod.modInfo.desc());
@@ -45,10 +53,8 @@ public class CommandHelp extends Command {
 				dCommands += String.format("%s\n", command.getUnlocalizedName());
 			}
 		}
-		embed.addField("Stats", String.format("Guilds: %d, Users: %d", e.loader.guilds.size(), e.loader.users.size()), true);
 		embed.addField("Mods", mods);
 		embed.addField("Default Commands", dCommands);
-		System.out.println(dCommands);
 		e.message.channel.sendEmbed(embed);
 	}
 

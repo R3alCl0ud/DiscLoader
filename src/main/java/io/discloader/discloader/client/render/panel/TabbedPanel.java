@@ -12,6 +12,8 @@ import io.discloader.discloader.client.render.panel.folders.GuildFolders;
 import io.discloader.discloader.client.render.panel.folders.ModsFolder;
 import io.discloader.discloader.client.render.panel.folders.UserFolders;
 import io.discloader.discloader.common.DiscLoader;
+import io.discloader.discloader.common.discovery.ModContainer;
+import io.discloader.discloader.entity.User;
 
 public class TabbedPanel extends JPanel {
 
@@ -22,9 +24,9 @@ public class TabbedPanel extends JPanel {
 		super(new GridLayout(1, 1));
 		this.loader = loader;
 		JTabbedPane tabbedPane = new JTabbedPane();
-		tabbedPane.addTab("Mods", new ModsFolder(this.loader));
+		tabbedPane.addTab("Mods", new ModsFolder<ModContainer>(this.loader));
 		tabbedPane.addTab("Users", resizeImageIcon(createImageIcon("texture.gui.icons.missing-icon", "Missing Icon"), 16, 16),
-				new UserFolders(this.loader), "Users");
+				new UserFolders<User>(this.loader), "Users");
 		tabbedPane.addTab("Guilds", resizeImageIcon(createImageIcon("texture.gui.icons.missing-icon", "Missing Icon"), 16, 16),
 				new GuildFolders(this.loader), "Guilds");
 
