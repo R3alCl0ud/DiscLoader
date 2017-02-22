@@ -11,7 +11,7 @@ import com.mashape.unirest.request.BaseRequest;
 import com.mashape.unirest.request.HttpRequestWithBody;
 import com.mashape.unirest.request.body.MultipartBody;
 
-import io.discloader.discloader.common.structures.SendableMessage;
+import io.discloader.discloader.entity.SendableMessage;
 import io.discloader.discloader.util.Constants;
 
 public class APIRequest {

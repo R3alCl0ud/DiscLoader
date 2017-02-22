@@ -2,7 +2,7 @@ package io.discloader.discloader.network.gateway.packets;
 
 import com.google.gson.Gson;
 
-import io.discloader.discloader.common.structures.Guild;
+import io.discloader.discloader.entity.Guild;
 import io.discloader.discloader.network.gateway.DiscSocket;
 import io.discloader.discloader.network.gateway.json.GuildJSON;
 

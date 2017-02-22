@@ -2,8 +2,8 @@ package io.discloader.discloader.client.command;
 
 import io.discloader.discloader.common.events.MessageCreateEvent;
 import io.discloader.discloader.common.registry.CommandRegistry;
-import io.discloader.discloader.common.structures.Guild;
-import io.discloader.discloader.common.structures.Message;
+import io.discloader.discloader.entity.Guild;
+import io.discloader.discloader.entity.Message;
 
 /**
  * @author Perry Berman

@@ -5,8 +5,8 @@ package io.discloader.discloader.network.gateway.packets;
 
 import io.discloader.discloader.client.command.CommandHandler;
 import io.discloader.discloader.common.events.MessageCreateEvent;
-import io.discloader.discloader.common.structures.Message;
-import io.discloader.discloader.common.structures.channels.TextChannel;
+import io.discloader.discloader.entity.Message;
+import io.discloader.discloader.entity.channels.TextChannel;
 import io.discloader.discloader.network.gateway.DiscSocket;
 import io.discloader.discloader.network.gateway.json.MessageJSON;
 import io.discloader.discloader.util.Constants;

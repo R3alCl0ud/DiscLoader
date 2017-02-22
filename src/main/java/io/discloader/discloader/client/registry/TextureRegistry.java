@@ -3,10 +3,11 @@ package io.discloader.discloader.client.registry;
 import java.util.HashMap;
 
 import io.discloader.discloader.client.command.Command;
-import io.discloader.discloader.client.renderer.texture.AbstractTexture;
-import io.discloader.discloader.client.renderer.texture.icon.CommandIcon;
-import io.discloader.discloader.client.renderer.texture.icon.GuildIcon;
-import io.discloader.discloader.client.renderer.texture.icon.UserIcon;
+import io.discloader.discloader.client.render.ResourceHandler;
+import io.discloader.discloader.client.render.texture.AbstractTexture;
+import io.discloader.discloader.client.render.texture.icon.CommandIcon;
+import io.discloader.discloader.client.render.texture.icon.GuildIcon;
+import io.discloader.discloader.client.render.texture.icon.UserIcon;
 
 /**
  * @author Perry Berman
@@ -14,11 +15,14 @@ import io.discloader.discloader.client.renderer.texture.icon.UserIcon;
  */
 public class TextureRegistry {
 
+	public final ResourceHandler resourceHandler;
+	
 	private HashMap<Integer, AbstractTexture> commandIcons;
 	private HashMap<String, UserIcon> userIcons;
 	private HashMap<String, GuildIcon> guildIcons;
 
 	public TextureRegistry() {
+		this.resourceHandler = new ResourceHandler();
 		this.commandIcons = new HashMap<Integer, AbstractTexture>();
 		this.userIcons = new HashMap<String, UserIcon>();
 		this.guildIcons = new HashMap<String, GuildIcon>();

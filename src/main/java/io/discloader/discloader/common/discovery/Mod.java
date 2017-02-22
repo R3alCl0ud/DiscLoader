@@ -14,24 +14,29 @@ import java.lang.annotation.Target;
 @Target(ElementType.TYPE)
 public @interface Mod {
 	/**
-	 * @return The mod's modid
+	 * @return The Mod's modid
 	 */
 	String modid() default "";
 	
 	/**
-	 * @return The mod's name
+	 * @return The Mod's name
 	 */
 	String name() default "";
 
 	/**
-	 * @return The mod's version
+	 * @return The Mod's version
 	 */
 	String version() default "";
 
 	/**
-	 * @return The mod's description
+	 * @return The Mod's description
 	 */
 	String desc() default "";
+	
+	/**
+	 * @return The Mod's author(s).
+	 */
+	String author() default "";
 	
     @Retention(RetentionPolicy.RUNTIME)
     @Target(ElementType.FIELD)

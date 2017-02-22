@@ -6,7 +6,7 @@ import io.discloader.discloader.common.discovery.ModContainer;
 import io.discloader.discloader.common.events.MessageCreateEvent;
 import io.discloader.discloader.common.registry.CommandRegistry;
 import io.discloader.discloader.common.registry.ModRegistry;
-import io.discloader.discloader.common.structures.RichEmbed;
+import io.discloader.discloader.entity.RichEmbed;
 
 /**
  * 
@@ -17,7 +17,7 @@ public class CommandHelp extends Command {
 
 	public CommandHelp() {
 		super();
-		this.setTextureName("discloader:icons.commands.help");
+		this.setTextureName("discloader:icon.commands.help");
 	}
 	
 	public void execute(MessageCreateEvent e) {

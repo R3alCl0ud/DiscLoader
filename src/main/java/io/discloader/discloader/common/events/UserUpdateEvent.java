@@ -3,7 +3,7 @@
  */
 package io.discloader.discloader.common.events;
 
-import io.discloader.discloader.common.structures.User;
+import io.discloader.discloader.entity.User;
 
 /**
  * @author Perry Berman

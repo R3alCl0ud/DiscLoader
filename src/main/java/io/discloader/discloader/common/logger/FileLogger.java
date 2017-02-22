@@ -16,6 +16,7 @@ public class FileLogger extends AbstractLogger {
 	private FileOutputStream logStream;
 
 	public FileLogger() throws IOException {
+		super("","");
 		this.logFile = new File(String.format("logs/%s.log", Date.from(Instant.now()).toString().replace(" ", "-").replace(":", "_")));
 		this.logFile.createNewFile();
 		this.logStream = new FileOutputStream(this.logFile);

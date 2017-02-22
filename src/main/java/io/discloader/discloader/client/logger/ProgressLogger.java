@@ -2,7 +2,7 @@ package io.discloader.discloader.client.logger;
 
 import java.io.IOException;
 
-import io.discloader.discloader.client.renderer.panel.LoadingPanel;
+import io.discloader.discloader.client.render.panel.LoadingPanel;
 import io.discloader.discloader.common.logger.FileLogger;
 import io.discloader.discloader.common.start.Main;
 

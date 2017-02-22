@@ -1,6 +1,6 @@
 package io.discloader.discloader.network.gateway.packets.request;
 
-import io.discloader.discloader.common.structures.Guild;
+import io.discloader.discloader.entity.Guild;
 
 /**
  * @author Perry Berman

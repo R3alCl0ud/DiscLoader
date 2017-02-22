@@ -10,7 +10,7 @@ import com.google.gson.Gson;
 
 import io.discloader.discloader.client.command.CommandHandler;
 import io.discloader.discloader.client.logger.ProgressLogger;
-import io.discloader.discloader.client.renderer.WindowFrame;
+import io.discloader.discloader.client.render.WindowFrame;
 import io.discloader.discloader.common.DiscLoader;
 import io.discloader.discloader.common.discovery.ModCandidate;
 import io.discloader.discloader.common.discovery.ModDiscoverer;
@@ -93,5 +93,9 @@ public class Main {
 	 */
 	public static FileLogger getLOGGER() {
 		return LOG;
+	}
+	
+	public static DiscLoader getLoader() {
+		return loader;
 	}
 }

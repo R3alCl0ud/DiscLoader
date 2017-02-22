@@ -3,6 +3,7 @@ package io.discloader.discloader.common.logger;
 import java.io.File;
 import java.io.IOException;
 import java.util.Date;
+import java.util.logging.Logger;
 import java.time.Instant;
 
 /**
@@ -13,7 +14,8 @@ public abstract class AbstractLogger implements ILogger {
 
 	protected File logDir;
 	
-	public AbstractLogger() {
+	public AbstractLogger(String name, String resourceBundleName) {
+//		super(name, resourceBundleName);
 		logDir = new File("logs");
 		if (!logDir.exists() || !logDir.isDirectory()) {
 			logDir.mkdir();

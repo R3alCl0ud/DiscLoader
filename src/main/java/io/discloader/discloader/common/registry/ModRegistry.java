@@ -7,7 +7,7 @@ import java.util.TimerTask;
 
 import io.discloader.discloader.client.command.Command;
 import io.discloader.discloader.client.logger.ProgressLogger;
-import io.discloader.discloader.client.renderer.panel.LoadingPanel;
+import io.discloader.discloader.client.render.panel.LoadingPanel;
 import io.discloader.discloader.common.discovery.Mod;
 import io.discloader.discloader.common.discovery.ModCandidate;
 import io.discloader.discloader.common.discovery.ModContainer;

@@ -4,7 +4,7 @@
 package io.discloader.discloader.common.events;
 
 import io.discloader.discloader.common.DiscLoader;
-import io.discloader.discloader.common.structures.Message;
+import io.discloader.discloader.entity.Message;
 
 /**
  * The object passed to the {@literal "MessageCreate"} eventHandler
