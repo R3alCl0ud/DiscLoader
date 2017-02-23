@@ -1,4 +1,4 @@
-package io.discloader.discloader.entity;
+package io.discloader.discloader.entity.sendable;
 
 import java.io.File;
 import java.util.ArrayList;

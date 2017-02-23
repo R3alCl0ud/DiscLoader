@@ -13,11 +13,11 @@ import javax.swing.JFrame;
 
 import io.discloader.discloader.client.logger.ProgressLogger;
 import io.discloader.discloader.client.render.panel.LoadingPanel;
-import io.discloader.discloader.client.render.panel.TabbedPanel;
 import io.discloader.discloader.common.DiscLoader;
 import io.discloader.discloader.common.discovery.ModCandidate;
 import io.discloader.discloader.common.discovery.ModDiscoverer;
 import io.discloader.discloader.common.registry.ModRegistry;
+import io.discloader.guimod.gui.TabbedPanel;
 
 /**
  * @author Perry Berman

@@ -1,4 +1,4 @@
-package io.discloader.discloader.client.render.panel;
+package io.discloader.guimod.gui;
 
 import java.awt.GridLayout;
 import java.awt.Image;
@@ -8,12 +8,12 @@ import javax.swing.ImageIcon;
 import javax.swing.JPanel;
 import javax.swing.JTabbedPane;
 
-import io.discloader.discloader.client.render.panel.folders.GuildFolders;
-import io.discloader.discloader.client.render.panel.folders.ModsFolder;
-import io.discloader.discloader.client.render.panel.folders.UserFolders;
 import io.discloader.discloader.common.DiscLoader;
 import io.discloader.discloader.common.discovery.ModContainer;
 import io.discloader.discloader.entity.User;
+import io.discloader.guimod.gui.tab.GuildFolders;
+import io.discloader.guimod.gui.tab.ModsFolder;
+import io.discloader.guimod.gui.tab.UserFolders;
 
 public class TabbedPanel extends JPanel {
 

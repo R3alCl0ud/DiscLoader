@@ -5,6 +5,7 @@ import java.util.concurrent.CompletableFuture;
 
 import io.discloader.discloader.common.DiscLoader;
 import io.discloader.discloader.entity.channels.TextChannel;
+import io.discloader.discloader.entity.sendable.RichEmbed;
 import io.discloader.discloader.network.gateway.json.MessageJSON;
 import io.discloader.discloader.util.Constants;
 

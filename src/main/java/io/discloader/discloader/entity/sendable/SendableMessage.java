@@ -1,6 +1,8 @@
-package io.discloader.discloader.entity;
+package io.discloader.discloader.entity.sendable;
 
 import java.io.File;
+
+import io.discloader.discloader.entity.Attachment;
 
 /**
  * @author Perry Berman

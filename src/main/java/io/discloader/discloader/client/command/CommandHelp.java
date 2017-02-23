@@ -2,7 +2,7 @@ package io.discloader.discloader.client.command;
 
 import io.discloader.discloader.common.event.MessageCreateEvent;
 import io.discloader.discloader.common.registry.CommandRegistry;
-import io.discloader.discloader.entity.RichEmbed;
+import io.discloader.discloader.entity.sendable.RichEmbed;
 
 /**
  * 

@@ -1,4 +1,4 @@
-package io.discloader.discloader.client.render.panel.folders;
+package io.discloader.guimod.gui.tab;
 
 import java.awt.Color;
 import java.awt.Dimension;

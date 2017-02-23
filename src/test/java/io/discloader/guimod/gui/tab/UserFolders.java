@@ -1,37 +1,30 @@
-/**
- * 
- */
-package io.discloader.discloader.client.render.panel.folders;
+package io.discloader.guimod.gui.tab;
 
 import javax.swing.event.ListSelectionEvent;
 
 import io.discloader.discloader.client.render.list.AbstractList;
-import io.discloader.discloader.client.render.list.GuildList;
+import io.discloader.discloader.client.render.list.UserList;
 import io.discloader.discloader.client.render.panel.info.AbstractInfo;
-import io.discloader.discloader.client.render.panel.info.GuildInfo;
+import io.discloader.discloader.client.render.panel.info.UserInfo;
 import io.discloader.discloader.common.DiscLoader;
-import io.discloader.discloader.entity.Guild;
+import io.discloader.discloader.entity.User;
 
-/**
- * @author Perry Berman
- *
- */
-public class GuildFolders<T extends Guild> extends AbstractFolder<T> {
+public class UserFolders<T extends User> extends AbstractFolder<T> {
 
-	private static final long serialVersionUID = -1589736360078814907L;
+	private static final long serialVersionUID = 3191743262883151288L;
 
-	public GuildFolders(DiscLoader loader) {
+	public UserFolders(DiscLoader loader) {
 		super(loader);
 	}
-	
+
 	@Override
 	public AbstractList<T> createList() {
-		return new GuildList<T>(this.loader);
+		return new UserList<T>(this.loader);
 	}
 
 	@Override
 	public AbstractInfo<T> createInfo() {
-		return new GuildInfo<T>();
+		return new UserInfo<T>();
 	}
 
 	@Override

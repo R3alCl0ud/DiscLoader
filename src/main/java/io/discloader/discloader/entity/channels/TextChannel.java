@@ -8,7 +8,7 @@ import io.discloader.discloader.common.DiscLoader;
 import io.discloader.discloader.entity.Attachment;
 import io.discloader.discloader.entity.Guild;
 import io.discloader.discloader.entity.Message;
-import io.discloader.discloader.entity.RichEmbed;
+import io.discloader.discloader.entity.sendable.RichEmbed;
 import io.discloader.discloader.network.gateway.json.ChannelJSON;
 
 /**
