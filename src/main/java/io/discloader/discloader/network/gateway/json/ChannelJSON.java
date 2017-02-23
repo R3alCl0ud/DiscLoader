@@ -5,7 +5,8 @@ public class ChannelJSON {
 	public String name;
 	public String topic;
 	public String last_message_id;
-
+	public String guild_id;
+	
 	public int type;
 	public int user_limit;
 	public int position;

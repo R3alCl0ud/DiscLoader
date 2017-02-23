@@ -4,7 +4,6 @@ import java.util.HashMap;
 
 import io.discloader.discloader.client.command.Command;
 import io.discloader.discloader.client.render.ResourceHandler;
-import io.discloader.discloader.client.render.texture.AbstractTexture;
 import io.discloader.discloader.client.render.texture.icon.CommandIcon;
 import io.discloader.discloader.client.render.texture.icon.GuildIcon;
 import io.discloader.discloader.client.render.texture.icon.UserIcon;
@@ -15,50 +14,44 @@ import io.discloader.discloader.client.render.texture.icon.UserIcon;
  */
 public class TextureRegistry {
 
-	public final ResourceHandler resourceHandler;
+	public static final ResourceHandler resourceHandler = new ResourceHandler();
 	
-	private HashMap<Integer, AbstractTexture> commandIcons;
-	private HashMap<String, UserIcon> userIcons;
-	private HashMap<String, GuildIcon> guildIcons;
+	private static HashMap<Integer, CommandIcon> commandIcons = new HashMap<Integer, CommandIcon>();
+	private static HashMap<String, UserIcon> userIcons = new HashMap<String, UserIcon>();
+	private static HashMap<String, GuildIcon> guildIcons= new HashMap<String, GuildIcon>();
 
-	public TextureRegistry() {
-		this.resourceHandler = new ResourceHandler();
-		this.commandIcons = new HashMap<Integer, AbstractTexture>();
-		this.userIcons = new HashMap<String, UserIcon>();
-		this.guildIcons = new HashMap<String, GuildIcon>();
+	public static CommandIcon registerCommandIcon(Command command) {
+		CommandIcon icon = new CommandIcon(command);
+		commandIcons.put(command.getId(), icon);
+		return icon;
 	}
 
-	public void registerCommandIcon(Command command) {
-		
-		this.commandIcons.put(command.getId(), new CommandIcon(command));
+	public static void registerUserIcon(UserIcon icon) {
+		userIcons.put(icon.getIconName(), icon);
 	}
 
-	public void registerUserIcon(UserIcon icon) {
-		this.userIcons.put(icon.getIconName(), icon);
-	}
-
-	public void registerGuildIcon(GuildIcon icon) {
-		this.guildIcons.put(icon.getIconName(), icon);
+	public static void registerGuildIcon(GuildIcon icon) {
+		guildIcons.put(icon.getIconName(), icon);
 	}
 
 	/**
 	 * @return the icons
 	 */
-	public HashMap<Integer, AbstractTexture> getCommandIcons() {
+	public static HashMap<Integer, CommandIcon> getCommandIcons() {
 		return commandIcons;
 	}
 
 	/**
 	 * @return the userIcons
 	 */
-	public HashMap<String, UserIcon> getUserIcons() {
+	public static HashMap<String, UserIcon> getUserIcons() {
 		return userIcons;
 	}
 
 	/**
 	 * @return the guildIcons
 	 */
-	public HashMap<String, GuildIcon> getGuildIcons() {
+	public static HashMap<String, GuildIcon> getGuildIcons() {
 		return guildIcons;
 	}
 }

@@ -16,8 +16,13 @@ import com.neovisionaries.ws.client.WebSocketListener;
 import com.neovisionaries.ws.client.WebSocketState;
 
 import io.discloader.discloader.common.DiscLoader;
+import io.discloader.discloader.network.gateway.packets.ChannelCreate;
+import io.discloader.discloader.network.gateway.packets.ChannelDelete;
+import io.discloader.discloader.network.gateway.packets.ChannelUpdate;
 import io.discloader.discloader.network.gateway.packets.DiscPacket;
 import io.discloader.discloader.network.gateway.packets.GuildCreate;
+import io.discloader.discloader.network.gateway.packets.GuildDelete;
+import io.discloader.discloader.network.gateway.packets.GuildUpdate;
 import io.discloader.discloader.network.gateway.packets.HelloPacket;
 import io.discloader.discloader.network.gateway.packets.MessageCreate;
 import io.discloader.discloader.network.gateway.packets.MessageDelete;
@@ -45,6 +50,11 @@ public class DiscSocketListener extends WebSocketAdapter implements WebSocketLis
 		this.register(Constants.WSEvents.HELLO, new HelloPacket(this.socket));
 		this.register(Constants.WSEvents.READY, new ReadyPacket(this.socket));
 		this.register(Constants.WSEvents.GUILD_CREATE, new GuildCreate(this.socket));
+		this.register(Constants.WSEvents.GUILD_DELETE, new GuildDelete(this.socket));
+		this.register(Constants.WSEvents.GUILD_UPDATE, new GuildUpdate(this.socket));
+		this.register(Constants.WSEvents.CHANNEL_CREATE, new ChannelCreate(this.socket));
+		this.register(Constants.WSEvents.CHANNEL_DELETE, new ChannelDelete(this.socket));
+		this.register(Constants.WSEvents.CHANNEL_UPDATE, new ChannelUpdate(this.socket));
 		this.register(Constants.WSEvents.PRESENCE_UPDATE, new PresenceUpdate(this.socket));
 		this.register(Constants.WSEvents.MESSAGE_CREATE, new MessageCreate(this.socket));
 		this.register(Constants.WSEvents.MESSAGE_UPDATE, new MessageUpdate(this.socket));

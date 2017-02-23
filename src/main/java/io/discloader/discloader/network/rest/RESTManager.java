@@ -21,6 +21,8 @@ import io.discloader.discloader.entity.RichEmbed;
 import io.discloader.discloader.entity.SendableMessage;
 import io.discloader.discloader.entity.User;
 import io.discloader.discloader.entity.channels.TextChannel;
+import io.discloader.discloader.entity.channels.VoiceChannel;
+import io.discloader.discloader.network.gateway.json.ChannelJSON;
 import io.discloader.discloader.network.gateway.json.GuildJSON;
 import io.discloader.discloader.network.gateway.json.MemberJSON;
 import io.discloader.discloader.network.gateway.json.MessageJSON;
@@ -143,6 +145,14 @@ public class RESTManager {
 				.thenAcceptAsync(action -> {
 					future.complete(guild.addMember(this.gson.fromJson(action, MemberJSON.class)));
 				});
+		return future;
+	}
+	
+	public CompletableFuture<VoiceChannel> createVoiceChannel(Guild guild, JSONObject data) {
+		CompletableFuture<VoiceChannel> future = new CompletableFuture<VoiceChannel>();
+		this.makeRequest(Constants.Endpoints.guildChannels(guild.id), Constants.Methods.POST, true, data).thenAcceptAsync(action -> {
+			future.complete((VoiceChannel) this.loader.addChannel(this.gson.fromJson(action,  ChannelJSON.class), guild));
+		});
 		return future;
 	}
 

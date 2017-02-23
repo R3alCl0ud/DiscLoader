@@ -1,6 +1,7 @@
 package io.discloader.discloader.client.render.texture;
 
 import java.awt.Image;
+import java.io.File;
 
 import javax.swing.ImageIcon;
 
@@ -96,4 +97,9 @@ public abstract class AbstractTexture implements IIcon {
 	public void setImageIcon(ImageIcon imageIcon) {
 		this.imageIcon = imageIcon;
 	}
+	
+	public File getFile() {
+		return new File(this.getIconName());
+	}
+	
 }

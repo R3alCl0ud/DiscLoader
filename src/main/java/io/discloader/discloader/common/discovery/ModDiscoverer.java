@@ -11,6 +11,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import io.discloader.discloader.client.logger.ProgressLogger;
+import io.discloader.discloader.client.registry.TextureRegistry;
 import io.discloader.discloader.common.start.Main;
 
 /**
@@ -78,7 +79,7 @@ public class ModDiscoverer {
 			JarEntry entry = jarDir.nextElement();
 			System.out.println(entry.getName());
 			if (entry.getName().endsWith(".png")) {
-				Main.getLoader().clientRegistry.textureRegistry.resourceHandler.addResource(entry);
+				TextureRegistry.resourceHandler.addResource(entry);
 			} 
 			if (entry.isDirectory() || !entry.getName().endsWith(".class")) {
 				continue;

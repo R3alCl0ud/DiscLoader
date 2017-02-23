@@ -14,7 +14,7 @@ public class GuildUpdate extends DiscPacket {
 
 	@Override
 	public void handle(SocketPacket packet) {
-
+		
 	}
 
 }

@@ -1,6 +1,7 @@
 package io.discloader.discloader.client.render.util;
 
 import java.awt.Image;
+import java.io.File;
 
 /**
  * @author Perry Berman
@@ -25,4 +26,5 @@ public interface IIcon {
 	
 	void setImage(Image image);
 	
+	File getFile();
 }

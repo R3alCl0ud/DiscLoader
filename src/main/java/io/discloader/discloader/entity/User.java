@@ -5,6 +5,7 @@ import java.util.concurrent.CompletableFuture;
 
 import org.json.JSONObject;
 
+import io.discloader.discloader.client.registry.TextureRegistry;
 import io.discloader.discloader.client.render.texture.icon.UserIcon;
 import io.discloader.discloader.common.DiscLoader;
 import io.discloader.discloader.network.gateway.json.UserJSON;
@@ -103,7 +104,7 @@ public class User {
 
 		this.afk = false;
 		
-		this.loader.clientRegistry.textureRegistry.registerUserIcon(new UserIcon(this));
+		TextureRegistry.registerUserIcon(new UserIcon(this));
 	}
 
 	public void setup(UserJSON data) {
@@ -119,7 +120,7 @@ public class User {
 		
 		this.bot = data.bot;
 		
-		this.loader.clientRegistry.textureRegistry.registerUserIcon(new UserIcon(this));
+		TextureRegistry.registerUserIcon(new UserIcon(this));
 		
 	}
 

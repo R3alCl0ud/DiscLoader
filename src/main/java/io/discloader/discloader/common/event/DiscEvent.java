@@ -1,4 +1,4 @@
-package io.discloader.discloader.common.events;
+package io.discloader.discloader.common.event;
 
 import io.discloader.discloader.common.DiscLoader;
 

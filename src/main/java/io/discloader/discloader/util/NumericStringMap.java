@@ -31,6 +31,7 @@ public class NumericStringMap<T> {
 		this.data.put(id, data);
 		this.ids.put(id, id);
 		this.charIDs.put(id, charID);
+		this.idByChar.put(charID, id);
 		this.specialIDs.put(id, specialID);
 		this.idBySpecial.put(specialID, id);
 	}

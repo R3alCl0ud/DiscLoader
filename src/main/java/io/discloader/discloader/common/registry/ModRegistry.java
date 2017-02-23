@@ -11,7 +11,7 @@ import io.discloader.discloader.client.render.panel.LoadingPanel;
 import io.discloader.discloader.common.discovery.Mod;
 import io.discloader.discloader.common.discovery.ModCandidate;
 import io.discloader.discloader.common.discovery.ModContainer;
-import io.discloader.discloader.common.events.DiscPreInitEvent;
+import io.discloader.discloader.common.event.DiscPreInitEvent;
 import io.discloader.discloader.common.start.Main;
 
 public class ModRegistry {

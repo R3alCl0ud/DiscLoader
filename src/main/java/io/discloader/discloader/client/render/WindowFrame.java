@@ -12,7 +12,6 @@ import javax.swing.ImageIcon;
 import javax.swing.JFrame;
 
 import io.discloader.discloader.client.logger.ProgressLogger;
-import io.discloader.discloader.client.render.panel.FolderPanel;
 import io.discloader.discloader.client.render.panel.LoadingPanel;
 import io.discloader.discloader.client.render.panel.TabbedPanel;
 import io.discloader.discloader.common.DiscLoader;

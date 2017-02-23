@@ -3,21 +3,12 @@
  */
 package io.discloader.discloader.client.render.panel.folders;
 
-import java.awt.Color;
-import java.awt.Dimension;
-import java.awt.GridLayout;
-
-import javax.swing.Box;
-import javax.swing.BoxLayout;
-import javax.swing.JPanel;
 import javax.swing.event.ListSelectionEvent;
 
 import io.discloader.discloader.client.render.list.AbstractList;
 import io.discloader.discloader.client.render.list.GuildList;
-import io.discloader.discloader.client.render.list.UserList;
 import io.discloader.discloader.client.render.panel.info.AbstractInfo;
 import io.discloader.discloader.client.render.panel.info.GuildInfo;
-import io.discloader.discloader.client.render.panel.info.UserInfo;
 import io.discloader.discloader.common.DiscLoader;
 import io.discloader.discloader.entity.Guild;
 

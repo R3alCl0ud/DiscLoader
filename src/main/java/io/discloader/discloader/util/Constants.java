@@ -1,5 +1,7 @@
 package io.discloader.discloader.util;
 
+import java.awt.Dimension;
+import java.awt.Toolkit;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -45,6 +47,11 @@ public class Constants {
 	public static final String API = MessageFormat.format("{0}/api/v6", new Object[] { HOST });
 	public static final String LoaderVersion = "0.0.1";
 
+	public static final Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
+	
+	public static final File MissingTexture = new File(ClassLoader
+			.getSystemResource("assets/discloader/texture/gui/icons/missing-icon.png").getFile());
+	
 	public static final class Endpoints {
 		public static final String login = API + "/auth/login";
 		public static final String logout = API + "/auth/login";

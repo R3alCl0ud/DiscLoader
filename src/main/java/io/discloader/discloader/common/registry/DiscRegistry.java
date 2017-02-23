@@ -5,7 +5,7 @@ import java.util.HashMap;
 import io.discloader.discloader.client.command.Command;
 import io.discloader.discloader.common.DiscLoader;
 import io.discloader.discloader.common.discovery.ModContainer;
-import io.discloader.discloader.common.events.MessageCreateEvent;
+import io.discloader.discloader.common.event.MessageCreateEvent;
 
 /**
  * @author Perry Berman

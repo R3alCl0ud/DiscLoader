@@ -7,6 +7,7 @@ import javax.swing.Box;
 import javax.swing.JLabel;
 
 import io.discloader.discloader.common.discovery.ModContainer;
+import io.discloader.discloader.util.Constants;
 
 public class ModInfo<T extends ModContainer> extends AbstractInfo<T> {
 
@@ -20,13 +21,14 @@ public class ModInfo<T extends ModContainer> extends AbstractInfo<T> {
 
 	public ModInfo() {
 		super();
+		this.add(Box.createRigidArea(new Dimension(0, 40)));
 		this.add(this.modIcon = new JLabel());
 		this.add(this.modName = new JLabel("Name: "));
 		this.add(this.modId = new JLabel("Id: "));
 		this.add(this.modVersion = new JLabel("Version: "));
 		this.add(this.modDesc = new JLabel("Description: "));
 		this.add(this.modAuthor = new JLabel("Author(s): "));
-		this.add(new Box.Filler(new Dimension(0, 300), new Dimension(0, 400), new Dimension(0, 500)));
+		this.add(new Box.Filler(new Dimension(0, 300), new Dimension(0, 400), new Dimension(0, (int) Constants.screenSize.getHeight())));
 		this.modId.setForeground(new Color(0xFFFFFF));
 		this.modIcon.setForeground(new Color(0xFFFFFF));
 		this.modVersion.setForeground(new Color(0xFFFFFF));

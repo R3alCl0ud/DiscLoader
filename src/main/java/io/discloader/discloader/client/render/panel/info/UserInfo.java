@@ -7,6 +7,7 @@ import javax.swing.Box;
 import javax.swing.JLabel;
 
 import io.discloader.discloader.entity.User;
+import io.discloader.discloader.util.Constants;
 
 public class UserInfo<T> extends AbstractInfo<T> {
 
@@ -20,12 +21,13 @@ public class UserInfo<T> extends AbstractInfo<T> {
 
 	public UserInfo() {
 		super();
+		this.add(Box.createRigidArea(new Dimension(0, 40)));
 		this.add(this.avatar = new JLabel());
 		this.add(this.username = new JLabel("Username: "));
 		this.add(this.id = new JLabel("ID: "));
 		this.add(this.avatarHash = new JLabel("Avatar: "));
 		this.add(this.avatarURL = new JLabel("AvatarURL: "));
-		this.add(new Box.Filler(new Dimension(0, 300), new Dimension(0, 400), new Dimension(0, 500)));
+		this.add(new Box.Filler(new Dimension(0, 300), new Dimension(0, 400), new Dimension(0, (int) Constants.screenSize.getHeight())));
 		this.username.setForeground(new Color(0xFFFFFF));
 		this.id.setForeground(new Color(0xFFFFFF));
 		this.avatar.setForeground(new Color(0xFFFFFF));

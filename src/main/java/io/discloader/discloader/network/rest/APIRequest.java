@@ -2,8 +2,6 @@ package io.discloader.discloader.network.rest;
 
 import java.io.File;
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Paths;
 import java.util.concurrent.CompletableFuture;
 
 import com.mashape.unirest.http.Unirest;
@@ -78,7 +76,7 @@ public class APIRequest {
 		case Constants.Methods.POST:
 			request = Unirest.post(this.route);
 			if (this.multi) {
-				System.out.println("check");
+
 				SendableMessage data = (SendableMessage) this.data,
 						message = new SendableMessage(data.content, data.embed, data.attachment, null);
 				File file = data.file;
@@ -86,16 +84,11 @@ public class APIRequest {
 					byte[] bytes = Constants.readAllBytes(file);
 					MultipartBody body = ((HttpRequestWithBody) request).fields(null);
 					body.field("file", bytes, file.getName()).field("payload_json", Constants.gson.toJson(message));
-					if (message.embed != null) {
-//						System.out.printf("%s\n", Constants.gson.toJson(message.embed).toString());
-//						body.field("embed", String.format("%s", Constants.gson.toJson(message.embed).toString()));
-					}
 				} catch (IOException e) {
 					e.printStackTrace();
 				}
 
 			} else {
-				System.out.println("test");
 				((HttpRequestWithBody) request).body(Constants.gson.toJson(this.data));
 			}
 			break;

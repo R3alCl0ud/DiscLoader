@@ -1,7 +1,7 @@
 /**
  * 
  */
-package io.discloader.discloader.common.events;
+package io.discloader.discloader.common.event;
 
 import io.discloader.discloader.common.DiscLoader;
 import io.discloader.discloader.entity.Message;
@@ -25,9 +25,15 @@ public class MessageCreateEvent {
 	 */
 	public final Message message;
 	
+	/**
+	 * The messages arguments.
+	 */
+	public final String[] args;
+	
 	public MessageCreateEvent(Message message) {
 		this.message = message;
 		this.loader = this.message.loader;
+		this.args = this.message.content.split(" ");
 	}
 
 }

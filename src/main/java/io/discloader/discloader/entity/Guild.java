@@ -10,6 +10,7 @@ import org.apache.commons.codec.binary.Base64;
 import org.json.JSONObject;
 
 import io.discloader.discloader.client.logger.ProgressLogger;
+import io.discloader.discloader.client.registry.TextureRegistry;
 import io.discloader.discloader.client.render.texture.icon.GuildIcon;
 import io.discloader.discloader.common.DiscLoader;
 import io.discloader.discloader.entity.channels.TextChannel;
@@ -181,7 +182,7 @@ public class Guild {
 		}
 		ProgressLogger.step(5, 5, "Registering Icon");
 //		ProgressLogger.progress(1, 1, String.format("IconURL: %s", this.iconURL));
-		this.loader.clientRegistry.textureRegistry.registerGuildIcon(new GuildIcon(this));
+		TextureRegistry.registerGuildIcon(new GuildIcon(this));
 		this.available = !data.unavailable;
 	}
 
@@ -289,8 +290,56 @@ public class Guild {
 		return null;
 	}
 
-	public CompletableFuture<Role> createRole() {
+	/**
+	 * Creates a new {@link TextChannel}. 
+	 * @param name The name of the channel
+	 * @return A Future that completes with a {@link TextChannel} if successful.
+	 */
+	public CompletableFuture<TextChannel> createTextChannel(String name) {
 		return null;
 	}
+	
+	/**
+	 * Creates a new {@link VoiceChannel}
+	 * @param name The name of the channel
+	 * @param bitrate The channel's bitrate
+	 * @param userLimit the channel's userlimit
+	 * @return
+	 */
+	public CompletableFuture<VoiceChannel> createVoiceChannel(String name, int bitrate, int userLimit) {
+		return null;
+	}
+	
+	/**
+	 * @param name
+	 * @param bitrate
+	 * @return
+	 */
+	public CompletableFuture<VoiceChannel> createVoiceChannel(String name, int bitrate) {
+		return null;
+	}
+	
+	/**
+	 * @param name
+	 * @return
+	 */
+	public CompletableFuture<VoiceChannel> createVoiceChannel(String name) {
+		return null;
+	}
+	
+	/**
+	 * Creates a new {@link Role}.
+	 * @param name The name of the role
+	 * @param permissions The 53bit Permissions integer to assign to the role
+	 * @param color The color of the role
+	 * @param hoist Display role members separately from online members
+	 * @param mentionable Allow anyone to @mention this role
+	 * @return A future that completes with a new {@link Role} Object if successful.
+	 */
+	public CompletableFuture<Role> createRole(String name, int permissions, int color, boolean hoist, boolean mentionable) {
+		return null;
+	}
+	
+	
 	
 }

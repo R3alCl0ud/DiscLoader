@@ -44,6 +44,7 @@ public class CommandRegistry {
 		while (commands.containsID(id)) {
 			id = (int) (Math.round(Math.random() * (maxID - minID)) + minID);
 		}
+		command.setId(id);
 		commands.set(id, name, command.getUnlocalizedName(), command);
 	}
 

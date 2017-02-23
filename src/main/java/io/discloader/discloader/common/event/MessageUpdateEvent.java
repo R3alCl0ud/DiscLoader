@@ -1,7 +1,7 @@
 /**
  * 
  */
-package io.discloader.discloader.common.events;
+package io.discloader.discloader.common.event;
 
 /**
  * @author Perry Berman

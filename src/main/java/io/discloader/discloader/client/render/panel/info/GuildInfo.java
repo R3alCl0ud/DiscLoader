@@ -1,10 +1,13 @@
 package io.discloader.discloader.client.render.panel.info;
 
 import java.awt.Color;
+import java.awt.Dimension;
 
+import javax.swing.Box;
 import javax.swing.JLabel;
 
 import io.discloader.discloader.entity.Guild;
+import io.discloader.discloader.util.Constants;
 
 public class GuildInfo<T> extends AbstractInfo<T> {
 
@@ -16,10 +19,11 @@ public class GuildInfo<T> extends AbstractInfo<T> {
 	
 	public GuildInfo() {
 		super();
+		this.add(Box.createRigidArea(new Dimension(0, 40)));
 		this.add(this.icon = new JLabel());
 		this.add(this.name = new JLabel("Name: "));
 		this.add(this.id = new JLabel("ID: "));
-		
+		this.add(new Box.Filler(new Dimension(0, 300), new Dimension(0, 400), new Dimension(0, (int) Constants.screenSize.getHeight())));
 		this.id.setForeground(new Color(0xFFFFFF));
 		this.name.setForeground(new Color(0xFFFFFF));
 
