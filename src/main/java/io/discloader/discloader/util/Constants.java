@@ -163,6 +163,10 @@ public class Constants {
 		public static final int HELLO = 10;
 		public static final int HEARTBEAT_ACK = 11;
 	}
+	
+	public static enum Test {
+		TEXT, VOICE
+	};
 
 	public static final class WSEvents {
 		public static final String HELLO = "HELLO";

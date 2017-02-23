@@ -44,6 +44,12 @@ public @interface Mod {
 		String value() default "";
 	}
     
+    /**
+     * All functions in the main Mod class file will be used as EventHandlers. To listen for event outside of the main file,
+     * use an {@link IEventAdapter} instead.
+     * @author perryberman
+     * @since 0.0.1
+     */
     @Target(ElementType.METHOD)
     @Retention(RetentionPolicy.RUNTIME)
     public @interface EventHandler {

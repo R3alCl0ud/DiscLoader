@@ -8,10 +8,12 @@ import java.util.TimerTask;
 import io.discloader.discloader.client.command.Command;
 import io.discloader.discloader.client.logger.ProgressLogger;
 import io.discloader.discloader.client.render.panel.LoadingPanel;
+import io.discloader.discloader.common.DiscLoader;
 import io.discloader.discloader.common.discovery.Mod;
 import io.discloader.discloader.common.discovery.ModCandidate;
 import io.discloader.discloader.common.discovery.ModContainer;
-import io.discloader.discloader.common.event.DiscPreInitEvent;
+import io.discloader.discloader.common.event.DLPreInitEvent;
+import io.discloader.discloader.common.event.IEventAdapter;
 import io.discloader.discloader.common.start.Main;
 
 public class ModRegistry {
@@ -130,7 +132,11 @@ public class ModRegistry {
 
 		ProgressLogger.progress(3, 3, "Executing PreInit handler in: " + mod.modInfo.modid());
 		mods.put(mod.modInfo.modid(), mod);
-		mod.emit("preInit", new DiscPreInitEvent(Main.loader));
+		DLPreInitEvent event = new DLPreInitEvent(Main.loader);
+		mod.emit("preInit", event);
+		for (IEventAdapter e : DiscLoader.handlers.values()) {
+			e.PreInit(event);
+		}
 		if (loadMod.containsKey(mod.modInfo.modid())) {
 			activeMod = preInitMods.get(loadMod.get(mod.modInfo.modid()));
 		} else {
@@ -140,7 +146,7 @@ public class ModRegistry {
 	}
 
 	private static void resetStep() {
-		if (Main.nogui)
+		if (!Main.usegui)
 			return;
 		LoadingPanel.setProgress(0, 0, "");
 		LoadingPanel.setStep(0, 0, "");

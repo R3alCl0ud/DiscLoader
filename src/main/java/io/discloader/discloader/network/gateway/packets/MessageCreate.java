@@ -4,6 +4,8 @@
 package io.discloader.discloader.network.gateway.packets;
 
 import io.discloader.discloader.client.command.CommandHandler;
+import io.discloader.discloader.common.DiscLoader;
+import io.discloader.discloader.common.event.IEventAdapter;
 import io.discloader.discloader.common.event.MessageCreateEvent;
 import io.discloader.discloader.entity.Message;
 import io.discloader.discloader.entity.channels.TextChannel;
@@ -32,9 +34,20 @@ public class MessageCreate extends DiscPacket {
 			channel = this.socket.loader.privateChannels.get(data.channel_id);
 		Message message = new Message(channel, data);
 		channel.messages.put(message.id, message);
-		MessageCreateEvent e = new MessageCreateEvent(message);
-		this.socket.loader.emit(Constants.Events.MESSAGE_CREATE, e);
-		CommandHandler.handleMessageCreate(e);
+		MessageCreateEvent event = new MessageCreateEvent(message);
+		if (channel.type.equals("text")) {
+			this.socket.loader.emit(Constants.Events.MESSAGE_CREATE, event);
+			for (IEventAdapter e : DiscLoader.handlers.values()) {
+				e.MessageCreate(event);
+			}
+		} else {
+			this.loader.emit(Constants.Events.PRIVATE_MESSAGE_CREATE, event);
+			for (IEventAdapter e : DiscLoader.handlers.values()) {
+				e.PrivateMessageCreate(event);
+			}
+		}
+		CommandHandler.handleMessageCreate(event);
+
 	}
 
 }

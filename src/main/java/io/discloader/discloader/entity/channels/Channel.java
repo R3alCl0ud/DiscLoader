@@ -15,15 +15,25 @@ import io.discloader.discloader.util.Constants;
 public class Channel {
 
 	public String id;
+	
 	public String name;
+	
 	public String topic;
+	
 	public String lastMessageID;
+	
 	public String type;
 
 	public int bitrate;
-	public int userLimit;
-	public int position;
 	
+	public int userLimit;
+	
+	public int position;
+
+	/**
+	 * Whether or not the channel is a dm channel. Is always {@literal true} if {@link #type} is {@literal "groupDM"} or {@literal "dm"}
+	 * @author Perry Berman
+	 */
 	public boolean isPrivate;
 
 	public final DiscLoader loader;
@@ -31,31 +41,40 @@ public class Channel {
 	public User user;
 
 	/**
-	 * The {@link Guild} the channel belongs to.
-	 * <br>This property <u>must</u> be {@code null} if the {@link #type} of the channel is {@code "dm"}, or {@code "groupDM"}.
+	 * The {@link Guild} the channel belongs to. <br>
+	 * This property <u>must</u> be {@code null} if the {@link #type} of the
+	 * channel is {@code "dm"}, or {@code "groupDM"}.
+	 * 
 	 * @author Perry Berman
 	 * @since 0.0.1
 	 */
 	public final Guild guild;
-	
+
 	/**
-	 * A {@link HashMap} of the channel's {@link User recipients}. Indexed by {@link User#id}.
-	 * <br>Is {@code null} if {@link #type} is {@code "text"} or {@code "voice"}.
+	 * A {@link HashMap} of the channel's {@link User recipients}. Indexed by
+	 * {@link User#id}. <br>
+	 * Is {@code null} if {@link #type} is {@code "text"} or {@code "voice"}.
+	 * 
 	 * @author Perry Berman
 	 * @since 0.0.1
 	 */
 	public final HashMap<String, User> recipients;
-	
+
 	/**
-	 * A {@link HashMap} of the channel's {@link Overwrite overwrites}. Indexed by {@link Overwrite#id}.
+	 * A {@link HashMap} of the channel's {@link Overwrite overwrites}. Indexed
+	 * by {@link Overwrite#id}.
+	 * 
 	 * @author Perry Berman
 	 * @since 0.0.1
 	 */
 	public final HashMap<String, Overwrite> overwrites;
-	
+
 	/**
-	 * A {@link HashMap} of the channel's {@link GuildMember members}. Indexed by {@link GuildMember #id member.id}.
-	 * <br> Is {@code null} if {@link #guild} is {@code null}, and if {@link #type} is {@code "dm"}, or {@code "groupDM"}.
+	 * A {@link HashMap} of the channel's {@link GuildMember members}. Indexed
+	 * by {@link GuildMember #id member.id}. <br>
+	 * Is {@code null} if {@link #guild} is {@code null}, and if {@link #type}
+	 * is {@code "dm"}, or {@code "groupDM"}.
+	 * 
 	 * @author Perry Berman
 	 * @since 0.0.1
 	 */
@@ -97,8 +116,15 @@ public class Channel {
 
 	public void setup(ChannelJSON data) {
 		this.id = data.id;
-		
+
 		this.isPrivate = data.is_private;
+
+		if (data.name != null)
+			this.name = data.name;
+
+		if (data.topic != null)
+			this.topic = data.topic;
+
 	}
 
 	/**
@@ -114,10 +140,14 @@ public class Channel {
 	}
 
 	/**
-	 * Evaluates a 
-	 * @param member The member whose permissions we are evaluating.
-	 * @return A new Permissions object that contains {@literal this}, the {@literal member}, and their evaluated permissions {@link Integer}.
- 	 * <br>null if the channel doesn't belong to a {@link #guild}
+	 * Evaluates a
+	 * 
+	 * @param member
+	 *            The member whose permissions we are evaluating.
+	 * @return A new Permissions object that contains {@literal this}, the
+	 *         {@literal member}, and their evaluated permissions
+	 *         {@link Integer}. <br>
+	 *         null if the channel doesn't belong to a {@link #guild}
 	 */
 	public Permission permissionsFor(GuildMember member) {
 		int raw = 0;
@@ -133,10 +163,14 @@ public class Channel {
 	}
 
 	/**
-	 * Gets all of the channel's {@link #overwrites} that applies to a {@link GuildMember}
-	 * @param member The member of whome we are looking for overwrites that apply. 
+	 * Gets all of the channel's {@link #overwrites} that applies to a
+	 * {@link GuildMember}
+	 * 
+	 * @param member
+	 *            The member of whome we are looking for overwrites that apply.
 	 * @author Perry Berman
-	 * @return A {@link HashMap} of overwrite objects, indexed by {@link Overwrite#id}
+	 * @return A {@link HashMap} of overwrite objects, indexed by
+	 *         {@link Overwrite#id}
 	 * @since 0.0.1
 	 */
 	public HashMap<String, Overwrite> overwritesOf(GuildMember member) {

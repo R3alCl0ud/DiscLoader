@@ -10,6 +10,7 @@ import io.discloader.discloader.client.command.CommandHandler;
 import io.discloader.discloader.client.logger.ProgressLogger;
 import io.discloader.discloader.client.registry.ClientRegistry;
 import io.discloader.discloader.common.discovery.ModContainer;
+import io.discloader.discloader.common.event.IEventAdapter;
 import io.discloader.discloader.common.registry.ModRegistry;
 import io.discloader.discloader.common.start.Main;
 import io.discloader.discloader.entity.Guild;
@@ -40,6 +41,8 @@ public class DiscLoader {
 	
 	public RESTManager rest;
 
+	public static final HashMap<String, IEventAdapter> handlers = new HashMap<String, IEventAdapter>();
+	
 	/**
 	 * A HashMap of the client's cached users. Indexed by {@link User#id}.
 	 * @author Perry Berman
@@ -129,7 +132,6 @@ public class DiscLoader {
 	 */
 	public CompletableFuture<String> login(String token) {
 		this.token = token;
-		// this.modh.beginLoader();
 		CompletableFuture<String> future = this.rest.makeRequest(Constants.Endpoints.gateway, Constants.Methods.GET,
 				true);
 		future.thenAcceptAsync(text -> {
@@ -165,6 +167,10 @@ public class DiscLoader {
 	 */
 	public void emit(String event) {
 		this.emit(event, null);
+	}
+	
+	public static void addEventHandler(IEventAdapter e) {
+		handlers.put(e.toString(), e);
 	}
 
 	public Guild addGuild(GuildJSON guild) {
@@ -207,7 +213,6 @@ public class DiscLoader {
 				this.textChannels.put(channel.id, (TextChannel) channel);
 				break;
 			case "dm":
-				// this.textChannels.put(channel.id, (TextChannel) channel);
 				this.privateChannels.put(channel.id, (PrivateChannel) channel);
 				break;
 			case "voice":
@@ -244,9 +249,7 @@ public class DiscLoader {
 			ProgressLogger.progress(this.guilds.size() - unavailable, this.guilds.size(), "Guilds Cached");
 			if (unavailable == 0) {
 				for (Guild guild : this.guilds.values()) {
-					if (guild.memberCount != guild.members.size()) {
-//						this.discSocket.send(new RequestGuildMembers(guild, "", 0), true);
-//						return;
+					if (guild.memberCount != guild.members.size() && !guild.large) {
 					}
 				}
 				

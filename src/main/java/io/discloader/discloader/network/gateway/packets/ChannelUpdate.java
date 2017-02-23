@@ -3,7 +3,9 @@
  */
 package io.discloader.discloader.network.gateway.packets;
 
+import io.discloader.discloader.common.DiscLoader;
 import io.discloader.discloader.common.event.ChannelUpdateEvent;
+import io.discloader.discloader.common.event.IEventAdapter;
 import io.discloader.discloader.entity.Guild;
 import io.discloader.discloader.entity.channels.Channel;
 import io.discloader.discloader.network.gateway.DiscSocket;
@@ -34,7 +36,11 @@ public class ChannelUpdate extends DiscPacket {
 		} else {
 			channel = this.socket.loader.addChannel(data);
 		}
-		this.socket.loader.emit(Constants.Events.CHANNEL_UPDATE, new ChannelUpdateEvent(channel));
+		ChannelUpdateEvent event = new ChannelUpdateEvent(channel);
+		this.socket.loader.emit(Constants.Events.CHANNEL_UPDATE, event);
+		for (IEventAdapter e : DiscLoader.handlers.values()) {
+			e.ChannelUpdate(event);
+		}
 	}
 
 

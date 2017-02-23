@@ -6,7 +6,7 @@ import com.example.common.ObjectHandler;
 
 import io.discloader.discloader.common.discovery.Mod;
 import io.discloader.discloader.common.discovery.Mod.Instance;
-import io.discloader.discloader.common.event.DiscPreInitEvent;
+import io.discloader.discloader.common.event.DLPreInitEvent;
 
 /**
  * @author Perry Berman
@@ -29,7 +29,7 @@ public class ExampleMod {
 	}
 	
 	@EventHandler
-	public void preInit(DiscPreInitEvent e) {
+	public void preInit(DLPreInitEvent e) {
 		ObjectHandler.register();
 	}
 

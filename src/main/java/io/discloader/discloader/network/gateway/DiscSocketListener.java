@@ -16,6 +16,7 @@ import com.neovisionaries.ws.client.WebSocketListener;
 import com.neovisionaries.ws.client.WebSocketState;
 
 import io.discloader.discloader.common.DiscLoader;
+import io.discloader.discloader.common.event.IEventAdapter;
 import io.discloader.discloader.network.gateway.packets.ChannelCreate;
 import io.discloader.discloader.network.gateway.packets.ChannelDelete;
 import io.discloader.discloader.network.gateway.packets.ChannelUpdate;
@@ -29,6 +30,9 @@ import io.discloader.discloader.network.gateway.packets.MessageDelete;
 import io.discloader.discloader.network.gateway.packets.MessageUpdate;
 import io.discloader.discloader.network.gateway.packets.PresenceUpdate;
 import io.discloader.discloader.network.gateway.packets.ReadyPacket;
+import io.discloader.discloader.network.gateway.packets.RoleCreate;
+import io.discloader.discloader.network.gateway.packets.RoleDelete;
+import io.discloader.discloader.network.gateway.packets.RoleUpdate;
 import io.discloader.discloader.network.gateway.packets.SocketPacket;
 import io.discloader.discloader.util.Constants;
 
@@ -52,6 +56,9 @@ public class DiscSocketListener extends WebSocketAdapter implements WebSocketLis
 		this.register(Constants.WSEvents.GUILD_CREATE, new GuildCreate(this.socket));
 		this.register(Constants.WSEvents.GUILD_DELETE, new GuildDelete(this.socket));
 		this.register(Constants.WSEvents.GUILD_UPDATE, new GuildUpdate(this.socket));
+		this.register(Constants.WSEvents.GUILD_ROLE_CREATE, new RoleCreate(this.socket));
+		this.register(Constants.WSEvents.GUILD_ROLE_DELETE, new RoleDelete(this.socket));
+		this.register(Constants.WSEvents.GUILD_ROLE_UPDATE, new RoleUpdate(this.socket));
 		this.register(Constants.WSEvents.CHANNEL_CREATE, new ChannelCreate(this.socket));
 		this.register(Constants.WSEvents.CHANNEL_DELETE, new ChannelDelete(this.socket));
 		this.register(Constants.WSEvents.CHANNEL_UPDATE, new ChannelUpdate(this.socket));
@@ -186,6 +193,9 @@ public class DiscSocketListener extends WebSocketAdapter implements WebSocketLis
 	@Override
 	public void onTextMessage(WebSocket ws, String text) throws Exception {
 		this.socket.loader.emit("raw", text);
+		for (IEventAdapter e : DiscLoader.handlers.values()) {
+			e.raw(text);
+		}
 		SocketPacket packet = gson.fromJson(text, SocketPacket.class);
 		this.handle(packet);
 	}
