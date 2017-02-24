@@ -6,7 +6,7 @@ import io.discloader.discloader.common.event.GuildRoleDeleteEvent;
 import io.discloader.discloader.entity.Guild;
 import io.discloader.discloader.entity.Role;
 import io.discloader.discloader.network.gateway.DiscSocket;
-import io.discloader.discloader.network.gateway.json.GuildRoleJSON;
+import io.discloader.discloader.network.json.GuildRoleJSON;
 import io.discloader.discloader.util.Constants;
 
 /**

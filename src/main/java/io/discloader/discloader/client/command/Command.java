@@ -33,6 +33,7 @@ public class Command {
 	public static void registerCommands() {
 		commands.addObject(0, "help", new CommandHelp().setUnlocalizedName("help"));
 		commands.addObject(1, "mods", new CommandMods());
+		commands.addObject(2, "invite", new CommandInvite());
 	}
 	
 	

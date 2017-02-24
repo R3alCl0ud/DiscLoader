@@ -12,7 +12,7 @@ import java.util.logging.Logger;
 public class ProgressLogger {
 
 	public static int phaseNumber;
-	private static Logger LOG = new DLLogger("Client Thread").getLogger();
+	public static Logger LOG = new DLLogger("Client Thread").getLogger();
 	public static boolean loading = true;
 
 	public static void phase(int value, int max, String text) {

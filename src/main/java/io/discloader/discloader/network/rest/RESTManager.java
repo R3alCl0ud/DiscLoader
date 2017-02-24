@@ -17,16 +17,18 @@ import io.discloader.discloader.entity.Attachment;
 import io.discloader.discloader.entity.Guild;
 import io.discloader.discloader.entity.GuildMember;
 import io.discloader.discloader.entity.Message;
+import io.discloader.discloader.entity.OAuth2Application;
 import io.discloader.discloader.entity.sendable.RichEmbed;
 import io.discloader.discloader.entity.sendable.SendableMessage;
+import io.discloader.discloader.network.json.ChannelJSON;
+import io.discloader.discloader.network.json.GuildJSON;
+import io.discloader.discloader.network.json.MemberJSON;
+import io.discloader.discloader.network.json.MessageJSON;
+import io.discloader.discloader.network.json.OAuthApplicationJSON;
+import io.discloader.discloader.network.json.UserJSON;
 import io.discloader.discloader.entity.User;
 import io.discloader.discloader.entity.channels.TextChannel;
 import io.discloader.discloader.entity.channels.VoiceChannel;
-import io.discloader.discloader.network.gateway.json.ChannelJSON;
-import io.discloader.discloader.network.gateway.json.GuildJSON;
-import io.discloader.discloader.network.gateway.json.MemberJSON;
-import io.discloader.discloader.network.gateway.json.MessageJSON;
-import io.discloader.discloader.network.gateway.json.UserJSON;
 import io.discloader.discloader.util.Constants;
 
 public class RESTManager {
@@ -156,4 +158,15 @@ public class RESTManager {
 		return future;
 	}
 
+	public CompletableFuture<OAuth2Application> getApplicationInfo() {
+		CompletableFuture<OAuth2Application> future = new CompletableFuture<OAuth2Application>();
+		this.makeRequest(Constants.Endpoints.currentOAuthApplication, Constants.Methods.GET, true).thenAcceptAsync(data -> {
+			OAuthApplicationJSON appData = this.gson.fromJson(data, OAuthApplicationJSON.class);
+			User owner = this.loader.addUser(appData.owner);
+			future.complete(new OAuth2Application(appData, owner));
+		});
+		
+		return future;
+	}
+	
 }

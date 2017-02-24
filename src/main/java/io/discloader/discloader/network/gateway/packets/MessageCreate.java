@@ -10,7 +10,7 @@ import io.discloader.discloader.common.event.MessageCreateEvent;
 import io.discloader.discloader.entity.Message;
 import io.discloader.discloader.entity.channels.TextChannel;
 import io.discloader.discloader.network.gateway.DiscSocket;
-import io.discloader.discloader.network.gateway.json.MessageJSON;
+import io.discloader.discloader.network.json.MessageJSON;
 import io.discloader.discloader.util.Constants;
 
 /**

@@ -14,6 +14,8 @@ import io.discloader.discloader.common.event.DLPreInitEvent;
 import io.discloader.discloader.common.event.EventAdapter;
 import io.discloader.discloader.common.event.GuildBanAddEvent;
 import io.discloader.discloader.common.event.MessageCreateEvent;
+import io.discloader.discloader.common.logger.DLErrorStream;
+import io.discloader.discloader.common.logger.DLPrintStream;
 import io.discloader.discloader.common.registry.ModRegistry;
 
 import java.io.File;
@@ -46,6 +48,8 @@ public class Main {
 	 */
 	public static void main(String... args) throws IOException {
 		LOGGER = new DLLogger("Main Thread").getLogger();
+		System.setOut(new DLPrintStream(System.out, LOGGER));
+		System.setErr(new DLErrorStream(System.err, LOGGER));
 		DiscLoader.addEventHandler(new EventAdapter() {
 			@Override
 			public void raw(String text) {

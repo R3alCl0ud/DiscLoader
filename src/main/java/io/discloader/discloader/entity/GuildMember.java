@@ -6,7 +6,7 @@ import java.util.HashMap;
 import java.util.concurrent.CompletableFuture;
 
 import io.discloader.discloader.common.DiscLoader;
-import io.discloader.discloader.network.gateway.json.MemberJSON;
+import io.discloader.discloader.network.json.MemberJSON;
 import io.discloader.discloader.util.Constants;
 
 /**

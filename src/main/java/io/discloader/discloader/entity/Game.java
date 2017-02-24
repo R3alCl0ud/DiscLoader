@@ -2,7 +2,7 @@ package io.discloader.discloader.entity;
 
 import org.json.JSONObject;
 
-import io.discloader.discloader.network.gateway.json.GameJSON;
+import io.discloader.discloader.network.json.GameJSON;
 
 public class Game {
 	

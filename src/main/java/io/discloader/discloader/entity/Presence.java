@@ -1,7 +1,7 @@
 package io.discloader.discloader.entity;
 
-import io.discloader.discloader.network.gateway.json.GameJSON;
-import io.discloader.discloader.network.gateway.json.PresenceJSON;
+import io.discloader.discloader.network.json.GameJSON;
+import io.discloader.discloader.network.json.PresenceJSON;
 
 public class Presence {
 	/**

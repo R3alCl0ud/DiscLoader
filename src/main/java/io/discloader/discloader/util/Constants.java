@@ -25,18 +25,18 @@ public class Constants {
 
 	/**
 	 * A useful JSON String deserializer.
+	 * 
 	 * @author Perry Berman
 	 * @since 0.0.1
 	 */
 	public static final Gson gson = new Gson();
-	
+
 	public static final String PERMISSIONS_DOCS = "https://discordapp.com/developers/docs/topics/permissions#bitwise-permission-flags";
 
 	/**
 	 * Converts a ISO-8601 DateTime string to a {@link Date} object.
 	 * 
-	 * @param datetime
-	 *            A DateTime string in ISO-8601 format
+	 * @param datetime A DateTime string in ISO-8601 format
 	 * @return Date from DateTime string
 	 */
 	public static final Date parseISO8601(String datetime) {
@@ -44,20 +44,25 @@ public class Constants {
 	}
 
 	public static final String HOST = "https://discordapp.com";
-	public static final String API = MessageFormat.format("{0}/api/v6", new Object[] { HOST });
-	public static final String LoaderVersion = "0.0.1";
+	public static final String API = String.format("%s/api/v6", HOST);
+	public static final String LoaderVersion = "0.0.3";
 
 	public static final Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
-	
-	public static final File MissingTexture = new File(ClassLoader
-			.getSystemResource("assets/discloader/texture/gui/icons/missing-icon.png").getFile());
-	
+
+	public static final File MissingTexture = new File(
+			ClassLoader.getSystemResource("assets/discloader/texture/gui/icons/missing-icon.png").getFile());
+
 	public static final class Endpoints {
-		public static final String login = API + "/auth/login";
-		public static final String logout = API + "/auth/login";
-		public static final String gateway = API + "/gateway";
-		public static final String botGateway = API + "/gateway/bot";
+		public static final String OAuth2 = String.format("%s/oauth2", API);
+		public static final String login = String.format("%s/auth/login", API);
+		public static final String logout = String.format("%s/auth/logout", API);
+		public static final String gateway = String.format("%s/gateway", API);
+		public static final String botGateway = String.format("%s/gateway/bot", API);
 		public static final String CDN = "https://cdn.discordapp.com";
+		
+		public static final String OAuth2Authorize(String clientID, String scope, int permissions) {
+			return String.format("%s/authorize?client_id=%s&scope=%s&permissions=%d", OAuth2, clientID, scope, permissions);
+		}
 
 		public static final String invite(String id) {
 			return MessageFormat.format("{0}/invite/{1}", new Object[] { API, id });
@@ -97,39 +102,38 @@ public class Constants {
 		}
 
 		public static final String message(String channelID, String messageID) {
-			return MessageFormat.format("{0}/{1}", new Object[] { Endpoints.messages(channelID), messageID });
+			return String.format("%s/%s", Endpoints.messages(channelID), messageID);
 		}
 
-		public static final String guilds = MessageFormat.format("{0}/guilds", new Object[] { API });
+		public static final String guilds = String.format("%s/guilds", API);
 
 		public static final String guild(String guildID) {
-			return MessageFormat.format("{0}/{1}", new Object[] { Endpoints.guilds, guildID });
+			return String.format("%s/%s", Endpoints.guilds, guildID);
 		}
 
 		public static final String guildChannels(String guildID) {
-			return MessageFormat.format("{0}/channels", new Object[] { Endpoints.guild(guildID) });
+			return String.format("%s/channels", Endpoints.guild(guildID));
 		}
 
 		public static final String guildMembers(String guildID) {
-			return MessageFormat.format("{0}/members", new Object[] { Endpoints.guild(guildID) });
+			return String.format("%s/members", Endpoints.guild(guildID));
 		}
 
 		public static final String guildMember(String guildID, String memberID) {
-			return MessageFormat.format("{0}/{1}", new Object[] { Endpoints.guildMembers(guildID), memberID });
+			return String.format("%s/%s", Endpoints.guildMembers(guildID), memberID);
 		}
 
 		public static final String guildNick(String guildID) {
-			return MessageFormat.format("{0}/@me/nick", new Object[] { Endpoints.guildMembers(guildID) });
+			return String.format("%s/@me/nick", Endpoints.guildMembers(guildID));
 		}
-		
+
 		public static final String guildIcon(String guildID, String icon) {
 			return String.format("%s/icons/%s/%s.jpg", Endpoints.CDN, guildID, icon);
 		}
 
-		public static final String currentUser = MessageFormat.format("{0}/users/@me", new Object[] { API });
-		public static final String currentUserGuilds = MessageFormat.format("{0}/users/@me/guilds",
-				new Object[] { API });
-
+		public static final String currentUser = String.format("%s/users/@me", API);
+		public static final String currentUserGuilds = String.format("%s/users/@me/guilds", API);
+		public static final String currentOAuthApplication = String.format("%s/oauth2/applications/@me", API);
 	}
 
 	public static final class Methods {
@@ -163,7 +167,7 @@ public class Constants {
 		public static final int HELLO = 10;
 		public static final int HEARTBEAT_ACK = 11;
 	}
-	
+
 	public static enum Test {
 		TEXT, VOICE
 	};
@@ -351,50 +355,44 @@ public class Constants {
 		public static final int MANAGE_WEBHOOKS = 1 << 29;
 		public static final int MANAGE_EMOJIS = 1 << 30;
 	}
-	
-	
+
 	/**
 	 * @param file
 	 * @return A byte array containing the file's data
 	 * @throws IOException
 	 */
-	public static final byte[] readAllBytes(File file)  throws IOException
-    {
-        try (InputStream is = new FileInputStream(file))
-        {
-            // Get the size of the file
-            long length = file.length();
+	public static final byte[] readAllBytes(File file) throws IOException {
+		try (InputStream is = new FileInputStream(file)) {
+			// Get the size of the file
+			long length = file.length();
 
-            // You cannot create an array using a long type.
-            // It needs to be an int type.
-            // Before converting to an int type, check
-            // to ensure that file is not larger than Integer.MAX_VALUE.
-            if (length > Integer.MAX_VALUE)
-            {
-                throw new IOException("Cannot read the file into memory completely due to it being too large!");
-                // File is too large
-            }
+			// You cannot create an array using a long type.
+			// It needs to be an int type.
+			// Before converting to an int type, check
+			// to ensure that file is not larger than Integer.MAX_VALUE.
+			if (length > Integer.MAX_VALUE) {
+				throw new IOException("Cannot read the file into memory completely due to it being too large!");
+				// File is too large
+			}
 
-            // Create the byte array to hold the data
-            byte[] bytes = new byte[(int) length];
+			// Create the byte array to hold the data
+			byte[] bytes = new byte[(int) length];
 
-            // Read in the bytes
-            int offset = 0;
-            int numRead = 0;
-            while (offset < bytes.length && (numRead = is.read(bytes, offset, bytes.length - offset)) >= 0)
-            {
-                offset += numRead;
-            }
+			// Read in the bytes
+			int offset = 0;
+			int numRead = 0;
+			while (offset < bytes.length && (numRead = is.read(bytes, offset, bytes.length - offset)) >= 0) {
+				offset += numRead;
+			}
 
-            // Ensure all the bytes have been read in
-            if (offset < bytes.length)
-            {
-                throw new IOException("Could not completely read file " + file.getName());
-            }
+			// Ensure all the bytes have been read in
+			if (offset < bytes.length) {
+				throw new IOException("Could not completely read file " + file.getName());
+			}
 
-            // Close the input stream and return bytes
-            is.close();
-            return bytes;
-        }
-    }
+			// Close the input stream and return bytes
+			is.close();
+			return bytes;
+		}
+	}
 }

@@ -1,4 +1,4 @@
-package io.discloader.discloader.network.gateway.json;
+package io.discloader.discloader.network.json;
 
 /**
  * @author perryberman

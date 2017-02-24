@@ -3,7 +3,7 @@ package io.discloader.discloader.entity;
 import java.math.BigDecimal;
 
 import io.discloader.discloader.common.DiscLoader;
-import io.discloader.discloader.network.gateway.json.RoleJSON;
+import io.discloader.discloader.network.json.RoleJSON;
 
 public class Role {
 	public final String id;

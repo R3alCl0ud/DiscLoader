@@ -3,8 +3,8 @@ package io.discloader.discloader.entity;
 import java.util.HashMap;
 
 import io.discloader.discloader.common.DiscLoader;
-import io.discloader.discloader.network.gateway.json.RoleJSON;
-import io.discloader.discloader.network.gateway.json.UserJSON;
+import io.discloader.discloader.network.json.RoleJSON;
+import io.discloader.discloader.network.json.UserJSON;
 
 public class Mentions {
 

@@ -8,7 +8,7 @@ import io.discloader.discloader.common.event.GuildDeleteEvent;
 import io.discloader.discloader.common.event.IEventAdapter;
 import io.discloader.discloader.entity.Guild;
 import io.discloader.discloader.network.gateway.DiscSocket;
-import io.discloader.discloader.network.gateway.json.GuildJSON;
+import io.discloader.discloader.network.json.GuildJSON;
 import io.discloader.discloader.util.Constants;
 
 /**

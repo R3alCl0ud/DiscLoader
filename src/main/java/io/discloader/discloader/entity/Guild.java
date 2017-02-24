@@ -15,11 +15,11 @@ import io.discloader.discloader.client.render.texture.icon.GuildIcon;
 import io.discloader.discloader.common.DiscLoader;
 import io.discloader.discloader.entity.channels.TextChannel;
 import io.discloader.discloader.entity.channels.VoiceChannel;
-import io.discloader.discloader.network.gateway.json.ChannelJSON;
-import io.discloader.discloader.network.gateway.json.GuildJSON;
-import io.discloader.discloader.network.gateway.json.MemberJSON;
-import io.discloader.discloader.network.gateway.json.PresenceJSON;
-import io.discloader.discloader.network.gateway.json.RoleJSON;
+import io.discloader.discloader.network.json.ChannelJSON;
+import io.discloader.discloader.network.json.GuildJSON;
+import io.discloader.discloader.network.json.MemberJSON;
+import io.discloader.discloader.network.json.PresenceJSON;
+import io.discloader.discloader.network.json.RoleJSON;
 import io.discloader.discloader.util.Constants;
 
 /**

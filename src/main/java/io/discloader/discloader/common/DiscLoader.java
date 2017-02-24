@@ -13,6 +13,7 @@ import io.discloader.discloader.common.discovery.ModContainer;
 import io.discloader.discloader.common.event.IEventAdapter;
 import io.discloader.discloader.common.registry.ModRegistry;
 import io.discloader.discloader.common.start.Main;
+import io.discloader.discloader.entity.DLUser;
 import io.discloader.discloader.entity.Guild;
 import io.discloader.discloader.entity.User;
 import io.discloader.discloader.entity.channels.Channel;
@@ -20,9 +21,9 @@ import io.discloader.discloader.entity.channels.PrivateChannel;
 import io.discloader.discloader.entity.channels.TextChannel;
 import io.discloader.discloader.entity.channels.VoiceChannel;
 import io.discloader.discloader.network.gateway.DiscSocket;
-import io.discloader.discloader.network.gateway.json.ChannelJSON;
-import io.discloader.discloader.network.gateway.json.GuildJSON;
-import io.discloader.discloader.network.gateway.json.UserJSON;
+import io.discloader.discloader.network.json.ChannelJSON;
+import io.discloader.discloader.network.json.GuildJSON;
+import io.discloader.discloader.network.json.UserJSON;
 import io.discloader.discloader.network.rest.RESTManager;
 import io.discloader.discloader.util.Constants;
 
@@ -40,6 +41,8 @@ public class DiscLoader {
 	public final ClientRegistry clientRegistry;
 	
 	public RESTManager rest;
+	
+	
 
 	public static final HashMap<String, IEventAdapter> handlers = new HashMap<String, IEventAdapter>();
 	
@@ -97,7 +100,7 @@ public class DiscLoader {
 	/**
 	 * The User we are currently logged in as.
 	 */
-	public User user;
+	public DLUser user;
 
 	public Timer timer;
 
@@ -237,6 +240,8 @@ public class DiscLoader {
 		this.users.put(user.id, user);
 		return user;
 	}
+
+
 
 	public void checkReady() {
 		if (this.discSocket.status != Constants.Status.READY && this.discSocket.status != Constants.Status.NEARLY) {

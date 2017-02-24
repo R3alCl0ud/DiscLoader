@@ -9,7 +9,7 @@ import io.discloader.discloader.common.event.GuildRoleUpdateEvent;
 import io.discloader.discloader.entity.Guild;
 import io.discloader.discloader.entity.Role;
 import io.discloader.discloader.network.gateway.DiscSocket;
-import io.discloader.discloader.network.gateway.json.RoleJSON;
+import io.discloader.discloader.network.json.RoleJSON;
 import io.discloader.discloader.util.Constants;
 
 /**

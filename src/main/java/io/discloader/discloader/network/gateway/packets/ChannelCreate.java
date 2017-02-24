@@ -9,7 +9,7 @@ import io.discloader.discloader.common.event.IEventAdapter;
 import io.discloader.discloader.entity.Guild;
 import io.discloader.discloader.entity.channels.Channel;
 import io.discloader.discloader.network.gateway.DiscSocket;
-import io.discloader.discloader.network.gateway.json.ChannelJSON;
+import io.discloader.discloader.network.json.ChannelJSON;
 import io.discloader.discloader.util.Constants;
 
 /**

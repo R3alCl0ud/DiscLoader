@@ -7,7 +7,7 @@ import io.discloader.discloader.entity.GuildMember;
 import io.discloader.discloader.entity.Overwrite;
 import io.discloader.discloader.entity.Permission;
 import io.discloader.discloader.entity.Role;
-import io.discloader.discloader.network.gateway.json.ChannelJSON;
+import io.discloader.discloader.network.json.ChannelJSON;
 import io.discloader.discloader.util.Constants;
 import io.discloader.discloader.util.Constants.Permissions;
 

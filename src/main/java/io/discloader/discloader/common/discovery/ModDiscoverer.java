@@ -44,11 +44,11 @@ public class ModDiscoverer {
 		for (int i = 0; i < files.length; i++) {
 			File modFile = files[i];
 			Matcher modMatch = modExt.matcher(modFile.getName());
-			ProgressLogger.step(i + 1, files.length, modFile.getName());
 			if (!modMatch.find()) {
-				logger.warning(String.format("Found non-mod file in mods directory: %s", modFile.getName()));
+				ProgressLogger.LOG.warning(String.format("Found non-mod file in mods directory: %s", modFile.getName()));
 				continue;
 			}
+			ProgressLogger.step(i + 1, files.length, modFile.getName());
 			if (modMatch.group(1).toLowerCase().equals("jar")) {
 				try {
 					JarFile modJar = new JarFile(modFile);
@@ -67,8 +67,10 @@ public class ModDiscoverer {
 					}
 					modJar.close();
 				} catch (Exception e) {
-					logger.warning(String.format("Unable to load JarFile: %s\n", modFile.getName()));
-					logger.severe(e.toString());
+//					e.getCause().fillInStackTrace().
+					e.printStackTrace();
+					logger.warning(String.format("Unable to load JarFile: %s", modFile.getName()));
+					logger.severe(String.format("[%s.%s:%d]: %s", modFile.getName(), e.getStackTrace()[0].getMethodName(), e.getStackTrace()[0].getLineNumber(), e.getLocalizedMessage()));
 				}
 			}
 

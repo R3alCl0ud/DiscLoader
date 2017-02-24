@@ -44,7 +44,6 @@ public class ModContainer {
 			Method method = methods[i];
 			ProgressLogger.progress(i + 1, methods.length, String.format("Method: %s", method.getName()));
 			if (method.isAnnotationPresent(Mod.EventHandler.class)) {
-				System.out.println(method.getName());
 				this.handlers.put(method.getName(), method);
 			}
 		}

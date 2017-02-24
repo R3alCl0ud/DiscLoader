@@ -4,7 +4,7 @@ import java.util.HashMap;
 
 import io.discloader.discloader.entity.Guild;
 import io.discloader.discloader.entity.GuildMember;
-import io.discloader.discloader.network.gateway.json.ChannelJSON;
+import io.discloader.discloader.network.json.ChannelJSON;
 
 /**
  * @author Perry Berman

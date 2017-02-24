@@ -1,7 +1,7 @@
 package io.discloader.discloader.entity;
 
 import io.discloader.discloader.entity.channels.Channel;
-import io.discloader.discloader.network.gateway.json.OverwriteJSON;
+import io.discloader.discloader.network.json.OverwriteJSON;
 
 /**
  * Permission Overwrite object

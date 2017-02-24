@@ -7,7 +7,7 @@ import io.discloader.discloader.entity.GuildMember;
 import io.discloader.discloader.entity.Presence;
 import io.discloader.discloader.entity.User;
 import io.discloader.discloader.network.gateway.DiscSocket;
-import io.discloader.discloader.network.gateway.json.PresenceJSON;
+import io.discloader.discloader.network.json.PresenceJSON;
 import io.discloader.discloader.util.Constants;
 
 /**
@@ -36,7 +36,7 @@ public class PresenceUpdate extends DiscPacket {
 			}
 		}
 
-		User oldUser = new User(this.socket.loader, user);
+		User oldUser = new User(user);
 		user.patch(data.user);
 		if (!user.equals(oldUser)) {
 			this.socket.loader.emit(Constants.Events.USER_UPDATE, new UserUpdateEvent(user, oldUser));

@@ -8,7 +8,7 @@ import io.discloader.discloader.common.event.IEventAdapter;
 import io.discloader.discloader.common.event.MessageUpdateEvent;
 import io.discloader.discloader.entity.channels.TextChannel;
 import io.discloader.discloader.network.gateway.DiscSocket;
-import io.discloader.discloader.network.gateway.json.MessageJSON;
+import io.discloader.discloader.network.json.MessageJSON;
 import io.discloader.discloader.util.Constants;
 
 /**

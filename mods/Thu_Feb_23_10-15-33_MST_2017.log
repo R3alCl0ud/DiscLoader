@@ -1,0 +1,54 @@
+[17220:10:15:33] phase: 1/3: LOADING
+[17220:10:15:38] stage: 1/3: Mod Discovery
+[17220:10:15:38] progress: 1/3: Looking for mods directory
+[17220:10:15:38] progress: 3/3: Mods Directory Located
+[17220:10:15:38] step: 1/3: .DS_Store
+[17220:10:15:38] step: 2/3: .gitignore
+[17220:10:15:38] step: 3/3: examplemod.jar
+[17220:10:15:38] progress: 1/3: Entry: com.example.ExampleMod
+[17220:10:15:38] progress: 2/3: Entry: com.example.common.ObjectHandler
+[17220:10:15:38] progress: 3/3: Entry: com.example.common.commands.ExampleCommand
+[17220:10:15:39] stage: 2/3: Discovering Mod Containers
+[17220:10:15:39] step: 1/2: Checking candidates for @Mod annotation
+[17220:10:15:39] progress: 1/3: com.example.ExampleMod
+[17220:10:15:39] progress: 1/3: Found @Mod Annotation: 
+[17220:10:15:39] progress: 2/3: com.example.common.ObjectHandler
+[17220:10:15:39] progress: 3/3: com.example.common.commands.ExampleCommand
+[17220:10:15:39] step: 2/2: Registering uninitialized mods
+[17220:10:15:39] progress: 1/1: examplemod
+[17220:10:15:39] stage: 3/3: Registering Mod EventHandlers
+[17220:10:15:39] step: 1/1: examplemod
+[17220:10:15:39] progress: 1/1: Method: preInit
+[17220:10:15:39] phase: 2/3: PreINIT
+[17220:10:15:39] stage: 1/3: Begin PreInit
+[17220:10:15:39] progress: 0/0: 
+[17220:10:15:40] stage: 2/2: Execute PreInit
+[17220:10:15:40] step: 1/1: Mod: examplemod
+[17220:10:15:40] progress: 1/3: Checking if another mod is currently active
+[17220:10:15:40] progress: 2/3: Setting active mod
+[17220:10:15:40] progress: 3/3: Executing PreInit handler in: examplemod
+[17220:10:15:40] Active Mod: examplemod
+[17220:10:15:40] phase: 3/3: Init
+[17220:10:15:40] stage: 1/3: Logging In
+[17220:10:15:41] stage: 2/3: Caching API Objects
+[17220:10:15:43] progress: 0/3: Guilds Cached
+[17220:10:15:43] step: 1/5: Caching Roles
+[17220:10:15:43] step: 2/5: Caching Members
+[17220:10:15:43] step: 3/5: Caching Channels
+[17220:10:15:43] step: 4/5: Caching Presences
+[17220:10:15:43] step: 5/5: Registering Icon
+[17220:10:15:43] progress: 1/3: Guilds Cached
+[17220:10:15:43] step: 1/5: Caching Roles
+[17220:10:15:43] step: 2/5: Caching Members
+[17220:10:15:43] step: 3/5: Caching Channels
+[17220:10:15:43] step: 4/5: Caching Presences
+[17220:10:15:43] step: 5/5: Registering Icon
+[17220:10:15:43] progress: 2/3: Guilds Cached
+[17220:10:15:43] step: 1/5: Caching Roles
+[17220:10:15:43] step: 2/5: Caching Members
+[17220:10:15:43] step: 3/5: Caching Channels
+[17220:10:15:43] step: 4/5: Caching Presences
+[17220:10:15:43] step: 5/5: Registering Icon
+[17220:10:15:43] progress: 3/3: Guilds Cached
+[17220:10:16:1] New Channel Created: null
+[17220:10:16:1] New Channel Created: null

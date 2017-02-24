@@ -1,7 +1,7 @@
 package io.discloader.discloader.network.gateway.packets;
 
 import io.discloader.discloader.network.gateway.DiscSocket;
-import io.discloader.discloader.network.gateway.json.Hello;
+import io.discloader.discloader.network.json.Hello;
 
 public class HelloPacket extends DiscPacket {
 

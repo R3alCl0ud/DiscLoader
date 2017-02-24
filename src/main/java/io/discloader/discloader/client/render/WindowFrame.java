@@ -26,7 +26,7 @@ import io.discloader.guimod.gui.TabbedPanel;
 public class WindowFrame extends JFrame {
 	private static final long serialVersionUID = -6329873205165995031L;
 	public DiscLoader loader;
-	public TabbedPanel panel;
+//	public TabbedPanel panel;
 	
 	public static final LoadingPanel loading = new LoadingPanel();
 	
@@ -115,12 +115,12 @@ public class WindowFrame extends JFrame {
 	}
 	
 	public void postInit() {
-		this.remove(loading);
-		this.panel = new TabbedPanel(this.loader);
-		this.revalidate();
-		this.add(this.panel, BorderLayout.CENTER);
-		this.revalidate();
-		this.repaint();
+//		this.remove(loading);
+//		this.panel = new TabbedPanel(this.loader);
+//		this.revalidate();
+//		this.add(this.panel, BorderLayout.CENTER);
+//		this.revalidate();
+//		this.repaint();
 	}
 	
 }

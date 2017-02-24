@@ -1,8 +1,13 @@
 package io.discloader.discloader.client.command;
 
+import java.io.File;
+
+import io.discloader.discloader.client.render.texture.icon.CommandIcon;
+import io.discloader.discloader.client.render.util.IIcon;
 import io.discloader.discloader.common.event.MessageCreateEvent;
 import io.discloader.discloader.common.registry.CommandRegistry;
 import io.discloader.discloader.entity.sendable.RichEmbed;
+import io.discloader.discloader.util.Constants;
 
 /**
  * 
@@ -27,7 +32,14 @@ public class CommandHelp extends Command {
 			String cmd = e.args[1];
 			Command command = CommandRegistry.commands.get(cmd);
 			if (command != null) {
-				embed.setTitle(command.getUnlocalizedName()).setThumbnail(command.getIcon().getFile())
+				File icon = Constants.MissingTexture;
+				CommandIcon iicon = (CommandIcon) command.getIcon();
+				
+				if (iicon != null && iicon.getFile() != null) {
+					icon = iicon.getFile();
+				}
+				
+				embed.setTitle(command.getUnlocalizedName()).setThumbnail(icon)
 						.addField("Description", command.getDescription(), true)
 						.addField("Usage", command.getUsage(), true);
 			}

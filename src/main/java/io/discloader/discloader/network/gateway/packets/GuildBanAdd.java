@@ -10,7 +10,7 @@ import io.discloader.discloader.entity.Guild;
 import io.discloader.discloader.entity.GuildMember;
 import io.discloader.discloader.entity.User;
 import io.discloader.discloader.network.gateway.DiscSocket;
-import io.discloader.discloader.network.gateway.json.GuildBanJSON;
+import io.discloader.discloader.network.json.GuildBanJSON;
 import io.discloader.discloader.util.Constants;
 
 /**
