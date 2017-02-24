@@ -1,4 +1,4 @@
-package io.discloader.discloader.client.render.list;
+package io.discloader.guimod.gui.list;
 
 import javax.swing.DefaultListModel;
 

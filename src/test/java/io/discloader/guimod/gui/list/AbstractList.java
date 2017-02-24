@@ -1,9 +1,10 @@
-package io.discloader.discloader.client.render.list;
+package io.discloader.guimod.gui.list;
+
+import io.discloader.discloader.common.DiscLoader;
 
 import java.awt.Color;
 import java.awt.Dimension;
 import java.util.ArrayList;
-import java.util.HashMap;
 
 import javax.swing.BorderFactory;
 import javax.swing.Box;
@@ -13,8 +14,6 @@ import javax.swing.JList;
 import javax.swing.JPanel;
 import javax.swing.JScrollBar;
 import javax.swing.JScrollPane;
-
-import io.discloader.discloader.common.DiscLoader;
 
 public abstract class AbstractList<T extends Object> extends JPanel {
 
@@ -32,6 +31,7 @@ public abstract class AbstractList<T extends Object> extends JPanel {
 		bar.setBackground(new Color(0x23272A));
 		bar.setBorder(BorderFactory.createLineBorder(new Color(0, 0, 0, 0), 2));
 		bar.setForeground(new Color(0xFFFFFF));
+		bar.putClientProperty("JScrollBar.fastWheelScrolling", true);
 		pane.setVerticalScrollBar(bar);
 		pane.setBorder(BorderFactory.createLineBorder(new Color(0x99AAB5), 5));
 		this.setBackground(new Color(0, 0, 0, 0));

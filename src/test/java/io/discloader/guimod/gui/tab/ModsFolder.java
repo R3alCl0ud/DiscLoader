@@ -2,8 +2,8 @@ package io.discloader.guimod.gui.tab;
 
 import javax.swing.event.ListSelectionEvent;
 
-import io.discloader.discloader.client.render.list.AbstractList;
-import io.discloader.discloader.client.render.list.ModList;
+import io.discloader.guimod.gui.list.AbstractList;
+import io.discloader.guimod.gui.list.ModList;
 import io.discloader.discloader.client.render.panel.info.AbstractInfo;
 import io.discloader.discloader.client.render.panel.info.ModInfo;
 import io.discloader.discloader.common.DiscLoader;
@@ -30,7 +30,6 @@ public class ModsFolder<T extends ModContainer> extends AbstractFolder<T> {
 
 	@Override
 	public void valueChanged(ListSelectionEvent e) {
-		System.out.println("Test");
 		if (this.list.folders.getSelectedIndex() != -1) {
 			this.info.update(this.list.items.get(list.folders.getSelectedIndex()));
 		}

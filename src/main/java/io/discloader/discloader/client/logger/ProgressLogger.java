@@ -1,10 +1,9 @@
 package io.discloader.discloader.client.logger;
 
-import java.io.IOException;
-
 import io.discloader.discloader.client.render.panel.LoadingPanel;
-import io.discloader.discloader.common.logger.FileLogger;
 import io.discloader.discloader.common.start.Main;
+
+import java.util.logging.Logger;
 
 /**
  * @author Perry Berman
@@ -13,11 +12,11 @@ import io.discloader.discloader.common.start.Main;
 public class ProgressLogger {
 
 	public static int phaseNumber;
-	private static FileLogger LOG = Main.getLOGGER();
+	private static Logger LOG = new DLLogger("Client Thread").getLogger();
 	public static boolean loading = true;
 
 	public static void phase(int value, int max, String text) {
-		executeLog("phase", value, max, text);
+		executeLog(text, 0);
 		phaseNumber = value;
 		if (!Main.usegui && loading)
 			return;
@@ -26,7 +25,7 @@ public class ProgressLogger {
 	}
 
 	public static void stage(int value, int max, String text) {
-		executeLog("stage", value, max, text);
+		executeLog(text, 1);
 		if (!Main.usegui && loading)
 			return;
 
@@ -34,7 +33,7 @@ public class ProgressLogger {
 	}
 
 	public static void step(int value, int max, String text) {
-		executeLog("step", value, max, text);
+		executeLog(text, 2);
 		if (!Main.usegui && loading)
 			return;
 
@@ -42,19 +41,32 @@ public class ProgressLogger {
 	}
 
 	public static void progress(int value, int max, String text) {
-		executeLog("progress", value, max, text);
+		executeLog(text, 3);
 		if (!Main.usegui && loading)
 			return;
 
 		LoadingPanel.setProgress(value, max, text);
 	}
 
-	private static void executeLog(String log, int value, int max, String text) {
-		try {
-			LOG.log(String.format("%s: %d/%d: %s", log, value, max, text));
-		} catch (IOException e) {
-			e.printStackTrace();
+	private static void executeLog(String text, int level) {
+		switch (level) {
+		case 0:
+			LOG.info(String.format("%s", text));
+			break;
+		case 1:
+			LOG.fine(String.format("%s", text));
+			break;
+		case 2:
+			LOG.finer(String.format("%s", text));
+			break;
+		case 3:
+			LOG.finest(String.format("%s", text));
+			break;
 		}
+	}
+	
+	private static String format() {
+		return null;
 	}
 
 }

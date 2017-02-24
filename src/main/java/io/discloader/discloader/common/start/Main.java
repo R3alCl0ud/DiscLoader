@@ -1,15 +1,9 @@
 package io.discloader.discloader.common.start;
 
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.TimerTask;
-
-import com.google.gson.Gson;
-
 import io.discloader.discloader.client.command.CommandHandler;
+import io.discloader.discloader.client.logger.DLLogger;
 import io.discloader.discloader.client.logger.ProgressLogger;
+import io.discloader.discloader.client.registry.TextureRegistry;
 import io.discloader.discloader.client.render.WindowFrame;
 import io.discloader.discloader.common.DiscLoader;
 import io.discloader.discloader.common.discovery.ModCandidate;
@@ -18,10 +12,19 @@ import io.discloader.discloader.common.event.ChannelCreateEvent;
 import io.discloader.discloader.common.event.ChannelUpdateEvent;
 import io.discloader.discloader.common.event.DLPreInitEvent;
 import io.discloader.discloader.common.event.EventAdapter;
+import io.discloader.discloader.common.event.GuildBanAddEvent;
 import io.discloader.discloader.common.event.MessageCreateEvent;
-import io.discloader.discloader.common.logger.FileLogger;
 import io.discloader.discloader.common.registry.ModRegistry;
-import io.discloader.discloader.util.Constants;
+
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.util.ArrayList;
+import java.util.TimerTask;
+import java.util.logging.Logger;
+
+import com.google.gson.Gson;
 
 /**
  * DiscLoader client entry point
@@ -35,65 +38,61 @@ public class Main {
 	public static final DiscLoader loader = new DiscLoader();
 	public static boolean usegui = false;
 	public static String token;
-	private static FileLogger LOG;
-	
-	
+	private static Logger LOGGER;
+
 	/**
 	 * @param args
 	 * @throws IOException
 	 */
 	public static void main(String... args) throws IOException {
-		System.out.println(Constants.Test.TEXT);
-		LOG = new FileLogger();
+		LOGGER = new DLLogger("Main Thread").getLogger();
 		DiscLoader.addEventHandler(new EventAdapter() {
 			@Override
 			public void raw(String text) {
-
+				// LOG.warning(text);
 			}
-			
+
+			@Override
+			public void GuildBanAdd(GuildBanAddEvent e) {
+				LOGGER.fine(e.member.user.username);
+				e.guild.getDefaultChannel()
+						.sendMessage(String.format("%s was banned from the server", e.member.toString()));
+			}
+
+			@Override
+			public void Ready(DiscLoader loader) {
+				LOGGER.fine(String.format("Ready as user %s#%s", loader.user.username, loader.user.discriminator));
+			}
+
 			@Override
 			public void PreInit(DLPreInitEvent e) {
-				try {
-					LOG.log(String.format("Active Mod: %s", e.activeMod.modInfo.modid()));
-				} catch (IOException e1) {
-					e1.printStackTrace();
-				}
+				LOGGER.fine(String.format("Active Mod: %s", e.activeMod.modInfo.modid()));
 			}
-			
+
 			@Override
 			public void MessageCreate(MessageCreateEvent e) {
-				try {
-					LOG.log(String.format("Author: %s#%s, Channel: %s", e.message.author.username, e.message.author.discriminator, e.message.channel.id));
-				} catch (IOException e1) {
-					e1.printStackTrace();
-				}
+				LOGGER.fine(String.format("Author: %s#%s, Channel: %s", e.message.author.username,
+						e.message.author.discriminator, e.message.channel.id));
 			}
-			
+
 			@Override
 			public void ChannelCreate(ChannelCreateEvent e) {
-				try {
-					LOG.log(String.format("New Channel Created: %s", e.channel.name));
-				} catch (IOException e1) {
-					e1.printStackTrace();
-				}
+
+				LOGGER.fine(String.format("New Channel Created: %s", e.channel.name));
+
 			}
-			
+
 			@Override
 			public void ChannelUpdate(ChannelUpdateEvent e) {
-				try {
-					LOG.log(String.format("Channel Updated: %s", e.channel.name));
-				} catch (IOException e1) {
-					e1.printStackTrace();
-				}
+
+				LOGGER.fine(String.format("Channel Updated: %s", e.channel.name));
 			}
 		});
-		
+
 		String content = "";
 		Object[] lines = Files.readAllLines(Paths.get("./options.json")).toArray();
 		for (Object line : lines)
 			content += line;
-		char[] chars = {'a', 'b', 'c'};
-		System.out.println(chars.toString().indexOf('b'));
 		options options = gson.fromJson(content, options.class);
 		token = options.auth.token;
 		parseArgs(args);
@@ -110,12 +109,12 @@ public class Main {
 					ProgressLogger.stage(2, 3, "Discovering Mod Containers");
 					ModRegistry.checkCandidates(candidates);
 				}
-				
+
 			};
 			loader.timer.schedule(checkCandidates, 500);
 		}
 	}
-	
+
 	public static void parseArgs(String... args) {
 		for (int i = 0; i < args.length; i++) {
 			if (args[i].equalsIgnoreCase("usegui")) {
@@ -124,14 +123,14 @@ public class Main {
 				if (i + 1 < args.length) {
 					token = args[i + 1];
 				} else {
-					System.out.println("Expected argument after -t");
+					LOGGER.severe("Expected argument after -t");
 					System.exit(1);
 				}
 			} else if (args[i].equals("-p")) {
 				if (i + 1 < args.length) {
 					CommandHandler.prefix = args[i + 1];
 				} else {
-					System.out.println("Expected argument after -p");
+					LOGGER.severe("Expected argument after -p");
 					System.exit(1);
 				}
 			}
@@ -141,10 +140,10 @@ public class Main {
 	/**
 	 * @return the lOG
 	 */
-	public static FileLogger getLOGGER() {
-		return LOG;
+	public static Logger getLogger() {
+		return LOGGER;
 	}
-	
+
 	public static DiscLoader getLoader() {
 		return loader;
 	}

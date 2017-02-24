@@ -1,7 +1,4 @@
-/**
- * 
- */
-package io.discloader.discloader.client.render.list;
+package io.discloader.guimod.gui.list;
 
 import java.awt.Color;
 import java.awt.Component;

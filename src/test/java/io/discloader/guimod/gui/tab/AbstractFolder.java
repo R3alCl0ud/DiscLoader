@@ -9,7 +9,7 @@ import javax.swing.JPanel;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 
-import io.discloader.discloader.client.render.list.AbstractList;
+import io.discloader.guimod.gui.list.AbstractList;
 import io.discloader.discloader.client.render.panel.info.AbstractInfo;
 import io.discloader.discloader.common.DiscLoader;
 

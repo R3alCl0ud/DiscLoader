@@ -10,6 +10,7 @@ import io.discloader.discloader.network.gateway.json.MessageJSON;
 import io.discloader.discloader.util.Constants;
 
 /**
+ * The actual fuck
  * @author Perry Berman
  *
  */
@@ -37,6 +38,11 @@ public class Message {
 	public final Guild guild;
 	public final GuildMember member;
 
+	/**
+	 * fdn
+	 * @param channel
+	 * @param data
+	 */
 	public Message(TextChannel channel, MessageJSON data) {
 		this.id = data.id;
 

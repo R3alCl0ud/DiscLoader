@@ -21,14 +21,14 @@ public class CommandMods extends Command {
 	}
 
 	public void execute(MessageCreateEvent e) {
-		RichEmbed embed = new RichEmbed();
+		RichEmbed embed = new RichEmbed().setColor(0x55cdF2);
 
 		if (e.args.length == 2) {
 			String mod = e.args[1];
 			System.out.println(mod);
 			ModContainer mc = ModRegistry.mods.get(mod);
 			if (mc != null) {
-//				embed.setThumbnail(Constants.MissingTexture);
+				embed.setThumbnail(Constants.MissingTexture);
 				embed.addField("Description", mc.modInfo.desc(), true)
 						.addField("Version", mc.modInfo.version(), true)
 						.addField("Author(s)", mc.modInfo.author(), true);

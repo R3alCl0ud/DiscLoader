@@ -241,6 +241,12 @@ public class Guild {
 		return null;
 	}
 
+	
+	public TextChannel getDefaultChannel() {
+		return this.textChannels.get(this.id);
+	}
+	
+	
 	/**
 	 * Sets the guild's name if the loader has sufficient permissions
 	 * @param name

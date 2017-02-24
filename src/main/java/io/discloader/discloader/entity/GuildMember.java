@@ -11,8 +11,9 @@ import io.discloader.discloader.util.Constants;
 
 /**
  * Represents a member in a {@link Guild}
+ * 
  * @author Perry Berman
- * @see User 
+ * @see User
  * @see Guild
  */
 public class GuildMember {
@@ -21,30 +22,31 @@ public class GuildMember {
 	 * The loader instance that cached the member.
 	 */
 	public final DiscLoader loader;
-	
+
 	/**
 	 * The member's nickname, or null if the user has no nickname
 	 */
 	public String nick;
-	
+
 	/**
 	 * The member's Snowflake ID.
+	 * 
 	 * @see User
 	 */
 	public final String id;
-	
+
 	/**
 	 * The member's user object
 	 */
 	public final User user;
-	
+
 	/**
 	 * The guild the member is in
 	 */
 	public final Guild guild;
-	
+
 	private String[] roleIDs;
-	
+
 	/**
 	 * Whether or not the member's mic is muted
 	 */
@@ -55,21 +57,25 @@ public class GuildMember {
 	public boolean deaf;
 
 	/**
-	 * Member's old presence. Has a value of {@code null} unless 
+	 * Member's old presence. Has a value of {@code null} unless
 	 */
 	public Presence frozenPresence;
 
 	/**
-	 * A {@link Date} object representing when the member joined the {@link Guild}.
+	 * A {@link Date} object representing when the member joined the
+	 * {@link Guild}.
 	 */
 	public final Date joinedAt;
 
 	/**
 	 * Default GuildMember constructor
-	 * @param guild The {@link Guild} the member belongs to
-	 * @param data The member's data
+	 * 
+	 * @param guild
+	 *            The {@link Guild} the member belongs to
+	 * @param data
+	 *            The member's data
 	 */
-	public GuildMember(Guild guild, MemberJSON data){
+	public GuildMember(Guild guild, MemberJSON data) {
 		this.loader = guild.loader;
 		this.user = this.loader.addUser(data.user);
 		this.id = this.user.id;
@@ -118,6 +124,17 @@ public class GuildMember {
 		this.mute = this.deaf ? true : data.mute;
 	}
 
+	public GuildMember(Guild guild, User user) {
+		this.id = user.id;
+
+		this.user = user;
+
+		this.guild = guild;
+		
+		this.loader = guild.loader;
+		
+		this.joinedAt = null;
+	}
 
 	/**
 	 * @see {@link User.toString()}
@@ -139,28 +156,37 @@ public class GuildMember {
 	}
 
 	/**
-	 * Sets the member's nickname if the {@link DiscLoader loader} has suficient permissions
+	 * Sets the member's nickname if the {@link DiscLoader loader} has suficient
+	 * permissions
+	 * 
 	 * @param nick
 	 * @see Permission
-	 * @return A CompletableFuture that completes with {@code this} if successfull
+	 * @return A CompletableFuture that completes with {@code this} if
+	 *         successfull
 	 */
 	public CompletableFuture<GuildMember> setNick(String nick) {
 		return this.loader.rest.setNick(this, nick);
 	}
 
 	/**
-	 * Bans the member from the {@link Guild} if the {@link DiscLoader loader} has suficient permissions
+	 * Bans the member from the {@link Guild} if the {@link DiscLoader loader}
+	 * has suficient permissions
+	 * 
 	 * @see Permission
-	 * @return A CompletableFuture that completes with {@code this} if successfull
+	 * @return A CompletableFuture that completes with {@code this} if
+	 *         successfull
 	 */
 	public CompletableFuture<GuildMember> ban() {
 		return null;
 	}
 
 	/**
-	 * Kicks the member from the {@link Guild} if the {@link DiscLoader loader} has suficient permissions
+	 * Kicks the member from the {@link Guild} if the {@link DiscLoader loader}
+	 * has suficient permissions
+	 * 
 	 * @see Permission
-	 * @return A CompletableFuture that completes with {@code this} if successfull
+	 * @return A CompletableFuture that completes with {@code this} if
+	 *         successfull
 	 */
 	public CompletableFuture<GuildMember> kick() {
 		return null;

@@ -16,7 +16,7 @@ public class CommandHandler {
 	public static boolean handleCommands = false;
 
 	public static void handleMessageCreate(MessageCreateEvent e) {
-		if (!handleCommands) {
+		if (!handleCommands || e.message.author.bot) {
 			return;
 		}
 		

@@ -135,7 +135,6 @@ public class DiscLoader {
 		CompletableFuture<String> future = this.rest.makeRequest(Constants.Endpoints.gateway, Constants.Methods.GET,
 				true);
 		future.thenAcceptAsync(text -> {
-			System.out.println(text);
 			Gson gson = new Gson();
 			Gateway gateway = gson.fromJson(text, Gateway.class);
 			try {
@@ -265,6 +264,9 @@ public class DiscLoader {
 		CommandHandler.handleCommands = true;
 		this.emit(Constants.Events.READY, this);
 		Main.window.postInit();
+		for (IEventAdapter e : handlers.values()) {
+			e.Ready(this);
+		}
 	}
 
 }

@@ -1,19 +1,19 @@
-/**
- * 
- */
 package io.discloader.discloader.common.event;
+
+import io.discloader.discloader.entity.Message;
 
 /**
  * @author Perry Berman
  *
  */
-public class MessageUpdateEvent {
+public class MessageUpdateEvent extends DiscEvent {
 
-	/**
-	 * 
-	 */
-	public MessageUpdateEvent() {
-		// TODO Auto-generated constructor stub
+	public final Message message;
+	
+	public MessageUpdateEvent(Message message) {
+		super(message.loader);
+
+		this.message = message;
 	}
 
 }

@@ -42,6 +42,8 @@ public class ModRegistry {
 	private static final HashMap<String, ModContainer> preInitMods = new HashMap<String, ModContainer>();
 
 	/**
+	 * Contains a sensible method of figuring out 
+	 * 
 	 * 
 	 */
 	private static final HashMap<String, String> loadMod = new HashMap<String, String>();
@@ -56,7 +58,7 @@ public class ModRegistry {
 			ProgressLogger.progress(i + 1, mcs.size(), cls.getName());
 			boolean isMod = cls.isAnnotationPresent(Mod.class);
 			if (isMod) {
-				ProgressLogger.progress(i + 1, mcs.size(), String.format("Found @Mod Annotation: ", cls.getName()));
+				ProgressLogger.progress(i + 1, mcs.size(), String.format("Found @Mod Annotation: %s", cls.getName()));
 				ModContainer mc = new ModContainer(candidate);
 				activeMod = mc;
 				containers.add(mc);
@@ -68,8 +70,8 @@ public class ModRegistry {
 			activeMod = mc;
 			ProgressLogger.progress(i + 1, containers.size(), mc.modInfo.modid());
 			if (preInitMods.containsKey(mc.modInfo.modid())) {
-				System.out.printf("Mod with duplicate id found. \nHALTING STARTUP\nDuplicate ID: %s\n",
-						mc.modInfo.modid());
+				Main.getLogger().severe(String.format("Mod with duplicate id found. \nHALTING STARTUP\nDuplicate ID: %s\n",
+						mc.modInfo.modid()));
 				System.exit(1);
 			}
 			preInitMods.put(mc.modInfo.modid(), mc);
@@ -87,7 +89,6 @@ public class ModRegistry {
 		activeMod = null;
 		ProgressLogger.phase(2, 3, "PreINIT");
 		ProgressLogger.stage(1, 3, "Begin PreInit");
-//		ProgressLogger.stage(2, 3, "Registering DiscLoader Commands");
 		Command.registerCommands();
 		ProgressLogger.progress(0, 0, "");
 

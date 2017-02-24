@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Logger;
 
 import org.json.JSONObject;
 
@@ -15,6 +16,7 @@ import com.neovisionaries.ws.client.WebSocketFrame;
 import com.neovisionaries.ws.client.WebSocketListener;
 import com.neovisionaries.ws.client.WebSocketState;
 
+import io.discloader.discloader.client.logger.DLLogger;
 import io.discloader.discloader.common.DiscLoader;
 import io.discloader.discloader.common.event.IEventAdapter;
 import io.discloader.discloader.network.gateway.packets.ChannelCreate;
@@ -41,6 +43,8 @@ public class DiscSocketListener extends WebSocketAdapter implements WebSocketLis
 
 	public DiscLoader loader;
 	public DiscSocket socket;
+	
+	private final Logger logger = new DLLogger("Socket Listener").getLogger();
 
 	public HashMap<String, DiscPacket> handlers;
 
@@ -135,7 +139,7 @@ public class DiscSocketListener extends WebSocketAdapter implements WebSocketLis
 	}
 
 	public void onConnected(WebSocket ws, Map<String, List<String>> arg1) throws Exception {
-		System.out.println("connected to gateway");
+		logger.info("Connected to the gateway");
 		this.socket.lastHeartbeatAck = true;
 		this.sendNewIdentify();
 	}
@@ -145,7 +149,12 @@ public class DiscSocketListener extends WebSocketAdapter implements WebSocketLis
 
 	public void onDisconnected(WebSocket ws, WebSocketFrame frame_1, WebSocketFrame frame_2, boolean isDisconnected)
 			throws Exception {
-		System.out.println("Got disconnected from the websocket");
+		if (isDisconnected) {
+			logger.severe(String.format("Gateway connected was closed by the server. Close Code: %d, Reason: %s", frame_1.getCloseCode(), frame_1.getCloseReason()));
+			logger.severe(String.format("Gateway connected was closed by the server. Close Code: %d, Reason: %s", frame_2.getCloseCode(), frame_2.getCloseReason()));
+		} else {
+			logger.severe("Disconnected from gateway");
+		}
 	}
 
 	public void onError(WebSocket ws, WebSocketException e) throws Exception {

@@ -1,5 +1,8 @@
 package io.discloader.discloader.network.gateway.packets;
 
+import io.discloader.discloader.common.DiscLoader;
+import io.discloader.discloader.common.event.IEventAdapter;
+import io.discloader.discloader.common.event.MessageDeleteEvent;
 import io.discloader.discloader.entity.Message;
 import io.discloader.discloader.entity.channels.TextChannel;
 import io.discloader.discloader.network.gateway.DiscSocket;
@@ -25,7 +28,12 @@ public class MessageDelete extends DiscPacket {
 		TextChannel channel = this.socket.loader.textChannels.get(data.channel_id);
 		if (channel == null)
 			channel = this.socket.loader.privateChannels.get(data.channel_id);
-		this.socket.loader.emit(Constants.Events.MESSAGE_DELETE, new Message(channel, data));
+		
+		MessageDeleteEvent event = new MessageDeleteEvent(new Message(channel, data));
+		this.socket.loader.emit(Constants.Events.MESSAGE_DELETE, event);
+		for (IEventAdapter e : DiscLoader.handlers.values()) {
+			e.MessageDelete(event);
+		}
 	}
 
 }

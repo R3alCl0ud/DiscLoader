@@ -9,7 +9,7 @@ import io.discloader.discloader.entity.User;
 /**
  * Default Implementation of the {@link IEventAdapter}
  * 
- * @author perryberman
+ * @author Perry Berman
  * @see IEventAdapter
  */
 public abstract class EventAdapter implements IEventAdapter {
@@ -64,7 +64,7 @@ public abstract class EventAdapter implements IEventAdapter {
 	}
 
 	@Override
-	public void GuildBanAdd(GuildMember member) {
+	public void GuildBanAdd(GuildBanAddEvent e) {
 	}
 
 	@Override

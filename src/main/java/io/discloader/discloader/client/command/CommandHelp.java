@@ -38,7 +38,6 @@ public class CommandHelp extends Command {
 			String commands = "";
 			int size = CommandRegistry.commands.entries().size();
 			Command[] cmds = CommandRegistry.commands.entries().toArray(new Command[size]);
-			System.out.println(cmds.length);
 			for (int i = 0; i < 10 && i < cmds.length; i++) {
 				commands = String.format("%s**%s**: %s\n", commands, cmds[i].getUnlocalizedName(),
 						cmds[i].getDescription());

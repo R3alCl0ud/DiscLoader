@@ -1,9 +1,8 @@
-/**
- * 
- */
 package io.discloader.discloader.network.gateway.packets;
 
+import io.discloader.discloader.common.DiscLoader;
 import io.discloader.discloader.common.event.ChannelDeleteEvent;
+import io.discloader.discloader.common.event.IEventAdapter;
 import io.discloader.discloader.entity.Guild;
 import io.discloader.discloader.entity.channels.Channel;
 import io.discloader.discloader.network.gateway.DiscSocket;
@@ -42,7 +41,10 @@ public class ChannelDelete extends DiscPacket {
 			guild.voiceChannels.remove(channel.id);
 			break;
 		}
-
-		this.socket.loader.emit(Constants.Events.CHANNEL_DELETE, new ChannelDeleteEvent(channel));
+		ChannelDeleteEvent event = new ChannelDeleteEvent(channel);
+		this.socket.loader.emit(Constants.Events.CHANNEL_DELETE, event);
+		for (IEventAdapter e : DiscLoader.handlers.values()) {
+			e.ChannelDelete(event);
+		}
 	}
 }

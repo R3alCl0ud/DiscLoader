@@ -11,7 +11,7 @@ public interface IEventAdapter {
 	/**
 	 * Emitted whenever a new packet is recieved from the gateway
 	 * 
-	 * @param raw
+	 * @param raw  
 	 */
 	void raw(String raw);
 
@@ -76,7 +76,7 @@ public interface IEventAdapter {
 
 	void GuildMemberAvailable(GuildMember member);
 
-	void GuildBanAdd(GuildMember member);
+	void GuildBanAdd(GuildBanAddEvent e);
 
 	void GuildBanRemove(User user);
 

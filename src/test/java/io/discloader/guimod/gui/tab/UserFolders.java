@@ -2,8 +2,8 @@ package io.discloader.guimod.gui.tab;
 
 import javax.swing.event.ListSelectionEvent;
 
-import io.discloader.discloader.client.render.list.AbstractList;
-import io.discloader.discloader.client.render.list.UserList;
+import io.discloader.guimod.gui.list.AbstractList;
+import io.discloader.guimod.gui.list.UserList;
 import io.discloader.discloader.client.render.panel.info.AbstractInfo;
 import io.discloader.discloader.client.render.panel.info.UserInfo;
 import io.discloader.discloader.common.DiscLoader;

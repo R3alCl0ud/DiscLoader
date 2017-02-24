@@ -18,7 +18,7 @@ public class ResourceHandler {
 	}
 
 	public void addResource(File resource) {
-		System.out.println(resource.getName());
+
 	}
 
 	public void addResource(JarEntry resource) {
@@ -40,7 +40,6 @@ public class ResourceHandler {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		System.out.println(resources.size());
 	}
 
 }

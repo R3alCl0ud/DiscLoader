@@ -1,5 +1,9 @@
 package io.discloader.discloader.common.discovery;
 
+import io.discloader.discloader.client.logger.ProgressLogger;
+import io.discloader.discloader.client.registry.TextureRegistry;
+import io.discloader.discloader.common.start.Main;
+
 import java.io.File;
 import java.net.URL;
 import java.net.URLClassLoader;
@@ -7,12 +11,9 @@ import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
+import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
-import io.discloader.discloader.client.logger.ProgressLogger;
-import io.discloader.discloader.client.registry.TextureRegistry;
-import io.discloader.discloader.common.start.Main;
 
 /**
  * 
@@ -24,6 +25,8 @@ public class ModDiscoverer {
 
 	private static Pattern modExt = Pattern.compile(".(jar|zip)");
 
+	private static Logger logger = Main.getLogger();
+	
 	public static final File modsDir = new File("./mods");
 
 	public static void checkModDir() {
@@ -43,7 +46,7 @@ public class ModDiscoverer {
 			Matcher modMatch = modExt.matcher(modFile.getName());
 			ProgressLogger.step(i + 1, files.length, modFile.getName());
 			if (!modMatch.find()) {
-				System.out.printf("Found non-mod file in mods directory: %s\n", modFile.getName());
+				logger.warning(String.format("Found non-mod file in mods directory: %s", modFile.getName()));
 				continue;
 			}
 			if (modMatch.group(1).toLowerCase().equals("jar")) {
@@ -64,8 +67,8 @@ public class ModDiscoverer {
 					}
 					modJar.close();
 				} catch (Exception e) {
-					e.printStackTrace();
-					System.out.printf("Unable to load JarFile: %s\n", modFile.getName());
+					logger.warning(String.format("Unable to load JarFile: %s\n", modFile.getName()));
+					logger.severe(e.toString());
 				}
 			}
 
@@ -77,8 +80,8 @@ public class ModDiscoverer {
 		ArrayList<JarEntry> entries = new ArrayList<JarEntry>();
 		while (jarDir.hasMoreElements()) {
 			JarEntry entry = jarDir.nextElement();
-			System.out.println(entry.getName());
-			if (entry.getName().endsWith(".png")) {
+			
+			if (entry.getName().startsWith("assets")) {
 				TextureRegistry.resourceHandler.addResource(entry);
 			} 
 			if (entry.isDirectory() || !entry.getName().endsWith(".class")) {
@@ -89,4 +92,9 @@ public class ModDiscoverer {
 		return entries;
 	}
 
+	private static void registerAssets(JarEntry assetsDirectory) {
+		
+	}
+	
+	
 }
