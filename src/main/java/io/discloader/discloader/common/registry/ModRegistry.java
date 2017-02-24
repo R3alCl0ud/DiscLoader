@@ -13,7 +13,7 @@ import io.discloader.discloader.common.discovery.Mod;
 import io.discloader.discloader.common.discovery.ModCandidate;
 import io.discloader.discloader.common.discovery.ModContainer;
 import io.discloader.discloader.common.event.DLPreInitEvent;
-import io.discloader.discloader.common.event.IEventAdapter;
+import io.discloader.discloader.common.event.IEventListener;
 import io.discloader.discloader.common.start.Main;
 
 public class ModRegistry {
@@ -135,7 +135,7 @@ public class ModRegistry {
 		mods.put(mod.modInfo.modid(), mod);
 		DLPreInitEvent event = new DLPreInitEvent(Main.loader);
 		mod.emit("preInit", event);
-		for (IEventAdapter e : DiscLoader.handlers.values()) {
+		for (IEventListener e : DiscLoader.handlers.values()) {
 			e.PreInit(event);
 		}
 		if (loadMod.containsKey(mod.modInfo.modid())) {

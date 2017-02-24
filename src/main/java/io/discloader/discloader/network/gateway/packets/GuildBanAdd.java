@@ -5,7 +5,7 @@ package io.discloader.discloader.network.gateway.packets;
 
 import io.discloader.discloader.common.DiscLoader;
 import io.discloader.discloader.common.event.GuildBanAddEvent;
-import io.discloader.discloader.common.event.IEventAdapter;
+import io.discloader.discloader.common.event.IEventListener;
 import io.discloader.discloader.entity.Guild;
 import io.discloader.discloader.entity.GuildMember;
 import io.discloader.discloader.entity.User;
@@ -17,7 +17,7 @@ import io.discloader.discloader.util.Constants;
  * @author Perry Berman
  *
  */
-public class GuildBanAdd extends DiscPacket {
+public class GuildBanAdd extends DLPacket {
 
 	/**
 	 * @param socket
@@ -37,7 +37,7 @@ public class GuildBanAdd extends DiscPacket {
 		}
 		GuildBanAddEvent event = new GuildBanAddEvent(member);
 		this.loader.emit(Constants.Events.GUILD_BAN_ADD, event);
-		for (IEventAdapter e : DiscLoader.handlers.values()) {
+		for (IEventListener e : DiscLoader.handlers.values()) {
 			e.GuildBanAdd(event);
 		}
 	}

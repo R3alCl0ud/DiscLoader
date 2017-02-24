@@ -4,7 +4,7 @@
 package io.discloader.discloader.network.gateway.packets;
 
 import io.discloader.discloader.common.DiscLoader;
-import io.discloader.discloader.common.event.IEventAdapter;
+import io.discloader.discloader.common.event.IEventListener;
 import io.discloader.discloader.common.event.GuildRoleUpdateEvent;
 import io.discloader.discloader.entity.Guild;
 import io.discloader.discloader.entity.Role;
@@ -16,7 +16,7 @@ import io.discloader.discloader.util.Constants;
  * @author Perry Berman
  *
  */
-public class RoleUpdate extends DiscPacket {
+public class RoleUpdate extends DLPacket {
 
 	public RoleUpdate(DiscSocket socket) {
 		super(socket);
@@ -31,7 +31,7 @@ public class RoleUpdate extends DiscPacket {
 		role.update(data.role);
 		GuildRoleUpdateEvent event = new GuildRoleUpdateEvent(role, oldRole);
 		this.loader.emit(Constants.Events.GUILD_ROLE_UPDATE, event);
-		for (IEventAdapter e : DiscLoader.handlers.values()) {
+		for (IEventListener e : DiscLoader.handlers.values()) {
 			e.GuildRoleUpdate(event);
 		}
 	}

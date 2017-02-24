@@ -3,7 +3,8 @@ package io.discloader.guimod;
 import io.discloader.discloader.common.DiscLoader;
 import io.discloader.discloader.common.discovery.Mod;
 import io.discloader.discloader.common.discovery.Mod.EventHandler;
-import io.discloader.discloader.common.event.EventAdapter;
+import io.discloader.discloader.common.discovery.Mod.Instance;
+import io.discloader.guimod.gui.event.GUIEvents;
 
 @Mod(desc = GUIMod.DESC, modid = GUIMod.MODID, name = GUIMod.NAME, version = GUIMod.VERSION, author = GUIMod.AUTHOR)
 public class GUIMod {
@@ -13,26 +14,17 @@ public class GUIMod {
 	public static final String NAME = "GUI Mod";
 	public static final String VERSION = "1.0.0";
 	public static final String AUTHOR = "R3alCl0ud";
-	
-//	public static final WindowFrame
+
+	@Instance(MODID)
+	public static GUIMod instance;
 
 	public GUIMod() {
-		DiscLoader.addEventHandler(new EventAdapter() {
-			@Override
-			public void raw(String text) {
-				System.out.println(text);
-			}
-			
-			@Override
-			public void Ready(DiscLoader loader) {
-				
-			}
-		});
+		DiscLoader.addEventHandler(new GUIEvents());
 	}
 
 	@EventHandler
 	public void PreInit() {
-		
+
 	}
-	
+
 }

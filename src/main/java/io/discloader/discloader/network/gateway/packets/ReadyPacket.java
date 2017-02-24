@@ -8,7 +8,7 @@ import io.discloader.discloader.network.json.ChannelJSON;
 import io.discloader.discloader.network.json.GuildJSON;
 import io.discloader.discloader.network.json.Ready;
 
-public class ReadyPacket extends DiscPacket {
+public class ReadyPacket extends DLPacket {
 	public ReadyPacket(DiscSocket socket) {
 		super(socket);
 	}

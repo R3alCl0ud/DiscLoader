@@ -10,7 +10,7 @@ import io.discloader.discloader.entity.GuildMember;
  * @author Perry Berman
  *
  */
-public class GuildBanAddEvent extends DiscEvent {
+public class GuildBanAddEvent extends DLEvent {
 
 	public final GuildMember member;
 	

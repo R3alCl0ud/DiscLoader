@@ -1,4 +1,4 @@
-package io.discloader.discloader.client.render.panel.info;
+package io.discloader.guimod.gui.info;
 
 import java.awt.Color;
 import java.awt.Dimension;

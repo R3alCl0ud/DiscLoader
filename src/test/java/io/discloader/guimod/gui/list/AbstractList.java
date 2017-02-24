@@ -15,7 +15,7 @@ import javax.swing.JPanel;
 import javax.swing.JScrollBar;
 import javax.swing.JScrollPane;
 
-public abstract class AbstractList<T extends Object> extends JPanel {
+public abstract class AbstractList<T> extends JPanel {
 
 	private static final long serialVersionUID = 1057817663097474031L;
 	public final DiscLoader loader;
@@ -54,4 +54,8 @@ public abstract class AbstractList<T extends Object> extends JPanel {
 		return new DefaultListModel<Object>();
 	}
 
+	public ArrayList<T> createItems() {
+		return new ArrayList<T>();
+	}
+	
 }

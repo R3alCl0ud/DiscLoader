@@ -1,7 +1,7 @@
 package io.discloader.discloader.network.gateway.packets;
 
 import io.discloader.discloader.common.DiscLoader;
-import io.discloader.discloader.common.event.IEventAdapter;
+import io.discloader.discloader.common.event.IEventListener;
 import io.discloader.discloader.common.event.MessageDeleteEvent;
 import io.discloader.discloader.entity.Message;
 import io.discloader.discloader.entity.channels.TextChannel;
@@ -13,7 +13,7 @@ import io.discloader.discloader.util.Constants;
  * @author Perry Berman
  *
  */
-public class MessageDelete extends DiscPacket {
+public class MessageDelete extends DLPacket {
 
 	/**
 	 * 
@@ -31,7 +31,7 @@ public class MessageDelete extends DiscPacket {
 		
 		MessageDeleteEvent event = new MessageDeleteEvent(new Message(channel, data));
 		this.socket.loader.emit(Constants.Events.MESSAGE_DELETE, event);
-		for (IEventAdapter e : DiscLoader.handlers.values()) {
+		for (IEventListener e : DiscLoader.handlers.values()) {
 			e.MessageDelete(event);
 		}
 	}

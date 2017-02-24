@@ -1,4 +1,4 @@
-package io.discloader.discloader.client.render.panel.info;
+package io.discloader.guimod.gui.info;
 
 import java.awt.Color;
 import java.awt.Dimension;
@@ -43,7 +43,7 @@ public class ModInfo<T extends ModContainer> extends AbstractInfo<T> {
 	}
 
 	@Override
-	public void update(Object object) {
+	public void update(ModContainer object) {
 		ModContainer mc = (ModContainer) object;
 		this.modName.setText(String.format("Name: %s", mc.modInfo.name()));
 		this.modId.setText(String.format("ID: %s", mc.modInfo.modid()));

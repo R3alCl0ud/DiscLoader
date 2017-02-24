@@ -18,11 +18,11 @@ import com.neovisionaries.ws.client.WebSocketState;
 
 import io.discloader.discloader.client.logger.DLLogger;
 import io.discloader.discloader.common.DiscLoader;
-import io.discloader.discloader.common.event.IEventAdapter;
+import io.discloader.discloader.common.event.IEventListener;
 import io.discloader.discloader.network.gateway.packets.ChannelCreate;
 import io.discloader.discloader.network.gateway.packets.ChannelDelete;
 import io.discloader.discloader.network.gateway.packets.ChannelUpdate;
-import io.discloader.discloader.network.gateway.packets.DiscPacket;
+import io.discloader.discloader.network.gateway.packets.DLPacket;
 import io.discloader.discloader.network.gateway.packets.GuildCreate;
 import io.discloader.discloader.network.gateway.packets.GuildDelete;
 import io.discloader.discloader.network.gateway.packets.GuildUpdate;
@@ -46,13 +46,13 @@ public class DiscSocketListener extends WebSocketAdapter implements WebSocketLis
 	
 	private final Logger logger = new DLLogger("Socket Listener").getLogger();
 
-	public HashMap<String, DiscPacket> handlers;
+	public HashMap<String, DLPacket> handlers;
 
 	public List<SocketPacket> queue;
 
 	public DiscSocketListener(DiscSocket socket) {
 		this.socket = socket;
-		this.handlers = new HashMap<String, DiscPacket>();
+		this.handlers = new HashMap<String, DLPacket>();
 		this.queue = new ArrayList<SocketPacket>();
 
 		this.register(Constants.WSEvents.HELLO, new HelloPacket(this.socket));
@@ -77,7 +77,7 @@ public class DiscSocketListener extends WebSocketAdapter implements WebSocketLis
 			this.socket.s = s;
 	}
 
-	public void register(String event, DiscPacket handler) {
+	public void register(String event, DLPacket handler) {
 		this.handlers.put(event, handler);
 	}
 
@@ -202,7 +202,7 @@ public class DiscSocketListener extends WebSocketAdapter implements WebSocketLis
 	@Override
 	public void onTextMessage(WebSocket ws, String text) throws Exception {
 		this.socket.loader.emit("raw", text);
-		for (IEventAdapter e : DiscLoader.handlers.values()) {
+		for (IEventListener e : DiscLoader.handlers.values()) {
 			e.raw(text);
 		}
 		SocketPacket packet = gson.fromJson(text, SocketPacket.class);

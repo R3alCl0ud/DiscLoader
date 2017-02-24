@@ -14,7 +14,7 @@ import io.discloader.discloader.util.Constants;
  * @author Perry Berman
  *
  */
-public class PresenceUpdate extends DiscPacket {
+public class PresenceUpdate extends DLPacket {
 
 	/**
 	 * @param socket

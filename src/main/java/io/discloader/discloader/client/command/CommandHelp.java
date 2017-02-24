@@ -33,7 +33,7 @@ public class CommandHelp extends Command {
 			Command command = CommandRegistry.commands.get(cmd);
 			if (command != null) {
 				File icon = Constants.MissingTexture;
-				CommandIcon iicon = (CommandIcon) command.getIcon();
+				IIcon iicon = (CommandIcon) command.getIcon();
 				
 				if (iicon != null && iicon.getFile() != null) {
 					icon = iicon.getFile();

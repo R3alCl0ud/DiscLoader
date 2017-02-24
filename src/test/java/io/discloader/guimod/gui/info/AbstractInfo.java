@@ -1,6 +1,7 @@
-package io.discloader.discloader.client.render.panel.info;
+package io.discloader.guimod.gui.info;
 
 import java.awt.Color;
+import java.awt.Component;
 
 import javax.swing.BoxLayout;
 import javax.swing.JPanel;
@@ -15,7 +16,13 @@ public abstract class AbstractInfo<T extends Object> extends JPanel {
 		this.validate();
 	}
 	
-	public void update(Object object) {
+	public void update(T object) {
 		return;
+	}
+	
+	public Component add(Component comp) {
+		super.add(comp);
+		comp.setForeground(new Color(0xFFFFFF));
+		return comp;
 	}
 }

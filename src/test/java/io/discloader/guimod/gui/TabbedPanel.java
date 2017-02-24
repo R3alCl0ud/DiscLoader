@@ -10,6 +10,7 @@ import javax.swing.JTabbedPane;
 
 import io.discloader.discloader.common.DiscLoader;
 import io.discloader.discloader.common.discovery.ModContainer;
+import io.discloader.discloader.entity.Guild;
 import io.discloader.discloader.entity.User;
 import io.discloader.guimod.gui.tab.GuildFolders;
 import io.discloader.guimod.gui.tab.ModsFolder;
@@ -25,10 +26,12 @@ public class TabbedPanel extends JPanel {
 		this.loader = loader;
 		JTabbedPane tabbedPane = new JTabbedPane();
 		tabbedPane.addTab("Mods", new ModsFolder<ModContainer>(this.loader));
-		tabbedPane.addTab("Users", resizeImageIcon(createImageIcon("texture.gui.icons.missing-icon", "Missing Icon"), 16, 16),
+		tabbedPane.addTab("Users",
+				resizeImageIcon(createImageIcon("texture.gui.icons.missing-icon", "Missing Icon"), 16, 16),
 				new UserFolders<User>(this.loader), "Users");
-		tabbedPane.addTab("Guilds", resizeImageIcon(createImageIcon("texture.gui.icons.missing-icon", "Missing Icon"), 16, 16),
-				new GuildFolders(this.loader), "Guilds");
+		tabbedPane.addTab("Guilds",
+				resizeImageIcon(createImageIcon("texture.gui.icons.missing-icon", "Missing Icon"), 16, 16),
+				new GuildFolders<Guild>(this.loader), "Guilds");
 
 		tabbedPane.setTabLayoutPolicy(JTabbedPane.SCROLL_TAB_LAYOUT);
 		this.add(tabbedPane);
@@ -44,7 +47,7 @@ public class TabbedPanel extends JPanel {
 			return null;
 		}
 	}
-	
+
 	protected ImageIcon resizeImageIcon(ImageIcon imageIcon, int width, int height) {
 		return new ImageIcon(imageIcon.getImage().getScaledInstance(width, height, Image.SCALE_SMOOTH));
 	}

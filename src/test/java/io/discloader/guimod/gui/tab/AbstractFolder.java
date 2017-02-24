@@ -2,6 +2,7 @@ package io.discloader.guimod.gui.tab;
 
 import java.awt.Color;
 import java.awt.Dimension;
+import java.util.ArrayList;
 
 import javax.swing.Box;
 import javax.swing.BoxLayout;
@@ -9,16 +10,16 @@ import javax.swing.JPanel;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 
+import io.discloader.guimod.gui.info.AbstractInfo;
 import io.discloader.guimod.gui.list.AbstractList;
-import io.discloader.discloader.client.render.panel.info.AbstractInfo;
 import io.discloader.discloader.common.DiscLoader;
 
-public abstract class AbstractFolder<T> extends JPanel implements ListSelectionListener {
+public abstract class AbstractFolder<T, V extends AbstractList<T>, S extends AbstractInfo<T>> extends JPanel implements ListSelectionListener {
 
 	private static final long serialVersionUID = -335604613355001641L;
 	public final DiscLoader loader;
-	public AbstractInfo<?> info;
-	public AbstractList<?> list;
+	public S info;
+	public V list;
 
 	public AbstractFolder(DiscLoader loader) {
 		this.loader = loader;
@@ -37,11 +38,11 @@ public abstract class AbstractFolder<T> extends JPanel implements ListSelectionL
 		return;
 	}
 	
-	public AbstractList<?> createList() {
+	public V createList() {
 		return null;
 	}
 	
-	public AbstractInfo<?> createInfo() {
+	public S createInfo() {
 		return null;
 	}
 }

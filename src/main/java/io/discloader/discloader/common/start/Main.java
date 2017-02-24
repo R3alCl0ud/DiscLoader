@@ -11,7 +11,7 @@ import io.discloader.discloader.common.discovery.ModDiscoverer;
 import io.discloader.discloader.common.event.ChannelCreateEvent;
 import io.discloader.discloader.common.event.ChannelUpdateEvent;
 import io.discloader.discloader.common.event.DLPreInitEvent;
-import io.discloader.discloader.common.event.EventAdapter;
+import io.discloader.discloader.common.event.EventListenerAdapter;
 import io.discloader.discloader.common.event.GuildBanAddEvent;
 import io.discloader.discloader.common.event.MessageCreateEvent;
 import io.discloader.discloader.common.logger.DLErrorStream;
@@ -50,7 +50,7 @@ public class Main {
 		LOGGER = new DLLogger("Main Thread").getLogger();
 		System.setOut(new DLPrintStream(System.out, LOGGER));
 		System.setErr(new DLErrorStream(System.err, LOGGER));
-		DiscLoader.addEventHandler(new EventAdapter() {
+		DiscLoader.addEventHandler(new EventListenerAdapter() {
 			@Override
 			public void raw(String text) {
 				// LOG.warning(text);

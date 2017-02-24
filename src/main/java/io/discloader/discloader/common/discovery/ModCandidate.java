@@ -11,25 +11,14 @@ public class ModCandidate {
 
 	private final Class<?> modClass;
 
-	private final Object instance;
-
 	/**
 	 * The default constructor for Mod Candidates
 	 * @param modClass The candidate's class file
 	 * @throws InstantiationException
 	 * @throws IllegalAccessException
 	 */
-	public ModCandidate(Class<?> modClass) throws InstantiationException, IllegalAccessException {
+	public ModCandidate(Class<?> modClass) {
 		this.modClass = modClass;
-
-		this.instance = this.modClass.newInstance();
-	}
-
-	/**
-	 * @return the instance
-	 */
-	public Object getInstance() {
-		return instance;
 	}
 
 	/**

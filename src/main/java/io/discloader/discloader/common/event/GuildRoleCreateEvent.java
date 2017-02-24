@@ -2,7 +2,7 @@ package io.discloader.discloader.common.event;
 
 import io.discloader.discloader.entity.Role;
 
-public class GuildRoleCreateEvent extends DiscEvent {
+public class GuildRoleCreateEvent extends DLEvent {
 
 	public final Role role;
 	

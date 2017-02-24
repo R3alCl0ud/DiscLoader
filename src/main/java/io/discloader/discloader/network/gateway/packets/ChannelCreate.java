@@ -5,7 +5,7 @@ package io.discloader.discloader.network.gateway.packets;
 
 import io.discloader.discloader.common.DiscLoader;
 import io.discloader.discloader.common.event.ChannelCreateEvent;
-import io.discloader.discloader.common.event.IEventAdapter;
+import io.discloader.discloader.common.event.IEventListener;
 import io.discloader.discloader.entity.Guild;
 import io.discloader.discloader.entity.channels.Channel;
 import io.discloader.discloader.network.gateway.DiscSocket;
@@ -16,7 +16,7 @@ import io.discloader.discloader.util.Constants;
  * @author Perry Berman
  *
  */
-public class ChannelCreate extends DiscPacket {
+public class ChannelCreate extends DLPacket {
 
 	/**
 	 * @param socket
@@ -38,7 +38,7 @@ public class ChannelCreate extends DiscPacket {
 		}
 		ChannelCreateEvent event = new ChannelCreateEvent(channel);
 		this.socket.loader.emit(Constants.Events.CHANNEL_CREATE, event);
-		for (IEventAdapter e : DiscLoader.handlers.values()) {
+		for (IEventListener e : DiscLoader.handlers.values()) {
 			e.ChannelCreate(event);
 		}
 	}

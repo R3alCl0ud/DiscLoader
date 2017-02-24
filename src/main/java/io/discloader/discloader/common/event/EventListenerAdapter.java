@@ -7,12 +7,12 @@ import io.discloader.discloader.entity.GuildMember;
 import io.discloader.discloader.entity.User;
 
 /**
- * Default Implementation of the {@link IEventAdapter}
+ * Default Implementation of the {@link IEventListener}
  * 
  * @author Perry Berman
- * @see IEventAdapter
+ * @see IEventListener
  */
-public abstract class EventAdapter implements IEventAdapter {
+public abstract class EventListenerAdapter implements IEventListener {
 
 	@Override
 	public void raw(String raw) {

@@ -9,12 +9,12 @@ import io.discloader.discloader.network.gateway.DiscSocket;
  * @author Perry Berman
  *
  */
-public abstract class DiscPacket {
+public abstract class DLPacket {
 	public DiscSocket socket;
 	public DiscLoader loader;
 	public Gson gson;
 
-	public DiscPacket(DiscSocket socket) {
+	public DLPacket(DiscSocket socket) {
 		this.socket = socket;
 		this.loader = this.socket.loader;
 		this.gson = new Gson();

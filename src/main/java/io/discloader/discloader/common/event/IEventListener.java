@@ -6,7 +6,7 @@ import io.discloader.discloader.common.DiscLoader;
 import io.discloader.discloader.entity.GuildMember;
 import io.discloader.discloader.entity.User;
 
-public interface IEventAdapter {
+public interface IEventListener {
 
 	/**
 	 * Emitted whenever a new packet is recieved from the gateway

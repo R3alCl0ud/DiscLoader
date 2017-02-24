@@ -1,7 +1,7 @@
 package io.discloader.discloader.network.gateway.packets;
 
 import io.discloader.discloader.common.DiscLoader;
-import io.discloader.discloader.common.event.IEventAdapter;
+import io.discloader.discloader.common.event.IEventListener;
 import io.discloader.discloader.common.event.GuildRoleDeleteEvent;
 import io.discloader.discloader.entity.Guild;
 import io.discloader.discloader.entity.Role;
@@ -13,7 +13,7 @@ import io.discloader.discloader.util.Constants;
  * @author Perry Berman
  *
  */
-public class RoleDelete extends DiscPacket {
+public class RoleDelete extends DLPacket {
 
 	public RoleDelete(DiscSocket socket) {
 		super(socket);
@@ -26,7 +26,7 @@ public class RoleDelete extends DiscPacket {
 		Role role = guild.roles.remove(data.role_id);
 		GuildRoleDeleteEvent event = new GuildRoleDeleteEvent(role);
 		this.loader.emit(Constants.Events.GUILD_ROLE_DELETE, event);
-		for (IEventAdapter e : DiscLoader.handlers.values()) {
+		for (IEventListener e : DiscLoader.handlers.values()) {
 			e.GuildRoleDelete(event);
 		}
 	}

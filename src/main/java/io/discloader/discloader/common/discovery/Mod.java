@@ -46,7 +46,7 @@ public @interface Mod {
     
     /**
      * All functions in the main Mod class file will be used as EventHandlers. To listen for event outside of the main file,
-     * use an {@link IEventAdapter} instead.
+     * use an {@link IEventListener} instead.
      * @author perryberman
      * @since 0.0.1
      */

@@ -9,7 +9,7 @@ import io.discloader.discloader.entity.channels.Channel;
  * @author Perry Berman
  *
  */
-public class ChannelDeleteEvent extends DiscEvent {
+public class ChannelDeleteEvent extends DLEvent {
 
 	public final Channel channel;
 

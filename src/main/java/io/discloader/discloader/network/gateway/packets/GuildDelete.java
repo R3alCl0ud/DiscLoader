@@ -5,7 +5,7 @@ package io.discloader.discloader.network.gateway.packets;
 
 import io.discloader.discloader.common.DiscLoader;
 import io.discloader.discloader.common.event.GuildDeleteEvent;
-import io.discloader.discloader.common.event.IEventAdapter;
+import io.discloader.discloader.common.event.IEventListener;
 import io.discloader.discloader.entity.Guild;
 import io.discloader.discloader.network.gateway.DiscSocket;
 import io.discloader.discloader.network.json.GuildJSON;
@@ -15,7 +15,7 @@ import io.discloader.discloader.util.Constants;
  * @author Perry Berman
  *
  */
-public class GuildDelete extends DiscPacket {
+public class GuildDelete extends DLPacket {
 
 	public GuildDelete(DiscSocket socket) {
 		super(socket);
@@ -37,7 +37,7 @@ public class GuildDelete extends DiscPacket {
 			if (this.socket.status == Constants.Status.READY && this.socket.loader.ready) {
 				GuildDeleteEvent event =  new GuildDeleteEvent(guild);
 				this.socket.loader.emit(Constants.Events.GUILD_DELETE, event);
-				for (IEventAdapter e : DiscLoader.handlers.values()) {
+				for (IEventListener e : DiscLoader.handlers.values()) {
 					e.GuildDelete(event);
 				}
 			}

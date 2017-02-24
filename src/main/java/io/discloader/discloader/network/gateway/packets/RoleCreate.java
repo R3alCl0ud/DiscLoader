@@ -1,7 +1,7 @@
 package io.discloader.discloader.network.gateway.packets;
 
 import io.discloader.discloader.common.DiscLoader;
-import io.discloader.discloader.common.event.IEventAdapter;
+import io.discloader.discloader.common.event.IEventListener;
 import io.discloader.discloader.common.event.GuildRoleCreateEvent;
 import io.discloader.discloader.entity.Guild;
 import io.discloader.discloader.entity.Role;
@@ -15,9 +15,9 @@ import io.discloader.discloader.util.Constants;
  * @see Role
  * @see Guild
  * @see Mod#EventHandler
- * @see IEventAdapter
+ * @see IEventListener
  */
-public class RoleCreate extends DiscPacket{
+public class RoleCreate extends DLPacket{
 
 	public RoleCreate(DiscSocket socket) {
 		super(socket);
@@ -30,7 +30,7 @@ public class RoleCreate extends DiscPacket{
 		Role role = guild.addRole(data.role);
 		GuildRoleCreateEvent event = new GuildRoleCreateEvent(role);
 		this.loader.emit(Constants.Events.GUILD_ROLE_CREATE, event);
-		for (IEventAdapter e : DiscLoader.handlers.values()) {
+		for (IEventListener e : DiscLoader.handlers.values()) {
 			e.GuildRoleCreate(event);
 		}
 	}

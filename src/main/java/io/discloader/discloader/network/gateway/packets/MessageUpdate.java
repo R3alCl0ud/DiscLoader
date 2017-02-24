@@ -4,7 +4,7 @@
 package io.discloader.discloader.network.gateway.packets;
 
 import io.discloader.discloader.common.DiscLoader;
-import io.discloader.discloader.common.event.IEventAdapter;
+import io.discloader.discloader.common.event.IEventListener;
 import io.discloader.discloader.common.event.MessageUpdateEvent;
 import io.discloader.discloader.entity.channels.TextChannel;
 import io.discloader.discloader.network.gateway.DiscSocket;
@@ -15,7 +15,7 @@ import io.discloader.discloader.util.Constants;
  * @author Perry Berman
  *
  */
-public class MessageUpdate extends DiscPacket {
+public class MessageUpdate extends DLPacket {
 
 	/**
 	 * @param socket
@@ -32,7 +32,7 @@ public class MessageUpdate extends DiscPacket {
 		
 		MessageUpdateEvent event = new MessageUpdateEvent(channel.messages.get(data.id).patch(data));
 		this.socket.loader.emit(Constants.Events.MESSAGE_UPDATE, event);
-		for (IEventAdapter e : DiscLoader.handlers.values()) {
+		for (IEventListener e : DiscLoader.handlers.values()) {
 			e.MessageUpdate(event);
 		}
 	}

@@ -10,7 +10,7 @@ import io.discloader.discloader.client.command.CommandHandler;
 import io.discloader.discloader.client.logger.ProgressLogger;
 import io.discloader.discloader.client.registry.ClientRegistry;
 import io.discloader.discloader.common.discovery.ModContainer;
-import io.discloader.discloader.common.event.IEventAdapter;
+import io.discloader.discloader.common.event.IEventListener;
 import io.discloader.discloader.common.registry.ModRegistry;
 import io.discloader.discloader.common.start.Main;
 import io.discloader.discloader.entity.DLUser;
@@ -44,7 +44,7 @@ public class DiscLoader {
 	
 	
 
-	public static final HashMap<String, IEventAdapter> handlers = new HashMap<String, IEventAdapter>();
+	public static final HashMap<String, IEventListener> handlers = new HashMap<String, IEventListener>();
 	
 	/**
 	 * A HashMap of the client's cached users. Indexed by {@link User#id}.
@@ -171,7 +171,7 @@ public class DiscLoader {
 		this.emit(event, null);
 	}
 	
-	public static void addEventHandler(IEventAdapter e) {
+	public static void addEventHandler(IEventListener e) {
 		handlers.put(e.toString(), e);
 	}
 
@@ -269,7 +269,7 @@ public class DiscLoader {
 		CommandHandler.handleCommands = true;
 		this.emit(Constants.Events.READY, this);
 		Main.window.postInit();
-		for (IEventAdapter e : handlers.values()) {
+		for (IEventListener e : handlers.values()) {
 			e.Ready(this);
 		}
 	}

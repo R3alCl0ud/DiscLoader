@@ -8,7 +8,7 @@ import io.discloader.discloader.common.registry.ModRegistry;
  * @author Perry Berman
  *
  */
-public class DLPreInitEvent extends DiscEvent {
+public class DLPreInitEvent extends DLEvent {
 	
 	public final ModContainer activeMod;
 	

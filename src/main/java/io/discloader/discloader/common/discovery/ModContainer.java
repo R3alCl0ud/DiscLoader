@@ -1,10 +1,14 @@
 package io.discloader.discloader.common.discovery;
 
+import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.lang.reflect.Modifier;
+import java.util.ArrayList;
 import java.util.HashMap;
 
 import io.discloader.discloader.client.logger.ProgressLogger;
+import io.discloader.discloader.common.discovery.Mod.Instance;
 
 /**
  * @author Perry Berman
@@ -20,15 +24,23 @@ public class ModContainer {
 
 	public HashMap<String, Method> handlers;
 
+	protected Object instance;
+
+	private Class<?> modCls;
+
 	public ModContainer(ModCandidate mod) {
 
 		this.mod = mod;
 
-		this.modInfo = this.mod.getModClass().getAnnotation(Mod.class);
+		this.modCls = this.mod.getModClass();
+
+		this.modInfo = this.modCls.getAnnotation(Mod.class);
 
 		this.loaded = false;
 
 		this.handlers = new HashMap<String, Method>();
+
+		this.parseAnnotatedFields();
 	}
 
 	/**
@@ -36,6 +48,47 @@ public class ModContainer {
 	 */
 	public ModCandidate getMod() {
 		return mod;
+	}
+
+	private ArrayList<String> parseFields() {
+		ArrayList<String> fields = new ArrayList<String>();
+		for (Field f : this.modCls.getFields()) {
+			fields.add(f.getName());
+		}
+		return fields;
+	}
+
+	private void parseAnnotatedFields() {
+		try {
+			this.instance = modCls.newInstance();
+			for (String target : this.parseFields()) {
+				Field f = null;
+				boolean isStatic = false;
+				try {
+					f = modCls.getDeclaredField(target);
+					f.setAccessible(true);
+					isStatic = Modifier.isStatic(f.getModifiers());
+				} catch (NoSuchFieldException e) {
+					e.printStackTrace();
+				} catch (SecurityException e) {
+					e.printStackTrace();
+				}
+				if (f != null) {
+					if (!isStatic) {
+						continue;
+					}
+					if (f.isAnnotationPresent(Instance.class)) {
+						f.set(null, this.instance);
+					}
+
+				}
+			}
+		} catch (InstantiationException e1) {
+			e1.printStackTrace();
+		} catch (IllegalAccessException e1) {
+			e1.printStackTrace();
+		}
+
 	}
 
 	public void discoverHandlers() {
@@ -50,9 +103,9 @@ public class ModContainer {
 	}
 
 	public void emit(String event, Object object) {
-		if (this.handlers.containsKey(event)) {
+		if (this.handlers.get(event) != null) {
 			try {
-				this.handlers.get(event).invoke(this.mod.getInstance(), object);
+				this.handlers.get(event).invoke(this.instance, object);
 			} catch (IllegalAccessException e) {
 				e.printStackTrace();
 			} catch (IllegalArgumentException e) {

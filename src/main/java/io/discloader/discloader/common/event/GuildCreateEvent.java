@@ -9,7 +9,7 @@ import io.discloader.discloader.entity.Guild;
  * @author Perry Berman
  *
  */
-public class GuildCreateEvent extends DiscEvent {
+public class GuildCreateEvent extends DLEvent {
 
 	public final Guild guild;
 	

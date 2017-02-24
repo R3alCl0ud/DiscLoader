@@ -5,7 +5,7 @@ package io.discloader.discloader.network.gateway.packets;
 
 import io.discloader.discloader.client.command.CommandHandler;
 import io.discloader.discloader.common.DiscLoader;
-import io.discloader.discloader.common.event.IEventAdapter;
+import io.discloader.discloader.common.event.IEventListener;
 import io.discloader.discloader.common.event.MessageCreateEvent;
 import io.discloader.discloader.entity.Message;
 import io.discloader.discloader.entity.channels.TextChannel;
@@ -17,7 +17,7 @@ import io.discloader.discloader.util.Constants;
  * @author Perry Berman
  *
  */
-public class MessageCreate extends DiscPacket {
+public class MessageCreate extends DLPacket {
 
 	/**
 	 * @param socket
@@ -37,12 +37,12 @@ public class MessageCreate extends DiscPacket {
 		MessageCreateEvent event = new MessageCreateEvent(message);
 		if (channel.type.equals("text")) {
 			this.socket.loader.emit(Constants.Events.MESSAGE_CREATE, event);
-			for (IEventAdapter e : DiscLoader.handlers.values()) {
+			for (IEventListener e : DiscLoader.handlers.values()) {
 				e.MessageCreate(event);
 			}
 		} else {
 			this.loader.emit(Constants.Events.PRIVATE_MESSAGE_CREATE, event);
-			for (IEventAdapter e : DiscLoader.handlers.values()) {
+			for (IEventListener e : DiscLoader.handlers.values()) {
 				e.PrivateMessageCreate(event);
 			}
 		}
