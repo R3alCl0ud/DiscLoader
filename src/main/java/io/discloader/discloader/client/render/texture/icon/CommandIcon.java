@@ -1,5 +1,6 @@
 package io.discloader.discloader.client.render.texture.icon;
 
+import java.awt.Image;
 import java.io.File;
 import java.net.URL;
 
@@ -21,6 +22,16 @@ public class CommandIcon extends AbstractTexture implements IIcon {
 		this.setIconName(command.getTextureName());
 	}
 
+	@Override
+	public ImageIcon getImageIcon() {
+		return this.createImageIcon(this.getIconName());
+	}
+
+	@Override
+	public Image getImage() {
+		return this.getImageIcon().getImage();
+	}
+	
 	public String getNamespace() {
 		return this.getIconName().substring(0, this.getIconName().indexOf(':'));
 	}

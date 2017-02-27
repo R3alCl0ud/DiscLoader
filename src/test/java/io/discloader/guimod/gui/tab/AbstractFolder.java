@@ -2,7 +2,6 @@ package io.discloader.guimod.gui.tab;
 
 import java.awt.Color;
 import java.awt.Dimension;
-import java.util.ArrayList;
 
 import javax.swing.Box;
 import javax.swing.BoxLayout;
@@ -10,9 +9,9 @@ import javax.swing.JPanel;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 
+import io.discloader.discloader.common.DiscLoader;
 import io.discloader.guimod.gui.info.AbstractInfo;
 import io.discloader.guimod.gui.list.AbstractList;
-import io.discloader.discloader.common.DiscLoader;
 
 public abstract class AbstractFolder<T, V extends AbstractList<T>, S extends AbstractInfo<T>> extends JPanel implements ListSelectionListener {
 
@@ -35,7 +34,9 @@ public abstract class AbstractFolder<T, V extends AbstractList<T>, S extends Abs
 	
 	@Override
 	public void valueChanged(ListSelectionEvent e) {
-		return;
+		if (this.list.folders.getSelectedIndex() != -1) {
+			this.info.update(this.list.items.get(list.folders.getSelectedIndex()));
+		}
 	}
 	
 	public V createList() {

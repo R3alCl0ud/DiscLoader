@@ -7,9 +7,7 @@ import javax.swing.event.ListSelectionEvent;
 
 import io.discloader.discloader.common.DiscLoader;
 import io.discloader.discloader.entity.Guild;
-import io.discloader.guimod.gui.info.AbstractInfo;
 import io.discloader.guimod.gui.info.GuildInfo;
-import io.discloader.guimod.gui.list.AbstractList;
 import io.discloader.guimod.gui.list.GuildList;
 
 /**

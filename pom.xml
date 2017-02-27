@@ -86,6 +86,11 @@
 			<artifactId>json</artifactId>
 			<version>20160810</version>
 		</dependency>
+		<dependency>
+			<groupId>com.sedmelluq</groupId>
+			<artifactId>lavaplayer</artifactId>
+			<version>1.2.21</version>
+		</dependency>
 	</dependencies>
 	<distributionManagement>
 		<repository>
@@ -99,6 +104,13 @@
 			<url>http://discloader.io:8080/repository/snapshots/</url>
 		</snapshotRepository>
 	</distributionManagement>
+	<repositories>
+		<repository>
+			<id>central</id>
+			<name>bintray</name>
+			<url>http://jcenter.bintray.com</url>
+		</repository>
+	</repositories>
 	<build>
 		<plugins>
 			<plugin>

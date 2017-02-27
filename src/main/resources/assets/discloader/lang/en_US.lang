@@ -1,0 +1,6 @@
+command.help.name=Help
+command.help.desc=The help command
+command.mods.name=Mods
+command.mods.desc=Lists currently loaded mods
+command.invite.name=Invite
+command.invite.desc=Gives you my invite link

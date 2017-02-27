@@ -3,8 +3,6 @@ package io.discloader.discloader.entity.sendable;
 import java.io.File;
 import java.util.ArrayList;
 
-import org.json.JSONObject;
-
 import io.discloader.discloader.entity.embed.EmbedAuthor;
 import io.discloader.discloader.entity.embed.EmbedField;
 import io.discloader.discloader.entity.embed.EmbedFooter;

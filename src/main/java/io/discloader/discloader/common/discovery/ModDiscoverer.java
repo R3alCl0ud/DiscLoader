@@ -5,6 +5,7 @@ import io.discloader.discloader.client.registry.TextureRegistry;
 import io.discloader.discloader.common.start.Main;
 
 import java.io.File;
+import java.io.IOException;
 import java.net.URL;
 import java.net.URLClassLoader;
 import java.util.ArrayList;
@@ -14,6 +15,8 @@ import java.util.jar.JarFile;
 import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.zip.ZipException;
+import java.util.zip.ZipFile;
 
 /**
  * 
@@ -26,7 +29,7 @@ public class ModDiscoverer {
 	private static Pattern modExt = Pattern.compile(".(jar|zip)");
 
 	private static Logger logger = Main.getLogger();
-	
+
 	public static final File modsDir = new File("./mods");
 
 	public static void checkModDir() {
@@ -45,7 +48,8 @@ public class ModDiscoverer {
 			File modFile = files[i];
 			Matcher modMatch = modExt.matcher(modFile.getName());
 			if (!modMatch.find()) {
-				ProgressLogger.LOG.warning(String.format("Found non-mod file in mods directory: %s", modFile.getName()));
+				ProgressLogger.LOG
+						.warning(String.format("Found non-mod file in mods directory: %s", modFile.getName()));
 				continue;
 			}
 			ProgressLogger.step(i + 1, files.length, modFile.getName());
@@ -67,11 +71,16 @@ public class ModDiscoverer {
 					}
 					modJar.close();
 				} catch (Exception e) {
-//					e.getCause().fillInStackTrace().
+					// e.getCause().fillInStackTrace().
 					e.printStackTrace();
 					logger.warning(String.format("Unable to load JarFile: %s", modFile.getName()));
-					logger.severe(String.format("[%s.%s:%d]: %s", modFile.getName(), e.getStackTrace()[0].getMethodName(), e.getStackTrace()[0].getLineNumber(), e.getLocalizedMessage()));
+					logger.severe(
+							String.format("[%s.%s:%d]: %s", modFile.getName(), e.getStackTrace()[0].getMethodName(),
+									e.getStackTrace()[0].getLineNumber(), e.getLocalizedMessage()));
 				}
+			}
+			if (modMatch.group(1).toLowerCase().equals("zip") || modMatch.group(1).toLowerCase().equals("jar")) {
+				ZipReader.readZip(modFile);
 			}
 
 		}
@@ -82,10 +91,10 @@ public class ModDiscoverer {
 		ArrayList<JarEntry> entries = new ArrayList<JarEntry>();
 		while (jarDir.hasMoreElements()) {
 			JarEntry entry = jarDir.nextElement();
-			
+
 			if (entry.getName().startsWith("assets")) {
 				TextureRegistry.resourceHandler.addResource(entry);
-			} 
+			}
 			if (entry.isDirectory() || !entry.getName().endsWith(".class")) {
 				continue;
 			}
@@ -93,10 +102,4 @@ public class ModDiscoverer {
 		}
 		return entries;
 	}
-
-	private static void registerAssets(JarEntry assetsDirectory) {
-		
-	}
-	
-	
 }

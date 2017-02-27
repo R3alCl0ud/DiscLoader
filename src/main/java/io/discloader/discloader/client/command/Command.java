@@ -4,7 +4,7 @@ import io.discloader.discloader.client.registry.TextureRegistry;
 import io.discloader.discloader.client.render.util.IIcon;
 import io.discloader.discloader.common.event.MessageCreateEvent;
 import io.discloader.discloader.common.registry.CommandRegistry;
-import io.discloader.discloader.util.NumericStringMap;
+import io.discloader.discloader.util.DLNameSpacedMap;
 
 /**
  * @author Perry Berman
@@ -14,7 +14,7 @@ public class Command {
 
 	private String unlocalizedName;
 	
-	private String textureName;
+	private String textureName = "discloader:missing-texture";
 	
 	private String description = "default description";
 	
@@ -24,16 +24,16 @@ public class Command {
 	
 	protected IIcon icon;
 
-	protected static NumericStringMap<Command> commands = CommandRegistry.commands;
+	protected static DLNameSpacedMap<Command> commands = CommandRegistry.commands;
 	
 	public Command() {
 		this.icon = null;
 	}
 
 	public static void registerCommands() {
-		commands.addObject(0, "help", new CommandHelp().setUnlocalizedName("help"));
-		commands.addObject(1, "mods", new CommandMods());
-		commands.addObject(2, "invite", new CommandInvite());
+		commands.addObject(0, "help", new CommandHelp().setUnlocalizedName("help").setId(0));
+		commands.addObject(1, "mods", new CommandMods().setId(1));
+		commands.addObject(2, "invite", new CommandInvite().setId(2));
 	}
 	
 	

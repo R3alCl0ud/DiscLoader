@@ -1,9 +1,18 @@
 package io.discloader.discloader.common.start;
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.util.ArrayList;
+import java.util.Locale;
+import java.util.TimerTask;
+import java.util.logging.Logger;
+
+import com.google.gson.Gson;
+
 import io.discloader.discloader.client.command.CommandHandler;
 import io.discloader.discloader.client.logger.DLLogger;
 import io.discloader.discloader.client.logger.ProgressLogger;
-import io.discloader.discloader.client.registry.TextureRegistry;
 import io.discloader.discloader.client.render.WindowFrame;
 import io.discloader.discloader.common.DiscLoader;
 import io.discloader.discloader.common.discovery.ModCandidate;
@@ -14,19 +23,11 @@ import io.discloader.discloader.common.event.DLPreInitEvent;
 import io.discloader.discloader.common.event.EventListenerAdapter;
 import io.discloader.discloader.common.event.GuildBanAddEvent;
 import io.discloader.discloader.common.event.MessageCreateEvent;
+import io.discloader.discloader.common.language.Language;
+import io.discloader.discloader.common.language.LanguageRegistry;
 import io.discloader.discloader.common.logger.DLErrorStream;
 import io.discloader.discloader.common.logger.DLPrintStream;
 import io.discloader.discloader.common.registry.ModRegistry;
-
-import java.io.File;
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.TimerTask;
-import java.util.logging.Logger;
-
-import com.google.gson.Gson;
 
 /**
  * DiscLoader client entry point
@@ -66,6 +67,7 @@ public class Main {
 			@Override
 			public void Ready(DiscLoader loader) {
 				LOGGER.fine(String.format("Ready as user %s#%s", loader.user.username, loader.user.discriminator));
+				System.out.print(LanguageRegistry.getLocalized("gui.tabcommands.name"));
 			}
 
 			@Override
@@ -81,14 +83,12 @@ public class Main {
 
 			@Override
 			public void ChannelCreate(ChannelCreateEvent e) {
-
 				LOGGER.fine(String.format("New Channel Created: %s", e.channel.name));
 
 			}
 
 			@Override
 			public void ChannelUpdate(ChannelUpdateEvent e) {
-
 				LOGGER.fine(String.format("Channel Updated: %s", e.channel.name));
 			}
 		});
@@ -100,6 +100,7 @@ public class Main {
 		options options = gson.fromJson(content, options.class);
 		token = options.auth.token;
 		parseArgs(args);
+
 		if (usegui) {
 			window = new WindowFrame(loader);
 		} else {

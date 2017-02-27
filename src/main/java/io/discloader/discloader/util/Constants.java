@@ -11,8 +11,11 @@ import java.time.OffsetDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
+import java.util.Locale;
 
 import com.google.gson.Gson;
+
+import io.discloader.discloader.common.language.Language;
 
 /**
  * A collection of all useful constants for DiscLoader
@@ -52,6 +55,9 @@ public class Constants {
 	public static final File MissingTexture = new File(
 			ClassLoader.getSystemResource("assets/discloader/texture/gui/icons/missing-icon.png").getFile());
 
+	public static final Language enUS = new Language(
+			ClassLoader.getSystemResourceAsStream("assets/discloader/lang/en_US.lang"), Locale.US);
+
 	public static final class Endpoints {
 		public static final String OAuth2 = String.format("%s/oauth2", API);
 		public static final String login = String.format("%s/auth/login", API);
@@ -59,9 +65,10 @@ public class Constants {
 		public static final String gateway = String.format("%s/gateway", API);
 		public static final String botGateway = String.format("%s/gateway/bot", API);
 		public static final String CDN = "https://cdn.discordapp.com";
-		
+
 		public static final String OAuth2Authorize(String clientID, String scope, int permissions) {
-			return String.format("%s/authorize?client_id=%s&scope=%s&permissions=%d", OAuth2, clientID, scope, permissions);
+			return String.format("%s/authorize?client_id=%s&scope=%s&permissions=%d", OAuth2, clientID, scope,
+					permissions);
 		}
 
 		public static final String invite(String id) {

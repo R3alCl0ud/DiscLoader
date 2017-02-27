@@ -3,6 +3,11 @@
  */
 package io.discloader.discloader.client.command;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 import io.discloader.discloader.common.discovery.ModContainer;
 import io.discloader.discloader.common.event.MessageCreateEvent;
 import io.discloader.discloader.common.registry.ModRegistry;
@@ -15,14 +20,21 @@ import io.discloader.discloader.util.Constants;
  */
 public class CommandMods extends Command {
 
+	private final String regex = "\\/\\/mods (.*)";
+	private final Pattern pattern = Pattern.compile(regex);
+	
 	public CommandMods() {
 		super();
-		this.setUnlocalizedName("mods").setTextureName("discloader:mods").setDescription("mods").setUsage("words");
+		this.setUnlocalizedName("mods").setTextureName("discloader:mods").setDescription("mods").setUsage("mods [<mod>]");
 	}
 
 	public void execute(MessageCreateEvent e) {
 		RichEmbed embed = new RichEmbed().setColor(0x55cdF2);
-
+		Matcher modMatch = pattern.matcher(e.message.content);
+		if (modMatch.find()) {
+			System.out.println(modMatch.group(1));
+		}
+		
 		if (e.args.length == 2) {
 			String mod = e.args[1];
 			System.out.println(mod);
@@ -34,11 +46,13 @@ public class CommandMods extends Command {
 						.addField("Author(s)", mc.modInfo.author(), true);
 			}
 		} else {
-			String mods = "";
+			ArrayList<String> modList = new ArrayList<String>();
 			for (ModContainer mc : ModRegistry.mods.values()) {
-				mods = String.format("%s%s, ", mods, mc.modInfo.name());
+				modList.add(String.format("%s", mc.modInfo.name()));
 			}
 			embed.setThumbnail(this.getIcon().getFile());
+			String mods = Arrays.toString(modList.toArray());
+			mods = mods.substring(1, mods.length() - 1);
 			embed.addField("Mods", mods);
 		}
 		e.message.channel.sendEmbed(embed);

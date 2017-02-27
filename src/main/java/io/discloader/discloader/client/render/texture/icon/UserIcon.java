@@ -49,12 +49,13 @@ public class UserIcon extends AbstractTexture {
 		try {
 			imgURL = new URL(url);
 		} catch (MalformedURLException e) {
+			e.printStackTrace();
 			imgURL = ClassLoader.getSystemResource("assets/discloader/texture/gui/icons/missing-icon.png");
 		}
 		if (imgURL != null) {
 			return new ImageIcon(imgURL);
 		} else {
-			System.err.println("Couldn't find file: " + url);
+			System.err.print("Couldn't find file: " + url);
 			return null;
 		}
 	}

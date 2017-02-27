@@ -9,27 +9,27 @@ import java.util.HashMap;
  * @author Perry Berman
  * @since 0.0.1
  */
-public class NumericStringMap<T> {
+public class DLNameSpacedMap<T> {
 
 	private HashMap<Integer, T> data;
-	private HashMap<Integer, Integer> ids;
+	private HashMap<T, Integer> ids;
 	private HashMap<String, Integer> idBySpecial;
 	private HashMap<String, Integer> idByChar;
 	private HashMap<Integer, String> specialIDs;
 	private HashMap<Integer, String> charIDs;
 
-	public NumericStringMap() {
+	public DLNameSpacedMap() {
 		this.data = new HashMap<Integer, T>();
-		this.charIDs = new HashMap<Integer, String>();
+		this.ids = new HashMap<T, Integer>();
+		this.idBySpecial = new HashMap<String, Integer>();
 		this.idByChar = new HashMap<String, Integer>();
 		this.specialIDs = new HashMap<Integer, String>();
-		this.idBySpecial = new HashMap<String, Integer>();
-		this.ids = new HashMap<Integer, Integer>();
+		this.charIDs = new HashMap<Integer, String>();
 	}
 
 	public void set(int id, String charID, String specialID, T data) {
 		this.data.put(id, data);
-		this.ids.put(id, id);
+		this.ids.put(data, id);
 		this.charIDs.put(id, charID);
 		this.idByChar.put(charID, id);
 		this.specialIDs.put(id, specialID);
@@ -37,7 +37,7 @@ public class NumericStringMap<T> {
 	}
 
 	public void addObject(int id, String charID, T item) {
-		 this.set(id,charID, charID, item);
+		this.set(id, charID, charID, item);
 	}
 
 	public String getCharID(int id) {
@@ -64,14 +64,14 @@ public class NumericStringMap<T> {
 		return this.ids.containsKey(id);
 	}
 
-	public boolean containsCharID(String charID) {
-		return this.idByChar.containsKey(charID);
+	public boolean containsID(String id) {
+		if (this.idByChar.containsKey(id))
+			return true;
+		if (this.idBySpecial.containsKey(id))
+			return true;
+		return false;
 	}
 
-	public boolean containsSpecialID(String specialID) {
-		return this.idBySpecial.containsKey(specialID);
-	}
-	
 	public Collection<String> collectionCharIDs() {
 		return this.charIDs.values();
 	}
@@ -79,7 +79,7 @@ public class NumericStringMap<T> {
 	public Collection<String> collectionSpecialIDs() {
 		return this.charIDs.values();
 	}
-	
+
 	public Collection<T> entries() {
 		return this.data.values();
 	}

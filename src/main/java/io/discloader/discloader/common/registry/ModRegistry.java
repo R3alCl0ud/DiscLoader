@@ -14,7 +14,9 @@ import io.discloader.discloader.common.discovery.ModCandidate;
 import io.discloader.discloader.common.discovery.ModContainer;
 import io.discloader.discloader.common.event.DLPreInitEvent;
 import io.discloader.discloader.common.event.IEventListener;
+import io.discloader.discloader.common.language.LanguageRegistry;
 import io.discloader.discloader.common.start.Main;
+import io.discloader.discloader.util.Constants;
 
 public class ModRegistry {
 
@@ -90,12 +92,15 @@ public class ModRegistry {
 		ProgressLogger.phase(2, 3, "PreINIT");
 		ProgressLogger.stage(1, 3, "Begin PreInit");
 		Command.registerCommands();
-		ProgressLogger.progress(0, 0, "");
+		ProgressLogger.stage(2, 3, "Registering Default Language");
+		LanguageRegistry.registerLanguage(Constants.enUS);
+		
+//		ProgressLogger.progress(0, 0, "");
 
 		TimerTask pre = new TimerTask() {
 			@Override
 			public void run() {
-				ProgressLogger.stage(2, 2, "Execute PreInit");
+				ProgressLogger.stage(3, 3, "Execute PreInit");
 				preInit();
 			}
 		};

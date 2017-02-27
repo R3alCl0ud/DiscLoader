@@ -53,7 +53,7 @@ public class DiscRegistry {
 	
 	public static Command getCommand(String label) {
 		for (String key : commands.keySet()) {
-			String modID = key.split(":")[0];
+//			String modID = key.split(":")[0];
 			String commandID = key.split(":")[1];
 			if (commandID.equals(label)) {
 				System.out.printf("%s\n", key);

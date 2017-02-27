@@ -3,15 +3,19 @@ package io.discloader.guimod.gui;
 import java.awt.GridLayout;
 import java.awt.Image;
 import java.net.URL;
+import java.util.Locale;
 
 import javax.swing.ImageIcon;
 import javax.swing.JPanel;
 import javax.swing.JTabbedPane;
 
+import io.discloader.discloader.client.command.Command;
 import io.discloader.discloader.common.DiscLoader;
 import io.discloader.discloader.common.discovery.ModContainer;
+import io.discloader.discloader.common.language.LanguageRegistry;
 import io.discloader.discloader.entity.Guild;
 import io.discloader.discloader.entity.User;
+import io.discloader.guimod.gui.tab.CommandsTab;
 import io.discloader.guimod.gui.tab.GuildFolders;
 import io.discloader.guimod.gui.tab.ModsFolder;
 import io.discloader.guimod.gui.tab.UserFolders;
@@ -24,8 +28,10 @@ public class TabbedPanel extends JPanel {
 	public TabbedPanel(DiscLoader loader) {
 		super(new GridLayout(1, 1));
 		this.loader = loader;
+//		System.out.print();
 		JTabbedPane tabbedPane = new JTabbedPane();
 		tabbedPane.addTab("Mods", new ModsFolder<ModContainer>(this.loader));
+		tabbedPane.addTab(LanguageRegistry.getLocalized("gui.tabcommands.name"), new CommandsTab<Command>(this.loader));
 		tabbedPane.addTab("Users",
 				resizeImageIcon(createImageIcon("texture.gui.icons.missing-icon", "Missing Icon"), 16, 16),
 				new UserFolders<User>(this.loader), "Users");

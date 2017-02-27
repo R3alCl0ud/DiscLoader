@@ -4,7 +4,6 @@ import java.awt.Color;
 import java.awt.Dimension;
 
 import javax.swing.JButton;
-import javax.swing.JScrollBar;
 import javax.swing.plaf.basic.BasicScrollBarUI;
 
 /**
@@ -19,8 +18,6 @@ public class ScrollBar extends BasicScrollBarUI {
 
 	protected void configureScrollBarColors() {
 		this.thumbColor = new Color(0x7289DA);
-//		this.decrButton.setVisible(false);
-//		this.incrButton.setVisible(false);
 	}
 	
 	protected JButton createDecreaseButton(int orientation) {

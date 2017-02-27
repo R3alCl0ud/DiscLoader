@@ -2,12 +2,10 @@ package io.discloader.guimod.gui.tab;
 
 import javax.swing.event.ListSelectionEvent;
 
-import io.discloader.guimod.gui.info.AbstractInfo;
-import io.discloader.guimod.gui.info.ModInfo;
-import io.discloader.guimod.gui.list.AbstractList;
-import io.discloader.guimod.gui.list.ModList;
 import io.discloader.discloader.common.DiscLoader;
 import io.discloader.discloader.common.discovery.ModContainer;
+import io.discloader.guimod.gui.info.ModInfo;
+import io.discloader.guimod.gui.list.ModList;
 
 public class ModsFolder<T extends ModContainer> extends AbstractFolder<T, ModList<T>, ModInfo<T>> {
 

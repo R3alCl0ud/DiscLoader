@@ -3,7 +3,7 @@ package io.discloader.discloader.common.registry;
 import io.discloader.discloader.client.command.Command;
 import io.discloader.discloader.client.logger.ProgressLogger;
 import io.discloader.discloader.common.discovery.ModContainer;
-import io.discloader.discloader.util.NumericStringMap;
+import io.discloader.discloader.util.DLNameSpacedMap;
 
 /**
  * @author Perry Berman
@@ -14,7 +14,7 @@ public class CommandRegistry {
 	private static int minID = 128;
 	private static int maxID = 2048;
 
-	public static final NumericStringMap<Command> commands = new NumericStringMap<Command>();
+	public static final DLNameSpacedMap<Command> commands = new DLNameSpacedMap<Command>();
 
 	public static String addPrefix(String name) {
 		int index = name.lastIndexOf(":");

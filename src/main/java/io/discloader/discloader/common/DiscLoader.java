@@ -5,6 +5,8 @@ import java.util.Timer;
 import java.util.concurrent.CompletableFuture;
 
 import com.google.gson.Gson;
+import com.sedmelluq.discord.lavaplayer.player.AudioPlayerManager;
+import com.sedmelluq.discord.lavaplayer.player.DefaultAudioPlayerManager;
 
 import io.discloader.discloader.client.command.CommandHandler;
 import io.discloader.discloader.client.logger.ProgressLogger;
@@ -42,7 +44,7 @@ public class DiscLoader {
 	
 	public RESTManager rest;
 	
-	
+	public final AudioPlayerManager playerManager;
 
 	public static final HashMap<String, IEventListener> handlers = new HashMap<String, IEventListener>();
 	
@@ -124,6 +126,8 @@ public class DiscLoader {
 		this.guilds = new HashMap<String, Guild>();
 
 		this.timer = new Timer();
+		
+		this.playerManager = new DefaultAudioPlayerManager();
 
 		this.ready = false;
 	}

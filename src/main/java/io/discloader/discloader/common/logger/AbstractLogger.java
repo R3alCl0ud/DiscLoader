@@ -2,9 +2,8 @@ package io.discloader.discloader.common.logger;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.Date;
-import java.util.logging.Logger;
 import java.time.Instant;
+import java.util.Date;
 
 /**
  * @author Perry Berman
@@ -23,6 +22,7 @@ public abstract class AbstractLogger implements ILogger {
 	}
 
 	@Override
+	@SuppressWarnings("deprecation")
 	public String log(String text) throws IOException {
 		Date time = Date.from(Instant.now());
 		long days = Math.round(time.getTime() / 86400000);
