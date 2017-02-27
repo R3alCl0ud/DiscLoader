@@ -24,7 +24,6 @@ public abstract class EventListenerAdapter implements IEventListener {
 
 	@Override
 	public void PhaseChange() {
-
 	}
 
 	@Override
@@ -48,11 +47,11 @@ public abstract class EventListenerAdapter implements IEventListener {
 	}
 
 	@Override
-	public void GuildMemberAdd(GuildMember member) {
+	public void GuildMemberAdd(GuildMemberAddEvent e) {
 	}
 
 	@Override
-	public void GuildMemberRemove(GuildMember member) {
+	public void GuildMemberRemove(GuildMemberRemoveEvent e) {
 	}
 
 	@Override

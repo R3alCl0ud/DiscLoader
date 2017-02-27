@@ -13,6 +13,8 @@ import io.discloader.discloader.client.logger.ProgressLogger;
 import io.discloader.discloader.client.registry.TextureRegistry;
 import io.discloader.discloader.client.render.texture.icon.GuildIcon;
 import io.discloader.discloader.common.DiscLoader;
+import io.discloader.discloader.common.event.GuildMemberAddEvent;
+import io.discloader.discloader.common.event.IEventListener;
 import io.discloader.discloader.entity.channels.TextChannel;
 import io.discloader.discloader.entity.channels.VoiceChannel;
 import io.discloader.discloader.network.json.ChannelJSON;
@@ -153,7 +155,6 @@ public class Guild {
 			this.roles.clear();
 			for (RoleJSON role : data.roles) {
 				this.addRole(role);
-//				ProgressLogger.progress(this.roles.size(), data.roles.length, String.format("Cached Role: %s", role.id));
 			}
 		}
 		ProgressLogger.step(2, 5, "Caching Members");
@@ -169,7 +170,6 @@ public class Guild {
 			this.voiceChannels.clear();
 			for (ChannelJSON channel : data.channels) {
 				this.loader.addChannel(channel, this);
-//				ProgressLogger.progress(this.textChannels.size() + this.voiceChannels.size(), data.channels.length, String.format("Cached Channel: %s", channel.id));
 			}
 		}
 		ProgressLogger.step(4, 5, "Caching Presences");
@@ -177,11 +177,9 @@ public class Guild {
 			this.presences.clear();
 			for (PresenceJSON presence : data.presences) {
 				this.setPresence(presence);
-//				ProgressLogger.progress(this.presences.size(), data.presences.length, String.format("Cached Presence: %s", presence.user.id));
 			}
 		}
 		ProgressLogger.step(5, 5, "Registering Icon");
-//		ProgressLogger.progress(1, 1, String.format("IconURL: %s", this.iconURL));
 		TextureRegistry.registerGuildIcon(new GuildIcon(this));
 		this.available = !data.unavailable;
 	}
@@ -193,7 +191,11 @@ public class Guild {
 		if (member.id.equals(this.ownerID))
 			this.owner = member;
 		if (!exists && this.loader.ready) {
-			this.loader.emit(Constants.Events.GUILD_MEMBER_ADD, member);
+			GuildMemberAddEvent event = new GuildMemberAddEvent(member);
+			this.loader.emit(Constants.Events.GUILD_MEMBER_ADD, event);
+			for (IEventListener e : DiscLoader.handlers.values()) {
+				e.GuildMemberAdd(event);
+			}
 		}
 		return member;
 	}
@@ -206,7 +208,11 @@ public class Guild {
 		if (member.id.equals(this.ownerID))
 			this.owner = member;
 		if (this.loader.ready == true && emitEvent && !exists) {
-			this.loader.emit(Constants.Events.GUILD_MEMBER_ADD, member);
+			GuildMemberAddEvent event = new GuildMemberAddEvent(member);
+			this.loader.emit(Constants.Events.GUILD_MEMBER_ADD, event);
+			for (IEventListener e : DiscLoader.handlers.values()) {
+				e.GuildMemberAdd(event);
+			}
 		}
 		
 		return member;

@@ -49,7 +49,6 @@ public class UserIcon extends AbstractTexture {
 		try {
 			imgURL = new URL(url);
 		} catch (MalformedURLException e) {
-			e.printStackTrace();
 			imgURL = ClassLoader.getSystemResource("assets/discloader/texture/gui/icons/missing-icon.png");
 		}
 		if (imgURL != null) {

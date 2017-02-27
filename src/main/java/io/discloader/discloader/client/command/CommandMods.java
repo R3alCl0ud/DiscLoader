@@ -31,10 +31,6 @@ public class CommandMods extends Command {
 	public void execute(MessageCreateEvent e) {
 		RichEmbed embed = new RichEmbed().setColor(0x55cdF2);
 		Matcher modMatch = pattern.matcher(e.message.content);
-		if (modMatch.find()) {
-			System.out.println(modMatch.group(1));
-		}
-		
 		if (e.args.length == 2) {
 			String mod = e.args[1];
 			System.out.println(mod);

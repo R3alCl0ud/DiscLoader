@@ -11,7 +11,7 @@ public interface IEventListener {
 	/**
 	 * Emitted whenever a new packet is recieved from the gateway
 	 * 
-	 * @param raw  
+	 * @param raw
 	 */
 	void raw(String raw);
 
@@ -21,11 +21,12 @@ public interface IEventListener {
 	 * registry is attempting to load. All commands <u>must</u> be registered on
 	 * this event being called in your mod.
 	 * 
-	 * @param preInitEvent 
+	 * @param preInitEvent
 	 */
 	void PreInit(DLPreInitEvent preInitEvent);
-	
+
 	/**
+	 * Gets emitted during startup, when the current startup phase changes
 	 * 
 	 */
 	void PhaseChange();
@@ -34,8 +35,7 @@ public interface IEventListener {
 	 * Emitted when all guilds are available, and all members in non-large
 	 * {@link Guild guilds} are cached.
 	 * 
-	 * @param loader
-	 *            The current instance of {@link DiscLoader}
+	 * @param loader The current instance of {@link DiscLoader}
 	 */
 	void Ready(DiscLoader loader);
 
@@ -62,12 +62,12 @@ public interface IEventListener {
 	/**
 	 * 
 	 */
-	void GuildMemberAdd(GuildMember member);
+	void GuildMemberAdd(GuildMemberAddEvent event);
 
 	/**
 	 * 
 	 */
-	void GuildMemberRemove(GuildMember member);
+	void GuildMemberRemove(GuildMemberRemoveEvent e);
 
 	/**
 	 * @param e

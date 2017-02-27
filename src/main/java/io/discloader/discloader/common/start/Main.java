@@ -51,6 +51,7 @@ public class Main {
 		LOGGER = new DLLogger("Main Thread").getLogger();
 		System.setOut(new DLPrintStream(System.out, LOGGER));
 		System.setErr(new DLErrorStream(System.err, LOGGER));
+		System.setProperty("http.agent", "DiscLoader");
 		DiscLoader.addEventHandler(new EventListenerAdapter() {
 			@Override
 			public void raw(String text) {
@@ -67,7 +68,7 @@ public class Main {
 			@Override
 			public void Ready(DiscLoader loader) {
 				LOGGER.fine(String.format("Ready as user %s#%s", loader.user.username, loader.user.discriminator));
-				System.out.print(LanguageRegistry.getLocalized("gui.tabcommands.name"));
+//				System.out.print(LanguageRegistry.getLocalized("gui.tabcommands.name"));
 			}
 
 			@Override

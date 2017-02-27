@@ -6,9 +6,8 @@ import java.util.concurrent.CompletableFuture;
 import io.discloader.discloader.entity.GuildMember;
 import io.discloader.discloader.entity.Overwrite;
 import io.discloader.discloader.entity.Permission;
-import io.discloader.discloader.entity.channels.Channel;
 
-public interface IGuildChannel {
+public interface IGuildChannel extends IChannel {
 	
 	/**
 	 * A {@link HashMap} of the channel's {@link GuildMember members}. Indexed
@@ -21,11 +20,11 @@ public interface IGuildChannel {
 	 */
 	HashMap<String, GuildMember> members = new HashMap<String, GuildMember>();
 	
-	CompletableFuture<Channel> setName(String name);
+	CompletableFuture<IGuildChannel> setName(String name);
 	
-	CompletableFuture<Channel> setPosition(int position);
+	CompletableFuture<IGuildChannel> setPosition(int position);
 	
-	CompletableFuture<Channel> setPermissions(int allow, int deny, String type);
+	CompletableFuture<IGuildChannel> setPermissions(int allow, int deny, String type);
 
 	HashMap<String, GuildMember> getMembers();
 	

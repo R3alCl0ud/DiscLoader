@@ -52,7 +52,6 @@ public class CommandHelp extends Command {
 			Command[] cmds = CommandRegistry.commands.entries().toArray(new Command[size]);
 			for (int i = 0; i < 10 && i < cmds.length; i++) {
 				String desc = this.getCommandDesc(cmds[i]);
-				System.out.print(desc);
 				commands = String.format("%s**%s**: %s\n", commands, cmds[i].getUnlocalizedName(),
 						desc);
 			}
@@ -64,13 +63,9 @@ public class CommandHelp extends Command {
 
 	private String getCommandDesc(Command command) {
 		String desc = LanguageRegistry.getLocalized(Locale.US, "command", command.getUnlocalizedName(), "desc");
-		if (desc != null) {
-			System.out.print(String.format("Desc.len: %d", desc.length()));
-		}
 		if (desc == null || desc.length() < 1) {
 			return command.getDescription();
 		}
-//		System.out.print(desc);
 		return desc;
 	}
 	

@@ -2,10 +2,10 @@ package io.discloader.discloader.entity.impl;
 
 import java.util.concurrent.CompletableFuture;
 
-import io.discloader.discloader.entity.channels.VoiceChannel;
+import io.discloader.discloader.entity.voice.VoiceConnection;
 
-public interface IVoiceChannel {
-	CompletableFuture<?> join();
+public interface IVoiceChannel extends IChannel {
+	CompletableFuture<VoiceConnection> join();
 	
-	CompletableFuture<VoiceChannel> leave();
+	CompletableFuture<VoiceConnection> leave();
 }
