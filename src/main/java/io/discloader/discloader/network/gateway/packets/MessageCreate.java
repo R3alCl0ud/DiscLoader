@@ -30,24 +30,29 @@ public class MessageCreate extends DLPacket {
 	@Override
 	public void handle(SocketPacket packet) {
 		MessageJSON data = this.gson.fromJson(gson.toJson(packet.d), MessageJSON.class);
-		ITextChannel channel = this.socket.loader.textChannels.get(data.channel_id);
-		if (channel == null)
-			channel = this.socket.loader.privateChannels.get(data.channel_id);
-		Message message = new Message(channel, data);
-		channel.getMessages().put(message.id, message);
-		MessageCreateEvent event = new MessageCreateEvent(message);
-		if (channel.getType() == ChannelType.TEXT) {
-			this.socket.loader.emit(Constants.Events.MESSAGE_CREATE, event);
-			for (IEventListener e : DiscLoader.handlers.values()) {
-				e.MessageCreate(event);
+//		System.out.print("Gets here?");
+		try {
+			ITextChannel channel = this.socket.loader.textChannels.get(data.channel_id);
+			if (channel == null)
+				channel = this.socket.loader.privateChannels.get(data.channel_id);
+			Message message = new Message(channel, data);
+			channel.getMessages().put(message.id, message);
+			MessageCreateEvent event = new MessageCreateEvent(message);
+			if (channel.getType() == ChannelType.TEXT) {
+				this.socket.loader.emit(Constants.Events.MESSAGE_CREATE, event);
+				for (IEventListener e : DiscLoader.handlers.values()) {
+					e.MessageCreate(event);
+				}
+			} else {
+				this.loader.emit(Constants.Events.PRIVATE_MESSAGE_CREATE, event);
+				for (IEventListener e : DiscLoader.handlers.values()) {
+					e.PrivateMessageCreate(event);
+				}
 			}
-		} else {
-			this.loader.emit(Constants.Events.PRIVATE_MESSAGE_CREATE, event);
-			for (IEventListener e : DiscLoader.handlers.values()) {
-				e.PrivateMessageCreate(event);
-			}
+			CommandHandler.handleMessageCreate(event);
+		} catch (Exception e) {
+			e.printStackTrace();
 		}
-		CommandHandler.handleMessageCreate(event);
 
 	}
 

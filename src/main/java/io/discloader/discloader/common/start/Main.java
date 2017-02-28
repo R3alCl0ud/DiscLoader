@@ -80,7 +80,7 @@ public class Main {
 		DiscLoader.addEventHandler(new EventListenerAdapter() {
 			@Override
 			public void raw(String text) {
-				LOGGER.warning(text);
+//				LOGGER.warning(text);
 			}
 
 			@Override

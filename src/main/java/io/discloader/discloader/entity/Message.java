@@ -118,6 +118,7 @@ public class Message {
 		} else {
 			TextChannel textChannel = (TextChannel) channel;
 			this.loader = textChannel.loader;
+			this.guild = textChannel.guild;
 		}
 
 		if (!this.loader.users.containsKey(data.author.id)) {
@@ -131,9 +132,7 @@ public class Message {
 		this.timestamp = Constants.parseISO8601(data.timestamp);
 
 		this.editedAt = data.edited_timestamp != null ? Constants.parseISO8601(data.edited_timestamp) : null;
-	}
-	
-	public void setup(MessageJSON data) {
+		
 		this.member = this.guild != null ? this.guild.members.get(this.author.id) : null;
 
 		this.editable = this.loader.user.id == this.author.id;
@@ -144,8 +143,6 @@ public class Message {
 
 		this.nonce = data.nonce;
 	}
-	
-	
 
 	/**
 	 * @param data

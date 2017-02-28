@@ -16,6 +16,7 @@ public class GuildInfo<T> extends AbstractInfo<T> {
 	public final JLabel id;
 	public final JLabel name;
 	public final JLabel icon;
+	public final JLabel region;
 	
 	public GuildInfo() {
 		super();
@@ -23,6 +24,7 @@ public class GuildInfo<T> extends AbstractInfo<T> {
 		this.add(this.icon = new JLabel());
 		this.add(this.name = new JLabel("Name: "));
 		this.add(this.id = new JLabel("ID: "));
+		this.add(this.region = new JLabel("Region: "));
 		this.add(new Box.Filler(new Dimension(0, 300), new Dimension(0, 400), new Dimension(0, (int) Constants.screenSize.getHeight())));
 		this.id.setForeground(new Color(0xFFFFFF));
 		this.name.setForeground(new Color(0xFFFFFF));
@@ -34,6 +36,7 @@ public class GuildInfo<T> extends AbstractInfo<T> {
 		Guild guild = (Guild) object;
 		this.id.setText(String.format("ID: %s", guild.id));
 		this.name.setText(String.format("Name: %s", guild.name));
+		this.region.setText(String.format("Region: %s", guild.region.id));
 	}
 
 }

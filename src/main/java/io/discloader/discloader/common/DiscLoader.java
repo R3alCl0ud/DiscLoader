@@ -272,13 +272,11 @@ public class DiscLoader {
 	}
 
 	public void checkReady() {
-		System.out.println("test");
 		if (this.socket.status != Constants.Status.READY && this.socket.status != Constants.Status.NEARLY) {
 			int unavailable = 0;
 			for (Guild guild : this.guilds.values()) {
 				unavailable += guild.available ? 0 : 1;
 			}
-			System.out.print(String.format("unavailable: %d", unavailable));
 			ProgressLogger.progress(this.guilds.size() - unavailable, this.guilds.size(), "Guilds Cached");
 			if (unavailable == 0) {
 				for (Guild guild : this.guilds.values()) {
