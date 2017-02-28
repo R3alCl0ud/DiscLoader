@@ -1,6 +1,12 @@
 package io.discloader.discloader.client.render;
 
-import java.awt.BorderLayout;
+import io.discloader.discloader.client.logger.ProgressLogger;
+import io.discloader.discloader.client.render.panel.LoadingPanel;
+import io.discloader.discloader.common.DiscLoader;
+import io.discloader.discloader.common.discovery.ModCandidate;
+import io.discloader.discloader.common.discovery.ModDiscoverer;
+import io.discloader.discloader.common.registry.ModRegistry;
+
 import java.awt.Color;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
@@ -11,25 +17,18 @@ import java.util.TimerTask;
 import javax.swing.ImageIcon;
 import javax.swing.JFrame;
 
-import io.discloader.discloader.client.logger.ProgressLogger;
-import io.discloader.discloader.client.render.panel.LoadingPanel;
-import io.discloader.discloader.common.DiscLoader;
-import io.discloader.discloader.common.discovery.ModCandidate;
-import io.discloader.discloader.common.discovery.ModDiscoverer;
-import io.discloader.discloader.common.registry.ModRegistry;
-import io.discloader.guimod.gui.TabbedPanel;
-
 /**
+ * 
+ * 
  * @author Perry Berman
- *
+ * 
  */
 public class WindowFrame extends JFrame {
 	private static final long serialVersionUID = -6329873205165995031L;
 	public DiscLoader loader;
-//	public TabbedPanel panel;
-	
+
 	public static final LoadingPanel loading = new LoadingPanel();
-	
+
 	protected ImageIcon createImageIcon(String path, String description) {
 		URL imgURL = ClassLoader.getSystemResource(String.format("assets/discloader/%s.png", path.replace('.', '/')));
 		if (imgURL != null) {
@@ -40,6 +39,10 @@ public class WindowFrame extends JFrame {
 		}
 	}
 
+	/**
+	 * Creates a new WindowFrame
+	 * @param loader The current instance of DiscLoader
+	 */
 	public WindowFrame(DiscLoader loader) {
 		this.loader = loader;
 		this.setSize(960, 600);
@@ -48,7 +51,7 @@ public class WindowFrame extends JFrame {
 		this.setTitle("DiscLoader");
 		this.setBackground(new Color(0x2C2F33));
 		this.setVisible(true);
-//		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		this.addWindowListener(new WindowListener() {
 
 			@Override
@@ -64,12 +67,12 @@ public class WindowFrame extends JFrame {
 			@Override
 			public void windowClosing(WindowEvent arg0) {
 				System.out.println("Window Closing");
-				
+
 			}
 
 			@Override
 			public void windowDeactivated(WindowEvent arg0) {
-				
+
 			}
 
 			@Override
@@ -103,7 +106,7 @@ public class WindowFrame extends JFrame {
 								ProgressLogger.stage(2, 3, "Discovering Mod Containers");
 								ModRegistry.checkCandidates(candidates);
 							}
-							
+
 						};
 						loader.timer.schedule(checkCandidates, 500);
 					}
@@ -113,14 +116,14 @@ public class WindowFrame extends JFrame {
 
 		});
 	}
-	
+
 	public void postInit() {
-//		this.remove(loading);
-//		this.panel = new TabbedPanel(this.loader);
-//		this.revalidate();
-//		this.add(this.panel, BorderLayout.CENTER);
-//		this.revalidate();
-//		this.repaint();
+		// this.remove(loading);
+		// this.panel = new TabbedPanel(this.loader);
+		// this.revalidate();
+		// this.add(this.panel, BorderLayout.CENTER);
+		// this.revalidate();
+		// this.repaint();
 	}
-	
+
 }

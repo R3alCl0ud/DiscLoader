@@ -5,7 +5,6 @@ import io.discloader.discloader.client.registry.TextureRegistry;
 import io.discloader.discloader.common.start.Main;
 
 import java.io.File;
-import java.io.IOException;
 import java.net.URL;
 import java.net.URLClassLoader;
 import java.util.ArrayList;
@@ -15,8 +14,6 @@ import java.util.jar.JarFile;
 import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import java.util.zip.ZipException;
-import java.util.zip.ZipFile;
 
 /**
  * 

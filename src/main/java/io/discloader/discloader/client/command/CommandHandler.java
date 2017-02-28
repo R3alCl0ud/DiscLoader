@@ -7,7 +7,7 @@ import io.discloader.discloader.entity.Message;
 
 /**
  * @author Perry Berman
- *
+ * @since 0.0.1
  */
 public class CommandHandler {
 

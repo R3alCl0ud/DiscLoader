@@ -38,6 +38,12 @@ public @interface Mod {
 	 */
 	String author() default "";
 	
+    /**
+     * Contains an instance of the mod
+     * 
+     * @author Perry Berman
+     *
+     */
     @Retention(RetentionPolicy.RUNTIME)
     @Target(ElementType.FIELD)
 	public @interface Instance {

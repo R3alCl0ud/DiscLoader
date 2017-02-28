@@ -39,14 +39,15 @@ public class ModRegistry {
 	public static final HashMap<String, ModContainer> mods = new HashMap<String, ModContainer>();
 
 	/**
-	 * 
+	 * Uninitialized mods
+	 * @author Perry Berman
 	 */
 	private static final HashMap<String, ModContainer> preInitMods = new HashMap<String, ModContainer>();
 
 	/**
-	 * Contains a sensible method of figuring out 
+	 * Contains a sensible method of figuring out what mods loaded what mod
 	 * 
-	 * 
+	 * @author Perry Berman
 	 */
 	private static final HashMap<String, String> loadMod = new HashMap<String, String>();
 
@@ -94,8 +95,6 @@ public class ModRegistry {
 		Command.registerCommands();
 		ProgressLogger.stage(2, 3, "Registering Default Language");
 		LanguageRegistry.registerLanguage(Constants.enUS);
-		
-//		ProgressLogger.progress(0, 0, "");
 
 		TimerTask pre = new TimerTask() {
 			@Override

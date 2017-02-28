@@ -3,8 +3,6 @@ package io.discloader.discloader.common.language;
 import java.util.HashMap;
 import java.util.Locale;
 
-import io.discloader.discloader.util.Constants;
-
 /**
  * @author Perry Berman
  *
@@ -14,14 +12,19 @@ public class LanguageRegistry {
 	private static LanguageRegistry langs = new LanguageRegistry();
 	public final HashMap<Locale, HashMap<String, HashMap<String, HashMap<String, String>>>> localizedNames;
 
+	/**
+	 * Creates a new LanguageRegistry instance
+	 */
 	public LanguageRegistry() {
 		this.localizedNames = new HashMap<Locale, HashMap<String, HashMap<String, HashMap<String, String>>>>();
 		this.createLocales();
 	}
 
+	/**
+	 * Creates the default locales
+	 */
 	private void createLocales() {
 		this.localizedNames.put(Locale.US, new HashMap<String, HashMap<String, HashMap<String, String>>>());
-//		registerLanguage(Constants.enUS);
 	}
 
 	public static LanguageRegistry getLocales() {
@@ -60,6 +63,10 @@ public class LanguageRegistry {
 		return langs.localizedNames.get(Locale.US).get(t).get(f).get(p);
 	}
 
+	/**
+	 * Adds a language to the registry
+	 * @param lang The language to register
+	 */
 	public static void registerLanguage(Language lang) {
 		System.out.print(lang.getLocale().toLanguageTag());
 		if (!langs.localizedNames.containsKey(lang.getLocale())) {

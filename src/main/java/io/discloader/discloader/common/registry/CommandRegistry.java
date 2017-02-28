@@ -35,6 +35,12 @@ public class CommandRegistry {
 		return name;
 	}
 
+	/**
+	 * Do not use this method
+	 * @param command
+	 * @param name
+	 * @param idHint
+	 */
 	public static void registerCommand(Command command, String name, int idHint) {
 		int id = idHint;
 		if (id == -1) {
@@ -48,6 +54,10 @@ public class CommandRegistry {
 		commands.set(id, name, command.getUnlocalizedName(), command);
 	}
 
+	/**
+	 * @param command
+	 * @param name
+	 */
 	public static void registerCommand(Command command, String name) {
 		if (ProgressLogger.phaseNumber != 2) {
 			System.out.println("HALTING.......\nERROR: Commands must be registered in the PreINIT Phase");

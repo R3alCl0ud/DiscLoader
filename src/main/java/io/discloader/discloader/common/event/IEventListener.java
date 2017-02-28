@@ -7,6 +7,11 @@ import io.discloader.discloader.entity.GuildMember;
 
 import java.util.HashMap;
 
+/**
+ * Interface for DiscLoader events
+ * @author Perry Berman
+ * @since 0.0.3
+ */
 public interface IEventListener {
 
 	/**
@@ -41,12 +46,14 @@ public interface IEventListener {
 	void Ready(DiscLoader loader);
 
 	/**
-	 * @param e
+	 * Executed when the client joins a new {@link Guild}
+	 * @param e A GuildCreateEvent object
 	 */
 	void GuildCreate(GuildCreateEvent e);
 
 	/**
-	 * @param e
+	 * Executed when the client leaves a {@link Guild}
+	 * @param e A {@link GuildDeleteEvent}
 	 */
 	void GuildDelete(GuildDeleteEvent e);
 
@@ -56,17 +63,18 @@ public interface IEventListener {
 	void GuildUpdate(GuildUpdateEvent e);
 
 	/**
-	 * 
+	 * @param members
 	 */
 	void GuildMembersChunk(HashMap<String, GuildMember> members);
 
-	/**
-	 * 
-	 */
-	void GuildMemberAdd(GuildMemberAddEvent event);
 
 	/**
-	 * 
+	 * @param event
+	 */
+	void GuildMemberAdd(GuildMemberAddEvent event); 
+
+	/**
+	 * @param e
 	 */
 	void GuildMemberRemove(GuildMemberRemoveEvent e);
 
@@ -75,16 +83,35 @@ public interface IEventListener {
 	 */
 	void GuildMemberUpdate(GuildMemberUpdateEvent e);
 
+	/**
+	 * @param member
+	 */
 	void GuildMemberAvailable(GuildMember member);
 
+	/**
+	 * @param e
+	 */
 	void GuildBanAdd(GuildBanAddEvent e);
 
+	/**
+	 * @param event
+	 */
 	void GuildBanRemove(GuildBanRemoveEvent event);
 
-	void GuildRoleCreate(GuildRoleCreateEvent e);
+	/**
+	 * Executed when a {@link Role} is created
+	 * @param event A GuildRoleCreateEvent object
+	 */
+	void GuildRoleCreate(GuildRoleCreateEvent event);
 
+	/**
+	 * @param e
+	 */
 	void GuildRoleDelete(GuildRoleDeleteEvent e);
 
+	/**
+	 * @param e
+	 */
 	void GuildRoleUpdate(GuildRoleUpdateEvent e);
 
 	void GuildEmojisUpdate();

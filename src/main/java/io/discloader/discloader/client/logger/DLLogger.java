@@ -4,7 +4,6 @@
 package io.discloader.discloader.client.logger;
 
 import java.io.IOException;
-import java.time.Instant;
 import java.util.Date;
 import java.util.logging.ErrorManager;
 import java.util.logging.FileHandler;

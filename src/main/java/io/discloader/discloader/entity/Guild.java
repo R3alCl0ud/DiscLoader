@@ -123,6 +123,11 @@ public class Guild {
 	 */
 	public HashMap<String, Presence> presences;
 
+	/**
+	 * Creates a new guild
+	 * @param loader
+	 * @param data The guild's data
+	 */
 	public Guild(DiscLoader loader, GuildJSON data) {
 		this.loader = loader;
 
@@ -248,6 +253,10 @@ public class Guild {
 	}
 
 	
+	/**
+	 * Gets the guild's default text channel. the {@link Channel#id id} of the channel should be the same as the guild's {@link #id}
+	 * @return the default TextChannel
+	 */
 	public TextChannel getDefaultChannel() {
 		return this.textChannels.get(this.id);
 	}
@@ -255,7 +264,7 @@ public class Guild {
 	
 	/**
 	 * Sets the guild's name if the loader has sufficient permissions
-	 * @param name
+	 * @param name The guild's new name
 	 * @return CompletableFuture
 	 */
 	public CompletableFuture<Guild> setName(String name) {

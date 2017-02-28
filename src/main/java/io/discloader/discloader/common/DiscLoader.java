@@ -160,11 +160,7 @@ public class DiscLoader {
 	public CompletableFuture<String> login(String token) {
 		this.token = token;
 		CompletableFuture<String> future;
-//		if (this.shards > 1) {
-//			future = this.rest.makeRequest(Constants.Endpoints.botGateway, Constants.Methods.GET, true);
-//		} else {
-			future = this.rest.makeRequest(Constants.Endpoints.gateway, Constants.Methods.GET, true);
-//		}
+		future = this.rest.makeRequest(Constants.Endpoints.gateway, Constants.Methods.GET, true);
 
 		future.thenAcceptAsync(text -> {
 			Gson gson = new Gson();

@@ -13,6 +13,12 @@ import java.util.zip.ZipFile;
 import io.discloader.discloader.common.language.Language;
 import io.discloader.discloader.common.language.LanguageRegistry;
 
+/**
+ * Reads the mod jar as a ZipFile to load it's language files, and other stuff 
+ * 
+ * @author Perry Berman
+ * @since 0.0.3
+ */
 public class ZipReader {
 
 	public static void readZip(File zip) {

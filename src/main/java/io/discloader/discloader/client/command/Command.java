@@ -26,6 +26,9 @@ public class Command {
 
 	protected static DLNameSpacedMap<Command> commands = CommandRegistry.commands;
 	
+	/**
+	 * Creates a new Command
+	 */
 	public Command() {
 		this.icon = null;
 	}
@@ -49,7 +52,7 @@ public class Command {
 	/**
 	 * executes the command
 	 * 
-	 * @param e
+	 * @param e The MessageCreateEvent 
 	 */
 	public void execute(MessageCreateEvent e) {
 		return;

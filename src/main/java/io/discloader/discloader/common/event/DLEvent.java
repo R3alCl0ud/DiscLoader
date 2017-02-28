@@ -3,6 +3,9 @@ package io.discloader.discloader.common.event;
 import io.discloader.discloader.common.DiscLoader;
 
 /**
+ * Base class for events
+ * 
+ * 
  * @author Perry Berman
  *
  */

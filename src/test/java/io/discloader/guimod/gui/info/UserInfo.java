@@ -1,15 +1,14 @@
 package io.discloader.guimod.gui.info;
 
+import io.discloader.discloader.client.registry.TextureRegistry;
+import io.discloader.discloader.entity.User;
+import io.discloader.discloader.util.Constants;
+
 import java.awt.Color;
-import java.awt.Component;
 import java.awt.Dimension;
 
 import javax.swing.Box;
 import javax.swing.JLabel;
-
-import io.discloader.discloader.client.registry.TextureRegistry;
-import io.discloader.discloader.entity.User;
-import io.discloader.discloader.util.Constants;
 
 public class UserInfo<T extends User> extends AbstractInfo<T> {
 

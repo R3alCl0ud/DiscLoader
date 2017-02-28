@@ -64,9 +64,5 @@ public class ProgressLogger {
 			break;
 		}
 	}
-	
-	private static String format() {
-		return null;
-	}
 
 }

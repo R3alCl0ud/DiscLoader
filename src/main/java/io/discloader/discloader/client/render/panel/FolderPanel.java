@@ -3,16 +3,15 @@
  */
 package io.discloader.discloader.client.render.panel;
 
+import io.discloader.discloader.client.registry.TextureRegistry;
+import io.discloader.discloader.client.render.texture.icon.GuildIcon;
+import io.discloader.discloader.common.DiscLoader;
+
 import java.awt.Dimension;
 
-import javax.swing.ImageIcon;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
-
-import io.discloader.discloader.client.render.texture.icon.GuildIcon;
-import io.discloader.discloader.common.DiscLoader;
-import io.discloader.discloader.entity.Guild;
 
 /**
  * @author Perry Berman
@@ -25,13 +24,13 @@ public class FolderPanel extends JPanel {
 
 	private JScrollPane basePane;
 
-	private DiscLoader loader;
+//	private DiscLoader loader;
 
 	public FolderPanel(DiscLoader loader) {
 //		super();
-		this.loader = loader;
+//		this.loader = loader;
 		this.basePane = new JScrollPane();
-		for (GuildIcon guildIcon : this.loader.clientRegistry.textureRegistry.getGuildIcons().values()) {
+		for (GuildIcon guildIcon : TextureRegistry.getGuildIcons().values()) {
 			System.out.println("test");
 			System.out.println(guildIcon != null);
 			JLabel icon = new JLabel(guildIcon.getImageIcon());

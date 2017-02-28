@@ -1,6 +1,3 @@
-/**
- * 
- */
 package io.discloader.discloader.network.gateway.packets;
 
 import io.discloader.discloader.common.DiscLoader;

@@ -16,8 +16,10 @@ public class UDPVoiceClient {
 	public static final int SESSION_DESCRIPTION = 4;
 	public static final int SPEAKING = 5;
 
+	@SuppressWarnings("unused")
 	private DatagramSocket updSocket;
 	
+	@SuppressWarnings("unused")
 	private final VoiceConnection connection;
 	
 	public UDPVoiceClient(VoiceConnection connection) {
