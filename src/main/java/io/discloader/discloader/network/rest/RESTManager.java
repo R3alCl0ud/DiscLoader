@@ -18,6 +18,9 @@ import io.discloader.discloader.entity.Guild;
 import io.discloader.discloader.entity.GuildMember;
 import io.discloader.discloader.entity.Message;
 import io.discloader.discloader.entity.OAuth2Application;
+import io.discloader.discloader.entity.User;
+import io.discloader.discloader.entity.channels.VoiceChannel;
+import io.discloader.discloader.entity.impl.ITextChannel;
 import io.discloader.discloader.entity.sendable.RichEmbed;
 import io.discloader.discloader.entity.sendable.SendableMessage;
 import io.discloader.discloader.network.json.ChannelJSON;
@@ -26,9 +29,6 @@ import io.discloader.discloader.network.json.MemberJSON;
 import io.discloader.discloader.network.json.MessageJSON;
 import io.discloader.discloader.network.json.OAuthApplicationJSON;
 import io.discloader.discloader.network.json.UserJSON;
-import io.discloader.discloader.entity.User;
-import io.discloader.discloader.entity.channels.TextChannel;
-import io.discloader.discloader.entity.channels.VoiceChannel;
 import io.discloader.discloader.util.Constants;
 
 public class RESTManager {
@@ -65,30 +65,30 @@ public class RESTManager {
 		return this.makeRequest(url, method, auth, null);
 	}
 
-	public CompletableFuture<Message> sendMessage(TextChannel channel, String content, RichEmbed embed, Attachment attachment, File file) {
+	public CompletableFuture<Message> sendMessage(ITextChannel channel, String content, RichEmbed embed, Attachment attachment, File file) {
 		if (content.length() < 1 && (embed == null && attachment == null))
 			return null;
 		CompletableFuture<Message> msgSent = new CompletableFuture<Message>();
-		this.makeRequest(Constants.Endpoints.messages(channel.id), Constants.Methods.POST, true, new SendableMessage(content, embed, attachment, file)).thenAcceptAsync(action -> {
+		this.makeRequest(Constants.Endpoints.messages(channel.getID()), Constants.Methods.POST, true, new SendableMessage(content, embed, attachment, file)).thenAcceptAsync(action -> {
 					msgSent.complete(new Message(channel, this.gson.fromJson(action, MessageJSON.class)));
 				});
 		return msgSent;
 	}
 
-	public CompletableFuture<Message> editMessage(TextChannel channel, Message message, String content, RichEmbed embed, Attachment attachment, File file) {
+	public CompletableFuture<Message> editMessage(ITextChannel channel, Message message, String content, RichEmbed embed, Attachment attachment, File file) {
 		if (content.length() < 1 && (embed == null || attachment == null))
 			return null;
 		CompletableFuture<Message> future = new CompletableFuture<Message>();
-		this.makeRequest(Constants.Endpoints.message(channel.id, message.id), Constants.Methods.PATCH, true,
+		this.makeRequest(Constants.Endpoints.message(channel.getID(), message.id), Constants.Methods.PATCH, true,
 				new SendableMessage(content, embed, attachment, file)).thenAcceptAsync(action -> {
 					future.complete(new Message(channel, this.gson.fromJson(action, MessageJSON.class)));
 				});
 		return future;
 	}
 
-	public CompletableFuture<Message> deleteMessage(TextChannel channel, Message message) {
+	public CompletableFuture<Message> deleteMessage(ITextChannel channel, Message message) {
 		CompletableFuture<Message> future = new CompletableFuture<Message>();
-		this.makeRequest(Constants.Endpoints.message(channel.id, message.id), Constants.Methods.DELETE, true)
+		this.makeRequest(Constants.Endpoints.message(channel.getID(), message.id), Constants.Methods.DELETE, true)
 				.thenAcceptAsync(action -> {
 					future.complete(message);
 				});

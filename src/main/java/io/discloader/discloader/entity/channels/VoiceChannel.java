@@ -7,12 +7,13 @@ import io.discloader.discloader.entity.impl.IGuildChannel;
 import io.discloader.discloader.entity.impl.IVoiceChannel;
 import io.discloader.discloader.entity.voice.VoiceConnection;
 import io.discloader.discloader.network.json.ChannelJSON;
+import io.discloader.discloader.util.Constants.ChannelType;
 
 /**
  * @author Perry Berman
  *
  */
-public class VoiceChannel extends Channel implements IGuildChannel, IVoiceChannel {
+public class VoiceChannel extends GuildChannel implements IGuildChannel, IVoiceChannel {
 
 	public int bitrate;
 
@@ -25,7 +26,7 @@ public class VoiceChannel extends Channel implements IGuildChannel, IVoiceChanne
 	public VoiceChannel(Guild guild, ChannelJSON data) {
 		super(guild, data);
 
-		this.type = "voice";
+		this.type = ChannelType.VOICE;
 	}
 
 	public void setup(ChannelJSON data) {
@@ -52,7 +53,7 @@ public class VoiceChannel extends Channel implements IGuildChannel, IVoiceChanne
 	}
 
 	@Override
-	public CompletableFuture<IGuildChannel> setName(String name) {
+	public CompletableFuture<VoiceChannel> setName(String name) {
 		return null;
 	}
 

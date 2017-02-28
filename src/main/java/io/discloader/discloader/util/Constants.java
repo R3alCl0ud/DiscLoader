@@ -281,6 +281,10 @@ public class Constants {
 		public static final int groupDM = 3;
 	}
 
+	public static enum ChannelType {
+		TEXT, VOICE, DM, GROUPDM
+	}
+	
 	/**
 	 * This object contains every 53bit {@link Permission} {@link Integer} as
 	 * specified in Discord's API. Visit <a href=

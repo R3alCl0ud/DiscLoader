@@ -4,24 +4,27 @@ import java.io.File;
 import java.util.HashMap;
 import java.util.concurrent.CompletableFuture;
 
-import io.discloader.discloader.common.DiscLoader;
 import io.discloader.discloader.entity.Attachment;
 import io.discloader.discloader.entity.Guild;
 import io.discloader.discloader.entity.Message;
+import io.discloader.discloader.entity.impl.ITextChannel;
 import io.discloader.discloader.entity.sendable.RichEmbed;
 import io.discloader.discloader.network.json.ChannelJSON;
+import io.discloader.discloader.util.Constants.ChannelType;
 
 /**
  * @author Perry Berman
  *
  */
-public class TextChannel extends Channel {
+public class TextChannel extends Channel implements ITextChannel {
 	/**
 	 * A {@link HashMap} of the channel's cached messages. Indexed by {@link Message#id}.
 	 * @author Perry Berman
 	 * @since 0.0.1
 	 */
-	public final HashMap<String, Message> messages;
+	private final HashMap<String, Message> messages;
+	
+	public String topic;
 
 	/**
 	 * @param guild
@@ -29,24 +32,16 @@ public class TextChannel extends Channel {
 	 */
 	public TextChannel(Guild guild, ChannelJSON data) {
 		super(guild, data);
-		this.type = "text";
+		this.type = ChannelType.TEXT;
 
 		this.messages = new HashMap<String, Message>();
 	}
 
-	public TextChannel(DiscLoader loader, ChannelJSON data) {
-		super(loader, data);
-
-		this.type = "dm";
-
-		this.messages = new HashMap<String, Message>();
-	}
 
 	public void setup(ChannelJSON data) {
 		super.setup(data);
 
 		this.topic = data.topic;
-
 	}
 
 	/**
@@ -89,5 +84,16 @@ public class TextChannel extends Channel {
 		}
 		return this.loader.rest.sendMessage(this, content, embed, attachment, file);
 	}
+
+	@Override
+	public Message getMessage(String id) {
+		return this.messages.get(id);
+	}
+
+	@Override
+	public HashMap<String, Message> getMessages() {
+		return this.messages;
+	}
+
 	
 }

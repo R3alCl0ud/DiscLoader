@@ -193,7 +193,12 @@ public class Guild {
 			}
 		}
 		ProgressLogger.step(5, 5, "Registering Icon");
-		TextureRegistry.registerGuildIcon(new GuildIcon(this));
+		try {
+			System.out.print(this.loader.guilds.size());
+			TextureRegistry.registerGuildIcon(new GuildIcon(this));
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 		this.available = !data.unavailable;
 	}
 
@@ -362,6 +367,7 @@ public class Guild {
 
 	/**
 	 * Creates a new voice channel
+	 * 
 	 * @param name
 	 * @return A future that completes with a new {@link VoiceChannel} Object if
 	 *         successful.

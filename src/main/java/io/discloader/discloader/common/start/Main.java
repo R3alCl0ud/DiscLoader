@@ -45,7 +45,7 @@ public class Main {
 	 * @throws IOException
 	 */
 	public static void main(String... args) throws IOException {
-		LOGGER = new DLLogger("Main Thread").getLogger();
+		LOGGER = new DLLogger("DiscLoader Main").getLogger();
 		System.setOut(new DLPrintStream(System.out, LOGGER));
 		System.setErr(new DLErrorStream(System.err, LOGGER));
 		System.setProperty("http.agent", "DiscLoader");
@@ -80,7 +80,7 @@ public class Main {
 		DiscLoader.addEventHandler(new EventListenerAdapter() {
 			@Override
 			public void raw(String text) {
-//				LOGGER.warning(text);
+				LOGGER.warning(text);
 			}
 
 			@Override
@@ -92,8 +92,8 @@ public class Main {
 
 			@Override
 			public void Ready(DiscLoader loader) {
+//				loader.textChannels.get("219354544046342145").sendMessage("Startup Finished");
 				LOGGER.fine(String.format("Ready as user %s#%s", loader.user.username, loader.user.discriminator));
-				// System.out.print(LanguageRegistry.getLocalized("gui.tabcommands.name"));
 			}
 
 			@Override
@@ -104,7 +104,7 @@ public class Main {
 			@Override
 			public void MessageCreate(MessageCreateEvent e) {
 				LOGGER.fine(String.format("Author: %s#%s, Channel: %s", e.message.author.username,
-						e.message.author.discriminator, e.message.channel.id));
+						e.message.author.discriminator, e.message.channel.getID()));
 			}
 
 			@Override

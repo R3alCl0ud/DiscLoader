@@ -5,7 +5,9 @@ import java.util.concurrent.CompletableFuture;
 
 import io.discloader.discloader.common.DiscLoader;
 import io.discloader.discloader.entity.channels.Channel;
+import io.discloader.discloader.entity.channels.PrivateChannel;
 import io.discloader.discloader.entity.channels.TextChannel;
+import io.discloader.discloader.entity.impl.ITextChannel;
 import io.discloader.discloader.entity.sendable.RichEmbed;
 import io.discloader.discloader.network.json.MessageJSON;
 import io.discloader.discloader.util.Constants;
@@ -48,13 +50,13 @@ public class Message {
 	/**
 	 * Whether or not the message was sent using /tts
 	 */
-	public final boolean tts;
+	public boolean tts;
 
 	/**
 	 * Whether or not you can edit the message. <br>
 	 * will always be true when {@code author.id == this.loader.user.id}
 	 */
-	public final boolean editable;
+	public boolean editable;
 
 	/**
 	 * Is the messaged pinned in the {@link #channel}
@@ -81,7 +83,7 @@ public class Message {
 	/**
 	 * The channel the message was sent in
 	 */
-	public final TextChannel channel;
+	public final ITextChannel channel;
 
 	/**
 	 * The user who authored the message
@@ -92,12 +94,12 @@ public class Message {
 	 * The guild the {@link #channel} is in. is {@code null} if
 	 * {@link Channel#type} is "dm" or "groupDM"
 	 */
-	public final Guild guild;
+	public Guild guild;
 
 	/**
 	 * The member who sent the message if applicable
 	 */
-	public final GuildMember member;
+	public GuildMember member;
 
 	/**
 	 * Creates a new message object
@@ -105,14 +107,18 @@ public class Message {
 	 * @param channel The channel the message was sent in
 	 * @param data The message's data
 	 */
-	public Message(TextChannel channel, MessageJSON data) {
+	public Message(ITextChannel channel, MessageJSON data) {
 		this.id = data.id;
 
-		this.loader = channel.loader;
-
 		this.channel = channel;
-
-		this.guild = channel.guild != null ? channel.guild : null;
+		
+		if (this.channel.isPrivate()) {
+			PrivateChannel privateChannel = (PrivateChannel) channel;
+			this.loader = privateChannel.loader;
+		} else {
+			TextChannel textChannel = (TextChannel) channel;
+			this.loader = textChannel.loader;
+		}
 
 		if (!this.loader.users.containsKey(data.author.id)) {
 			this.author = this.loader.addUser(data.author);
@@ -120,6 +126,14 @@ public class Message {
 			this.author = this.loader.users.get(data.author.id);
 		}
 
+		this.mentions = new Mentions(this, data.mentions, data.mention_roles, data.mention_everyone);
+
+		this.timestamp = Constants.parseISO8601(data.timestamp);
+
+		this.editedAt = data.edited_timestamp != null ? Constants.parseISO8601(data.edited_timestamp) : null;
+	}
+	
+	public void setup(MessageJSON data) {
 		this.member = this.guild != null ? this.guild.members.get(this.author.id) : null;
 
 		this.editable = this.loader.user.id == this.author.id;
@@ -129,13 +143,9 @@ public class Message {
 		this.content = data.content;
 
 		this.nonce = data.nonce;
-
-		this.mentions = new Mentions(this, data.mentions, data.mention_roles, data.mention_everyone);
-
-		this.timestamp = Constants.parseISO8601(data.timestamp);
-
-		this.editedAt = data.edited_timestamp != null ? Constants.parseISO8601(data.edited_timestamp) : null;
 	}
+	
+	
 
 	/**
 	 * @param data

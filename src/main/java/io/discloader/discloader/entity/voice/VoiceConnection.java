@@ -15,7 +15,6 @@ public class VoiceConnection {
 	public final Guild guild;
 	public final VoiceChannel channel;
 	public final DiscLoader loader;
-//	public 
 	
 	
 	public VoiceConnection(VoiceChannel channel) {
@@ -26,7 +25,7 @@ public class VoiceConnection {
 
 	public void sendStateUpdate() {
 		VoiceUpdate d = new VoiceUpdate(this.guild, this.channel, false, false);
-		this.loader.discSocket.send(new Packet(Constants.OPCodes.VOICE_STATE_UPDATE, d));
+		this.loader.socket.send(new Packet(Constants.OPCodes.VOICE_STATE_UPDATE, d));
 	}
 	
 }

@@ -36,8 +36,6 @@ public class GuildCreate extends DLPacket {
 			// a brand new guild
 			this.socket.loader.addGuild(data);
 		}
-		
-
 	}
 
 }

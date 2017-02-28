@@ -33,12 +33,15 @@ public class ChannelDelete extends DLPacket {
 		} else {
 			channel = this.socket.loader.addChannel(data);
 		}
-		switch (channel.type) {
-		case "text":
+		switch (channel.getType()) {
+		case TEXT:
 			guild.textChannels.remove(channel.id);
 			break;
-		case "voice":
+		case VOICE:
 			guild.voiceChannels.remove(channel.id);
+			break;
+		default:
+			this.loader.channels.remove(channel.id);
 			break;
 		}
 		ChannelDeleteEvent event = new ChannelDeleteEvent(channel);
