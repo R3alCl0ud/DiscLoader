@@ -1,22 +1,23 @@
 package io.discloader.discloader.common.event;
 
-import java.util.HashMap;
-
 import io.discloader.discloader.common.DiscLoader;
+import io.discloader.discloader.common.registry.ModRegistry;
+import io.discloader.discloader.entity.Guild;
 import io.discloader.discloader.entity.GuildMember;
-import io.discloader.discloader.entity.User;
+
+import java.util.HashMap;
 
 public interface IEventListener {
 
 	/**
-	 * Emitted whenever a new packet is recieved from the gateway
+	 * Emitted whenever a new packet is received from the gateway
 	 * 
 	 * @param raw
 	 */
 	void raw(String raw);
 
 	/**
-	 * Durring the PreInit phase of startup, after all mods have been
+	 * During the PreInit phase of startup, after all mods have been
 	 * discovered, The {@link ModRegistry} executes this event on the mod the
 	 * registry is attempting to load. All commands <u>must</u> be registered on
 	 * this event being called in your mod.
@@ -78,7 +79,7 @@ public interface IEventListener {
 
 	void GuildBanAdd(GuildBanAddEvent e);
 
-	void GuildBanRemove(User user);
+	void GuildBanRemove(GuildBanRemoveEvent event);
 
 	void GuildRoleCreate(GuildRoleCreateEvent e);
 

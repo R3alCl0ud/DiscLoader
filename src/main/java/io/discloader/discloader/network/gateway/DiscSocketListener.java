@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.logging.Logger;
 
+import org.json.JSONArray;
 import org.json.JSONObject;
 
 import com.google.gson.Gson;
@@ -23,6 +24,8 @@ import io.discloader.discloader.network.gateway.packets.ChannelCreate;
 import io.discloader.discloader.network.gateway.packets.ChannelDelete;
 import io.discloader.discloader.network.gateway.packets.ChannelUpdate;
 import io.discloader.discloader.network.gateway.packets.DLPacket;
+import io.discloader.discloader.network.gateway.packets.GuildBanAdd;
+import io.discloader.discloader.network.gateway.packets.GuildBanRemove;
 import io.discloader.discloader.network.gateway.packets.GuildCreate;
 import io.discloader.discloader.network.gateway.packets.GuildDelete;
 import io.discloader.discloader.network.gateway.packets.GuildMemberAdd;
@@ -44,7 +47,7 @@ public class DiscSocketListener extends WebSocketAdapter implements WebSocketLis
 
 	public DiscLoader loader;
 	public DiscSocket socket;
-	
+
 	private final Logger logger = new DLLogger("Socket Listener").getLogger();
 
 	public HashMap<String, DLPacket> handlers;
@@ -53,6 +56,7 @@ public class DiscSocketListener extends WebSocketAdapter implements WebSocketLis
 
 	public DiscSocketListener(DiscSocket socket) {
 		this.socket = socket;
+		this.loader = this.socket.loader;
 		this.handlers = new HashMap<String, DLPacket>();
 		this.queue = new ArrayList<SocketPacket>();
 
@@ -65,6 +69,8 @@ public class DiscSocketListener extends WebSocketAdapter implements WebSocketLis
 		this.register(Constants.WSEvents.GUILD_ROLE_DELETE, new RoleDelete(this.socket));
 		this.register(Constants.WSEvents.GUILD_ROLE_UPDATE, new RoleUpdate(this.socket));
 		this.register(Constants.WSEvents.GUILD_MEMBER_ADD, new GuildMemberAdd(this.socket));
+		this.register(Constants.WSEvents.GUILD_BAN_ADD, new GuildBanAdd(this.socket));
+		this.register(Constants.WSEvents.GUILD_BAN_REMOVE, new GuildBanRemove(this.socket));
 		this.register(Constants.WSEvents.CHANNEL_CREATE, new ChannelCreate(this.socket));
 		this.register(Constants.WSEvents.CHANNEL_DELETE, new ChannelDelete(this.socket));
 		this.register(Constants.WSEvents.CHANNEL_UPDATE, new ChannelUpdate(this.socket));
@@ -110,7 +116,7 @@ public class DiscSocketListener extends WebSocketAdapter implements WebSocketLis
 		}
 
 		this.setSequence(packet.s);
-		
+
 		if (this.socket.status != Constants.Status.READY) {
 			if (Constants.EventWhitelist.indexOf(packet.t) == -1) {
 				this.queue.add(packet);
@@ -152,8 +158,10 @@ public class DiscSocketListener extends WebSocketAdapter implements WebSocketLis
 	public void onDisconnected(WebSocket ws, WebSocketFrame frame_1, WebSocketFrame frame_2, boolean isDisconnected)
 			throws Exception {
 		if (isDisconnected) {
-			logger.severe(String.format("Gateway connected was closed by the server. Close Code: %d, Reason: %s", frame_1.getCloseCode(), frame_1.getCloseReason()));
-			logger.severe(String.format("Gateway connected was closed by the server. Close Code: %d, Reason: %s", frame_2.getCloseCode(), frame_2.getCloseReason()));
+			logger.severe(String.format("Gateway connected was closed by the server. Close Code: %d, Reason: %s",
+					frame_1.getCloseCode(), frame_1.getCloseReason()));
+			logger.severe(String.format("Gateway connected was closed by the server. Close Code: %d, Reason: %s",
+					frame_2.getCloseCode(), frame_2.getCloseReason()));
 		} else {
 			logger.severe("Disconnected from gateway");
 		}
@@ -225,6 +233,17 @@ public class DiscSocketListener extends WebSocketAdapter implements WebSocketLis
 				"DiscLoader");
 		payload.put("token", this.socket.loader.token).put("large_threshold", 250).put("compress", false)
 				.put("properties", properties);
+
+		try {
+			
+		if (this.loader.shards > 1) {
+			System.out.print("Why....");
+			JSONArray te = new JSONArray().put(this.loader.shard).put(this.loader.shards);
+			payload.put("shard", te);
+		}
+		} catch (NullPointerException e) {
+			e.printStackTrace();
+		}
 
 		JSONObject packet = new JSONObject();
 		packet.put("op", 2).put("d", payload);

@@ -1,10 +1,9 @@
 package io.discloader.discloader.common.event;
 
-import java.util.HashMap;
-
 import io.discloader.discloader.common.DiscLoader;
 import io.discloader.discloader.entity.GuildMember;
-import io.discloader.discloader.entity.User;
+
+import java.util.HashMap;
 
 /**
  * Default Implementation of the {@link IEventListener}
@@ -67,7 +66,7 @@ public abstract class EventListenerAdapter implements IEventListener {
 	}
 
 	@Override
-	public void GuildBanRemove(User user) {
+	public void GuildBanRemove(GuildBanRemoveEvent e) {
 	}
 
 	@Override

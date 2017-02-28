@@ -35,64 +35,76 @@ import io.discloader.discloader.util.Constants;
 public class DiscLoader {
 
 	public DiscSocket discSocket;
-	
+
 	public String token;
 
 	public boolean ready;
 
 	public final ClientRegistry clientRegistry;
-	
+
 	public RESTManager rest;
-	
+
 	public final AudioPlayerManager playerManager;
 
 	public static final HashMap<String, IEventListener> handlers = new HashMap<String, IEventListener>();
-	
+
+	public final int shards;
+	public final int shard;
+
 	/**
 	 * A HashMap of the client's cached users. Indexed by {@link User#id}.
+	 * 
 	 * @author Perry Berman
 	 * @see User
 	 * @see HashMap
 	 */
 	public HashMap<String, User> users;
-	
+
 	/**
 	 * A HashMap of the client's cached channels. Indexed by {@link Channel#id}.
+	 * 
 	 * @author Perry Berman
 	 * @see Channel
 	 * @see HashMap
 	 */
 	public HashMap<String, Channel> channels;
-	
+
 	/**
-	 * A HashMap of the client's cached PrivateChannels. Indexed by {@link Channel#id}.
+	 * A HashMap of the client's cached PrivateChannels. Indexed by
+	 * {@link Channel#id}.
+	 * 
 	 * @see Channel
 	 * @see PrivateChannel
 	 * @see HashMap
 	 * @author Perry Berman
 	 */
 	public HashMap<String, PrivateChannel> privateChannels;
-	
+
 	/**
-	 * A HashMap of the client's cached TextChannels. Indexed by {@link Channel#id}.
+	 * A HashMap of the client's cached TextChannels. Indexed by
+	 * {@link Channel#id}.
+	 * 
 	 * @see Channel
 	 * @see TextChannel
 	 * @see HashMap
 	 * @author Perry Berman
 	 */
 	public HashMap<String, TextChannel> textChannels;
-	
+
 	/**
-	 * A HashMap of the client's cached VoiceChannels. Indexed by {@link Channel#id}.
+	 * A HashMap of the client's cached VoiceChannels. Indexed by
+	 * {@link Channel#id}.
+	 * 
 	 * @see Channel
 	 * @see VoiceChannel
 	 * @see HashMap
 	 * @author Perry Berman
 	 */
 	public HashMap<String, VoiceChannel> voiceChannels;
-	
+
 	/**
 	 * A HashMap of the client's cached Guilds. Indexed by {@link Guild#id}
+	 * 
 	 * @see Guild
 	 * @see HashMap
 	 * @author Perry Berman
@@ -106,41 +118,54 @@ public class DiscLoader {
 
 	public Timer timer;
 
-	public DiscLoader() {
+	public DiscLoader(int shards, int shard) {
+
+		this.shards = shards;
+
+		this.shard = shard;
+
 		this.discSocket = new DiscSocket(this);
-		
+
 		this.rest = new RESTManager(this);
 
 		this.clientRegistry = new ClientRegistry();
-		
+
 		this.users = new HashMap<String, User>();
 
 		this.channels = new HashMap<String, Channel>();
-		
+
 		this.privateChannels = new HashMap<String, PrivateChannel>();
-		
+
 		this.textChannels = new HashMap<String, TextChannel>();
-		
+
 		this.voiceChannels = new HashMap<String, VoiceChannel>();
-		
+
 		this.guilds = new HashMap<String, Guild>();
 
 		this.timer = new Timer();
-		
+
 		this.playerManager = new DefaultAudioPlayerManager();
 
 		this.ready = false;
 	}
 
 	/**
-	 * Connects the current instance of the {@link DiscLoader loader} into Discord's gateway servers 
-	 * @param token your API token
+	 * Connects the current instance of the {@link DiscLoader loader} into
+	 * Discord's gateway servers
+	 * 
+	 * @param token
+	 *            your API token
 	 * @return {@literal CompletableFuture<String>}
 	 */
 	public CompletableFuture<String> login(String token) {
 		this.token = token;
-		CompletableFuture<String> future = this.rest.makeRequest(Constants.Endpoints.gateway, Constants.Methods.GET,
-				true);
+		CompletableFuture<String> future;
+//		if (this.shards > 1) {
+//			future = this.rest.makeRequest(Constants.Endpoints.botGateway, Constants.Methods.GET, true);
+//		} else {
+			future = this.rest.makeRequest(Constants.Endpoints.gateway, Constants.Methods.GET, true);
+//		}
+
 		future.thenAcceptAsync(text -> {
 			Gson gson = new Gson();
 			Gateway gateway = gson.fromJson(text, Gateway.class);
@@ -155,6 +180,7 @@ public class DiscLoader {
 
 	public class Gateway {
 		public String url;
+		public int shards;
 	}
 
 	/**
@@ -174,7 +200,7 @@ public class DiscLoader {
 	public void emit(String event) {
 		this.emit(event, null);
 	}
-	
+
 	public static void addEventHandler(IEventListener e) {
 		handlers.put(e.toString(), e);
 	}
@@ -245,22 +271,20 @@ public class DiscLoader {
 		return user;
 	}
 
-
-
 	public void checkReady() {
 		if (this.discSocket.status != Constants.Status.READY && this.discSocket.status != Constants.Status.NEARLY) {
 			int unavailable = 0;
 			for (Guild guild : this.guilds.values()) {
 				unavailable += guild.available ? 0 : 1;
 			}
-			
+
 			ProgressLogger.progress(this.guilds.size() - unavailable, this.guilds.size(), "Guilds Cached");
 			if (unavailable == 0) {
 				for (Guild guild : this.guilds.values()) {
 					if (guild.memberCount != guild.members.size() && !guild.large) {
 					}
 				}
-				
+
 				this.discSocket.status = Constants.Status.NEARLY;
 				this.emitReady();
 			}

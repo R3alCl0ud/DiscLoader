@@ -1,15 +1,5 @@
 package io.discloader.discloader.common.start;
 
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.Locale;
-import java.util.TimerTask;
-import java.util.logging.Logger;
-
-import com.google.gson.Gson;
-
 import io.discloader.discloader.client.command.CommandHandler;
 import io.discloader.discloader.client.logger.DLLogger;
 import io.discloader.discloader.client.logger.ProgressLogger;
@@ -23,11 +13,18 @@ import io.discloader.discloader.common.event.DLPreInitEvent;
 import io.discloader.discloader.common.event.EventListenerAdapter;
 import io.discloader.discloader.common.event.GuildBanAddEvent;
 import io.discloader.discloader.common.event.MessageCreateEvent;
-import io.discloader.discloader.common.language.Language;
-import io.discloader.discloader.common.language.LanguageRegistry;
 import io.discloader.discloader.common.logger.DLErrorStream;
 import io.discloader.discloader.common.logger.DLPrintStream;
 import io.discloader.discloader.common.registry.ModRegistry;
+
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.util.ArrayList;
+import java.util.TimerTask;
+import java.util.logging.Logger;
+
+import com.google.gson.Gson;
 
 /**
  * DiscLoader client entry point
@@ -38,7 +35,7 @@ import io.discloader.discloader.common.registry.ModRegistry;
 public class Main {
 	public static final Gson gson = new Gson();
 	public static WindowFrame window;
-	public static final DiscLoader loader = new DiscLoader();
+	public static DiscLoader loader;
 	public static boolean usegui = false;
 	public static String token;
 	private static Logger LOGGER;
@@ -52,10 +49,38 @@ public class Main {
 		System.setOut(new DLPrintStream(System.out, LOGGER));
 		System.setErr(new DLErrorStream(System.err, LOGGER));
 		System.setProperty("http.agent", "DiscLoader");
+
+		String content = "";
+		Object[] lines = Files.readAllLines(Paths.get("./options.json")).toArray();
+		for (Object line : lines)
+			content += line;
+		options options = gson.fromJson(content, options.class);
+		loader = new DiscLoader(options.shards, options.shard);
+		token = options.auth.token;
+		parseArgs(args);
+
+		if (usegui) {
+			window = new WindowFrame(loader);
+		} else {
+			ProgressLogger.stage(1, 3, "Mod Discovery");
+			ModDiscoverer.checkModDir();
+			ArrayList<ModCandidate> candidates = ModDiscoverer.discoverMods();
+			TimerTask checkCandidates = new TimerTask() {
+
+				@Override
+				public void run() {
+					ProgressLogger.stage(2, 3, "Discovering Mod Containers");
+					ModRegistry.checkCandidates(candidates);
+				}
+
+			};
+			loader.timer.schedule(checkCandidates, 500);
+		}
+
 		DiscLoader.addEventHandler(new EventListenerAdapter() {
 			@Override
 			public void raw(String text) {
-				// LOG.warning(text);
+//				LOGGER.warning(text);
 			}
 
 			@Override
@@ -68,7 +93,7 @@ public class Main {
 			@Override
 			public void Ready(DiscLoader loader) {
 				LOGGER.fine(String.format("Ready as user %s#%s", loader.user.username, loader.user.discriminator));
-//				System.out.print(LanguageRegistry.getLocalized("gui.tabcommands.name"));
+				// System.out.print(LanguageRegistry.getLocalized("gui.tabcommands.name"));
 			}
 
 			@Override
@@ -94,31 +119,6 @@ public class Main {
 			}
 		});
 
-		String content = "";
-		Object[] lines = Files.readAllLines(Paths.get("./options.json")).toArray();
-		for (Object line : lines)
-			content += line;
-		options options = gson.fromJson(content, options.class);
-		token = options.auth.token;
-		parseArgs(args);
-
-		if (usegui) {
-			window = new WindowFrame(loader);
-		} else {
-			ProgressLogger.stage(1, 3, "Mod Discovery");
-			ModDiscoverer.checkModDir();
-			ArrayList<ModCandidate> candidates = ModDiscoverer.discoverMods();
-			TimerTask checkCandidates = new TimerTask() {
-
-				@Override
-				public void run() {
-					ProgressLogger.stage(2, 3, "Discovering Mod Containers");
-					ModRegistry.checkCandidates(candidates);
-				}
-
-			};
-			loader.timer.schedule(checkCandidates, 500);
-		}
 	}
 
 	public static void parseArgs(String... args) {

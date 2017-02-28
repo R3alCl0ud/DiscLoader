@@ -64,6 +64,7 @@ public class DiscSocket {
 	 * 
 	 */
 	public void connectSocket(String gateway) throws WebSocketException, IOException {
+		System.out.printf("Connecting use gateway: %s", gateway);
 		this.ws = new WebSocketFactory().setConnectionTimeout(15000).createSocket(gateway).addHeader("Accept-Encoding",
 				"gzip");
 		this.ws.addListener(this.socketListener);
@@ -98,6 +99,10 @@ public class DiscSocket {
 		this.ws.sendText(Constants.gson.toJson(payload));
 	}
 
+	public void send(Object payload) {
+		this.ws.sendText(Constants.gson.toJson(payload));
+	}
+	
 	public void send(JSONObject payload, boolean force) {
 		this.ws.sendText(payload.toString());
 	}

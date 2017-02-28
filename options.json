@@ -2,5 +2,7 @@
 	"auth": {
 		"token": "TOKEN"
 	},
-	"useWindow": true
+	"useWindow": true,
+	"shards": 1,
+	"shard" : 0
 }

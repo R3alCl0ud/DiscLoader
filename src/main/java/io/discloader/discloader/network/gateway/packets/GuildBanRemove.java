@@ -3,16 +3,41 @@
  */
 package io.discloader.discloader.network.gateway.packets;
 
+import io.discloader.discloader.common.DiscLoader;
+import io.discloader.discloader.common.event.GuildBanRemoveEvent;
+import io.discloader.discloader.common.event.IEventListener;
+import io.discloader.discloader.entity.Guild;
+import io.discloader.discloader.entity.User;
+import io.discloader.discloader.network.gateway.DiscSocket;
+import io.discloader.discloader.network.json.GuildBanJSON;
+import io.discloader.discloader.util.Constants;
+
 /**
  * @author Perry Berman
  *
  */
-public class GuildBanRemove {
+public class GuildBanRemove extends DLPacket {
 
 	/**
-	 * 
+	 * @param socket
 	 */
-	public GuildBanRemove() {
+	public GuildBanRemove(DiscSocket socket) {
+		super(socket);
 	}
 
+	public void handle(SocketPacket packet) {
+		String d = this.gson.toJson(packet.d);
+		GuildBanJSON data = this.gson.fromJson(d, GuildBanJSON.class);
+		Guild guild = this.loader.guilds.get(data.guild_id);
+		User user = this.loader.users.get(data.user.id);
+		if (user == null) {
+			user = this.loader.addUser(data.user);
+		}
+		GuildBanRemoveEvent event = new GuildBanRemoveEvent(guild, user);
+		this.loader.emit(Constants.Events.GUILD_BAN_REMOVE, event);
+		for (IEventListener e : DiscLoader.handlers.values()) {
+			e.GuildBanRemove(event);
+		}
+	}
+	
 }
