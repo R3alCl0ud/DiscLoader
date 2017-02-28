@@ -15,13 +15,8 @@ Created to replace the method daisy chaining confusion of other Java libraries f
 # Todo
 - Finish constants registry.
 - Finish packet reading.
-- Finish implementing RichEmbed Object.
-- Finish Texture/IIcon implementation.
-- Fix sending attachments.
 - Parse EmbedJSONs to a MessageEmbed type.
 - Add methods for editing a Channel's data.
-- Implement LanguageRegistry.
-- Implement assets directories (a place to put the icon's for your mods, and commands)
 
 ### Command Line Arguments
 
@@ -38,3 +33,5 @@ Created to replace the method daisy chaining confusion of other Java libraries f
 | `useWindow` | whether or not to use the included GUI | `true` |
 | `token` | The api token to use for authentication | `""` |
 | `prefix` | The prefix to look for at the start of a message | `//` |
+| `shard` | The shard number | `0` |
+| `shards` | The number of shards | `1` |
