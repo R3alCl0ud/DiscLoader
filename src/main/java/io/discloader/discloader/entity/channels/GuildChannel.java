@@ -1,23 +1,25 @@
 package io.discloader.discloader.entity.channels;
 
 import java.util.HashMap;
+import java.util.concurrent.CompletableFuture;
 
 import io.discloader.discloader.entity.Guild;
 import io.discloader.discloader.entity.GuildMember;
 import io.discloader.discloader.entity.Overwrite;
 import io.discloader.discloader.entity.Permission;
 import io.discloader.discloader.entity.Role;
+import io.discloader.discloader.entity.impl.IGuildChannel;
 import io.discloader.discloader.network.json.ChannelJSON;
 import io.discloader.discloader.util.Constants;
 import io.discloader.discloader.util.Constants.Permissions;
 
-@Deprecated
-public class GuildChannel extends Channel {
+public class GuildChannel extends Channel implements IGuildChannel {
 	public final Guild guild;
 
 	public Permissions permission;
 
 	public int position;
+	
 	public HashMap<String, Overwrite> overwrites;
 
 	public GuildChannel(Guild guild, ChannelJSON channel) {
@@ -34,10 +36,11 @@ public class GuildChannel extends Channel {
 		this.name = data.name;
 
 		this.position = data.position;
-
-
 	}
 
+	/**
+	 * @return
+	 */
 	public HashMap<String, GuildMember> getMembers() {
 		HashMap<String, GuildMember> members = new HashMap<String, GuildMember>();
 		for (GuildMember member : this.guild.members.values()) {
@@ -47,6 +50,16 @@ public class GuildChannel extends Channel {
 		return members;
 	}
 
+	/**
+	 * Evaluates a
+	 * 
+	 * @param member
+	 *            The member whose permissions we are evaluating.
+	 * @return A new Permissions object that contains {@literal this}, the
+	 *         {@literal member}, and their evaluated permissions
+	 *         {@link Integer}. <br>
+	 *         null if the channel doesn't belong to a {@link #guild}
+	 */
 	public Permission permissionsFor(GuildMember member) {
 		int raw = 0;
 		if (member.id == this.guild.ownerID)
@@ -60,6 +73,17 @@ public class GuildChannel extends Channel {
 		return new Permission(member, this, raw);
 	}
 
+	/**
+	 * Gets all of the channel's {@link #overwrites} that applies to a
+	 * {@link GuildMember}
+	 * 
+	 * @param member
+	 *            The member of whome we are looking for overwrites that apply.
+	 * @author Perry Berman
+	 * @return A {@link HashMap} of overwrite objects, indexed by
+	 *         {@link Overwrite#id}
+	 * @since 0.0.1
+	 */
 	public HashMap<String, Overwrite> overwritesOf(GuildMember member) {
 		HashMap<String, Overwrite> Overwrites = new HashMap<String, Overwrite>();
 		for (Role role : member.getRoleList().values()) {
@@ -69,6 +93,21 @@ public class GuildChannel extends Channel {
 		if (this.overwrites.get(member.id) != null)
 			Overwrites.put(member.id, this.overwrites.get(member.id));
 		return Overwrites;
+	}
+
+	@Override
+	public CompletableFuture<? extends IGuildChannel> setName(String name) {
+		return null;
+	}
+
+	@Override
+	public CompletableFuture<IGuildChannel> setPosition(int position) {
+		return null;
+	}
+
+	@Override
+	public CompletableFuture<IGuildChannel> setPermissions(int allow, int deny, String type) {
+		return null;
 	}
 
 }

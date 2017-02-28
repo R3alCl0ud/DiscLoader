@@ -6,29 +6,21 @@ import io.discloader.discloader.common.DiscLoader;
 import io.discloader.discloader.entity.Guild;
 import io.discloader.discloader.entity.GuildMember;
 import io.discloader.discloader.entity.Overwrite;
-import io.discloader.discloader.entity.Permission;
-import io.discloader.discloader.entity.Role;
 import io.discloader.discloader.entity.User;
+import io.discloader.discloader.entity.impl.IChannel;
 import io.discloader.discloader.network.json.ChannelJSON;
-import io.discloader.discloader.util.Constants;
+import io.discloader.discloader.util.Constants.ChannelType;
 
-public class Channel {
+public class Channel implements IChannel {
 
 	public String id;
 	
 	public String name;
 	
-	public String topic;
-	
 	public String lastMessageID;
 	
-	public String type;
+	protected ChannelType type;
 
-	public int bitrate;
-	
-	public int userLimit;
-	
-	public int position;
 
 	/**
 	 * Whether or not the channel is a dm channel. Is always {@literal true} if {@link #type} is {@literal "groupDM"} or {@literal "dm"}
@@ -122,65 +114,26 @@ public class Channel {
 		if (data.name != null)
 			this.name = data.name;
 
-		if (data.topic != null)
-			this.topic = data.topic;
-
 	}
 
-	/**
-	 * @return
-	 */
-	public HashMap<String, GuildMember> getMembers() {
-		HashMap<String, GuildMember> members = new HashMap<String, GuildMember>();
-		for (GuildMember member : this.guild.members.values()) {
-			if (this.permissionsFor(member).hasPermission(Constants.PermissionFlags.READ_MESSAGES, false))
-				members.put(member.id, member);
-		}
-		return members;
+
+
+
+
+
+
+	@Override
+	public boolean isPrivate() {
+		return false;
 	}
 
-	/**
-	 * Evaluates a
-	 * 
-	 * @param member
-	 *            The member whose permissions we are evaluating.
-	 * @return A new Permissions object that contains {@literal this}, the
-	 *         {@literal member}, and their evaluated permissions
-	 *         {@link Integer}. <br>
-	 *         null if the channel doesn't belong to a {@link #guild}
-	 */
-	public Permission permissionsFor(GuildMember member) {
-		int raw = 0;
-		if (member.id == this.guild.ownerID)
-			return new Permission(member, this, 2146958463);
-		for (Role role : member.getRoleList().values())
-			raw |= role.permissions;
-		for (Overwrite overwrite : this.overwritesOf(member).values()) {
-			raw |= overwrite.allow;
-			raw &= ~overwrite.deny;
-		}
-		return new Permission(member, this, raw);
+	@Override
+	public String getID() {
+		return this.id;
 	}
 
-	/**
-	 * Gets all of the channel's {@link #overwrites} that applies to a
-	 * {@link GuildMember}
-	 * 
-	 * @param member
-	 *            The member of whome we are looking for overwrites that apply.
-	 * @author Perry Berman
-	 * @return A {@link HashMap} of overwrite objects, indexed by
-	 *         {@link Overwrite#id}
-	 * @since 0.0.1
-	 */
-	public HashMap<String, Overwrite> overwritesOf(GuildMember member) {
-		HashMap<String, Overwrite> Overwrites = new HashMap<String, Overwrite>();
-		for (Role role : member.getRoleList().values()) {
-			if (this.overwrites.get(role.id) != null)
-				Overwrites.put(role.id, this.overwrites.get(role.id));
-		}
-		if (this.overwrites.get(member.id) != null)
-			Overwrites.put(member.id, this.overwrites.get(member.id));
-		return Overwrites;
+	@Override
+	public ChannelType getType() {
+		return this.type;
 	}
 }

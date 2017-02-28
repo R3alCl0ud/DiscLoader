@@ -34,10 +34,9 @@ public class GuildCreate extends DLPacket {
 			
 		} else {
 			// a brand new guild
-			this.socket.loader.addGuild(data);
+			guild = this.socket.loader.addGuild(data);
+			
 		}
-		
-
 	}
 
 }

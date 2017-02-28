@@ -10,19 +10,15 @@ public class GuildList<T extends Guild> extends AbstractList<T> {
 
 	public GuildList(DiscLoader loader) {
 		super(loader);
-		DefaultListModel<Object> listModel = new DefaultListModel<Object>();
-		for (Guild guild : this.loader.guilds.values()) {
-			listModel.addElement(String.format("<html><font color=#748b9a>name:</font> %s<br><font color=#748b9a>id:</font> %s</html>", guild.name, guild.id));
-		}
 
 	}
-	
-	@SuppressWarnings("unchecked")
+
 	@Override
+	@SuppressWarnings("unchecked")
 	public DefaultListModel<Object> createListModel() {
 		DefaultListModel<Object> listModel = new DefaultListModel<Object>();
 		for (Guild guild : this.loader.guilds.values()) {
-			listModel.addElement(String.format("<html><font color=#748b9a>name:</font> %s<br><font color=#748b9a>id:</font> %s</html>", guild.name, guild.id));
+			listModel.addElement(String.format("<html>%s<br>%s<br>%s</html>", guild.name, guild.id, guild.region.id));
 			this.items.add((T) guild);
 		}
 		return listModel;

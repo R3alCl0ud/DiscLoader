@@ -20,11 +20,11 @@ public interface IGuildChannel extends IChannel {
 	 */
 	HashMap<String, GuildMember> members = new HashMap<String, GuildMember>();
 	
-	CompletableFuture<IGuildChannel> setName(String name);
+	CompletableFuture<? extends IGuildChannel> setName(String name);
 	
-	CompletableFuture<IGuildChannel> setPosition(int position);
+	CompletableFuture<? extends IGuildChannel> setPosition(int position);
 	
-	CompletableFuture<IGuildChannel> setPermissions(int allow, int deny, String type);
+	CompletableFuture<? extends IGuildChannel> setPermissions(int allow, int deny, String type);
 
 	HashMap<String, GuildMember> getMembers();
 	

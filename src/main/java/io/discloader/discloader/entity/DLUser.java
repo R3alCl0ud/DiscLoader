@@ -80,7 +80,7 @@ public class DLUser extends User {
 		JSONObject d = new JSONObject().put("game", game != null ? game.toJsonString() : null).put("afk", this.afk)
 				.put("status", status != null ? status : this.presence.status).put("since", 0);
 		this.presence.update(status, game);
-		this.loader.discSocket.send(payload.put("d", d));
+		this.loader.socket.send(payload.put("d", d));
 		return this;
 	}
 

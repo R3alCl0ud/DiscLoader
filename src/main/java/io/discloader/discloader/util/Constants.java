@@ -137,7 +137,16 @@ public class Constants {
 		public static final String guildIcon(String guildID, String icon) {
 			return String.format("%s/icons/%s/%s.jpg", Endpoints.CDN, guildID, icon);
 		}
+		
+		public static final String guildRoles(String guildID) {
+			return String.format("%s/roles", Endpoints.guild(guildID));
+		}
 
+		public static final String guildRole(String guildID, String roleID) {
+			return String.format("%s/%s", Endpoints.guildRoles(guildID), roleID);
+		}
+
+		
 		public static final String currentUser = String.format("%s/users/@me", API);
 		public static final String currentUserGuilds = String.format("%s/users/@me/guilds", API);
 		public static final String currentOAuthApplication = String.format("%s/oauth2/applications/@me", API);
@@ -281,6 +290,10 @@ public class Constants {
 		public static final int groupDM = 3;
 	}
 
+	public static enum ChannelType {
+		TEXT, VOICE, DM, GROUPDM
+	}
+	
 	/**
 	 * This object contains every 53bit {@link Permission} {@link Integer} as
 	 * specified in Discord's API. Visit <a href=

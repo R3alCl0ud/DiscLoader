@@ -129,6 +129,9 @@ public class Guild {
 	 * @author Perry Berman
 	 */
 	public HashMap<String, Presence> presences;
+	
+	
+	public VoiceRegion region;
 
 	/**
 	 * Creates a new guild
@@ -144,6 +147,7 @@ public class Guild {
 		this.voiceChannels = new HashMap<String, VoiceChannel>();
 		this.roles = new HashMap<String, Role>();
 		this.presences = new HashMap<String, Presence>();
+		this.region = new VoiceRegion("us-central");
 
 		if (data.unavailable == true) {
 			this.available = false;
@@ -162,6 +166,7 @@ public class Guild {
 		this.iconURL = this.icon != null ? Constants.Endpoints.guildIcon(this.id, this.icon) : null;
 		this.ownerID = data.owner_id;
 		this.memberCount = data.member_count;
+		this.region = new VoiceRegion(data.region);
 		this.large = data.large;
 		ProgressLogger.step(1, 5, "Caching Roles");
 		if (data.roles.length > 0) {
@@ -193,7 +198,11 @@ public class Guild {
 			}
 		}
 		ProgressLogger.step(5, 5, "Registering Icon");
-		TextureRegistry.registerGuildIcon(new GuildIcon(this));
+		try {
+			TextureRegistry.registerGuildIcon(new GuildIcon(this));
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 		this.available = !data.unavailable;
 	}
 
@@ -362,6 +371,7 @@ public class Guild {
 
 	/**
 	 * Creates a new voice channel
+	 * 
 	 * @param name
 	 * @return A future that completes with a new {@link VoiceChannel} Object if
 	 *         successful.

@@ -19,6 +19,7 @@ import io.discloader.discloader.entity.DLUser;
 import io.discloader.discloader.entity.Guild;
 import io.discloader.discloader.entity.User;
 import io.discloader.discloader.entity.channels.Channel;
+import io.discloader.discloader.entity.channels.GroupChannel;
 import io.discloader.discloader.entity.channels.PrivateChannel;
 import io.discloader.discloader.entity.channels.TextChannel;
 import io.discloader.discloader.entity.channels.VoiceChannel;
@@ -34,7 +35,7 @@ import io.discloader.discloader.util.Constants;
  */
 public class DiscLoader {
 
-	public DiscSocket discSocket;
+	public DiscSocket socket;
 
 	public String token;
 
@@ -68,6 +69,8 @@ public class DiscLoader {
 	 * @see HashMap
 	 */
 	public HashMap<String, Channel> channels;
+	
+	public HashMap<String, GroupChannel> groupChannels;
 
 	/**
 	 * A HashMap of the client's cached PrivateChannels. Indexed by
@@ -124,7 +127,7 @@ public class DiscLoader {
 
 		this.shard = shard;
 
-		this.discSocket = new DiscSocket(this);
+		this.socket = new DiscSocket(this);
 
 		this.rest = new RESTManager(this);
 
@@ -133,6 +136,8 @@ public class DiscLoader {
 		this.users = new HashMap<String, User>();
 
 		this.channels = new HashMap<String, Channel>();
+		
+		this.groupChannels = new HashMap<String, GroupChannel>();
 
 		this.privateChannels = new HashMap<String, PrivateChannel>();
 
@@ -153,8 +158,7 @@ public class DiscLoader {
 	 * Connects the current instance of the {@link DiscLoader loader} into
 	 * Discord's gateway servers
 	 * 
-	 * @param token
-	 *            your API token
+	 * @param token your API token
 	 * @return {@literal CompletableFuture<String>}
 	 */
 	public CompletableFuture<String> login(String token) {
@@ -166,7 +170,7 @@ public class DiscLoader {
 			Gson gson = new Gson();
 			Gateway gateway = gson.fromJson(text, Gateway.class);
 			try {
-				this.discSocket.connectSocket(gateway.url + "?v=6&encoding=json");
+				this.socket.connectSocket(gateway.url + "?v=6&encoding=json");
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
@@ -206,7 +210,7 @@ public class DiscLoader {
 
 		Guild newGuild = new Guild(this, guild);
 		this.guilds.put(newGuild.id, newGuild);
-		if (!exists && this.discSocket.status == Constants.Status.READY) {
+		if (!exists && this.socket.status == Constants.Status.READY) {
 			this.emit(Constants.Events.GUILD_CREATE, newGuild);
 		}
 		return newGuild;
@@ -236,14 +240,14 @@ public class DiscLoader {
 		}
 
 		if (channel != null) {
-			switch (channel.type) {
-			case "text":
+			switch (channel.getType()) {
+			case TEXT:
 				this.textChannels.put(channel.id, (TextChannel) channel);
 				break;
-			case "dm":
+			case DM:
 				this.privateChannels.put(channel.id, (PrivateChannel) channel);
 				break;
-			case "voice":
+			case VOICE:
 				this.voiceChannels.put(channel.id, (VoiceChannel) channel);
 				break;
 			default:
@@ -268,12 +272,11 @@ public class DiscLoader {
 	}
 
 	public void checkReady() {
-		if (this.discSocket.status != Constants.Status.READY && this.discSocket.status != Constants.Status.NEARLY) {
+		if (this.socket.status != Constants.Status.READY && this.socket.status != Constants.Status.NEARLY) {
 			int unavailable = 0;
 			for (Guild guild : this.guilds.values()) {
 				unavailable += guild.available ? 0 : 1;
 			}
-
 			ProgressLogger.progress(this.guilds.size() - unavailable, this.guilds.size(), "Guilds Cached");
 			if (unavailable == 0) {
 				for (Guild guild : this.guilds.values()) {
@@ -281,14 +284,14 @@ public class DiscLoader {
 					}
 				}
 
-				this.discSocket.status = Constants.Status.NEARLY;
+				this.socket.status = Constants.Status.NEARLY;
 				this.emitReady();
 			}
 		}
 	}
 
 	public void emitReady() {
-		this.discSocket.status = Constants.Status.READY;
+		this.socket.status = Constants.Status.READY;
 		this.ready = true;
 		CommandHandler.handleCommands = true;
 		this.emit(Constants.Events.READY, this);

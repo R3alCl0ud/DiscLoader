@@ -4,7 +4,7 @@ import io.discloader.discloader.common.DiscLoader;
 import io.discloader.discloader.common.event.IEventListener;
 import io.discloader.discloader.common.event.MessageDeleteEvent;
 import io.discloader.discloader.entity.Message;
-import io.discloader.discloader.entity.channels.TextChannel;
+import io.discloader.discloader.entity.impl.ITextChannel;
 import io.discloader.discloader.network.gateway.DiscSocket;
 import io.discloader.discloader.network.json.MessageJSON;
 import io.discloader.discloader.util.Constants;
@@ -25,7 +25,7 @@ public class MessageDelete extends DLPacket {
 	@Override
 	public void handle(SocketPacket packet) {
 		MessageJSON data = this.gson.fromJson(this.gson.toJson(packet.d), MessageJSON.class);
-		TextChannel channel = this.socket.loader.textChannels.get(data.channel_id);
+		ITextChannel channel = this.socket.loader.textChannels.get(data.channel_id);
 		if (channel == null)
 			channel = this.socket.loader.privateChannels.get(data.channel_id);
 		
