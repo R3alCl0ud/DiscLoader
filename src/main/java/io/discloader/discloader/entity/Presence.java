@@ -3,6 +3,11 @@ package io.discloader.discloader.entity;
 import io.discloader.discloader.network.json.GameJSON;
 import io.discloader.discloader.network.json.PresenceJSON;
 
+/**
+ * Represents a user's status on Discord
+ * 
+ * @author Perry Berman
+ */
 public class Presence {
 	/**
 	 * The {@link Game} the user is currently playing, or null if user isn't playing a game

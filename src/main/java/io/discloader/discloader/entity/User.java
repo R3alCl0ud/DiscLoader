@@ -8,6 +8,11 @@ import io.discloader.discloader.common.DiscLoader;
 import io.discloader.discloader.network.json.UserJSON;
 import io.discloader.discloader.util.Constants.Endpoints;
 
+/**
+ * Represents a user on discord
+ * 
+ * @author Perry Berman
+ */
 public class User {
 	/**
 	 * The loader instance that cached the user.

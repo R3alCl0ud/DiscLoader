@@ -6,6 +6,11 @@ import org.json.JSONObject;
 
 import io.discloader.discloader.util.Constants;
 
+/**
+ * Represents the user that you are currently logged in as.
+ * 
+ * @author Perry Berman
+ */
 public class DLUser extends User {
 
 	/**
@@ -25,20 +30,25 @@ public class DLUser extends User {
 	 */
 	public final Presence presence;
 
+	/**
+	 * Creates a new DLUser object
+	 * 
+	 * @param user The user we are currently logged in as
+	 */
 	public DLUser(User user) {
 		super(user);
 
 		this.presence = new Presence();
 
 		this.afk = false;
-		
+
 	}
 
 	/**
 	 * Set's the currently logged in user's username.
 	 * 
-	 * @param username
-	 * @return CompletableFuture
+	 * @param username The new username for the account
+	 * @return A Future that completes with a {@link User} Object if successful
 	 */
 	public CompletableFuture<User> setUsername(String username) {
 		return this.loader.rest.setUsername(username);
@@ -59,9 +69,9 @@ public class DLUser extends User {
 	/**
 	 * Set's the currently logged in user's presence
 	 * 
-	 * @param status
-	 * @param game
-	 * @param afk
+	 * @param status The new status
+	 * @param game The new game
+	 * @param afk Are you afk?
 	 * @return this
 	 */
 	public User setPresence(String status, Game game, boolean afk) {
@@ -77,7 +87,7 @@ public class DLUser extends User {
 	/**
 	 * Sets the currently loggedin user's game
 	 * 
-	 * @param game
+	 * @param game The name of the game you are playing
 	 * @return this
 	 */
 	public User setGame(String game) {
@@ -95,8 +105,9 @@ public class DLUser extends User {
 	}
 
 	/**
+	 * Set's the user's status
 	 * 
-	 * @param afk
+	 * @param afk Whether or not you are afk
 	 * @return this
 	 */
 	public User setAFK(boolean afk) {
@@ -104,7 +115,11 @@ public class DLUser extends User {
 	}
 
 	/**
-	 * @return 
+	 * Gets the OAuth2 application of the logged in user, if the
+	 * {@link User#bot} is true
+	 * 
+	 * @return A Future that completes with a new {@link OAuth2Application} if
+	 *         successful
 	 */
 	public CompletableFuture<OAuth2Application> getOAuth2Application() {
 		return this.loader.rest.getApplicationInfo();

@@ -6,16 +6,25 @@ package io.discloader.discloader.entity.embed;
  */
 public class EmbedAuthor {
 
+	/**
+	 * The author's website
+	 */
 	public String url;
 	
+	/**
+	 * Name of the author
+	 */
 	public String name;
 	
-	public String icon_url;
+	/**
+	 * The link to the author's icon
+	 */
+	public String iconURL;
 	
 	public EmbedAuthor(String name, String url, String icon_url) {
 		this.name = name;
 		this.url = url;
-		this.icon_url = icon_url;
+		this.iconURL = icon_url;
 	}
 	
 	public EmbedAuthor(String name, String url) {

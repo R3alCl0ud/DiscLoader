@@ -26,33 +26,34 @@ import io.discloader.discloader.util.Constants;
 
 /**
  * This represents a Guild in Discord's API
+ * 
  * @author Perry Berman
- * @since 0.0.1_Alpha
+ * @since 0.0.1
  */
 public class Guild {
-	
+
 	/**
 	 * The guild's Snowflake ID.
 	 */
 	public final String id;
-	
+
 	/**
 	 * The guild's name
 	 */
 	public String name;
-	
+
 	/**
 	 * The guild's owner's Snowflake ID.
 	 */
 	public String ownerID;
-	
+
 	/**
 	 * The hash code of the guild's icon
 	 */
 	public String icon;
-	
+
 	/**
-	 * The url to where the {@link #icon} is located 
+	 * The url to where the {@link #icon} is located
 	 */
 	public String iconURL;
 
@@ -65,7 +66,7 @@ public class Guild {
 	 * Whether or not the guild is currently available
 	 */
 	public boolean available;
-	
+
 	/**
 	 * Whether or not the guild has more than 250 members
 	 */
@@ -73,6 +74,7 @@ public class Guild {
 
 	/**
 	 * A GuildMember object repersenting the guild's owner
+	 * 
 	 * @see GuildMember
 	 */
 	public GuildMember owner;
@@ -84,6 +86,7 @@ public class Guild {
 
 	/**
 	 * A HashMap of the guild's cached members. Indexed by member ID.
+	 * 
 	 * @see GuildMember
 	 * @see HashMap
 	 * @author Perry Berman
@@ -92,6 +95,7 @@ public class Guild {
 
 	/**
 	 * A HashMap of the guild's TextChannels. Indexed by channel ID.
+	 * 
 	 * @see TextChannel
 	 * @see HashMap
 	 * @author Perry Berman
@@ -100,6 +104,7 @@ public class Guild {
 
 	/**
 	 * A HashMap of the guild's VoiceChannels. Indexed by channel ID.
+	 * 
 	 * @see VoiceChannel
 	 * @see HashMap
 	 * @author Perry Berman
@@ -108,6 +113,7 @@ public class Guild {
 
 	/**
 	 * A HashMap of the guild's roles. Indexed by role ID.
+	 * 
 	 * @see Role
 	 * @see HashMap
 	 * @author Perry Berman
@@ -116,6 +122,7 @@ public class Guild {
 
 	/**
 	 * A HashMap of the presences of the guild's members
+	 * 
 	 * @see GuildMember
 	 * @see Presence
 	 * @see HashMap
@@ -125,6 +132,7 @@ public class Guild {
 
 	/**
 	 * Creates a new guild
+	 * 
 	 * @param loader
 	 * @param data The guild's data
 	 */
@@ -219,7 +227,7 @@ public class Guild {
 				e.GuildMemberAdd(event);
 			}
 		}
-		
+
 		return member;
 	}
 
@@ -246,24 +254,26 @@ public class Guild {
 
 	/**
 	 * Deletes the Guild if loader has sufficient permissions
+	 * 
 	 * @return CompletableFuture
 	 */
 	public CompletableFuture<Guild> delete() {
 		return null;
 	}
 
-	
 	/**
-	 * Gets the guild's default text channel. the {@link Channel#id id} of the channel should be the same as the guild's {@link #id}
+	 * Gets the guild's default text channel. the {@link Channel#id id} of the
+	 * channel should be the same as the guild's {@link #id}
+	 * 
 	 * @return the default TextChannel
 	 */
 	public TextChannel getDefaultChannel() {
 		return this.textChannels.get(this.id);
 	}
-	
-	
+
 	/**
 	 * Sets the guild's name if the loader has sufficient permissions
+	 * 
 	 * @param name The guild's new name
 	 * @return CompletableFuture
 	 */
@@ -273,6 +283,7 @@ public class Guild {
 
 	/**
 	 * Sets the guild's icon if the loader has sufficient permissions
+	 * 
 	 * @param icon location of icon file on disk
 	 * @return CompletableFuture
 	 * @throws IOException
@@ -285,6 +296,7 @@ public class Guild {
 
 	/**
 	 * Sets the Guild's voice region to the specified region
+	 * 
 	 * @param region The new voice region
 	 * @return {@link CompletableFuture}
 	 */
@@ -293,7 +305,8 @@ public class Guild {
 	}
 
 	/**
-	 * loads a 
+	 * loads a
+	 * 
 	 * @param memberID the ID of the member to load
 	 * @return CompletableFuture.GuildMember
 	 */
@@ -303,64 +316,100 @@ public class Guild {
 
 	/**
 	 * 
-	 * @param limit The number of members to load. 
+	 * @param limit The number of members to load.
 	 * @param before
-	 * @return A CompletableFuture that completes with a HashMap of GuildMembers if successful, null otherwise. 
+	 * @return A CompletableFuture that completes with a HashMap of GuildMembers
+	 *         if successful, null otherwise.
 	 */
 	public CompletableFuture<HashMap<String, GuildMember>> loadMembers(int limit, String before) {
 		return null;
 	}
 
 	/**
-	 * Creates a new {@link TextChannel}. 
+	 * Creates a new {@link TextChannel}.
+	 * 
 	 * @param name The name of the channel
 	 * @return A Future that completes with a {@link TextChannel} if successful.
 	 */
 	public CompletableFuture<TextChannel> createTextChannel(String name) {
 		return null;
 	}
-	
+
 	/**
 	 * Creates a new {@link VoiceChannel}
+	 * 
 	 * @param name The name of the channel
 	 * @param bitrate The channel's bitrate
 	 * @param userLimit the channel's userlimit
-	 * @return
+	 * @return A future that completes with a new {@link VoiceChannel} Object if
+	 *         successful.
 	 */
 	public CompletableFuture<VoiceChannel> createVoiceChannel(String name, int bitrate, int userLimit) {
 		return null;
 	}
-	
+
 	/**
-	 * @param name
-	 * @param bitrate
-	 * @return
+	 * Creates a new voice channel
+	 * 
+	 * @param name The name of the channel
+	 * @param bitrate The channel's bitrate
+	 * @return A future that completes with a new {@link VoiceChannel} Object if
+	 *         successful.
 	 */
 	public CompletableFuture<VoiceChannel> createVoiceChannel(String name, int bitrate) {
 		return null;
 	}
-	
+
 	/**
+	 * Creates a new voice channel
 	 * @param name
-	 * @return
+	 * @return A future that completes with a new {@link VoiceChannel} Object if
+	 *         successful.
 	 */
 	public CompletableFuture<VoiceChannel> createVoiceChannel(String name) {
 		return null;
 	}
-	
+
 	/**
 	 * Creates a new {@link Role}.
+	 * 
 	 * @param name The name of the role
 	 * @param permissions The 53bit Permissions integer to assign to the role
 	 * @param color The color of the role
 	 * @param hoist Display role members separately from online members
 	 * @param mentionable Allow anyone to @mention this role
-	 * @return A future that completes with a new {@link Role} Object if successful.
+	 * @return A future that completes with a new {@link Role} Object if
+	 *         successful.
+	 * @since 0.0.3
 	 */
-	public CompletableFuture<Role> createRole(String name, int permissions, int color, boolean hoist, boolean mentionable) {
+	public CompletableFuture<Role> createRole(String name, int permissions, int color, boolean hoist,
+			boolean mentionable) {
 		return null;
 	}
-	
-	
-	
+
+	/**
+	 * Creates a new {@link Role}.
+	 * 
+	 * @param name The name of the role
+	 * @param permissions The 53bit Permissions integer to assign to the role
+	 * @param color The color of the role
+	 * @return A future that completes with a new {@link Role} Object if
+	 *         successful.
+	 * @since 0.0.3
+	 */
+	public CompletableFuture<Role> createRole(String name, int permissions, int color) {
+		return null;
+	}
+
+	/**
+	 * Creates a new {@link Role}.
+	 * 
+	 * @return A future that completes with a new {@link Role} Object if
+	 *         successful.
+	 * @since 0.0.3
+	 */
+	public CompletableFuture<Role> createRole() {
+		return null;
+	}
+
 }

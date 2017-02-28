@@ -23,6 +23,7 @@ io.discloader.discloader.entity.channels
 io.discloader.discloader.entity.embed
 io.discloader.discloader.entity.impl
 io.discloader.discloader.entity.sendable
+io.discloader.discloader.entity.sendable.embed
 io.discloader.discloader.entity.voice
 io.discloader.discloader.network.gateway
 io.discloader.discloader.network.gateway.packets

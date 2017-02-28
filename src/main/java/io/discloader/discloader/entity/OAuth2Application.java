@@ -9,29 +9,32 @@ public class OAuth2Application {
 	 * The clientID of the application
 	 */
 	public final String clientID;
-	
+
 	/**
-	 * The name of the application 
+	 * The name of the application
 	 */
 	public String name;
-	
+
 	/**
 	 * The applications icon hash
 	 */
 	public String icon;
-	
+
 	/**
 	 * The applications description
 	 */
 	public String description;
-	
+
+	/**
+	 * The applications rpcOrigins
+	 */
 	public String[] rpcOrigins;
 
 	/**
 	 * Whether or not the application is public
 	 */
 	public boolean isPublic;
-	
+
 	/**
 	 * requires a code grant to join
 	 */
@@ -44,6 +47,7 @@ public class OAuth2Application {
 
 	/**
 	 * Creates a new OAuth2Application
+	 * 
 	 * @param data The application's data
 	 * @param owner The owner of the application
 	 */
@@ -66,6 +70,7 @@ public class OAuth2Application {
 	}
 
 	/**
+	 * Generates a link to the applications authorization page
 	 * 
 	 * @param permissions The 53bit permissions integer
 	 * @return The Application's OAuth2 authorization link
@@ -75,11 +80,12 @@ public class OAuth2Application {
 	}
 
 	/**
+	 * Generates a link to the applications authorization page
 	 * 
 	 * @return The Application's OAuth2 authorization link
 	 */
 	public String getOAuthURL() {
 		return this.getOAuthURL(0);
 	}
-	
+
 }

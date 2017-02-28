@@ -5,14 +5,43 @@ import java.math.BigDecimal;
 import io.discloader.discloader.common.DiscLoader;
 import io.discloader.discloader.network.json.RoleJSON;
 
+/**
+ * Represents a role in a guild on Discord
+ * 
+ * @author Perry Berman
+ */
 public class Role {
+	/**
+	 * The role's Snowflake ID.
+	 */
 	public final String id;
+	/**
+	 * The role's name 
+	 */
 	public String name;
+	/**
+	 * The 53bit permissions integer for the role
+	 */
 	public int permissions;
+	/**
+	 * The color users with this role should display as
+	 */
 	public int color;
+	/**
+	 * The role's position in the role hiarchy
+	 */
 	public int position;
+	/**
+	 * Whether or not online users are displayed seperately
+	 */
 	public boolean hoist;
+	/**
+	 * Something to do with bots
+	 */
 	public final boolean managed;
+	/**
+	 * Can everyone mention this role
+	 */
 	public boolean mentionable;
 
 	/**
@@ -20,8 +49,16 @@ public class Role {
 	 */
 	public final Guild guild;
 
+	/**
+	 * The current instance of DiscLoader
+	 */
 	public final DiscLoader loader;
 
+	/**
+	 * Creates a new role object
+	 * @param guild The guild the role belongs to
+	 * @param role The role's data
+	 */
 	public Role(Guild guild, RoleJSON role) {
 		this.guild = guild;
 		this.loader = this.guild.loader;
