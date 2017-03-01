@@ -10,14 +10,18 @@ package io.discloader.discloader.entity.sendable;
 public class Packet {
 
 	public int op;
-//	public int s;
+	public int s;
 	public Object d;
 	
-	public Packet(int op, Object d) {
+	
+	public Packet(int op, int s, Object d) {
 		this.op = op;
-//		this.s = s;
 		this.d = d;
+		this.s = s;
 	}
 
-	
+    public Packet(int op, Object d) {
+        this.op = op;
+        this.d = d;
+    }	
 }

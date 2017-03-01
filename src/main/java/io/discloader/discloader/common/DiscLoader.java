@@ -23,6 +23,7 @@ import io.discloader.discloader.entity.channels.GroupChannel;
 import io.discloader.discloader.entity.channels.PrivateChannel;
 import io.discloader.discloader.entity.channels.TextChannel;
 import io.discloader.discloader.entity.channels.VoiceChannel;
+import io.discloader.discloader.entity.voice.VoiceConnection;
 import io.discloader.discloader.network.gateway.DiscSocket;
 import io.discloader.discloader.network.json.ChannelJSON;
 import io.discloader.discloader.network.json.GuildJSON;
@@ -104,6 +105,13 @@ public class DiscLoader {
 	 * @author Perry Berman
 	 */
 	public HashMap<String, VoiceChannel> voiceChannels;
+	
+	/**
+	 * A HashMap of the client's voice connections. Indexed by {@link Guild#id}.
+	 * @author Perry Berman
+	 * @since 0.0.3
+	 */
+	public HashMap<String, VoiceConnection> voiceConnections;
 
 	/**
 	 * A HashMap of the client's cached Guilds. Indexed by {@link Guild#id}
@@ -144,6 +152,8 @@ public class DiscLoader {
 		this.textChannels = new HashMap<String, TextChannel>();
 
 		this.voiceChannels = new HashMap<String, VoiceChannel>();
+		
+		this.voiceConnections = new HashMap<String, VoiceConnection>();
 
 		this.guilds = new HashMap<String, Guild>();
 

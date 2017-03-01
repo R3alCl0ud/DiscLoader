@@ -2,6 +2,7 @@ package io.discloader.discloader.client.render.texture.icon;
 
 import java.awt.Image;
 import java.io.File;
+import java.net.MalformedURLException;
 import java.net.URL;
 
 import javax.swing.ImageIcon;
@@ -18,49 +19,58 @@ import io.discloader.discloader.util.Constants;
  */
 public class CommandIcon extends AbstractTexture implements IIcon {
 
-	public CommandIcon(Command command) {
-		this.setIconName(command.getTextureName());
-	}
+    public CommandIcon(Command command) {
+        this.setIconName(command.getTextureName());
+    }
 
-	@Override
-	public ImageIcon getImageIcon() {
-		return this.createImageIcon(this.getIconName());
-	}
+    @Override
+    public ImageIcon getImageIcon() {
+        return this.createImageIcon(this.getIconName());
+    }
 
-	@Override
-	public Image getImage() {
-		return this.getImageIcon().getImage();
-	}
-	
-	public String getNamespace() {
-		return this.getIconName().substring(0, this.getIconName().indexOf(':'));
-	}
+    @Override
+    public Image getImage() {
+        return this.getImageIcon().getImage();
+    }
 
-	public String getNamespaceTexture() {
-		return this.getIconName().substring(this.getIconName().indexOf(':') + 1);
-	}
+    public String getNamespace() {
+        return this.getIconName().substring(0, this.getIconName().indexOf(':'));
+    }
 
-	public File getFile() {
-		String path = String.format("assets/%s/texture/icon/commands/%s.png", this.getNamespace(),
-				this.getNamespaceTexture().replace('.', '/'));
-		if (TextureRegistry.resourceHandler.resources.containsKey(path)) {
-			return TextureRegistry.resourceHandler.resources.get(path);
-		}
-		File file = new File(ClassLoader.getSystemResource(path).getFile());
-		if (file.exists() && file.isFile()) {
-			return file;
-		}
-		return Constants.MissingTexture;
-	}
+    public String getNamespaceTexture() {
+        return this.getIconName().substring(this.getIconName().indexOf(':') + 1);
+    }
 
-	protected ImageIcon createImageIcon(String path) {
-		URL imgURL = ClassLoader.getSystemResource(String.format("assets/%s/texture/icon/commands/%s.png", this.getNamespace(),
-				this.getNamespaceTexture().replace('.', '/')));
-		if (imgURL != null) {
-			return new ImageIcon(imgURL);
-		} else {
-			System.err.println("Couldn't find file: " + path);
-			return null;
-		}
-	}
+    public File getFile() {
+        String path = String.format("assets/%s/texture/icon/commands/%s.png", this.getNamespace(), this.getNamespaceTexture().replace('.', '/'));
+        if (TextureRegistry.resourceHandler.resources.containsKey(path)) {
+            return TextureRegistry.resourceHandler.resources.get(path);
+        }
+        File file = new File(ClassLoader.getSystemResource(path).getFile());
+        if (file.exists() && file.isFile()) {
+            return file;
+        }
+        return Constants.MissingTexture;
+    }
+
+    protected ImageIcon createImageIcon(String path) {
+        URL imgURL = null;
+        try {
+            imgURL = this.getFile().toURI().toURL();
+        } catch (MalformedURLException e) {
+            e.printStackTrace();
+            imgURL = ClassLoader.getSystemResource(String.format("assets/%s/texture/icon/commands/%s.png", this.getNamespace(), this.getNamespaceTexture().replace('.', '/')));
+        }
+        if (imgURL != null) {
+            return new ImageIcon(imgURL);
+        } else {
+            try {
+                imgURL = Constants.MissingTexture.toURI().toURL();
+                return new ImageIcon(imgURL);
+            } catch (MalformedURLException e) {
+                e.printStackTrace();
+                return null;
+            }
+        }
+    }
 }

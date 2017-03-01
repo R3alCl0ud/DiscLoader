@@ -14,100 +14,104 @@ import io.discloader.discloader.util.Constants;
 import io.discloader.discloader.util.Constants.Permissions;
 
 public class GuildChannel extends Channel implements IGuildChannel {
-	public final Guild guild;
+    public final Guild guild;
 
-	public Permissions permission;
+    public Permissions permission;
 
-	public int position;
-	
-	public HashMap<String, Overwrite> overwrites;
+    public int position;
 
-	public GuildChannel(Guild guild, ChannelJSON channel) {
-		super(guild.loader, channel);
+    public HashMap<String, Overwrite> overwrites;
 
-		this.guild = guild;
+    /**
+     * A {@link HashMap} of the channel's {@link GuildMember members}. Indexed by {@link GuildMember #id member.id}. <br>
+     * Is {@code null} if {@link #guild} is {@code null}, and if {@link #type} is {@code "dm"}, or {@code "groupDM"}.
+     * 
+     * @author Perry Berman
+     * @since 0.0.1
+     */
+    HashMap<String, GuildMember> members = new HashMap<String, GuildMember>();
 
-		this.overwrites = new HashMap<String, Overwrite>();
-	}
+    public GuildChannel(Guild guild, ChannelJSON channel) {
+        super(guild.loader, channel);
 
-	public void setup(ChannelJSON data) {
-		super.setup(data);
+        this.guild = guild;
 
-		this.name = data.name;
+        this.overwrites = new HashMap<String, Overwrite>();
+    }
 
-		this.position = data.position;
-	}
+    public void setup(ChannelJSON data) {
+        super.setup(data);
 
-	/**
-	 * @return
-	 */
-	public HashMap<String, GuildMember> getMembers() {
-		HashMap<String, GuildMember> members = new HashMap<String, GuildMember>();
-		for (GuildMember member : this.guild.members.values()) {
-			if (this.permissionsFor(member).hasPermission(Constants.PermissionFlags.READ_MESSAGES, false))
-				members.put(member.id, member);
-		}
-		return members;
-	}
+        this.name = data.name;
 
-	/**
-	 * Evaluates a
-	 * 
-	 * @param member
-	 *            The member whose permissions we are evaluating.
-	 * @return A new Permissions object that contains {@literal this}, the
-	 *         {@literal member}, and their evaluated permissions
-	 *         {@link Integer}. <br>
-	 *         null if the channel doesn't belong to a {@link #guild}
-	 */
-	public Permission permissionsFor(GuildMember member) {
-		int raw = 0;
-		if (member.id == this.guild.ownerID)
-			return new Permission(member, this, 2146958463);
-		for (Role role : member.getRoleList().values())
-			raw |= role.permissions;
-		for (Overwrite overwrite : this.overwritesOf(member).values()) {
-			raw |= overwrite.allow;
-			raw &= ~overwrite.deny;
-		}
-		return new Permission(member, this, raw);
-	}
+        this.position = data.position;
+    }
 
-	/**
-	 * Gets all of the channel's {@link #overwrites} that applies to a
-	 * {@link GuildMember}
-	 * 
-	 * @param member
-	 *            The member of whome we are looking for overwrites that apply.
-	 * @author Perry Berman
-	 * @return A {@link HashMap} of overwrite objects, indexed by
-	 *         {@link Overwrite#id}
-	 * @since 0.0.1
-	 */
-	public HashMap<String, Overwrite> overwritesOf(GuildMember member) {
-		HashMap<String, Overwrite> Overwrites = new HashMap<String, Overwrite>();
-		for (Role role : member.getRoleList().values()) {
-			if (this.overwrites.get(role.id) != null)
-				Overwrites.put(role.id, this.overwrites.get(role.id));
-		}
-		if (this.overwrites.get(member.id) != null)
-			Overwrites.put(member.id, this.overwrites.get(member.id));
-		return Overwrites;
-	}
+    /**
+     * @return
+     */
+    public HashMap<String, GuildMember> getMembers() {
+        HashMap<String, GuildMember> members = new HashMap<String, GuildMember>();
+        for (GuildMember member : this.guild.members.values()) {
+            if (this.permissionsFor(member).hasPermission(Constants.PermissionFlags.READ_MESSAGES, false))
+                members.put(member.id, member);
+        }
+        return members;
+    }
 
-	@Override
-	public CompletableFuture<? extends IGuildChannel> setName(String name) {
-		return null;
-	}
+    /**
+     * Evaluates a
+     * 
+     * @param member The member whose permissions we are evaluating.
+     * @return A new Permissions object that contains {@literal this}, the {@literal member}, and their evaluated permissions
+     *         {@link Integer}. <br>
+     *         null if the channel doesn't belong to a {@link #guild}
+     */
+    public Permission permissionsFor(GuildMember member) {
+        int raw = 0;
+        if (member.id == this.guild.ownerID)
+            return new Permission(member, this, 2146958463);
+        for (Role role : member.getRoleList().values())
+            raw |= role.permissions;
+        for (Overwrite overwrite : this.overwritesOf(member).values()) {
+            raw |= overwrite.allow;
+            raw &= ~overwrite.deny;
+        }
+        return new Permission(member, this, raw);
+    }
 
-	@Override
-	public CompletableFuture<IGuildChannel> setPosition(int position) {
-		return null;
-	}
+    /**
+     * Gets all of the channel's {@link #overwrites} that applies to a {@link GuildMember}
+     * 
+     * @param member The member of whome we are looking for overwrites that apply.
+     * @author Perry Berman
+     * @return A {@link HashMap} of overwrite objects, indexed by {@link Overwrite#id}
+     * @since 0.0.1
+     */
+    public HashMap<String, Overwrite> overwritesOf(GuildMember member) {
+        HashMap<String, Overwrite> Overwrites = new HashMap<String, Overwrite>();
+        for (Role role : member.getRoleList().values()) {
+            if (this.overwrites.get(role.id) != null)
+                Overwrites.put(role.id, this.overwrites.get(role.id));
+        }
+        if (this.overwrites.get(member.id) != null)
+            Overwrites.put(member.id, this.overwrites.get(member.id));
+        return Overwrites;
+    }
 
-	@Override
-	public CompletableFuture<IGuildChannel> setPermissions(int allow, int deny, String type) {
-		return null;
-	}
+    @Override
+    public CompletableFuture<? extends IGuildChannel> setName(String name) {
+        return null;
+    }
+
+    @Override
+    public CompletableFuture<IGuildChannel> setPosition(int position) {
+        return null;
+    }
+
+    @Override
+    public CompletableFuture<IGuildChannel> setPermissions(int allow, int deny, String type) {
+        return null;
+    }
 
 }

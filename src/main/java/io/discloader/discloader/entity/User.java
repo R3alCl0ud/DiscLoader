@@ -103,7 +103,7 @@ public class User {
 	/**
 	 * toStrings the user in mention format
 	 * 
-	 * @return <@ this.id >
+	 * @return {@literal <@}{@link #id this.id}{@literal>}
 	 */
 	public String toString() {
 		return MessageFormat.format("<@{0}>", new Object[] { this.id });

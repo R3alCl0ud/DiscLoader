@@ -4,6 +4,7 @@ import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
+import io.discloader.discloader.common.event.IEventListener;
 
 /**
  * All class annotated with this annotation will be loaded into DiscLoader as a mod.

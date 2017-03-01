@@ -10,6 +10,7 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipException;
 import java.util.zip.ZipFile;
 
+import io.discloader.discloader.client.registry.TextureRegistry;
 import io.discloader.discloader.common.language.Language;
 import io.discloader.discloader.common.language.LanguageRegistry;
 
@@ -32,10 +33,14 @@ public class ZipReader {
 			if (zipFile != null) {
 				// read zip file
 				for (ZipEntry e : readEntries(zipFile.entries())) {
-					if (e.getName().endsWith(".lang")) {
+				    
+					if (e.getName().endsWith(".lang")) { // the entry is a language file
 						InputStream is = zipFile.getInputStream(e);
 						Language lang = new Language(is, getLocale(e.getName()));
 						LanguageRegistry.registerLanguage(lang);
+					} else if ( e.getName().endsWith(".png")) { // the entry is an icon
+					    InputStream is = zipFile.getInputStream(e);
+					    TextureRegistry.resourceHandler.addResource(is, e);
 					}
 				}
 			}

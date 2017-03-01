@@ -20,7 +20,7 @@ public class ReadyPacket extends DLPacket {
 		Ready ready = gson.fromJson(d, Ready.class);
 
 		// send first heartbeat in response to ready packet
-		this.socket.sendHeartbeat(false);
+//		this.socket.sendHeartbeat(false);
 
 		// setup the Loaders user object
 		this.socket.loader.user = new DLUser(this.loader.addUser(ready.user));

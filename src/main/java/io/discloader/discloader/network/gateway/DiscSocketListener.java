@@ -40,6 +40,8 @@ import io.discloader.discloader.network.gateway.packets.RoleCreate;
 import io.discloader.discloader.network.gateway.packets.RoleDelete;
 import io.discloader.discloader.network.gateway.packets.RoleUpdate;
 import io.discloader.discloader.network.gateway.packets.SocketPacket;
+import io.discloader.discloader.network.gateway.packets.VoiceServerUpdate;
+import io.discloader.discloader.network.gateway.packets.VoiceStateUpdate;
 import io.discloader.discloader.util.Constants;
 
 public class DiscSocketListener extends WebSocketAdapter implements WebSocketListener {
@@ -78,6 +80,8 @@ public class DiscSocketListener extends WebSocketAdapter implements WebSocketLis
 		this.register(Constants.WSEvents.MESSAGE_CREATE, new MessageCreate(this.socket));
 		this.register(Constants.WSEvents.MESSAGE_UPDATE, new MessageUpdate(this.socket));
 		this.register(Constants.WSEvents.MESSAGE_DELETE, new MessageDelete(this.socket));
+		this.register(Constants.WSEvents.VOICE_STATE_UPDATE, new VoiceStateUpdate(this.socket));
+		this.register(Constants.WSEvents.VOICE_SERVER_UPDATE, new VoiceServerUpdate(this.socket));
 	}
 
 	public void setSequence(int s) {

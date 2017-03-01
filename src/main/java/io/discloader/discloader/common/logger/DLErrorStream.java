@@ -18,4 +18,8 @@ public class DLErrorStream extends PrintStream {
 		this.logger.severe(string.trim().replaceAll("[\n\r]", "") + "\n");
 	}
 
+	public void println(String string) {
+	    this.logger.severe(string.trim());
+	}
+	
 }

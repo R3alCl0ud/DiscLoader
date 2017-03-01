@@ -27,6 +27,8 @@ public class VoiceChannel extends GuildChannel implements IGuildChannel, IVoiceC
 		super(guild, data);
 
 		this.type = ChannelType.VOICE;
+		
+		this.name = data.name;
 	}
 
 	public void setup(ChannelJSON data) {
@@ -39,7 +41,10 @@ public class VoiceChannel extends GuildChannel implements IGuildChannel, IVoiceC
 
 	@Override
 	public CompletableFuture<VoiceConnection> join() {
-		return null;
+		CompletableFuture<VoiceConnection> future = new CompletableFuture<VoiceConnection>();
+		VoiceConnection connection = new VoiceConnection(this, future);
+		this.loader.voiceConnections.put(this.guild.id, connection);
+		return future;
 	}
 
 	@Override

@@ -1,5 +1,10 @@
 package io.discloader.discloader.util;
 
+import io.discloader.discloader.common.DiscLoader;
+import io.discloader.discloader.common.language.Language;
+import io.discloader.discloader.entity.Permission;
+import io.discloader.discloader.network.gateway.DiscSocketListener;
+
 import java.awt.Dimension;
 import java.awt.Toolkit;
 import java.io.File;
@@ -14,8 +19,6 @@ import java.util.Date;
 import java.util.Locale;
 
 import com.google.gson.Gson;
-
-import io.discloader.discloader.common.language.Language;
 
 /**
  * A collection of all useful constants for DiscLoader
@@ -212,6 +215,8 @@ public class Constants {
 		public static final String MESSAGE_UPDATE = "MESSAGE_UPDATE";
 		public static final String MESSAGE_DELETE = "MESSAGE_DELETE";
 		public static final String PRESENCE_UPDATE = "PRESENCE_UPDATE";
+		public static final String VOICE_STATE_UPDATE = "VOICE_STATE_UPDATE";
+		public static final String VOICE_SERVER_UPDATE = "VOICE_SERVER_UPDATE";
 	}
 
 	/**

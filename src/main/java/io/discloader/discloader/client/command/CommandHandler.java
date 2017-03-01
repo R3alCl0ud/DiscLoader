@@ -14,31 +14,54 @@ import io.discloader.discloader.entity.Message;
  */
 public class CommandHandler {
 
-	public static String prefix = "/";
-	
-	public static boolean handleCommands = false;
+    public static String prefix = "/";
 
-	public static void handleMessageCreate(MessageCreateEvent e) {
-		if (!handleCommands || e.message.author.bot) {
-			return;
-		}
-		Message message = e.message;
-		String label = message.content.split(" ")[0].substring(prefix.length());
-		
-		String region = message.guild != null ? getGuildRegion(message.guild) : "us-central";
-		if (region.startsWith("us")) {
-			for (Command command : CommandRegistry.commands.entries()) {
-				String localized = LanguageRegistry.getLocalized(Locale.US, "command", command.getUnlocalizedName(), "name");
-				if ((localized != null && localized.equals(label)) || command.getUnlocalizedName().equals(label)) {
-					command.execute(e);
-					return;
-				}
-			}
-		}
-	}
+    public static boolean handleCommands = false;
 
-	public static String getGuildRegion(Guild guild) {
-		return guild.region.id;
-	}
+    public static void handleMessageCreate(MessageCreateEvent e) {
+        if (!handleCommands || e.message.author.bot || e.message.content.length() < prefix.length()) {
+            return;
+        }
+        Message message = e.message;
+        String label = message.content.split(" ")[0];
+        if (label.length() < prefix.length() || !label.substring(0, prefix.length()).equals(prefix)) {
+            return;
+        }
+        
+        label = label.substring(prefix.length());
+
+        Command command = getCommand(label, message);
+        if (command != null) {
+            command.execute(e);
+        }
+    }
+
+    /**
+     * @param label
+     * @param message
+     * @return A Command if a command was found, {@code null} if no command was found
+     */
+    public static Command getCommand(String label, Message message) {
+        String region = message.guild != null ? getGuildRegion(message.guild) : "us-central";
+        Locale locale = Locale.US;
+        if (region.startsWith("us")) {
+            locale = Locale.US;
+        } else if (region.startsWith("uk")) {
+            locale = Locale.UK;
+        }
+            
+        
+        for (Command command : CommandRegistry.commands.entries()) {
+            String localized = LanguageRegistry.getLocalized(locale, "command", command.getUnlocalizedName(), "name");
+            if ((localized != null && localized.equals(label)) || command.getUnlocalizedName().equals(label)) {
+                return command;
+            }
+        }
+        return null;
+    }
+    
+    public static String getGuildRegion(Guild guild) {
+        return guild.region.id;
+    }
 
 }

@@ -69,7 +69,7 @@ public class ModDiscoverer {
 					modJar.close();
 				} catch (Exception e) {
 					// e.getCause().fillInStackTrace().
-					e.printStackTrace();
+//					e.printStackTrace();
 					logger.warning(String.format("Unable to load JarFile: %s", modFile.getName()));
 					logger.severe(
 							String.format("[%s.%s:%d]: %s", modFile.getName(), e.getStackTrace()[0].getMethodName(),

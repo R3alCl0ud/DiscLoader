@@ -34,7 +34,7 @@ public class GroupChannel extends Channel implements ITextChannel {
 
 	/**
 	 * Sends a {@link Message} to the channel.
-	 * @param content The content to change the content to
+	 * @param embed The embed to send
 	 * @return A Future that completes with a {@link Message} if successful,  
 	 */
 	public CompletableFuture<Message> sendEmbed(RichEmbed embed) {

@@ -1,6 +1,7 @@
 com.example
 com.example.common
 com.example.common.commands
+com.iwebpp.crypto
 io.discloader.client.opengl
 io.discloader.discloader.client.command
 io.discloader.discloader.client.logger
@@ -31,6 +32,7 @@ io.discloader.discloader.network.gateway.packets.request
 io.discloader.discloader.network.json
 io.discloader.discloader.network.rest
 io.discloader.discloader.network.voice
+io.discloader.discloader.network.voice.payloads
 io.discloader.discloader.util
 io.discloader.guimod
 io.discloader.guimod.common

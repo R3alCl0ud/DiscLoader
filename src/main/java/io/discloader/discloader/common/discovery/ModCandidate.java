@@ -14,8 +14,6 @@ public class ModCandidate {
 	/**
 	 * The default constructor for Mod Candidates
 	 * @param modClass The candidate's class file
-	 * @throws InstantiationException
-	 * @throws IllegalAccessException
 	 */
 	public ModCandidate(Class<?> modClass) {
 		this.modClass = modClass;

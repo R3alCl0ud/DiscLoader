@@ -137,7 +137,7 @@ public class GuildMember {
 	}
 
 	/**
-	 * @see {@link User.toString()}
+	 * Same as {@link User#toString()}
 	 */
 	public String toString() {
 		return this.user.toString();
