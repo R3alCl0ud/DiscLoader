@@ -75,6 +75,7 @@ public class VoiceWebSocket extends WebSocketAdapter {
             case SESSION_DESCRIPTION:
                 SessionDescription data2 = this.gson.fromJson(this.gson.toJson(packet.d), SessionDescription.class);
                 this.secretKey = data2.secret_key;
+                this.connection.provider.createNaCl(this.secretKey);
                 this.mode = data2.mode;
                 this.connection.getFuture().complete(this.connection);
                 this.connection.ready();
@@ -115,5 +116,13 @@ public class VoiceWebSocket extends WebSocketAdapter {
 
     public void send(String payload) {
         this.ws.sendText(payload);
+    }
+    
+    public void setSequence(int s) {
+    	
+    }
+    
+    public int getSequence() {
+    	return this.sequence;
     }
 }

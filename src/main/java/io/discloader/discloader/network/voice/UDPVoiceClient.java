@@ -29,10 +29,20 @@ public class UDPVoiceClient {
 		this.connection = connection;
 	}
 
-	public void connectToUDP(String endpoint) throws UnknownHostException {
-		System.out.println(this.connection.getPort());
+	public void bindConnection() {
+		try {
+			this.udpSocket.bind(voice_gateway);
+		} catch (SocketException e) {
+			e.printStackTrace();
+		}
 	}
-
+	
+	
+	public void sendPacket(byte[] encrypted) {
+		DatagramPacket sent = new DatagramPacket(encrypted, 24);
+	}
+	
+	
 	public InetSocketAddress discoverAddress(InetSocketAddress endpoint, int ssrc) {
 		try {
 			this.udpSocket = new DatagramSocket();

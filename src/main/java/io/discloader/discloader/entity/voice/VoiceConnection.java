@@ -5,6 +5,7 @@ import io.discloader.discloader.entity.Guild;
 import io.discloader.discloader.entity.channels.VoiceChannel;
 import io.discloader.discloader.entity.sendable.Packet;
 import io.discloader.discloader.entity.sendable.VoiceStateUpdate;
+import io.discloader.discloader.network.voice.StreamProvider;
 import io.discloader.discloader.network.voice.UDPVoiceClient;
 import io.discloader.discloader.network.voice.VoiceWebSocket;
 import io.discloader.discloader.network.voice.payloads.VoiceData;
@@ -20,6 +21,7 @@ import java.util.concurrent.CompletableFuture;
 
 import com.neovisionaries.ws.client.WebSocketException;
 import com.sedmelluq.discord.lavaplayer.player.AudioPlayer;
+import com.sedmelluq.discord.lavaplayer.track.AudioTrack;
 
 public class VoiceConnection {
 
@@ -28,6 +30,7 @@ public class VoiceConnection {
     public final Guild guild;
     public final VoiceChannel channel;
     public final DiscLoader loader;
+    public final StreamProvider provider;
     private final CompletableFuture<VoiceConnection> future;
     private final VoiceWebSocket ws;
     private final UDPVoiceClient udpClient;
@@ -59,6 +62,7 @@ public class VoiceConnection {
         this.future = future;
         this.udpClient = new UDPVoiceClient(this);
         this.ws = new VoiceWebSocket(this);
+        this.provider = new StreamProvider(this);
         this.listeners = new ArrayList<>();
         this.userID = this.loader.user.id;
         this.sendStateUpdate();
@@ -225,5 +229,10 @@ public class VoiceConnection {
     public UDPVoiceClient getUdpClient() {
         return this.udpClient;
     }
+    
+    public AudioPlayer play(AudioTrack track) {
+    	return this.player;
+    }
+    
 
 }
