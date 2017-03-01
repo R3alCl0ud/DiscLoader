@@ -130,8 +130,7 @@ public class Guild {
 	 * @author Perry Berman
 	 */
 	public HashMap<String, Presence> presences;
-	
-	
+
 	public VoiceRegion region;
 
 	/**
@@ -263,12 +262,17 @@ public class Guild {
 	}
 
 	/**
-	 * Deletes the Guild if loader has sufficient permissions
+	 * Deletes the Guild if the user you have logged in as is the owner of the guild
 	 * 
-	 * @return CompletableFuture
+	 * @return A Future that completes with {@code this} if successful, and fails with a {@link UnauthorizedException}
 	 */
 	public CompletableFuture<Guild> delete() {
-		return null;
+		CompletableFuture<Guild> future = new CompletableFuture<Guild>();
+		this.loader.rest.makeRequest(Constants.Endpoints.guild(this.id), Constants.Methods.DELETE, true)
+				.thenAcceptAsync(data -> {
+					future.complete(this);
+				});
+		return future;
 	}
 
 	/**
@@ -315,12 +319,12 @@ public class Guild {
 	}
 
 	/**
-	 * loads a
+	 * Fetches a GuildMember from the REST API
 	 * 
 	 * @param memberID the ID of the member to load
 	 * @return CompletableFuture.GuildMember
 	 */
-	public CompletableFuture<GuildMember> loadMember(String memberID) {
+	public CompletableFuture<GuildMember> fetchMember(String memberID) {
 		return this.loader.rest.loadGuildMember(this, memberID);
 	}
 
@@ -331,7 +335,7 @@ public class Guild {
 	 * @return A CompletableFuture that completes with a HashMap of GuildMembers
 	 *         if successful, null otherwise.
 	 */
-	public CompletableFuture<HashMap<String, GuildMember>> loadMembers(int limit, String before) {
+	public CompletableFuture<HashMap<String, GuildMember>> fetchMembers(int limit, String before) {
 		return null;
 	}
 
@@ -342,7 +346,7 @@ public class Guild {
 	 * @return A Future that completes with a {@link TextChannel} if successful.
 	 */
 	public CompletableFuture<TextChannel> createTextChannel(String name) {
-		return null;
+		return this.loader.rest.createTextChannel(this, new JSONObject().put("name", name));
 	}
 
 	/**
@@ -355,7 +359,8 @@ public class Guild {
 	 *         successful.
 	 */
 	public CompletableFuture<VoiceChannel> createVoiceChannel(String name, int bitrate, int userLimit) {
-		return null;
+		return this.loader.rest.createVoiceChannel(this,
+				new JSONObject().put("name", name).put("bitrate", bitrate).put("user_limit", userLimit));
 	}
 
 	/**
@@ -367,7 +372,7 @@ public class Guild {
 	 *         successful.
 	 */
 	public CompletableFuture<VoiceChannel> createVoiceChannel(String name, int bitrate) {
-		return null;
+		return this.loader.rest.createVoiceChannel(this, new JSONObject().put("name", name).put("bitrate", bitrate));
 	}
 
 	/**
@@ -378,7 +383,7 @@ public class Guild {
 	 *         successful.
 	 */
 	public CompletableFuture<VoiceChannel> createVoiceChannel(String name) {
-		return null;
+		return this.loader.rest.createVoiceChannel(this, new JSONObject().put("name", name));
 	}
 
 	/**

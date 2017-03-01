@@ -1,6 +1,7 @@
 package io.discloader.discloader.client.logger;
 
 import io.discloader.discloader.client.render.panel.LoadingPanel;
+import io.discloader.discloader.common.DiscLoader;
 import io.discloader.discloader.common.start.Main;
 
 import java.util.logging.Logger;
@@ -12,7 +13,7 @@ import java.util.logging.Logger;
 public class ProgressLogger {
 
 	public static int phaseNumber;
-	public static Logger LOG = new DLLogger("Client Thread").getLogger();
+//	public static Logger LOG = new DLLogger("Client Thread").getLogger();
 	public static boolean loading = true;
 
 	public static void phase(int value, int max, String text) {
@@ -49,20 +50,7 @@ public class ProgressLogger {
 	}
 
 	private static void executeLog(String text, int level) {
-		switch (level) {
-		case 0:
-			LOG.info(String.format("%s", text));
-			break;
-		case 1:
-			LOG.fine(String.format("%s", text));
-			break;
-		case 2:
-			LOG.finer(String.format("%s", text));
-			break;
-		case 3:
-			LOG.finest(String.format("%s", text));
-			break;
-		}
+		DiscLoader.LOG.info(String.format("%s", text));
 	}
 
 }

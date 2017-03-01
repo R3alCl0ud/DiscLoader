@@ -19,6 +19,7 @@ import io.discloader.discloader.entity.GuildMember;
 import io.discloader.discloader.entity.Message;
 import io.discloader.discloader.entity.OAuth2Application;
 import io.discloader.discloader.entity.User;
+import io.discloader.discloader.entity.channels.TextChannel;
 import io.discloader.discloader.entity.channels.VoiceChannel;
 import io.discloader.discloader.entity.impl.ITextChannel;
 import io.discloader.discloader.entity.sendable.RichEmbed;
@@ -152,12 +153,20 @@ public class RESTManager {
 	
 	public CompletableFuture<VoiceChannel> createVoiceChannel(Guild guild, JSONObject data) {
 		CompletableFuture<VoiceChannel> future = new CompletableFuture<VoiceChannel>();
-		this.makeRequest(Constants.Endpoints.guildChannels(guild.id), Constants.Methods.POST, true, data).thenAcceptAsync(action -> {
+		this.makeRequest(Constants.Endpoints.guildChannels(guild.id), Constants.Methods.POST, true, data.put("type", "voice")).thenAcceptAsync(action -> {
 			future.complete((VoiceChannel) this.loader.addChannel(this.gson.fromJson(action,  ChannelJSON.class), guild));
 		});
 		return future;
 	}
 
+	public CompletableFuture<TextChannel> createTextChannel(Guild guild, JSONObject data) {
+		CompletableFuture<TextChannel> future = new CompletableFuture<TextChannel>();
+		this.makeRequest(Constants.Endpoints.guildChannels(guild.id), Constants.Methods.POST, true, data.put("type", "text")).thenAcceptAsync(action -> {
+			future.complete((TextChannel) this.loader.addChannel(this.gson.fromJson(action,  ChannelJSON.class), guild));
+		});
+		return future;
+	}
+	
 	public CompletableFuture<OAuth2Application> getApplicationInfo() {
 		CompletableFuture<OAuth2Application> future = new CompletableFuture<OAuth2Application>();
 		this.makeRequest(Constants.Endpoints.currentOAuthApplication, Constants.Methods.GET, true).thenAcceptAsync(data -> {

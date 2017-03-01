@@ -1,17 +1,24 @@
 package io.discloader.discloader.common;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Timer;
+import java.util.TimerTask;
 import java.util.concurrent.CompletableFuture;
+import java.util.logging.Logger;
 
 import com.google.gson.Gson;
 import com.sedmelluq.discord.lavaplayer.player.AudioPlayerManager;
 import com.sedmelluq.discord.lavaplayer.player.DefaultAudioPlayerManager;
 
 import io.discloader.discloader.client.command.CommandHandler;
+import io.discloader.discloader.client.logger.DLLogger;
 import io.discloader.discloader.client.logger.ProgressLogger;
 import io.discloader.discloader.client.registry.ClientRegistry;
+import io.discloader.discloader.client.render.WindowFrame;
+import io.discloader.discloader.common.discovery.ModCandidate;
 import io.discloader.discloader.common.discovery.ModContainer;
+import io.discloader.discloader.common.discovery.ModDiscoverer;
 import io.discloader.discloader.common.event.IEventListener;
 import io.discloader.discloader.common.registry.ModRegistry;
 import io.discloader.discloader.common.start.Main;
@@ -36,6 +43,8 @@ import io.discloader.discloader.util.Constants;
  */
 public class DiscLoader {
 
+	public static final Logger LOG = new DLLogger(DiscLoader.class.getName()).getLogger();
+	
 	public DiscSocket socket;
 
 	public String token;
@@ -162,7 +171,38 @@ public class DiscLoader {
 		this.playerManager = new DefaultAudioPlayerManager();
 
 		this.ready = false;
+		
 	}
+	
+	/**
+	 * This method <u><b>must</b></u> be called to start DiscLoader.
+	 * <br>As it begins the setup process for DiscLoader to be able to function correctly<br>
+	 * It <u><b>will</b></u> crash otherwise
+	 * 
+	 * @author Perry Berman
+	 * @since 0.0.3
+	 */
+	public void startup() {
+        if (Main.usegui) {
+            Main.window = new WindowFrame(this);
+        } else {
+            ProgressLogger.stage(1, 3, "Mod Discovery");
+            ModDiscoverer.checkModDir();
+            ArrayList<ModCandidate> candidates = ModDiscoverer.discoverMods();
+            TimerTask checkCandidates = new TimerTask() {
+
+                @Override
+                public void run() {
+                    ProgressLogger.stage(2, 3, "Discovering Mod Containers");
+                    ModRegistry.checkCandidates(candidates);
+                }
+
+            };
+            this.timer.schedule(checkCandidates, 500);
+        }
+	}
+	
+	
 
 	/**
 	 * Connects the current instance of the {@link DiscLoader loader} into

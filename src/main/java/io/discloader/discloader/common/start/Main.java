@@ -47,7 +47,7 @@ public class Main {
      * @throws IOException
      */
     public static void main(String... args) throws IOException {
-        LOGGER = new DLLogger("DiscLoader Main").getLogger();
+        LOGGER = DiscLoader.LOG;
         System.setOut(new DLPrintStream(System.out, LOGGER));
         System.setErr(new DLErrorStream(System.err, LOGGER));
         System.setProperty("http.agent", "DiscLoader");
@@ -60,23 +60,7 @@ public class Main {
         parseArgs(args);
         if (shard != -1) {
             loader = new DiscLoader(shards, shard);
-            if (usegui) {
-                window = new WindowFrame(loader);
-            } else {
-                ProgressLogger.stage(1, 3, "Mod Discovery");
-                ModDiscoverer.checkModDir();
-                ArrayList<ModCandidate> candidates = ModDiscoverer.discoverMods();
-                TimerTask checkCandidates = new TimerTask() {
-
-                    @Override
-                    public void run() {
-                        ProgressLogger.stage(2, 3, "Discovering Mod Containers");
-                        ModRegistry.checkCandidates(candidates);
-                    }
-
-                };
-                loader.timer.schedule(checkCandidates, 500);
-            }
+            loader.startup();
             DiscLoader.addEventHandler(new EventListenerAdapter() {
                 @Override
                 public void raw(String text) {

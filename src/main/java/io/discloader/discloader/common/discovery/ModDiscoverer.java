@@ -2,6 +2,7 @@ package io.discloader.discloader.common.discovery;
 
 import io.discloader.discloader.client.logger.ProgressLogger;
 import io.discloader.discloader.client.registry.TextureRegistry;
+import io.discloader.discloader.common.DiscLoader;
 import io.discloader.discloader.common.start.Main;
 
 import java.io.File;
@@ -45,7 +46,7 @@ public class ModDiscoverer {
 			File modFile = files[i];
 			Matcher modMatch = modExt.matcher(modFile.getName());
 			if (!modMatch.find()) {
-				ProgressLogger.LOG
+				DiscLoader.LOG
 						.warning(String.format("Found non-mod file in mods directory: %s", modFile.getName()));
 				continue;
 			}
