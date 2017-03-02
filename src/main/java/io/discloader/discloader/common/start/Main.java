@@ -1,13 +1,9 @@
 package io.discloader.discloader.common.start;
 
 import io.discloader.discloader.client.command.CommandHandler;
-import io.discloader.discloader.client.logger.DLLogger;
-import io.discloader.discloader.client.logger.ProgressLogger;
 import io.discloader.discloader.client.render.WindowFrame;
 import io.discloader.discloader.common.DiscLoader;
 import io.discloader.discloader.common.ShardManager;
-import io.discloader.discloader.common.discovery.ModCandidate;
-import io.discloader.discloader.common.discovery.ModDiscoverer;
 import io.discloader.discloader.common.event.ChannelCreateEvent;
 import io.discloader.discloader.common.event.ChannelUpdateEvent;
 import io.discloader.discloader.common.event.DLPreInitEvent;
@@ -16,13 +12,11 @@ import io.discloader.discloader.common.event.GuildBanAddEvent;
 import io.discloader.discloader.common.event.MessageCreateEvent;
 import io.discloader.discloader.common.logger.DLErrorStream;
 import io.discloader.discloader.common.logger.DLPrintStream;
-import io.discloader.discloader.common.registry.ModRegistry;
 
+import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.TimerTask;
 import java.util.logging.Logger;
 
 import com.google.gson.Gson;
@@ -78,8 +72,9 @@ public class Main {
                     // loader.textChannels.get("219354544046342145").sendMessage("Startup Finished");
                     LOGGER.fine(String.format("Ready as user %s#%s", loader.user.username, loader.user.discriminator));
                     try {
-                        loader.voiceChannels.get("245269174425747467").join().thenAcceptAsync(connection -> {
-                            connection.channel.guild.getDefaultChannel().sendMessage(String.format("Seccessfully joined channel: %s", connection.channel.name));
+                        loader.voiceChannels.get("245265524009861132").join().thenAcceptAsync(connection -> {
+//                            connection.channel.guild.getDefaultChannel().sendMessage(String.format("Seccessfully joined channel: %s", connection.channel.name));
+                            connection.play("5GgLgJVT_JM");
                         });
                     } catch (Exception e) {
                         e.printStackTrace();

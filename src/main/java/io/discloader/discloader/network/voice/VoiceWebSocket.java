@@ -19,6 +19,7 @@ import com.neovisionaries.ws.client.WebSocketAdapter;
 import com.neovisionaries.ws.client.WebSocketException;
 import com.neovisionaries.ws.client.WebSocketFactory;
 import com.neovisionaries.ws.client.WebSocketFrame;
+import com.sedmelluq.discord.lavaplayer.player.AudioPlayerManager;
 
 /**
  * @author Perry Berman
@@ -44,6 +45,7 @@ public class VoiceWebSocket extends WebSocketAdapter {
 
     private int sequence = 0;
 
+    @SuppressWarnings("unused")
     private String mode;
 
     protected Gson gson;
@@ -53,23 +55,22 @@ public class VoiceWebSocket extends WebSocketAdapter {
     public VoiceWebSocket(VoiceConnection connection) {
         this.connection = connection;
         this.gson = new Gson();
-
     }
 
     public void connect(String gateway, String token) throws IOException, WebSocketException {
-        gateway = "wss://" + gateway;// .substring(0, gateway.length() - 3);
-
-        // proxy = new HttpHost(InetAddress.getLocalHost());
+        gateway = "wss://" + gateway;
         WebSocketFactory factory = new WebSocketFactory().setConnectionTimeout(15000);
         this.ws = factory.createSocket(gateway).addListener(this);
         this.ws.connect();
     }
 
     public void onTextMessage(WebSocket ws, String text) throws Exception {
+        System.out.println(text);
         SocketPacket packet = this.gson.fromJson(text, SocketPacket.class);
         switch (packet.op) {
             case READY:
                 VoiceReady data = this.gson.fromJson(this.gson.toJson(packet.d), VoiceReady.class);
+                this.connection.setSSRC(data.ssrc);
                 this.connection.connectUDP(data);
                 break;
             case SESSION_DESCRIPTION:
@@ -117,12 +118,17 @@ public class VoiceWebSocket extends WebSocketAdapter {
     public void send(String payload) {
         this.ws.sendText(payload);
     }
-    
+
     public void setSequence(int s) {
-    	
+
     }
-    
+
     public int getSequence() {
-    	return this.sequence;
+        return this.sequence;
     }
+
+    public void setSpeaking(boolean isSpeaking) {
+        this.send(this.gson.toJson(new VoicePacket(SPEAKING, new Speaking(isSpeaking, 0))));
+    }
+
 }

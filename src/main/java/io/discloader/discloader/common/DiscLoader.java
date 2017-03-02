@@ -43,7 +43,7 @@ import io.discloader.discloader.util.Constants;
  */
 public class DiscLoader {
 
-	public static final Logger LOG = new DLLogger(DiscLoader.class.getName()).getLogger();
+	public static final Logger LOG = new DLLogger("DiscLoader").getLogger();
 	
 	public DiscSocket socket;
 

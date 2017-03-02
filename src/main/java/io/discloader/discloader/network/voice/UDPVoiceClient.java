@@ -7,7 +7,6 @@ import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetSocketAddress;
 import java.net.SocketException;
-import java.net.UnknownHostException;
 import java.nio.ByteBuffer;
 
 public class UDPVoiceClient {
@@ -21,7 +20,8 @@ public class UDPVoiceClient {
 
 	public DatagramSocket udpSocket;
 
-	private final VoiceConnection connection;
+	@SuppressWarnings("unused")
+    private final VoiceConnection connection;
 
 	protected InetSocketAddress voice_gateway;
 
@@ -36,12 +36,6 @@ public class UDPVoiceClient {
 			e.printStackTrace();
 		}
 	}
-	
-	
-	public void sendPacket(byte[] encrypted) {
-		DatagramPacket sent = new DatagramPacket(encrypted, 24);
-	}
-	
 	
 	public InetSocketAddress discoverAddress(InetSocketAddress endpoint, int ssrc) {
 		try {

@@ -6,6 +6,7 @@ import io.discloader.discloader.entity.channels.VoiceChannel;
 import io.discloader.discloader.entity.sendable.Packet;
 import io.discloader.discloader.entity.sendable.VoiceStateUpdate;
 import io.discloader.discloader.network.voice.StreamProvider;
+import io.discloader.discloader.network.voice.StreamSchedule;
 import io.discloader.discloader.network.voice.UDPVoiceClient;
 import io.discloader.discloader.network.voice.VoiceWebSocket;
 import io.discloader.discloader.network.voice.payloads.VoiceData;
@@ -14,16 +15,24 @@ import io.discloader.discloader.network.voice.payloads.VoiceReady;
 import io.discloader.discloader.network.voice.payloads.VoiceUDPBegin;
 import io.discloader.discloader.util.Constants;
 
+import java.io.File;
 import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.concurrent.CompletableFuture;
 
 import com.neovisionaries.ws.client.WebSocketException;
 import com.sedmelluq.discord.lavaplayer.player.AudioPlayer;
+import com.sedmelluq.discord.lavaplayer.player.AudioPlayerManager;
+import com.sedmelluq.discord.lavaplayer.player.DefaultAudioPlayerManager;
+import com.sedmelluq.discord.lavaplayer.source.AudioSourceManagers;
 import com.sedmelluq.discord.lavaplayer.track.AudioTrack;
 
 public class VoiceConnection {
+
+    protected AudioPlayerManager manager;
+    protected StreamSchedule trackScheduler;
 
     public AudioPlayer player;
 
@@ -53,7 +62,12 @@ public class VoiceConnection {
 
     private int port;
 
+    private int SSRC;
+
     private ArrayList<IVoiceConnectionListener> listeners;
+
+    @SuppressWarnings("unused")
+    private HashMap<Integer, String> SSRCs;
 
     public VoiceConnection(VoiceChannel channel, CompletableFuture<VoiceConnection> future) {
         this.channel = channel;
@@ -63,8 +77,16 @@ public class VoiceConnection {
         this.udpClient = new UDPVoiceClient(this);
         this.ws = new VoiceWebSocket(this);
         this.provider = new StreamProvider(this);
+        this.SSRCs = new HashMap<>();
         this.listeners = new ArrayList<>();
         this.userID = this.loader.user.id;
+
+        this.manager = new DefaultAudioPlayerManager();
+        AudioSourceManagers.registerLocalSource(this.manager);
+        AudioSourceManagers.registerRemoteSources(this.manager);
+        this.player = manager.createPlayer();
+        this.trackScheduler = new StreamSchedule(this.player, this);
+
         this.sendStateUpdate();
     }
 
@@ -229,10 +251,35 @@ public class VoiceConnection {
     public UDPVoiceClient getUdpClient() {
         return this.udpClient;
     }
-    
-    public AudioPlayer play(AudioTrack track) {
-    	return this.player;
+
+    public AudioPlayer play(File track) {
+        this.manager.loadItem(track.getAbsolutePath(), this.trackScheduler);
+        return this.player;
     }
-    
+
+    public AudioPlayer play(String track) {
+
+        this.manager.loadItem(track, this.trackScheduler);
+        return this.player;
+    }
+
+    public AudioPlayer play(AudioTrack track) {
+        trackScheduler.trackLoaded(track);
+        return this.player;
+    }
+
+    /**
+     * @return the sSRC
+     */
+    public int getSSRC() {
+        return this.SSRC;
+    }
+
+    /**
+     * @param SSRC the SSRC to set
+     */
+    public void setSSRC(int SSRC) {
+        this.SSRC = SSRC;
+    }
 
 }
