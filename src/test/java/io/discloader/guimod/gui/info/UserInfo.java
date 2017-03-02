@@ -1,6 +1,7 @@
 package io.discloader.guimod.gui.info;
 
 import io.discloader.discloader.client.registry.TextureRegistry;
+import io.discloader.discloader.client.render.texture.icon.UserIcon;
 import io.discloader.discloader.entity.User;
 import io.discloader.discloader.util.Constants;
 
@@ -36,15 +37,14 @@ public class UserInfo<T extends User> extends AbstractInfo<T> {
 		this.avatarHash.setForeground(new Color(0xFFFFFF));
 		this.avatarURL.setForeground(new Color(0xFFFFFF));
 	}
-	
+
 	@Override
 	public void update(User user) {
 		this.username.setText(String.format("Username: %s#%s", user.username, user.discriminator));
 		this.id.setText(String.format("ID: %s", user.id));
-		this.avatar.setIcon(
-				TextureRegistry.getUserIcons().get(user.avatar != null ? user.avatar : user.id).getImageIcon(128, 128));
-		this.avatarHash.setText(String.format("Avatar: %s", user.avatar));
-		this.avatarURL.setText(String.format("AvatarURL: %s", user.avatarURL));
+		this.avatar.setIcon(((UserIcon) user.avatar).getImageIcon(128, 128));
+		this.avatarHash.setText(String.format("Avatar: %s", user.avatar.getIconName()));
+		this.avatarURL.setText(String.format("AvatarURL: %s", user.avatar.toString()));
 	}
 
 }

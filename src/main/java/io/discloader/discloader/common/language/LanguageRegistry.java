@@ -16,7 +16,7 @@ public class LanguageRegistry {
 	 * Creates a new LanguageRegistry instance
 	 */
 	public LanguageRegistry() {
-		this.localizedNames = new HashMap<Locale, HashMap<String, HashMap<String, HashMap<String, String>>>>();
+		this.localizedNames = new HashMap<>();
 		this.createLocales();
 	}
 
@@ -24,7 +24,7 @@ public class LanguageRegistry {
 	 * Creates the default locales
 	 */
 	private void createLocales() {
-		this.localizedNames.put(Locale.US, new HashMap<String, HashMap<String, HashMap<String, String>>>());
+		this.localizedNames.put(Locale.US, new HashMap<>());
 	}
 
 	public static LanguageRegistry getLocales() {

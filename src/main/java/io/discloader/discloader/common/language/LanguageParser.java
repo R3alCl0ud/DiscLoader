@@ -16,7 +16,7 @@ import java.util.stream.Stream;
 public class LanguageParser {
 
 	public static HashMap<String, HashMap<String, HashMap<String, String>>> parseLang(File lang) {
-		HashMap<String, HashMap<String, HashMap<String, String>>> types = new HashMap<String, HashMap<String, HashMap<String, String>>>();
+		HashMap<String, HashMap<String, HashMap<String, String>>> types = new HashMap<>();
 		try {
 			Stream<String> stream = Files.lines(lang.toPath());
 			for (Object o : stream.toArray()) {
@@ -30,11 +30,11 @@ public class LanguageParser {
 				}
 				String prop = propVal.split("=")[0], value = propVal.split("=")[1];
 				if (!types.containsKey(type)) {
-					types.put(type, new HashMap<String, HashMap<String, String>>());
+					types.put(type, new HashMap<>());
 				}
 				HashMap<String, HashMap<String, String>> fields = types.get(type);
 				if (!fields.containsKey(field)) {
-					fields.put(field, new HashMap<String, String>());
+					fields.put(field, new HashMap<>());
 				}
 				HashMap<String, String> props = fields.get(field);
 				props.put(prop, value);
@@ -50,7 +50,7 @@ public class LanguageParser {
 	}
 
 	public static HashMap<String, HashMap<String, HashMap<String, String>>> parseLang(InputStream langStream) {
-		HashMap<String, HashMap<String, HashMap<String, String>>> types = new HashMap<String, HashMap<String, HashMap<String, String>>>();
+		HashMap<String, HashMap<String, HashMap<String, String>>> types = new HashMap<>();
 		Scanner sc = new Scanner(langStream);
 		while (sc.hasNextLine()) {
 			String line = sc.nextLine();
@@ -63,11 +63,11 @@ public class LanguageParser {
 			}
 			String prop = propVal.split("=")[0], value = propVal.split("=")[1];
 			if (!types.containsKey(type)) {
-				types.put(type, new HashMap<String, HashMap<String, String>>());
+				types.put(type, new HashMap<>());
 			}
 			HashMap<String, HashMap<String, String>> fields = types.get(type);
 			if (!fields.containsKey(field)) {
-				fields.put(field, new HashMap<String, String>());
+				fields.put(field, new HashMap<>());
 			}
 			HashMap<String, String> props = fields.get(field);
 			props.put(prop, value);

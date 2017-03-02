@@ -4,6 +4,7 @@ import java.text.MessageFormat;
 
 import io.discloader.discloader.client.registry.TextureRegistry;
 import io.discloader.discloader.client.render.texture.icon.UserIcon;
+import io.discloader.discloader.client.render.util.IIcon;
 import io.discloader.discloader.common.DiscLoader;
 import io.discloader.discloader.network.json.UserJSON;
 import io.discloader.discloader.util.Constants.Endpoints;
@@ -30,10 +31,9 @@ public class User {
 	/**
 	 * The hash of the user's avatar
 	 */
-	public String avatar;
-	
-	
-	public String avatarURL;
+	public IIcon avatar;
+
+	// public String avatarURL;
 	/**
 	 * The user's four digit discriminator
 	 */
@@ -50,9 +50,6 @@ public class User {
 	 * Whethor or not the user has 2FA enabled
 	 */
 	public boolean mfa;
-	
-	
-
 
 	public User(DiscLoader loader, UserJSON user) {
 		this.loader = loader;
@@ -76,13 +73,14 @@ public class User {
 
 		this.discriminator = user.discriminator;
 
-		this.avatar = user.avatar;
-		
-		this.avatarURL = this.avatar != null ? Endpoints.avatar(this.id, this.avatar) : null;
+		this.avatar = new UserIcon(this, user.avatar.getIconName());
+
+		// this.avatarURL = this.avatar != null ? Endpoints.avatar(this.id,
+		// this.avatar) : null;
 
 		this.bot = user.bot;
-		
-		TextureRegistry.registerUserIcon(new UserIcon(this));
+
+		// TextureRegistry.registerUserIcon();
 	}
 
 	public void setup(UserJSON data) {
@@ -90,14 +88,15 @@ public class User {
 
 		this.discriminator = data.discriminator;
 
-		this.avatar = data.avatar;
+		this.avatar = new UserIcon(this, data.avatar);
 
-		this.avatarURL = this.avatar != null ? Endpoints.avatar(this.id, this.avatar) : null;
-		
+		// this.avatarURL = this.avatar != null ? Endpoints.avatar(this.id,
+		// this.avatar) : null;
+
 		this.bot = data.bot;
-		
-		TextureRegistry.registerUserIcon(new UserIcon(this));
-		
+
+//		TextureRegistry.registerUserIcon(new UserIcon(this));
+
 	}
 
 	/**
@@ -108,8 +107,6 @@ public class User {
 	public String toString() {
 		return MessageFormat.format("<@{0}>", new Object[] { this.id });
 	}
-
-
 
 	/**
 	 * Updates a user's information
@@ -124,14 +121,14 @@ public class User {
 		if (data.discriminator != null)
 			this.discriminator = data.discriminator;
 
-
 		if (data.avatar != null)
-			this.avatar = data.avatar;
+			this.avatar = new UserIcon(this, data.avatar);
 
 		if (data.bot == true || data.bot == false)
 			this.bot = data.bot;
-		
-		this.avatarURL = this.avatar != null ? Endpoints.avatar(this.id, this.avatar) : null;
+
+		// this.avatarURL = this.avatar != null ? Endpoints.avatar(this.id,
+		// this.avatar) : null;
 
 		return this;
 	}

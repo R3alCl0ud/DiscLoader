@@ -1,6 +1,3 @@
-/**
- * 
- */
 package io.discloader.discloader.client.render.texture.icon;
 
 import java.awt.Image;

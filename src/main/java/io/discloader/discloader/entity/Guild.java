@@ -9,6 +9,7 @@ import io.discloader.discloader.common.event.IEventListener;
 import io.discloader.discloader.entity.channels.Channel;
 import io.discloader.discloader.entity.channels.TextChannel;
 import io.discloader.discloader.entity.channels.VoiceChannel;
+import io.discloader.discloader.entity.voice.VoiceState;
 import io.discloader.discloader.network.json.ChannelJSON;
 import io.discloader.discloader.network.json.GuildJSON;
 import io.discloader.discloader.network.json.MemberJSON;
@@ -130,6 +131,9 @@ public class Guild {
 	 * @author Perry Berman
 	 */
 	public HashMap<String, Presence> presences;
+	
+	
+	private HashMap<String, VoiceState> rawStates;
 
 	public VoiceRegion region;
 

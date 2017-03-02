@@ -105,12 +105,12 @@ public class GuildChannel extends Channel implements IGuildChannel {
     }
 
     @Override
-    public CompletableFuture<IGuildChannel> setPosition(int position) {
+    public CompletableFuture<? extends IGuildChannel> setPosition(int position) {
         return null;
     }
 
     @Override
-    public CompletableFuture<IGuildChannel> setPermissions(int allow, int deny, String type) {
+    public CompletableFuture<? extends IGuildChannel> setPermissions(int allow, int deny, String type) {
         return null;
     }
 

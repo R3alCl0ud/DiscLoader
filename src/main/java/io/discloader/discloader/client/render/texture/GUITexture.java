@@ -9,9 +9,9 @@ import io.discloader.discloader.client.render.util.IIcon;
  * @author Perry Berman
  *
  */
-public class GuiTexture extends AbstractTexture implements IIcon {
+public class GUITexture extends AbstractTexture implements IIcon {
 
-	public GuiTexture(String path) {
+	public GUITexture(String path) {
 		
 	}
 

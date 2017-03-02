@@ -29,6 +29,7 @@ import io.discloader.discloader.network.gateway.packets.GuildBanRemove;
 import io.discloader.discloader.network.gateway.packets.GuildCreate;
 import io.discloader.discloader.network.gateway.packets.GuildDelete;
 import io.discloader.discloader.network.gateway.packets.GuildMemberAdd;
+import io.discloader.discloader.network.gateway.packets.GuildMembersChunk;
 import io.discloader.discloader.network.gateway.packets.GuildUpdate;
 import io.discloader.discloader.network.gateway.packets.HelloPacket;
 import io.discloader.discloader.network.gateway.packets.MessageCreate;
@@ -70,6 +71,7 @@ public class DiscSocketListener extends WebSocketAdapter implements WebSocketLis
 		this.register(Constants.WSEvents.GUILD_ROLE_CREATE, new RoleCreate(this.socket));
 		this.register(Constants.WSEvents.GUILD_ROLE_DELETE, new RoleDelete(this.socket));
 		this.register(Constants.WSEvents.GUILD_ROLE_UPDATE, new RoleUpdate(this.socket));
+		this.register(Constants.WSEvents.GUILD_MEMBERS_CHUNK, new GuildMembersChunk(this.socket));
 		this.register(Constants.WSEvents.GUILD_MEMBER_ADD, new GuildMemberAdd(this.socket));
 		this.register(Constants.WSEvents.GUILD_BAN_ADD, new GuildBanAdd(this.socket));
 		this.register(Constants.WSEvents.GUILD_BAN_REMOVE, new GuildBanRemove(this.socket));

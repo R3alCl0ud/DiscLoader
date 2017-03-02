@@ -16,18 +16,21 @@ import io.discloader.discloader.entity.User;
 public class UserIcon extends AbstractTexture {
 	
 	public final User user;
+	private String avatarURL;
 	
-	public UserIcon(User user) {
+	
+	public UserIcon(User user, String avatar) {
 		super();
 		this.user = user;
 		this.setIconHeight(128);
 		this.setIconWidth(128);
-		this.setIconName(user.avatar != null ? user.avatar : user.id);
+		this.setIconName(avatar != null ? avatar : user.id);
+		
 	}
 	
 	@Override
 	public ImageIcon getImageIcon() {
-		return this.createImageIcon(this.user.avatarURL);
+		return this.createImageIcon(this.avatarURL);
 	}
 
 	@Override
@@ -57,5 +60,19 @@ public class UserIcon extends AbstractTexture {
 			System.err.print("Couldn't find file: " + url);
 			return null;
 		}
+	}
+
+	/**
+	 * @return the avatarURL
+	 */
+	public String toString() {
+		return this.avatarURL;
+	}
+
+	/**
+	 * @param avatarURL the avatarURL to set
+	 */
+	public void setAvatarURL(String avatarURL) {
+		this.avatarURL = avatarURL;
 	}
 }

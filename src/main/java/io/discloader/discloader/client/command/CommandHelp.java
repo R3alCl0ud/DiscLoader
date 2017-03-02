@@ -27,8 +27,8 @@ public class CommandHelp extends Command {
 	public void execute(MessageCreateEvent e) {
 		RichEmbed embed = new RichEmbed()
 				.setFooter(String.format("type `%shelp <page>` to tab threw the pages", CommandHandler.prefix),
-						e.loader.user.avatarURL)
-				.setAuthor(e.loader.user.username, "http://discloader.io", e.loader.user.avatarURL).setColor(0x08a2ff);
+						e.loader.user.avatar.toString())
+				.setAuthor(e.loader.user.username, "http://discloader.io", e.loader.user.avatar.toString()).setColor(0x08a2ff);
 
 		if (e.args.length == 2) {
 			String cmd = e.args[1];
