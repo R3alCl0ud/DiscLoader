@@ -74,12 +74,12 @@ public class Main {
 					// Finished");
 					LOGGER.fine(String.format("Ready as user %s#%s", loader.user.username, loader.user.discriminator));
 					try {
-						// loader.voiceChannels.get("245265524009861132").join().thenAcceptAsync(connection
-						// -> {
-						// connection.channel.guild.getDefaultChannel().sendMessage(String.format("Seccessfully
-						// joined channel: %s", connection.channel.name));
-						// connection.play("5GgLgJVT_JM");
-						// });
+						loader.voiceChannels.get("282226852616077313").join().thenAcceptAsync(connection -> {
+							// connection.channel.guild.getDefaultChannel().sendMessage(
+							// String.format("Seccessfully joined channel: %s",
+							// connection.channel.name));
+							connection.play("5GgLgJVT_JM");
+						});
 					} catch (Exception e) {
 						e.printStackTrace();
 					}

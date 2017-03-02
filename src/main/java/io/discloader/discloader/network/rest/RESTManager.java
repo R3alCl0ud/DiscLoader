@@ -66,17 +66,20 @@ public class RESTManager {
 		return this.makeRequest(url, method, auth, null);
 	}
 
-	public CompletableFuture<Message> sendMessage(ITextChannel channel, String content, RichEmbed embed, Attachment attachment, File file) {
+	public CompletableFuture<Message> sendMessage(ITextChannel channel, String content, RichEmbed embed,
+			Attachment attachment, File file) {
 		if (content.length() < 1 && (embed == null && attachment == null))
 			return null;
 		CompletableFuture<Message> msgSent = new CompletableFuture<Message>();
-		this.makeRequest(Constants.Endpoints.messages(channel.getID()), Constants.Methods.POST, true, new SendableMessage(content, embed, attachment, file)).thenAcceptAsync(action -> {
+		this.makeRequest(Constants.Endpoints.messages(channel.getID()), Constants.Methods.POST, true,
+				new SendableMessage(content, embed, attachment, file)).thenAcceptAsync(action -> {
 					msgSent.complete(new Message(channel, this.gson.fromJson(action, MessageJSON.class)));
 				});
 		return msgSent;
 	}
 
-	public CompletableFuture<Message> editMessage(ITextChannel channel, Message message, String content, RichEmbed embed, Attachment attachment, File file) {
+	public CompletableFuture<Message> editMessage(ITextChannel channel, Message message, String content,
+			RichEmbed embed, Attachment attachment, File file) {
 		if (content.length() < 1 && (embed == null || attachment == null))
 			return null;
 		CompletableFuture<Message> future = new CompletableFuture<Message>();
@@ -150,32 +153,39 @@ public class RESTManager {
 				});
 		return future;
 	}
-	
+
 	public CompletableFuture<VoiceChannel> createVoiceChannel(Guild guild, JSONObject data) {
 		CompletableFuture<VoiceChannel> future = new CompletableFuture<VoiceChannel>();
-		this.makeRequest(Constants.Endpoints.guildChannels(guild.id), Constants.Methods.POST, true, data.put("type", "voice")).thenAcceptAsync(action -> {
-			future.complete((VoiceChannel) this.loader.addChannel(this.gson.fromJson(action,  ChannelJSON.class), guild));
-		});
+		this.makeRequest(Constants.Endpoints.guildChannels(guild.id), Constants.Methods.POST, true,
+				data.put("type", "voice")).thenAcceptAsync(action -> {
+					future.complete((VoiceChannel) this.loader.addChannel(this.gson.fromJson(action, ChannelJSON.class),
+							guild));
+				});
 		return future;
 	}
 
 	public CompletableFuture<TextChannel> createTextChannel(Guild guild, JSONObject data) {
 		CompletableFuture<TextChannel> future = new CompletableFuture<TextChannel>();
-		this.makeRequest(Constants.Endpoints.guildChannels(guild.id), Constants.Methods.POST, true, data.put("type", "text")).thenAcceptAsync(action -> {
-			future.complete((TextChannel) this.loader.addChannel(this.gson.fromJson(action,  ChannelJSON.class), guild));
-		});
+		this.makeRequest(Constants.Endpoints.guildChannels(guild.id), Constants.Methods.POST, true,
+				data.put("type", "text")).thenAcceptAsync(action -> {
+					future.complete(
+							(TextChannel) this.loader.addChannel(this.gson.fromJson(action, ChannelJSON.class), guild));
+				});
 		return future;
 	}
-	
+
 	public CompletableFuture<OAuth2Application> getApplicationInfo() {
 		CompletableFuture<OAuth2Application> future = new CompletableFuture<OAuth2Application>();
-		this.makeRequest(Constants.Endpoints.currentOAuthApplication, Constants.Methods.GET, true).thenAcceptAsync(data -> {
-			OAuthApplicationJSON appData = this.gson.fromJson(data, OAuthApplicationJSON.class);
-			User owner = this.loader.addUser(appData.owner);
-			future.complete(new OAuth2Application(appData, owner));
-		});
-		
+		this.makeRequest(Constants.Endpoints.currentOAuthApplication, Constants.Methods.GET, true)
+				.thenAcceptAsync(data -> {
+					OAuthApplicationJSON appData = this.gson.fromJson(data, OAuthApplicationJSON.class);
+					User owner = this.loader.addUser(appData.owner);
+					future.complete(new OAuth2Application(appData, owner));
+				});
+
 		return future;
 	}
 	
+	
+
 }

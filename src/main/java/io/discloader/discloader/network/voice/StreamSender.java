@@ -15,9 +15,11 @@ public class StreamSender {
     private final StreamProvider provider;
     private DatagramSocket udpSocket;
     private Thread packetThread;
+    private VoiceWebSocket ws;
 
     public StreamSender(StreamProvider streamer) {
         this.provider = streamer;
+        this.ws = provider.ws;
         // this.udpSocket = streamer.conection.getUdpClient().udpSocket;
     }
 
@@ -34,9 +36,10 @@ public class StreamSender {
                             AudioFrame frame = provider.conection.player.provide();
 
                             if (frame != null) {
-                                provider.generatePacket((char) provider.ws.getSequence(), provider.conection.getSSRC(), frame.data);
-
-                                DatagramPacket send = provider.getEncryptedPacket();
+                            	provider.ws.setSequence(provider.ws.getSequence() + 1);
+                                char seq = (char) provider.ws.getSequence();
+                                provider.ws.getSecretKey();
+                                DatagramPacket send = new StreamPacket(seq, (int) System.currentTimeMillis(), provider.conection.getSSRC(), frame.data).toEncryptedPacket(provider.udpClient.voice_gateway, provider.ws.getSecretKey());
                                 udpSocket.send(send);
                             }
                         }

@@ -1,12 +1,5 @@
 package io.discloader.discloader.network.voice;
 
-import io.discloader.discloader.entity.voice.VoiceConnection;
-import io.discloader.discloader.network.gateway.packets.SocketPacket;
-import io.discloader.discloader.network.voice.payloads.SessionDescription;
-import io.discloader.discloader.network.voice.payloads.VoiceIdentify;
-import io.discloader.discloader.network.voice.payloads.VoicePacket;
-import io.discloader.discloader.network.voice.payloads.VoiceReady;
-
 import java.io.IOException;
 import java.util.List;
 import java.util.Map;
@@ -19,7 +12,13 @@ import com.neovisionaries.ws.client.WebSocketAdapter;
 import com.neovisionaries.ws.client.WebSocketException;
 import com.neovisionaries.ws.client.WebSocketFactory;
 import com.neovisionaries.ws.client.WebSocketFrame;
-import com.sedmelluq.discord.lavaplayer.player.AudioPlayerManager;
+
+import io.discloader.discloader.entity.voice.VoiceConnection;
+import io.discloader.discloader.network.gateway.packets.SocketPacket;
+import io.discloader.discloader.network.voice.payloads.SessionDescription;
+import io.discloader.discloader.network.voice.payloads.VoiceIdentify;
+import io.discloader.discloader.network.voice.payloads.VoicePacket;
+import io.discloader.discloader.network.voice.payloads.VoiceReady;
 
 /**
  * @author Perry Berman
@@ -67,6 +66,12 @@ public class VoiceWebSocket extends WebSocketAdapter {
     public int getSequence() {
         return this.sequence;
     }
+    
+    public byte[] getSecretKey() {
+    	byte[] secret = new byte[secretKey.length];
+    	System.arraycopy(secretKey, 0, secret, 0, secretKey.length);
+    	return secret;
+    }
 
     public void onConnected(WebSocket ws, Map<String, List<String>> arg1) throws Exception {
         this.sendIdentify();
@@ -94,6 +99,8 @@ public class VoiceWebSocket extends WebSocketAdapter {
                 this.connection.getFuture().complete(this.connection);
                 this.connection.ready();
                 break;
+            case SPEAKING:
+            	break;
         }
     }
 
@@ -108,7 +115,8 @@ public class VoiceWebSocket extends WebSocketAdapter {
     }
 
     public void setSequence(int s) {
-
+    	if (s > this.sequence) 
+    		this.sequence = s;
     }
 
     public void setSpeaking(boolean isSpeaking) {
