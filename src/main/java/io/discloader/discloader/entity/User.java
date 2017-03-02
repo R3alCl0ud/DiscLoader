@@ -83,31 +83,6 @@ public class User {
 		// TextureRegistry.registerUserIcon();
 	}
 
-	public void setup(UserJSON data) {
-		this.username = data.username;
-
-		this.discriminator = data.discriminator;
-
-		this.avatar = new UserIcon(this, data.avatar);
-
-		// this.avatarURL = this.avatar != null ? Endpoints.avatar(this.id,
-		// this.avatar) : null;
-
-		this.bot = data.bot;
-
-//		TextureRegistry.registerUserIcon(new UserIcon(this));
-
-	}
-
-	/**
-	 * toStrings the user in mention format
-	 * 
-	 * @return {@literal <@}{@link #id this.id}{@literal>}
-	 */
-	public String toString() {
-		return MessageFormat.format("<@{0}>", new Object[] { this.id });
-	}
-
 	/**
 	 * Updates a user's information
 	 * 
@@ -131,5 +106,30 @@ public class User {
 		// this.avatar) : null;
 
 		return this;
+	}
+
+	public void setup(UserJSON data) {
+		this.username = data.username;
+
+		this.discriminator = data.discriminator;
+
+		this.avatar = new UserIcon(this, data.avatar);
+
+		// this.avatarURL = this.avatar != null ? Endpoints.avatar(this.id,
+		// this.avatar) : null;
+
+		this.bot = data.bot;
+
+//		TextureRegistry.registerUserIcon(new UserIcon(this));
+
+	}
+
+	/**
+	 * toStrings the user in mention format
+	 * 
+	 * @return {@literal <@}{@link #id this.id}{@literal>}
+	 */
+	public String toString() {
+		return MessageFormat.format("<@{0}>", new Object[] { this.id });
 	}
 }

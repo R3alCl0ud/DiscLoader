@@ -68,17 +68,6 @@ public class RichEmbed {
 	}
 
 	/**
-	 * Sets the RichEmbed's {@link #description}
-	 * 
-	 * @param description The new {@link #description}
-	 * @return this
-	 */
-	public RichEmbed setDescription(String description) {
-		this.description = description;
-		return this;
-	}
-
-	/**
 	 * Adds a new field to the embed
 	 * 
 	 * @param name The name of the field
@@ -104,41 +93,104 @@ public class RichEmbed {
 		return this;
 	}
 
+	/**
+	 * Sets the author of the RichEmbed
+	 * 
+	 * @param name The name of the author
+	 * @return this
+	 */
+	public RichEmbed setAuthor(String name) {
+		return this.setAuthor(name, null);
+	}
+
+	/**
+	 * Set's the author of the RichEmbed
+	 * 
+	 * @param name The name of the author
+	 * @param url The author's website
+	 * @return this
+	 */
+	public RichEmbed setAuthor(String name, String url) {
+		return this.setAuthor(name, url, null);
+	}
+
+	/**
+	 * Set's the author of the RichEmbed
+	 * 
+	 * @param name The name of the author
+	 * @param url The author's website
+	 * @param icon The url to the author's icon
+	 * @return this
+	 */
 	public RichEmbed setAuthor(String name, String url, String icon) {
 		this.author = new EmbedAuthor(name, url, icon);
 		return this;
 	}
 
-	public RichEmbed setAuthor(String name, String url) {
-		return this.setAuthor(name, url, null);
-	}
-
-	public RichEmbed setAuthor(String name) {
-		return this.setAuthor(name, null);
-	}
-
-	public RichEmbed setTitle(String title) {
-		this.title = title;
+	/**
+	 * Sets the RichEmbed's color bar's color
+	 * @param color The integer representation of the color bars color. Ex:
+	 *            {@code 0xFFFFFF} is the integer value for white
+	 * @return this
+	 */
+	public RichEmbed setColor(int color) {
+		this.color = color;
 		return this;
 	}
 
-	public RichEmbed setFooter(String text, String icon_url) {
-		this.footer = new EmbedFooter(text, icon_url);
+	/**
+	 * Sets the RichEmbed's {@link #description}
+	 * 
+	 * @param description The new {@link #description}
+	 * @return this
+	 */
+	public RichEmbed setDescription(String description) {
+		this.description = description;
 		return this;
 	}
 
-	public RichEmbed setThumbnail(String url) {
-		this.thumbnail = new EmbedThumbnail(url);
+	/**
+	 * Sets the RichEmbed's footer
+	 * 
+	 * @param text The footer's content
+	 * @param iconURL The footer's icon
+	 * @return this
+	 */
+	public RichEmbed setFooter(String text, String iconURL) {
+		this.footer = new EmbedFooter(text, iconURL);
 		return this;
 	}
 
+	/**
+	 * Sets the RichEmbed's {@link #thumbnail}
+	 * 
+	 * @param file The image file to use as the {@link #thumbnail}
+	 * @return this
+	 */
 	public RichEmbed setThumbnail(File file) {
 		this.thumbnail = new EmbedThumbnail(file);
 		return this;
 	}
 
-	public RichEmbed setColor(int color) {
-		this.color = color;
+	/**
+	 * Sets the RichEmbed's {@link #thumbnail}
+	 * 
+	 * @param URL The URL of the image to use as the thumbnail
+	 * @return this
+	 */
+	public RichEmbed setThumbnail(String URL) {
+		this.thumbnail = new EmbedThumbnail(URL);
+		return this;
+	}
+
+	/**
+	 * Sets the RichEmbed's title
+	 * 
+	 * @param title The new title
+	 * @return this
+	 */
+	public RichEmbed setTitle(String title) {
+		this.title = title;
 		return this;
 	}
 }

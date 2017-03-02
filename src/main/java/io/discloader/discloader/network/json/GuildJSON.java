@@ -27,5 +27,6 @@ public class GuildJSON {
 	public RoleJSON[] roles;
 	public PresenceJSON[] presences;
 	public VoiceStateJSON[] voice_states;
+	public EmojiJSON[] emojis;
 
 }

@@ -14,16 +14,15 @@ import io.discloader.discloader.util.Constants.ChannelType;
 public class Channel implements IChannel {
 
 	public String id;
-	
+
 	public String name;
-	
-	public String lastMessageID;
-	
+
 	protected ChannelType type;
 
-
 	/**
-	 * Whether or not the channel is a dm channel. Is always {@literal true} if {@link #type} is {@literal "groupDM"} or {@literal "dm"}
+	 * Whether or not the channel is a dm channel. Is always {@literal true} if
+	 * {@link #type} is {@literal "groupDM"} or {@literal "dm"}
+	 * 
 	 * @author Perry Berman
 	 */
 	public boolean isPrivate;
@@ -31,16 +30,6 @@ public class Channel implements IChannel {
 	public final DiscLoader loader;
 
 	public User user;
-
-	/**
-	 * The {@link Guild} the channel belongs to. <br>
-	 * This property <u>must</u> be {@code null} if the {@link #type} of the
-	 * channel is {@code "dm"}, or {@code "groupDM"}.
-	 * 
-	 * @author Perry Berman
-	 * @since 0.0.1
-	 */
-	public final Guild guild;
 
 	/**
 	 * A {@link HashMap} of the channel's {@link User recipients}. Indexed by
@@ -77,8 +66,6 @@ public class Channel implements IChannel {
 
 		this.type = null;
 
-		this.guild = null;
-
 		this.recipients = new HashMap<String, User>();
 
 		this.members = null;
@@ -92,8 +79,6 @@ public class Channel implements IChannel {
 	public Channel(Guild guild, ChannelJSON data) {
 		this.loader = guild.loader;
 
-		this.guild = guild;
-
 		this.type = null;
 
 		this.recipients = null;
@@ -106,27 +91,6 @@ public class Channel implements IChannel {
 			this.setup(data);
 	}
 
-	public void setup(ChannelJSON data) {
-		this.id = data.id;
-
-		this.isPrivate = data.is_private;
-
-		if (data.name != null)
-			this.name = data.name;
-
-	}
-
-
-
-
-
-
-
-	@Override
-	public boolean isPrivate() {
-		return false;
-	}
-
 	@Override
 	public String getID() {
 		return this.id;
@@ -135,5 +99,20 @@ public class Channel implements IChannel {
 	@Override
 	public ChannelType getType() {
 		return this.type;
+	}
+
+	@Override
+	public boolean isPrivate() {
+		return false;
+	}
+
+	public void setup(ChannelJSON data) {
+		this.id = data.id;
+
+		this.isPrivate = data.is_private;
+
+		if (data.name != null)
+			this.name = data.name;
+
 	}
 }

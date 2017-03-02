@@ -7,9 +7,9 @@ public interface IChannel {
 	
 	String getID();
 	
-	void setup(ChannelJSON data);
+	ChannelType getType();
 
 	boolean isPrivate();
 	
-	ChannelType getType();
+	void setup(ChannelJSON data);
 }

@@ -86,6 +86,21 @@ public class Role {
 		this.managed = managed;
 	}
 
+	public Role clone() {
+		return new Role(this.guild, this.id, this.name, this.color, this.permissions, this.position, this.hoist,
+				this.mentionable, this.managed);
+	}
+
+	public Role update(RoleJSON role) {
+		this.name = role.name;
+		this.color = new BigDecimal(role.color).intValue();
+		this.permissions = new BigDecimal(role.permissions).intValue();
+		this.position = new BigDecimal(role.position).intValue();
+		this.hoist = role.hoist;
+		this.mentionable = role.mentionable;
+		return this;
+	}
+
 	public Role update(String name, int color, int permissions, int position, boolean hoist, boolean mentionable) {
 		this.name = name;
 
@@ -100,21 +115,6 @@ public class Role {
 		this.mentionable = mentionable;
 
 		return this;
-	}
-
-	public Role update(RoleJSON role) {
-		this.name = role.name;
-		this.color = new BigDecimal(role.color).intValue();
-		this.permissions = new BigDecimal(role.permissions).intValue();
-		this.position = new BigDecimal(role.position).intValue();
-		this.hoist = role.hoist;
-		this.mentionable = role.mentionable;
-		return this;
-	}
-
-	public Role clone() {
-		return new Role(this.guild, this.id, this.name, this.color, this.permissions, this.position, this.hoist,
-				this.mentionable, this.managed);
 	}
 
 }

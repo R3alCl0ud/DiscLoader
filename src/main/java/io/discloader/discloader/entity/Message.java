@@ -145,29 +145,24 @@ public class Message {
 	}
 
 	/**
-	 * @param data
-	 * @return this
+	 * Deletes the message if the loader has suficient permissions
+	 * 
+	 * @see Constants.PermissionFlags
+	 * @return A Future that completes with {@literal this} when sucessfull
 	 */
-	public Message patch(MessageJSON data) {
-		this.content = data.content;
-
-		this.mentions.patch(data.mentions, data.mention_roles, data.mention_everyone);
-
-		this.editedAt = Constants.parseISO8601(data.edited_timestamp);
-
-		return this;
+	public CompletableFuture<Message> delete() {
+		return this.loader.rest.deleteMessage(this.channel, this);
 	}
 
 	/**
 	 * Edit's the messages content. Only possible if the {@link DiscLoader
 	 * loader} is the message's {@link #author}
 	 * 
-	 * @param content The new content of the message
 	 * @param embed The new embed for the message
 	 * @return A Future that completes with {@literal this} when sucessfull
 	 */
-	public CompletableFuture<Message> edit(String content, RichEmbed embed) {
-		return this.loader.rest.editMessage(this.channel, this, content, embed, null, null);
+	public CompletableFuture<Message> edit(RichEmbed embed) {
+		return this.edit(null, embed);
 	}
 
 	/**
@@ -185,21 +180,26 @@ public class Message {
 	 * Edit's the messages content. Only possible if the {@link DiscLoader
 	 * loader} is the message's {@link #author}
 	 * 
+	 * @param content The new content of the message
 	 * @param embed The new embed for the message
 	 * @return A Future that completes with {@literal this} when sucessfull
 	 */
-	public CompletableFuture<Message> edit(RichEmbed embed) {
-		return this.edit(null, embed);
+	public CompletableFuture<Message> edit(String content, RichEmbed embed) {
+		return this.loader.rest.editMessage(this.channel, this, content, embed, null, null);
 	}
 
 	/**
-	 * Deletes the message if the loader has suficient permissions
-	 * 
-	 * @see Constants.PermissionFlags
-	 * @return A Future that completes with {@literal this} when sucessfull
+	 * @param data
+	 * @return this
 	 */
-	public CompletableFuture<Message> delete() {
-		return this.loader.rest.deleteMessage(this.channel, this);
+	public Message patch(MessageJSON data) {
+		this.content = data.content;
+
+		this.mentions.patch(data.mentions, data.mention_roles, data.mention_everyone);
+
+		this.editedAt = Constants.parseISO8601(data.edited_timestamp);
+
+		return this;
 	}
 
 }

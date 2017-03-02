@@ -32,21 +32,6 @@ public class EmbedField {
 	}
 
 	/**
-	 * @return value, The field's content
-	 */
-	public String getValue() {
-		return value;
-	}
-
-	/**
-	 * Changes the field's content
-	 * @param value The new content of the field
-	 */
-	public void setValue(String value) {
-		this.value = value;
-	}
-
-	/**
 	 * @return the name of the field
 	 */
 	public String getName() {
@@ -54,11 +39,10 @@ public class EmbedField {
 	}
 
 	/**
-	 * Changes the field's name
-	 * @param name the name to set
+	 * @return value, The field's content
 	 */
-	public void setName(String name) {
-		this.name = name;
+	public String getValue() {
+		return value;
 	}
 
 	/**
@@ -74,6 +58,22 @@ public class EmbedField {
 	 */
 	public void setInline(boolean inline) {
 		this.inline = inline;
+	}
+
+	/**
+	 * Changes the field's name
+	 * @param name the name to set
+	 */
+	public void setName(String name) {
+		this.name = name;
+	}
+
+	/**
+	 * Changes the field's content
+	 * @param value The new content of the field
+	 */
+	public void setValue(String value) {
+		this.value = value;
 	}
 	
 	

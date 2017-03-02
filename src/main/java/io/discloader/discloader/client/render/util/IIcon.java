@@ -10,21 +10,21 @@ import java.io.File;
 public interface IIcon {
 	
 	
+	File getFile();
+	
 	int getIconHeight();
 	
-	int getIconWidth();
-	
 	String getIconName();
+	
+	int getIconWidth();
 	
 	Image getImage();
 	
 	void setIconHeight(int height);
 	
-	void setIconWidth(int width);
-	
 	void setIconName(String iconName);
 	
-	void setImage(Image image);
+	void setIconWidth(int width);
 	
-	File getFile();
+	void setImage(Image image);
 }

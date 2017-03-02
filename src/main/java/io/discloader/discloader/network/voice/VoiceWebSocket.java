@@ -64,6 +64,19 @@ public class VoiceWebSocket extends WebSocketAdapter {
         this.ws.connect();
     }
 
+    public int getSequence() {
+        return this.sequence;
+    }
+
+    public void onConnected(WebSocket ws, Map<String, List<String>> arg1) throws Exception {
+        this.sendIdentify();
+    }
+
+    public void onDisconnected(WebSocket ws, WebSocketFrame frame, WebSocketFrame frame2, boolean isServer) throws Exception {
+        System.err.print(String.format("Reason: %s, Code: %d, isServer: %b", frame.getCloseReason(), frame.getCloseCode(), isServer));
+        this.connection.disconnected(frame.getCloseReason());
+    }
+
     public void onTextMessage(WebSocket ws, String text) throws Exception {
         System.out.println(text);
         SocketPacket packet = this.gson.fromJson(text, SocketPacket.class);
@@ -84,19 +97,22 @@ public class VoiceWebSocket extends WebSocketAdapter {
         }
     }
 
-    public void onDisconnected(WebSocket ws, WebSocketFrame frame, WebSocketFrame frame2, boolean isServer) throws Exception {
-        System.err.print(String.format("Reason: %s, Code: %d, isServer: %b", frame.getCloseReason(), frame.getCloseCode(), isServer));
-        this.connection.disconnected(frame.getCloseReason());
-    }
-
-    public void onConnected(WebSocket ws, Map<String, List<String>> arg1) throws Exception {
-        this.sendIdentify();
+    public void send(String payload) {
+        this.ws.sendText(payload);
     }
 
     public void sendIdentify() {
         VoiceIdentify payload = new VoiceIdentify(connection.guild.id, connection.loader.user.id, connection.getSessionID(), connection.getToken());
         VoicePacket packet = new VoicePacket(IDENTIFY, payload);
         this.ws.sendText(this.gson.toJson(packet));
+    }
+
+    public void setSequence(int s) {
+
+    }
+
+    public void setSpeaking(boolean isSpeaking) {
+        this.send(this.gson.toJson(new VoicePacket(SPEAKING, new Speaking(isSpeaking, 0))));
     }
 
     public void startHeartbeat(int interval) {
@@ -113,22 +129,6 @@ public class VoiceWebSocket extends WebSocketAdapter {
             }
         };
         this.timer.schedule(heartbeat, interval, interval);
-    }
-
-    public void send(String payload) {
-        this.ws.sendText(payload);
-    }
-
-    public void setSequence(int s) {
-
-    }
-
-    public int getSequence() {
-        return this.sequence;
-    }
-
-    public void setSpeaking(boolean isSpeaking) {
-        this.send(this.gson.toJson(new VoicePacket(SPEAKING, new Speaking(isSpeaking, 0))));
     }
 
 }

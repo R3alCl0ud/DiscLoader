@@ -43,8 +43,19 @@ import io.discloader.discloader.util.Constants;
  */
 public class DiscLoader {
 
-	public static final Logger LOG = new DLLogger("DiscLoader").getLogger();
+	public class Gateway {
+		public String url;
+		public int shards;
+	}
 	
+	public static final Logger LOG = new DLLogger("DiscLoader").getLogger();
+
+	public static final HashMap<String, IEventListener> handlers = new HashMap<String, IEventListener>();
+
+	public static void addEventHandler(IEventListener e) {
+		handlers.put(e.toString(), e);
+	}
+
 	public DiscSocket socket;
 
 	public String token;
@@ -54,14 +65,12 @@ public class DiscLoader {
 	public final ClientRegistry clientRegistry;
 
 	public RESTManager rest;
-
 	public final AudioPlayerManager playerManager;
 
-	public static final HashMap<String, IEventListener> handlers = new HashMap<String, IEventListener>();
-
 	public final int shards;
-	public final int shard;
 
+	public final int shard;
+	
 	/**
 	 * A HashMap of the client's cached users. Indexed by {@link User#id}.
 	 * 
@@ -79,7 +88,7 @@ public class DiscLoader {
 	 * @see HashMap
 	 */
 	public HashMap<String, Channel> channels;
-	
+
 	public HashMap<String, GroupChannel> groupChannels;
 
 	/**
@@ -92,7 +101,7 @@ public class DiscLoader {
 	 * @author Perry Berman
 	 */
 	public HashMap<String, PrivateChannel> privateChannels;
-
+	
 	/**
 	 * A HashMap of the client's cached TextChannels. Indexed by
 	 * {@link Channel#id}.
@@ -114,7 +123,7 @@ public class DiscLoader {
 	 * @author Perry Berman
 	 */
 	public HashMap<String, VoiceChannel> voiceChannels;
-	
+
 	/**
 	 * A HashMap of the client's voice connections. Indexed by {@link Guild#id}.
 	 * @author Perry Berman
@@ -135,8 +144,10 @@ public class DiscLoader {
 	 * The User we are currently logged in as.
 	 */
 	public DLUser user;
-
+	
 	public Timer timer;
+	
+	
 
 	public DiscLoader(int shards, int shard) {
 
@@ -172,98 +183,6 @@ public class DiscLoader {
 
 		this.ready = false;
 		
-	}
-	
-	/**
-	 * This method <u><b>must</b></u> be called to start DiscLoader.
-	 * <br>As it begins the setup process for DiscLoader to be able to function correctly<br>
-	 * It <u><b>will</b></u> crash otherwise
-	 * 
-	 * @author Perry Berman
-	 * @since 0.0.3
-	 */
-	public void startup() {
-        if (Main.usegui) {
-            Main.window = new WindowFrame(this);
-        } else {
-            ProgressLogger.stage(1, 3, "Mod Discovery");
-            ModDiscoverer.checkModDir();
-            ArrayList<ModCandidate> candidates = ModDiscoverer.discoverMods();
-            TimerTask checkCandidates = new TimerTask() {
-
-                @Override
-                public void run() {
-                    ProgressLogger.stage(2, 3, "Discovering Mod Containers");
-                    ModRegistry.checkCandidates(candidates);
-                }
-
-            };
-            this.timer.schedule(checkCandidates, 500);
-        }
-	}
-	
-	
-
-	/**
-	 * Connects the current instance of the {@link DiscLoader loader} into
-	 * Discord's gateway servers
-	 * 
-	 * @param token your API token
-	 * @return {@literal CompletableFuture<String>}
-	 */
-	public CompletableFuture<String> login(String token) {
-		this.token = token;
-		CompletableFuture<String> future;
-		future = this.rest.makeRequest(Constants.Endpoints.gateway, Constants.Methods.GET, true);
-
-		future.thenAcceptAsync(text -> {
-			Gson gson = new Gson();
-			Gateway gateway = gson.fromJson(text, Gateway.class);
-			try {
-				this.socket.connectSocket(gateway.url + "?v=6&encoding=json");
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
-		});
-		return future;
-	}
-
-	public class Gateway {
-		public String url;
-		public int shards;
-	}
-
-	/**
-	 * 
-	 * @param event
-	 * @param data
-	 */
-	public void emit(String event, Object data) {
-		for (ModContainer mod : ModRegistry.mods.values()) {
-			mod.emit(event, data);
-		}
-	}
-
-	/**
-	 * @param event
-	 */
-	public void emit(String event) {
-		this.emit(event, null);
-	}
-
-	public static void addEventHandler(IEventListener e) {
-		handlers.put(e.toString(), e);
-	}
-
-	public Guild addGuild(GuildJSON guild) {
-		boolean exists = this.guilds.containsKey(guild.id);
-
-		Guild newGuild = new Guild(this, guild);
-		this.guilds.put(newGuild.id, newGuild);
-		if (!exists && this.socket.status == Constants.Status.READY) {
-			this.emit(Constants.Events.GUILD_CREATE, newGuild);
-		}
-		return newGuild;
 	}
 
 	public Channel addChannel(ChannelJSON data) {
@@ -313,6 +232,17 @@ public class DiscLoader {
 		return null;
 	}
 
+	public Guild addGuild(GuildJSON guild) {
+		boolean exists = this.guilds.containsKey(guild.id);
+
+		Guild newGuild = new Guild(this, guild);
+		this.guilds.put(newGuild.id, newGuild);
+		if (!exists && this.socket.status == Constants.Status.READY) {
+			this.emit(Constants.Events.GUILD_CREATE, newGuild);
+		}
+		return newGuild;
+	}
+
 	public User addUser(UserJSON data) {
 		if (this.users.containsKey(data.id))
 			return this.users.get(data.id);
@@ -340,6 +270,24 @@ public class DiscLoader {
 		}
 	}
 
+	/**
+	 * @param event
+	 */
+	public void emit(String event) {
+		this.emit(event, null);
+	}
+
+	/**
+	 * 
+	 * @param event
+	 * @param data
+	 */
+	public void emit(String event, Object data) {
+		for (ModContainer mod : ModRegistry.mods.values()) {
+			mod.emit(event, data);
+		}
+	}
+
 	public void emitReady() {
 		this.socket.status = Constants.Status.READY;
 		this.ready = true;
@@ -349,6 +297,58 @@ public class DiscLoader {
 		for (IEventListener e : handlers.values()) {
 			e.Ready(this);
 		}
+	}
+
+	/**
+	 * Connects the current instance of the {@link DiscLoader loader} into
+	 * Discord's gateway servers
+	 * 
+	 * @param token your API token
+	 * @return {@literal CompletableFuture<String>}
+	 */
+	public CompletableFuture<String> login(String token) {
+		this.token = token;
+		CompletableFuture<String> future;
+		future = this.rest.makeRequest(Constants.Endpoints.gateway, Constants.Methods.GET, true);
+
+		future.thenAcceptAsync(text -> {
+			Gson gson = new Gson();
+			Gateway gateway = gson.fromJson(text, Gateway.class);
+			try {
+				this.socket.connectSocket(gateway.url + "?v=6&encoding=json");
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		});
+		return future;
+	}
+
+	/**
+	 * This method <u><b>must</b></u> be called to start DiscLoader.
+	 * <br>As it begins the setup process for DiscLoader to be able to function correctly<br>
+	 * It <u><b>will</b></u> crash otherwise
+	 * 
+	 * @author Perry Berman
+	 * @since 0.0.3
+	 */
+	public void startup() {
+        if (Main.usegui) {
+            Main.window = new WindowFrame(this);
+        } else {
+            ProgressLogger.stage(1, 3, "Mod Discovery");
+            ModDiscoverer.checkModDir();
+            ArrayList<ModCandidate> candidates = ModDiscoverer.discoverMods();
+            TimerTask checkCandidates = new TimerTask() {
+
+                @Override
+                public void run() {
+                    ProgressLogger.stage(2, 3, "Discovering Mod Containers");
+                    ModRegistry.checkCandidates(candidates);
+                }
+
+            };
+            this.timer.schedule(checkCandidates, 500);
+        }
 	}
 
 }

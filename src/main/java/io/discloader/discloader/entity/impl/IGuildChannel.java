@@ -9,16 +9,41 @@ import io.discloader.discloader.entity.Permission;
 
 public interface IGuildChannel extends IChannel {
 
-    CompletableFuture<? extends IGuildChannel> setName(String name);
+	/**
+	 * Gets the members that can view/join this channel
+	 * 
+	 * @return A HashMap of GuildMember with access to view the channel
+	 */
+	HashMap<String, GuildMember> getMembers();
 
-    CompletableFuture<? extends IGuildChannel> setPosition(int position);
+	/**
+	 * Gets all of the channel's {@link #overwrites} that applies to a
+	 * {@link GuildMember}
+	 * 
+	 * @param member The member of whome we are looking for overwrites that
+	 *            apply.
+	 * @author Perry Berman
+	 * @return A {@link HashMap} of overwrite objects, indexed by
+	 *         {@link Overwrite#id}
+	 * @since 0.0.1
+	 */
+	HashMap<String, Overwrite> overwritesOf(GuildMember member);
 
-    CompletableFuture<? extends IGuildChannel> setPermissions(int allow, int deny, String type);
+	/**
+	 * Evaluates the permissions for a member in the channel's {@link #guild}
+	 * 
+	 * @param member The member whose permissions we are evaluating.
+	 * @return A new Permissions object that contains {@literal this}, the
+	 *         {@literal member}, and their evaluated permissions
+	 *         {@link Integer}. <br>
+	 *         null if the channel doesn't belong to a {@link #guild}
+	 */
+	Permission permissionsFor(GuildMember member);
 
-    HashMap<String, GuildMember> getMembers();
+	CompletableFuture<? extends IGuildChannel> setName(String name);
 
-    Permission permissionsFor(GuildMember member);
+	CompletableFuture<? extends IGuildChannel> setPermissions(int allow, int deny, String type);
 
-    HashMap<String, Overwrite> overwritesOf(GuildMember member);
+	CompletableFuture<? extends IGuildChannel> setPosition(int position);
 
 }

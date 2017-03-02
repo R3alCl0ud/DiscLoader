@@ -49,6 +49,13 @@ public class LanguageRegistry {
 		return null;
 	}
 
+	/**
+	 * @param locale The locale of the localized string
+	 * @param type The type of the object. ie: command
+	 * @param field The unlocalized name of the object
+	 * @param prop The property to get the localizedname of
+	 * @return The localized string
+	 */
 	public static String getLocalized(Locale locale, String type, String field, String prop) {
 		if (getLocalized(locale, type, field) != null)
 			return getLocalized(locale, type, field).get(prop);

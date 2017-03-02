@@ -1,9 +1,9 @@
 package io.discloader.discloader.common.event;
 
+import java.util.HashMap;
+
 import io.discloader.discloader.common.DiscLoader;
 import io.discloader.discloader.entity.GuildMember;
-
-import java.util.HashMap;
 
 /**
  * Default Implementation of the {@link IEventListener}
@@ -14,19 +14,27 @@ import java.util.HashMap;
 public abstract class EventListenerAdapter implements IEventListener {
 
 	@Override
-	public void raw(String raw) {
+	public void ChannelCreate(ChannelCreateEvent e) {
 	}
 
 	@Override
-	public void PreInit(DLPreInitEvent preInitEvent) {
+	public void ChannelDelete(ChannelDeleteEvent e) {
 	}
 
 	@Override
-	public void PhaseChange() {
+	public void ChannelPinsUpdate() {
 	}
 
 	@Override
-	public void Ready(DiscLoader loader) {
+	public void ChannelUpdate(ChannelUpdateEvent e) {
+	}
+
+	@Override
+	public void GuildBanAdd(GuildBanAddEvent e) {
+	}
+
+	@Override
+	public void GuildBanRemove(GuildBanRemoveEvent e) {
 	}
 
 	@Override
@@ -38,11 +46,7 @@ public abstract class EventListenerAdapter implements IEventListener {
 	}
 
 	@Override
-	public void GuildUpdate(GuildUpdateEvent e) {
-	}
-
-	@Override
-	public void GuildMembersChunk(HashMap<String, GuildMember> members) {
+	public void GuildEmojisUpdate() {
 	}
 
 	@Override
@@ -50,23 +54,19 @@ public abstract class EventListenerAdapter implements IEventListener {
 	}
 
 	@Override
-	public void GuildMemberRemove(GuildMemberRemoveEvent e) {
-	}
-
-	@Override
-	public void GuildMemberUpdate(GuildMemberUpdateEvent e) {
-	}
-
-	@Override
 	public void GuildMemberAvailable(GuildMember member) {
 	}
 
 	@Override
-	public void GuildBanAdd(GuildBanAddEvent e) {
+	public void GuildMemberRemove(GuildMemberRemoveEvent e) {
 	}
 
 	@Override
-	public void GuildBanRemove(GuildBanRemoveEvent e) {
+	public void GuildMembersChunk(HashMap<String, GuildMember> members) {
+	}
+
+	@Override
+	public void GuildMemberUpdate(GuildMemberUpdateEvent e) {
 	}
 
 	@Override
@@ -82,23 +82,7 @@ public abstract class EventListenerAdapter implements IEventListener {
 	}
 
 	@Override
-	public void GuildEmojisUpdate() {
-	}
-
-	@Override
-	public void ChannelCreate(ChannelCreateEvent e) {
-	}
-
-	@Override
-	public void ChannelDelete(ChannelDeleteEvent e) {
-	}
-
-	@Override
-	public void ChannelUpdate(ChannelUpdateEvent e) {
-	}
-
-	@Override
-	public void ChannelPinsUpdate() {
+	public void GuildUpdate(GuildUpdateEvent e) {
 	}
 
 	@Override
@@ -114,6 +98,18 @@ public abstract class EventListenerAdapter implements IEventListener {
 	}
 
 	@Override
+	public void PhaseChange() {
+	}
+
+	@Override
+	public void PreInit(DLPreInitEvent preInitEvent) {
+	}
+
+	@Override
+	public void PresenceUpdate() {
+	}
+
+	@Override
 	public void PrivateMessageCreate(MessageCreateEvent e) {
 	}
 
@@ -126,11 +122,15 @@ public abstract class EventListenerAdapter implements IEventListener {
 	}
 
 	@Override
-	public void UserUpdate(UserUpdateEvent e) {
+	public void raw(String raw) {
 	}
 
 	@Override
-	public void PresenceUpdate() {
+	public void Ready(DiscLoader loader) {
+	}
+
+	@Override
+	public void UserUpdate(UserUpdateEvent e) {
 	}
 
 }

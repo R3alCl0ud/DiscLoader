@@ -4,7 +4,12 @@ import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.Instant;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
+import java.util.Timer;
+import java.util.TimerTask;
 
 import com.mashape.unirest.http.HttpResponse;
 import com.mashape.unirest.http.async.Callback;
@@ -15,6 +20,7 @@ import com.mashape.unirest.request.HttpRequest;
 import com.mashape.unirest.request.body.MultipartBody;
 
 import io.discloader.discloader.common.DiscLoader;
+import io.discloader.discloader.common.exceptions.UnauthorizedException;
 
 /**
  * @author Perry Berman
@@ -61,8 +67,7 @@ public class RESTQueue {
 		BaseRequest request = apiRequest.createRequest();
 
 		request = this.addHeaders(request, apiRequest.auth, apiRequest.multi);
-		
-		
+
 		final RESTQueue this_arg = this;
 		request.asStringAsync(new Callback<String>() {
 			public void cancelled() {
@@ -106,10 +111,16 @@ public class RESTQueue {
 					};
 					this_arg.loader.timer.schedule(wait, Integer.parseInt(headers.get("retry-after").get(0), 10) + 500);
 					return;
+				} else if (code == 401 || code == 403) {
+					this_arg.queue.remove(0);
+					this_arg.loader.emit("raw", response.getBody());
+					System.out.println(response.getBody());
+					apiRequest.future.completeExceptionally(new UnauthorizedException(response.getBody()));
+				} else {
+					this_arg.queue.remove(0);
+					this_arg.loader.emit("raw", response.getBody());
+					apiRequest.future.complete(response.getBody());
 				}
-				this_arg.queue.remove(0);
-				this_arg.loader.emit("raw", response.getBody());
-				apiRequest.future.complete(response.getBody());
 				this_arg.globalLimit = false;
 				if (this_arg.remaining == 0) {
 					TimerTask wait = new TimerTask() {

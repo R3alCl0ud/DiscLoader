@@ -33,6 +33,11 @@ public class Presence {
 		this.status = status;
 	}
 
+	protected Presence(String status, Game game) {
+		this.game = game;
+		this.status = status;
+	}
+	
 	public Presence() {
 		this.game = null;
 		this.status = "offline";
@@ -60,5 +65,8 @@ public class Presence {
 		this.update(null, game);
 	}
 	
+	public Presence clone() {
+		return new Presence(status, game);
+	}
 	
 }

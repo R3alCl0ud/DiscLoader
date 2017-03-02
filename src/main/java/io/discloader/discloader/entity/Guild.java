@@ -11,10 +11,12 @@ import io.discloader.discloader.entity.channels.TextChannel;
 import io.discloader.discloader.entity.channels.VoiceChannel;
 import io.discloader.discloader.entity.voice.VoiceState;
 import io.discloader.discloader.network.json.ChannelJSON;
+import io.discloader.discloader.network.json.EmojiJSON;
 import io.discloader.discloader.network.json.GuildJSON;
 import io.discloader.discloader.network.json.MemberJSON;
 import io.discloader.discloader.network.json.PresenceJSON;
 import io.discloader.discloader.network.json.RoleJSON;
+import io.discloader.discloader.network.json.VoiceStateJSON;
 import io.discloader.discloader.util.Constants;
 
 import java.io.IOException;
@@ -131,8 +133,17 @@ public class Guild {
 	 * @author Perry Berman
 	 */
 	public HashMap<String, Presence> presences;
-	
-	
+
+	/**
+	 * A HashMap of the guild's custom emojis. Indexed by {@link Emoji#id}
+	 * @author Perry Berman
+	 */
+	public HashMap<String, Emoji> emojis;
+
+	/**
+	 * A Private HashMap of the guild's raw voice states. Indexed by {@link GuildMember#id}
+	 * @author Perry Berman
+	 */
 	private HashMap<String, VoiceState> rawStates;
 
 	public VoiceRegion region;
@@ -151,6 +162,8 @@ public class Guild {
 		this.voiceChannels = new HashMap<String, VoiceChannel>();
 		this.roles = new HashMap<String, Role>();
 		this.presences = new HashMap<String, Presence>();
+		this.emojis = new HashMap<>();
+		this.rawStates = new HashMap<>();
 		this.region = new VoiceRegion("us-central");
 
 		if (data.unavailable == true) {
@@ -163,60 +176,13 @@ public class Guild {
 		}
 	}
 
-	public void setup(GuildJSON data) {
-
-		this.name = data.name;
-		this.icon = data.icon != null ? data.icon : null;
-		this.iconURL = this.icon != null ? Constants.Endpoints.guildIcon(this.id, this.icon) : null;
-		this.ownerID = data.owner_id;
-		this.memberCount = data.member_count;
-		this.region = new VoiceRegion(data.region);
-		this.large = data.large;
-		ProgressLogger.step(1, 5, "Caching Roles");
-		if (data.roles.length > 0) {
-			this.roles.clear();
-			for (RoleJSON role : data.roles) {
-				this.addRole(role);
-			}
-		}
-		ProgressLogger.step(2, 5, "Caching Members");
-		if (data.members != null && data.members.length > 0) {
-			this.members.clear();
-			for (MemberJSON member : data.members) {
-				this.addMember(member);
-			}
-		}
-		ProgressLogger.step(3, 5, "Caching Channels");
-		if (data.channels != null && data.channels.length > 0) {
-			this.textChannels.clear();
-			this.voiceChannels.clear();
-			for (ChannelJSON channel : data.channels) {
-				this.loader.addChannel(channel, this);
-			}
-		}
-		ProgressLogger.step(4, 5, "Caching Presences");
-		if (data.presences != null && data.presences.length > 0) {
-			this.presences.clear();
-			for (PresenceJSON presence : data.presences) {
-				this.setPresence(presence);
-			}
-		}
-		ProgressLogger.step(5, 5, "Registering Icon");
-		try {
-			TextureRegistry.registerGuildIcon(new GuildIcon(this));
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		this.available = !data.unavailable;
-	}
-
-	public GuildMember addMember(MemberJSON data) {
+	public GuildMember addMember(MemberJSON data, boolean shouldEmit) {
 		boolean exists = this.members.containsKey(data.user.id);
 		GuildMember member = new GuildMember(this, data);
 		this.members.put(member.id, member);
 		if (member.id.equals(this.ownerID))
 			this.owner = member;
-		if (!exists && this.loader.ready) {
+		if (!exists && this.loader.ready && shouldEmit) {
 			GuildMemberAddEvent event = new GuildMemberAddEvent(member);
 			this.loader.emit(Constants.Events.GUILD_MEMBER_ADD, event);
 			for (IEventListener e : DiscLoader.handlers.values()) {
@@ -224,6 +190,10 @@ public class Guild {
 			}
 		}
 		return member;
+	}
+
+	public GuildMember addMember(MemberJSON data) {
+		return this.addMember(data, false);
 	}
 
 	public GuildMember addMember(User user, String[] roles, boolean deaf, boolean mute, String nick,
@@ -254,21 +224,101 @@ public class Guild {
 		return role;
 	}
 
-	public void setPresence(PresenceJSON guildPresence) {
-		if (this.presences.containsKey(guildPresence.user.id)) {
-			this.presences.get(guildPresence.user.id).update(guildPresence);
-			return;
-		}
-		Presence presence = new Presence(guildPresence);
-		if (guildPresence.user.id.equals(this.loader.user.id))
-			this.loader.user.presence.update(guildPresence);
-		this.presences.put(guildPresence.user.id, presence);
+	/**
+	 * Creates a new {@link Role}.
+	 * 
+	 * @return A future that completes with a new {@link Role} Object if
+	 *         successful.
+	 * @since 0.0.3
+	 */
+	public CompletableFuture<Role> createRole() {
+		return null;
 	}
 
 	/**
-	 * Deletes the Guild if the user you have logged in as is the owner of the guild
+	 * Creates a new {@link Role}.
 	 * 
-	 * @return A Future that completes with {@code this} if successful, and fails with a {@link UnauthorizedException}
+	 * @param name The name of the role
+	 * @param permissions The 53bit Permissions integer to assign to the role
+	 * @param color The color of the role
+	 * @return A future that completes with a new {@link Role} Object if
+	 *         successful.
+	 * @since 0.0.3
+	 */
+	public CompletableFuture<Role> createRole(String name, int permissions, int color) {
+		return null;
+	}
+
+	/**
+	 * Creates a new {@link Role}.
+	 * 
+	 * @param name The name of the role
+	 * @param permissions The 53bit Permissions integer to assign to the role
+	 * @param color The color of the role
+	 * @param hoist Display role members separately from online members
+	 * @param mentionable Allow anyone to @mention this role
+	 * @return A future that completes with a new {@link Role} Object if
+	 *         successful.
+	 * @since 0.0.3
+	 */
+	public CompletableFuture<Role> createRole(String name, int permissions, int color, boolean hoist,
+			boolean mentionable) {
+		return null;
+	}
+
+	/**
+	 * Creates a new {@link TextChannel}.
+	 * 
+	 * @param name The name of the channel
+	 * @return A Future that completes with a {@link TextChannel} if successful.
+	 */
+	public CompletableFuture<TextChannel> createTextChannel(String name) {
+		return this.loader.rest.createTextChannel(this, new JSONObject().put("name", name));
+	}
+
+	/**
+	 * Creates a new {@link VoiceChannel}
+	 * 
+	 * @param name
+	 * @return A future that completes with a new {@link VoiceChannel} Object if
+	 *         successful.
+	 */
+	public CompletableFuture<VoiceChannel> createVoiceChannel(String name) {
+		return this.loader.rest.createVoiceChannel(this, new JSONObject().put("name", name));
+	}
+
+	/**
+	 * Creates a new {@link VoiceChannel}
+	 * 
+	 * @param name The name of the channel
+	 * @param bitrate The channel's bitrate
+	 * @return A future that completes with a new {@link VoiceChannel} Object if
+	 *         successful.
+	 */
+	public CompletableFuture<VoiceChannel> createVoiceChannel(String name, int bitrate) {
+		return this.loader.rest.createVoiceChannel(this, new JSONObject().put("name", name).put("bitrate", bitrate));
+	}
+
+	/**
+	 * Creates a new {@link VoiceChannel}
+	 * 
+	 * @param name The name of the channel
+	 * @param bitrate The channel's bitrate
+	 * @param userLimit the channel's userlimit
+	 * @return A future that completes with a new {@link VoiceChannel} Object if
+	 *         successful.
+	 */
+	public CompletableFuture<VoiceChannel> createVoiceChannel(String name, int bitrate, int userLimit) {
+		return this.loader.rest.createVoiceChannel(this,
+				new JSONObject().put("name", name).put("bitrate", bitrate).put("user_limit", userLimit));
+	}
+
+	/**
+	 * Deletes the Guild if the user you have logged in as is the owner of the
+	 * guild
+	 * 
+	 * @return A Future that completes with {@code this} if successful, and
+	 *         fails with a {@link UnauthorizedException}
 	 */
 	public CompletableFuture<Guild> delete() {
 		CompletableFuture<Guild> future = new CompletableFuture<Guild>();
@@ -277,49 +327,6 @@ public class Guild {
 					future.complete(this);
 				});
 		return future;
-	}
-
-	/**
-	 * Gets the guild's default text channel. the {@link Channel#id id} of the
-	 * channel should be the same as the guild's {@link #id}
-	 * 
-	 * @return the default TextChannel
-	 */
-	public TextChannel getDefaultChannel() {
-		return this.textChannels.get(this.id);
-	}
-
-	/**
-	 * Sets the guild's name if the loader has sufficient permissions
-	 * 
-	 * @param name The guild's new name
-	 * @return CompletableFuture
-	 */
-	public CompletableFuture<Guild> setName(String name) {
-		return this.loader.rest.modifyGuild(this, new JSONObject().put("name", name));
-	}
-
-	/**
-	 * Sets the guild's icon if the loader has sufficient permissions
-	 * 
-	 * @param icon location of icon file on disk
-	 * @return CompletableFuture
-	 * @throws IOException
-	 */
-	public CompletableFuture<Guild> setIcon(String icon) throws IOException {
-		String base64 = new String(
-				"data:image/jpg;base64," + Base64.encodeBase64String(Files.readAllBytes(Paths.get(icon))));
-		return this.loader.rest.modifyGuild(this, new JSONObject().put("icon", base64));
-	}
-
-	/**
-	 * Sets the Guild's voice region to the specified region
-	 * 
-	 * @param region The new voice region
-	 * @return {@link CompletableFuture}
-	 */
-	public CompletableFuture<Guild> setVoiceRegion(String region) {
-		return this.loader.rest.modifyGuild(this, new JSONObject().put("region", region));
 	}
 
 	/**
@@ -344,92 +351,119 @@ public class Guild {
 	}
 
 	/**
-	 * Creates a new {@link TextChannel}.
+	 * Gets the guild's default text channel. the {@link Channel#id id} of the
+	 * channel should be the same as the guild's {@link #id}
 	 * 
-	 * @param name The name of the channel
-	 * @return A Future that completes with a {@link TextChannel} if successful.
+	 * @return the default TextChannel
 	 */
-	public CompletableFuture<TextChannel> createTextChannel(String name) {
-		return this.loader.rest.createTextChannel(this, new JSONObject().put("name", name));
+	public TextChannel getDefaultChannel() {
+		return this.textChannels.get(this.id);
 	}
 
 	/**
-	 * Creates a new {@link VoiceChannel}
+	 * Sets the guild's icon if the loader has sufficient permissions
 	 * 
-	 * @param name The name of the channel
-	 * @param bitrate The channel's bitrate
-	 * @param userLimit the channel's userlimit
-	 * @return A future that completes with a new {@link VoiceChannel} Object if
-	 *         successful.
+	 * @param icon location of icon file on disk
+	 * @return CompletableFuture
+	 * @throws IOException
 	 */
-	public CompletableFuture<VoiceChannel> createVoiceChannel(String name, int bitrate, int userLimit) {
-		return this.loader.rest.createVoiceChannel(this,
-				new JSONObject().put("name", name).put("bitrate", bitrate).put("user_limit", userLimit));
+	public CompletableFuture<Guild> setIcon(String icon) throws IOException {
+		String base64 = new String(
+				"data:image/jpg;base64," + Base64.encodeBase64String(Files.readAllBytes(Paths.get(icon))));
+		return this.loader.rest.modifyGuild(this, new JSONObject().put("icon", base64));
 	}
 
 	/**
-	 * Creates a new voice channel
+	 * Sets the guild's name if the loader has sufficient permissions
 	 * 
-	 * @param name The name of the channel
-	 * @param bitrate The channel's bitrate
-	 * @return A future that completes with a new {@link VoiceChannel} Object if
-	 *         successful.
+	 * @param name The guild's new name
+	 * @return CompletableFuture
 	 */
-	public CompletableFuture<VoiceChannel> createVoiceChannel(String name, int bitrate) {
-		return this.loader.rest.createVoiceChannel(this, new JSONObject().put("name", name).put("bitrate", bitrate));
+	public CompletableFuture<Guild> setName(String name) {
+		return this.loader.rest.modifyGuild(this, new JSONObject().put("name", name));
+	}
+
+	public void setPresence(PresenceJSON guildPresence) {
+		if (this.presences.containsKey(guildPresence.user.id)) {
+			this.presences.get(guildPresence.user.id).update(guildPresence);
+			return;
+		}
+		Presence presence = new Presence(guildPresence);
+		if (guildPresence.user.id.equals(this.loader.user.id))
+			this.loader.user.presence.update(guildPresence);
+		this.presences.put(guildPresence.user.id, presence);
+	}
+
+	public void setup(GuildJSON data) {
+
+		this.name = data.name;
+		this.icon = data.icon != null ? data.icon : null;
+		this.iconURL = this.icon != null ? Constants.Endpoints.guildIcon(this.id, this.icon) : null;
+		this.ownerID = data.owner_id;
+		this.memberCount = data.member_count;
+		this.region = new VoiceRegion(data.region);
+		this.large = data.large;
+		ProgressLogger.step(1, 7, "Caching Roles");
+		if (data.roles.length > 0) {
+			this.roles.clear();
+			for (RoleJSON role : data.roles) {
+				this.addRole(role);
+			}
+		}
+		ProgressLogger.step(2, 7, "Caching Members");
+		if (data.members != null && data.members.length > 0) {
+			this.members.clear();
+			for (MemberJSON member : data.members) {
+				this.addMember(member);
+			}
+		}
+		ProgressLogger.step(3, 7, "Caching Channels");
+		if (data.channels != null && data.channels.length > 0) {
+			this.textChannels.clear();
+			this.voiceChannels.clear();
+			for (ChannelJSON channel : data.channels) {
+				this.loader.addChannel(channel, this);
+			}
+		}
+		ProgressLogger.step(4, 7, "Caching Presences");
+		if (data.presences != null && data.presences.length > 0) {
+			this.presences.clear();
+			for (PresenceJSON presence : data.presences) {
+				this.setPresence(presence);
+			}
+		}
+		ProgressLogger.step(5, 7, "Caching Emojis");
+		if (data.emojis != null && data.emojis.length > 0) {
+			this.emojis.clear();
+			for (EmojiJSON e : data.emojis) {
+				this.emojis.put(e.id, new Emoji(e, this));
+			}
+		}
+		ProgressLogger.step(6, 7, "Caching Voice States");
+		if (data.voice_states != null && data.voice_states.length > 0) {
+			this.rawStates.clear();
+			for (VoiceStateJSON v : data.voice_states) {
+				this.rawStates.put(v.user_id, new VoiceState(v, this));
+			}
+		}
+
+		ProgressLogger.step(7, 7, "Registering Icon");
+		try {
+			TextureRegistry.registerGuildIcon(new GuildIcon(this));
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		this.available = !data.unavailable;
 	}
 
 	/**
-	 * Creates a new voice channel
+	 * Sets the Guild's voice region to the specified region
 	 * 
-	 * @param name
-	 * @return A future that completes with a new {@link VoiceChannel} Object if
-	 *         successful.
+	 * @param region The new voice region
+	 * @return {@link CompletableFuture}
 	 */
-	public CompletableFuture<VoiceChannel> createVoiceChannel(String name) {
-		return this.loader.rest.createVoiceChannel(this, new JSONObject().put("name", name));
-	}
-
-	/**
-	 * Creates a new {@link Role}.
-	 * 
-	 * @param name The name of the role
-	 * @param permissions The 53bit Permissions integer to assign to the role
-	 * @param color The color of the role
-	 * @param hoist Display role members separately from online members
-	 * @param mentionable Allow anyone to @mention this role
-	 * @return A future that completes with a new {@link Role} Object if
-	 *         successful.
-	 * @since 0.0.3
-	 */
-	public CompletableFuture<Role> createRole(String name, int permissions, int color, boolean hoist,
-			boolean mentionable) {
-		return null;
-	}
-
-	/**
-	 * Creates a new {@link Role}.
-	 * 
-	 * @param name The name of the role
-	 * @param permissions The 53bit Permissions integer to assign to the role
-	 * @param color The color of the role
-	 * @return A future that completes with a new {@link Role} Object if
-	 *         successful.
-	 * @since 0.0.3
-	 */
-	public CompletableFuture<Role> createRole(String name, int permissions, int color) {
-		return null;
-	}
-
-	/**
-	 * Creates a new {@link Role}.
-	 * 
-	 * @return A future that completes with a new {@link Role} Object if
-	 *         successful.
-	 * @since 0.0.3
-	 */
-	public CompletableFuture<Role> createRole() {
-		return null;
+	public CompletableFuture<Guild> setVoiceRegion(String region) {
+		return this.loader.rest.modifyGuild(this, new JSONObject().put("region", region));
 	}
 
 }

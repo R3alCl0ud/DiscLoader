@@ -29,6 +29,8 @@ import io.discloader.discloader.network.gateway.packets.GuildBanRemove;
 import io.discloader.discloader.network.gateway.packets.GuildCreate;
 import io.discloader.discloader.network.gateway.packets.GuildDelete;
 import io.discloader.discloader.network.gateway.packets.GuildMemberAdd;
+import io.discloader.discloader.network.gateway.packets.GuildMemberRemove;
+import io.discloader.discloader.network.gateway.packets.GuildMemberUpdate;
 import io.discloader.discloader.network.gateway.packets.GuildMembersChunk;
 import io.discloader.discloader.network.gateway.packets.GuildUpdate;
 import io.discloader.discloader.network.gateway.packets.HelloPacket;
@@ -66,6 +68,8 @@ public class DiscSocketListener extends WebSocketAdapter implements WebSocketLis
 		this.register(Constants.WSEvents.HELLO, new HelloPacket(this.socket));
 		this.register(Constants.WSEvents.READY, new ReadyPacket(this.socket));
 		this.register(Constants.WSEvents.GUILD_CREATE, new GuildCreate(this.socket));
+		this.register(Constants.WSEvents.GUILD_BAN_ADD, new GuildBanAdd(this.socket));
+		this.register(Constants.WSEvents.GUILD_BAN_REMOVE, new GuildBanRemove(this.socket));
 		this.register(Constants.WSEvents.GUILD_DELETE, new GuildDelete(this.socket));
 		this.register(Constants.WSEvents.GUILD_UPDATE, new GuildUpdate(this.socket));
 		this.register(Constants.WSEvents.GUILD_ROLE_CREATE, new RoleCreate(this.socket));
@@ -73,8 +77,8 @@ public class DiscSocketListener extends WebSocketAdapter implements WebSocketLis
 		this.register(Constants.WSEvents.GUILD_ROLE_UPDATE, new RoleUpdate(this.socket));
 		this.register(Constants.WSEvents.GUILD_MEMBERS_CHUNK, new GuildMembersChunk(this.socket));
 		this.register(Constants.WSEvents.GUILD_MEMBER_ADD, new GuildMemberAdd(this.socket));
-		this.register(Constants.WSEvents.GUILD_BAN_ADD, new GuildBanAdd(this.socket));
-		this.register(Constants.WSEvents.GUILD_BAN_REMOVE, new GuildBanRemove(this.socket));
+		this.register(Constants.WSEvents.GUILD_MEMBER_REMOVE, new GuildMemberRemove(this.socket));
+		this.register(Constants.WSEvents.GUILD_MEMBER_UPDATE, new GuildMemberUpdate(this.socket));
 		this.register(Constants.WSEvents.CHANNEL_CREATE, new ChannelCreate(this.socket));
 		this.register(Constants.WSEvents.CHANNEL_DELETE, new ChannelDelete(this.socket));
 		this.register(Constants.WSEvents.CHANNEL_UPDATE, new ChannelUpdate(this.socket));
@@ -241,12 +245,12 @@ public class DiscSocketListener extends WebSocketAdapter implements WebSocketLis
 				.put("properties", properties);
 
 		try {
-			
-		if (this.loader.shards > 1) {
-			System.out.print("Why....");
-			JSONArray te = new JSONArray().put(this.loader.shard).put(this.loader.shards);
-			payload.put("shard", te);
-		}
+
+			if (this.loader.shards > 1) {
+				System.out.print("Why....");
+				JSONArray te = new JSONArray().put(this.loader.shard).put(this.loader.shards);
+				payload.put("shard", te);
+			}
 		} catch (NullPointerException e) {
 			e.printStackTrace();
 		}

@@ -16,7 +16,7 @@ import io.discloader.discloader.util.Constants.ChannelType;
  * @author Perry Berman
  *
  */
-public class TextChannel extends Channel implements ITextChannel {
+public class TextChannel extends GuildChannel implements ITextChannel {
 	/**
 	 * A {@link HashMap} of the channel's cached messages. Indexed by {@link Message#id}.
 	 * @author Perry Berman
@@ -24,9 +24,14 @@ public class TextChannel extends Channel implements ITextChannel {
 	 */
 	private final HashMap<String, Message> messages;
 	
+	/**
+	 * The channel's topic
+	 * @since 0.0.3
+	 */
 	public String topic;
 
 	/**
+	 * Creates a new TextChannel object
 	 * @param guild
 	 * @param data
 	 */

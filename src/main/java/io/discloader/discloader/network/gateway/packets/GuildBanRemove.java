@@ -9,7 +9,7 @@ import io.discloader.discloader.common.event.IEventListener;
 import io.discloader.discloader.entity.Guild;
 import io.discloader.discloader.entity.User;
 import io.discloader.discloader.network.gateway.DiscSocket;
-import io.discloader.discloader.network.json.GuildBanJSON;
+import io.discloader.discloader.network.json.GuildMemberRemoveJSON;
 import io.discloader.discloader.util.Constants;
 
 /**
@@ -27,7 +27,7 @@ public class GuildBanRemove extends DLPacket {
 
 	public void handle(SocketPacket packet) {
 		String d = this.gson.toJson(packet.d);
-		GuildBanJSON data = this.gson.fromJson(d, GuildBanJSON.class);
+		GuildMemberRemoveJSON data = this.gson.fromJson(d, GuildMemberRemoveJSON.class);
 		Guild guild = this.loader.guilds.get(data.guild_id);
 		User user = this.loader.users.get(data.user.id);
 		if (user == null) {

@@ -39,6 +39,15 @@ public class Permission {
 
 	/**
 	 * Checks if the member has the specified permission.
+	 * @param permission A {@link Constants.PermissionFlags Permission Flag}
+	 * @return {@code true}, if the user has the specified permission. Otherwise {@code false}.
+	 */
+	public boolean hasPermission(int permission) {
+		return this.hasPermission(permission, false);
+	}
+	
+	/**
+	 * Checks if the member has the specified permission.
 	 * <br>{@code boolean sendMessages = channel.permissionsFor(member).hasPermission(PermissionFlags.SEND_MESSAGES);}
 	 * @param permission A {@link Constants.PermissionFlags Permission Flag}
 	 * @param explicit Whether or not the member explicitly has the permission
@@ -48,14 +57,5 @@ public class Permission {
 		if (!explicit && (this.raw & Constants.PermissionFlags.ADMINISTRATOR) > 0)
 			return true;
 		return (this.raw & permission) > 0;
-	}
-	
-	/**
-	 * Checks if the member has the specified permission.
-	 * @param permission A {@link Constants.PermissionFlags Permission Flag}
-	 * @return {@code true}, if the user has the specified permission. Otherwise {@code false}.
-	 */
-	public boolean hasPermission(int permission) {
-		return this.hasPermission(permission, false);
 	}
 }

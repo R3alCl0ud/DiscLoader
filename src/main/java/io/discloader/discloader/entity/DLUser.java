@@ -45,13 +45,24 @@ public class DLUser extends User {
 	}
 
 	/**
-	 * Set's the currently logged in user's username.
+	 * Gets the OAuth2 application of the logged in user, if the
+	 * {@link User#bot} is true
 	 * 
-	 * @param username The new username for the account
-	 * @return A Future that completes with a {@link User} Object if successful
+	 * @return A Future that completes with a new {@link OAuth2Application} if
+	 *         successful
 	 */
-	public CompletableFuture<User> setUsername(String username) {
-		return this.loader.rest.setUsername(username);
+	public CompletableFuture<OAuth2Application> getOAuth2Application() {
+		return this.loader.rest.getApplicationInfo();
+	}
+
+	/**
+	 * Set's the user's status
+	 * 
+	 * @param afk Whether or not you are afk
+	 * @return this
+	 */
+	public User setAFK(boolean afk) {
+		return this.setPresence(null, null, this.afk);
 	}
 
 	/**
@@ -64,6 +75,16 @@ public class DLUser extends User {
 	 */
 	public CompletableFuture<User> setAvatar(String avatarLocation) {
 		return this.loader.rest.setAvatar(avatarLocation);
+	}
+
+	/**
+	 * Sets the currently loggedin user's game
+	 * 
+	 * @param game The name of the game you are playing
+	 * @return this
+	 */
+	public User setGame(String game) {
+		return this.setPresence(null, game != null ? new Game(game) : null, this.afk);
 	}
 
 	/**
@@ -85,16 +106,6 @@ public class DLUser extends User {
 	}
 
 	/**
-	 * Sets the currently loggedin user's game
-	 * 
-	 * @param game The name of the game you are playing
-	 * @return this
-	 */
-	public User setGame(String game) {
-		return this.setPresence(null, game != null ? new Game(game) : null, this.afk);
-	}
-
-	/**
 	 * Sets the user's status.
 	 * 
 	 * @param status
@@ -105,24 +116,13 @@ public class DLUser extends User {
 	}
 
 	/**
-	 * Set's the user's status
+	 * Set's the currently logged in user's username.
 	 * 
-	 * @param afk Whether or not you are afk
-	 * @return this
+	 * @param username The new username for the account
+	 * @return A Future that completes with a {@link User} Object if successful
 	 */
-	public User setAFK(boolean afk) {
-		return this.setPresence(null, null, this.afk);
-	}
-
-	/**
-	 * Gets the OAuth2 application of the logged in user, if the
-	 * {@link User#bot} is true
-	 * 
-	 * @return A Future that completes with a new {@link OAuth2Application} if
-	 *         successful
-	 */
-	public CompletableFuture<OAuth2Application> getOAuth2Application() {
-		return this.loader.rest.getApplicationInfo();
+	public CompletableFuture<User> setUsername(String username) {
+		return this.loader.rest.setUsername(username);
 	}
 
 }

@@ -12,6 +12,14 @@ import io.discloader.discloader.util.DLNameSpacedMap;
  */
 public class Command {
 
+	protected static DLNameSpacedMap<Command> commands = CommandRegistry.commands;
+	
+	public static void registerCommands() {
+		commands.addObject(0, "help", new CommandHelp().setUnlocalizedName("help").setId(0));
+		commands.addObject(1, "mods", new CommandMods().setId(1));
+		commands.addObject(2, "invite", new CommandInvite().setId(2));
+	}
+	
 	private String unlocalizedName;
 	
 	private String textureName = "discloader:missing-texture";
@@ -19,36 +27,19 @@ public class Command {
 	private String description = "default description";
 	
 	private String usage = null;
-	
+
 	private int id;
 	
 	protected IIcon icon;
 
-	protected static DLNameSpacedMap<Command> commands = CommandRegistry.commands;
-	
 	/**
 	 * Creates a new Command
 	 */
 	public Command() {
 		this.icon = null;
 	}
-
-	public static void registerCommands() {
-		commands.addObject(0, "help", new CommandHelp().setUnlocalizedName("help").setId(0));
-		commands.addObject(1, "mods", new CommandMods().setId(1));
-		commands.addObject(2, "invite", new CommandInvite().setId(2));
-	}
 	
 	
-	/**
-	 * @param unlocalizedName
-	 * @return this
-	 */
-	public Command setUnlocalizedName(String unlocalizedName) {
-		this.unlocalizedName = unlocalizedName;
-		return this;
-	}
-
 	/**
 	 * executes the command
 	 * 
@@ -59,28 +50,12 @@ public class Command {
 	}
 
 	/**
-	 * @return the unlocalizedName
+	 * @return the description
 	 */
-	public String getUnlocalizedName() {
-		return unlocalizedName;
+	public String getDescription() {
+		return this.description;
 	}
 
-	/**
-	 * @return the textureName
-	 */
-	public String getTextureName() {
-		return textureName;
-	}
-
-	/**
-	 * Sets the name of the texture for this command
-	 * @param textureName MODID:icons.commands.unlocalizedName
-	 */
-	public Command setTextureName(String textureName) {
-		this.textureName = textureName;
-		return this;
-	}
-	
 	public IIcon getIcon() {
 		if (this.icon == null) {
 			this.icon = TextureRegistry.registerCommandIcon(this);
@@ -96,18 +71,27 @@ public class Command {
 	}
 
 	/**
-	 * @param id the id to set
+	 * @return the textureName
 	 */
-	public Command setId(int id) {
-		this.id = id;
-		return this;
+	public String getTextureName() {
+		return textureName;
+	}
+	
+	/**
+	 * @return the unlocalizedName
+	 */
+	public String getUnlocalizedName() {
+		return unlocalizedName;
 	}
 
 	/**
-	 * @return the description
+	 * @return the usage
 	 */
-	public String getDescription() {
-		return this.description;
+	public String getUsage() {
+		if (this.usage == null) {
+			this.usage = this.getUnlocalizedName();
+		}
+		return this.usage;
 	}
 
 	/**
@@ -119,13 +103,29 @@ public class Command {
 	}
 
 	/**
-	 * @return the usage
+	 * @param id the id to set
 	 */
-	public String getUsage() {
-		if (this.usage == null) {
-			this.usage = this.getUnlocalizedName();
-		}
-		return this.usage;
+	public Command setId(int id) {
+		this.id = id;
+		return this;
+	}
+
+	/**
+	 * Sets the name of the texture for this command
+	 * @param textureName MODID:icons.commands.unlocalizedName
+	 */
+	public Command setTextureName(String textureName) {
+		this.textureName = textureName;
+		return this;
+	}
+
+	/**
+	 * @param unlocalizedName
+	 * @return this
+	 */
+	public Command setUnlocalizedName(String unlocalizedName) {
+		this.unlocalizedName = unlocalizedName;
+		return this;
 	}
 
 	/**

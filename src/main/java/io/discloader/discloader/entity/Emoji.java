@@ -3,6 +3,7 @@ package io.discloader.discloader.entity;
 import java.util.HashMap;
 
 import io.discloader.discloader.network.json.EmojiJSON;
+import io.discloader.discloader.network.json.RoleJSON;
 
 /**
  * @author Perry Berman
@@ -32,6 +33,10 @@ public class Emoji {
 		this.guild = guild;
 		
 		this.roles = new HashMap<>();
+		
+		for (RoleJSON r : data.roles) {
+			this.roles.put(r.id, guild.roles.get(r.id));
+		}
 	}
 
 	/**

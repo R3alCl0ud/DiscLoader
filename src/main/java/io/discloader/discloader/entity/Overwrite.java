@@ -49,17 +49,6 @@ public class Overwrite {
 	 */
 	public Channel channel;
 
-	public Overwrite(OverwriteJSON data) {
-		this.allow = data.allow;
-		this.deny = data.deny;
-		if (data.id != null)
-			this.id = data.id;
-		if (data.type != null)
-			this.type = data.type;
-		this.role = null;
-		this.member = null;
-	}
-
 	public Overwrite(Overwrite data, GuildMember member) {
 		this.allow = data.allow;
 		this.deny = data.deny;
@@ -73,6 +62,17 @@ public class Overwrite {
 		this.deny = data.deny;
 		this.type = data.type;
 		this.role = role;
+		this.member = null;
+	}
+
+	public Overwrite(OverwriteJSON data) {
+		this.allow = data.allow;
+		this.deny = data.deny;
+		if (data.id != null)
+			this.id = data.id;
+		if (data.type != null)
+			this.type = data.type;
+		this.role = null;
 		this.member = null;
 	}
 

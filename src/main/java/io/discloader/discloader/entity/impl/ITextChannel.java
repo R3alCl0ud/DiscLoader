@@ -12,13 +12,21 @@ import io.discloader.discloader.entity.sendable.RichEmbed;
  */
 public interface ITextChannel extends IChannel {
 
+	/**
+	 * @param id The Snowflake ID of the message
+	 * @return The cached message, or null if no message was found
+	 */
 	Message getMessage(String id);
 	
+	/**
+	 * Gets the channels cached messages
+	 * @return A HashMap of cached messages
+	 */
 	HashMap<String, Message> getMessages();
 	
+	CompletableFuture<Message> sendEmbed(RichEmbed embed);
+
 	CompletableFuture<Message> sendMessage(String content);
 
 	CompletableFuture<Message> sendMessage(String content, RichEmbed embed);
-
-	CompletableFuture<Message> sendEmbed(RichEmbed embed);
 }

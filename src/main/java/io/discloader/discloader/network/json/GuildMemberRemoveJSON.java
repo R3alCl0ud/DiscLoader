@@ -7,7 +7,7 @@ package io.discloader.discloader.network.json;
  * @author Perry Berman
  *
  */
-public class GuildBanJSON {
+public class GuildMemberRemoveJSON {
 
 	public String guild_id;
 	

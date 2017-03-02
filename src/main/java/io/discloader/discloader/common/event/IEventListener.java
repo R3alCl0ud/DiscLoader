@@ -1,12 +1,13 @@
 package io.discloader.discloader.common.event;
 
+import java.util.HashMap;
+
 import io.discloader.discloader.common.DiscLoader;
 import io.discloader.discloader.common.registry.ModRegistry;
 import io.discloader.discloader.entity.Guild;
-import io.discloader.discloader.entity.Role;
 import io.discloader.discloader.entity.GuildMember;
-
-import java.util.HashMap;
+import io.discloader.discloader.entity.Role;
+import io.discloader.discloader.entity.voice.VoiceConnection;
 
 /**
  * Interface for DiscLoader events
@@ -16,33 +17,23 @@ import java.util.HashMap;
  */
 public interface IEventListener {
 
-    /**
-     * Emitted whenever a new packet is received from the gateway
-     * 
-     * @param raw
-     */
-    void raw(String raw);
+    void ChannelCreate(ChannelCreateEvent e);
+
+    void ChannelDelete(ChannelDeleteEvent e);
+
+    void ChannelPinsUpdate();
+
+    void ChannelUpdate(ChannelUpdateEvent e);
 
     /**
-     * During the PreInit phase of startup, after all mods have been discovered, The {@link ModRegistry} executes this event on the mod the
-     * registry is attempting to load. All commands <u>must</u> be registered on this event being called in your mod.
-     * 
-     * @param preInitEvent
+     * @param e
      */
-    void PreInit(DLPreInitEvent preInitEvent);
+    void GuildBanAdd(GuildBanAddEvent e);
 
     /**
-     * Gets emitted during startup, when the current startup phase changes
-     * 
+     * @param event
      */
-    void PhaseChange();
-
-    /**
-     * Emitted when all guilds are available, and all members in non-large {@link Guild guilds} are cached.
-     * 
-     * @param loader The current instance of {@link DiscLoader}
-     */
-    void Ready(DiscLoader loader);
+    void GuildBanRemove(GuildBanRemoveEvent event);
 
     /**
      * Executed when the client joins a new {@link Guild}
@@ -58,30 +49,12 @@ public interface IEventListener {
      */
     void GuildDelete(GuildDeleteEvent e);
 
-    /**
-     * @param e
-     */
-    void GuildUpdate(GuildUpdateEvent e);
-
-    /**
-     * @param members
-     */
-    void GuildMembersChunk(HashMap<String, GuildMember> members);
+    void GuildEmojisUpdate();
 
     /**
      * @param event
      */
     void GuildMemberAdd(GuildMemberAddEvent event);
-
-    /**
-     * @param e
-     */
-    void GuildMemberRemove(GuildMemberRemoveEvent e);
-
-    /**
-     * @param e
-     */
-    void GuildMemberUpdate(GuildMemberUpdateEvent e);
 
     /**
      * @param member
@@ -91,12 +64,17 @@ public interface IEventListener {
     /**
      * @param e
      */
-    void GuildBanAdd(GuildBanAddEvent e);
+    void GuildMemberRemove(GuildMemberRemoveEvent e);
 
     /**
-     * @param event
+     * @param members
      */
-    void GuildBanRemove(GuildBanRemoveEvent event);
+    void GuildMembersChunk(HashMap<String, GuildMember> members);
+
+    /**
+     * @param e
+     */
+    void GuildMemberUpdate(GuildMemberUpdateEvent e);
 
     /**
      * Executed when a {@link Role} is created
@@ -115,15 +93,10 @@ public interface IEventListener {
      */
     void GuildRoleUpdate(GuildRoleUpdateEvent e);
 
-    void GuildEmojisUpdate();
-
-    void ChannelCreate(ChannelCreateEvent e);
-
-    void ChannelDelete(ChannelDeleteEvent e);
-
-    void ChannelUpdate(ChannelUpdateEvent e);
-
-    void ChannelPinsUpdate();
+    /**
+     * @param e
+     */
+    void GuildUpdate(GuildUpdateEvent e);
 
     void MessageCreate(MessageCreateEvent e);
 
@@ -131,13 +104,41 @@ public interface IEventListener {
 
     void MessageUpdate(MessageUpdateEvent e);
 
+    /**
+     * Gets emitted during startup, when the current startup phase changes
+     * 
+     */
+    void PhaseChange();
+
+    /**
+     * During the PreInit phase of startup, after all mods have been discovered, The {@link ModRegistry} executes this event on the mod the
+     * registry is attempting to load. All commands <u>must</u> be registered on this event being called in your mod.
+     * 
+     * @param preInitEvent
+     */
+    void PreInit(DLPreInitEvent preInitEvent);
+
+    void PresenceUpdate();
+
     void PrivateMessageCreate(MessageCreateEvent e);
 
     void PrivateMessageDelete(MessageDeleteEvent e);
 
     void PrivateMessageUpdate(MessageUpdateEvent e);
 
-    void UserUpdate(UserUpdateEvent e);
+    /**
+     * Emitted whenever a new packet is received from the gateway. Is not executed when receiving packets from {@link VoiceConnection VoiceConnections}
+     * 
+     * @param raw
+     */
+    void raw(String raw);
 
-    void PresenceUpdate();
+    /**
+     * Emitted when all guilds are available, and all members in non-large {@link Guild guilds} are cached.
+     * 
+     * @param loader The current instance of {@link DiscLoader}
+     */
+    void Ready(DiscLoader loader);
+
+    void UserUpdate(UserUpdateEvent e);
 }

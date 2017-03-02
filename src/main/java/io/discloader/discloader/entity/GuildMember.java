@@ -89,6 +89,18 @@ public class GuildMember {
 
 	}
 
+	public GuildMember(Guild guild, User user) {
+		this.id = user.id;
+
+		this.user = user;
+
+		this.guild = guild;
+		
+		this.loader = guild.loader;
+		
+		this.joinedAt = null;
+	}
+
 	/**
 	 * @param guild
 	 * @param user
@@ -124,23 +136,16 @@ public class GuildMember {
 		this.mute = this.deaf ? true : data.mute;
 	}
 
-	public GuildMember(Guild guild, User user) {
-		this.id = user.id;
-
-		this.user = user;
-
-		this.guild = guild;
-		
-		this.loader = guild.loader;
-		
-		this.joinedAt = null;
-	}
-
 	/**
-	 * Same as {@link User#toString()}
+	 * Bans the member from the {@link Guild} if the {@link DiscLoader loader}
+	 * has suficient permissions
+	 * 
+	 * @see Permission
+	 * @return A CompletableFuture that completes with {@code this} if
+	 *         successfull
 	 */
-	public String toString() {
-		return this.user.toString();
+	public CompletableFuture<GuildMember> ban() {
+		return null;
 	}
 
 	public Presence getPresence() {
@@ -153,6 +158,18 @@ public class GuildMember {
 			roles.put(id, this.guild.roles.get(id));
 		}
 		return roles;
+	}
+
+	/**
+	 * Kicks the member from the {@link Guild} if the {@link DiscLoader loader}
+	 * has suficient permissions
+	 * 
+	 * @see Permission
+	 * @return A CompletableFuture that completes with {@code this} if
+	 *         successfull
+	 */
+	public CompletableFuture<GuildMember> kick() {
+		return null;
 	}
 
 	/**
@@ -169,26 +186,9 @@ public class GuildMember {
 	}
 
 	/**
-	 * Bans the member from the {@link Guild} if the {@link DiscLoader loader}
-	 * has suficient permissions
-	 * 
-	 * @see Permission
-	 * @return A CompletableFuture that completes with {@code this} if
-	 *         successfull
+	 * Same as {@link User#toString()}
 	 */
-	public CompletableFuture<GuildMember> ban() {
-		return null;
-	}
-
-	/**
-	 * Kicks the member from the {@link Guild} if the {@link DiscLoader loader}
-	 * has suficient permissions
-	 * 
-	 * @see Permission
-	 * @return A CompletableFuture that completes with {@code this} if
-	 *         successfull
-	 */
-	public CompletableFuture<GuildMember> kick() {
-		return null;
+	public String toString() {
+		return this.user.toString();
 	}
 }
