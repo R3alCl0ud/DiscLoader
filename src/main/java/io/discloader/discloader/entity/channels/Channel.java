@@ -50,16 +50,7 @@ public class Channel implements IChannel {
 	 */
 	public final HashMap<String, Overwrite> overwrites;
 
-	/**
-	 * A {@link HashMap} of the channel's {@link GuildMember members}. Indexed
-	 * by {@link GuildMember #id member.id}. <br>
-	 * Is {@code null} if {@link #guild} is {@code null}, and if {@link #type}
-	 * is {@code "dm"}, or {@code "groupDM"}.
-	 * 
-	 * @author Perry Berman
-	 * @since 0.0.1
-	 */
-	public final HashMap<String, GuildMember> members;
+
 
 	public Channel(DiscLoader loader, ChannelJSON data) {
 		this.loader = loader;
@@ -68,7 +59,6 @@ public class Channel implements IChannel {
 
 		this.recipients = new HashMap<String, User>();
 
-		this.members = null;
 
 		this.overwrites = new HashMap<String, Overwrite>();
 
@@ -82,8 +72,6 @@ public class Channel implements IChannel {
 		this.type = null;
 
 		this.recipients = null;
-
-		this.members = new HashMap<String, GuildMember>();
 
 		this.overwrites = new HashMap<String, Overwrite>();
 

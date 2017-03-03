@@ -113,11 +113,7 @@ public class VoiceConnection {
     }
 
     /**
-     * Scary internal stuff<br>
-     * <u>
-     * <h1>Do Not Touch<br>
-     * Unless you are sure you know what you are doing</u></h1><br>
-     * 
+     * Scary internal stuff
      * @param data udp information
      */
     public void connectUDP(VoiceReady data) {
@@ -143,10 +139,7 @@ public class VoiceConnection {
     }
 
     /**
-     * Scary internal stuff<br>
-     * <u>
-     * <h1>Do Not Touch<br>
-     * Unless you are sure you know what you are doing</u></h1><br>
+     * Scary internal stuff
      * 
      * @param endpoint The voice server to connect to...
      * @param token The token to use for authentication

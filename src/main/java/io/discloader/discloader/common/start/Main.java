@@ -1,5 +1,6 @@
 package io.discloader.discloader.common.start;
 
+import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -11,6 +12,7 @@ import io.discloader.discloader.client.command.CommandHandler;
 import io.discloader.discloader.client.render.WindowFrame;
 import io.discloader.discloader.common.DiscLoader;
 import io.discloader.discloader.common.ShardManager;
+import io.discloader.discloader.common.event.EventListenerAdapter;
 import io.discloader.discloader.common.logger.DLErrorStream;
 import io.discloader.discloader.common.logger.DLPrintStream;
 
@@ -54,6 +56,21 @@ public class Main {
         for (Object line : lines)
             content += line;
         options options = gson.fromJson(content, options.class);
+        DiscLoader.addEventHandler(new EventListenerAdapter() {
+
+            @Override
+            public void Ready(DiscLoader loader) {
+//                LOGGER.fine(String.format("Ready as user %s#%s", loader.user.username, loader.user.discriminator));
+                try {
+                    loader.voiceChannels.get("245269174425747467").join().thenAcceptAsync(connection -> {
+                        connection.player.setVolume(10);
+                        connection.play(new File("Fumes.mp3"));
+                    });
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        });
         token = options.auth.token;
         parseArgs(args);
         if (shard != -1) {
