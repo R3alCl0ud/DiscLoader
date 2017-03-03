@@ -1,6 +1,3 @@
-/**
- * 
- */
 package io.discloader.discloader.client.command;
 
 import java.util.ArrayList;
@@ -22,27 +19,28 @@ public class CommandMods extends Command {
 
 	private final String regex = "\\/\\/mods (.*)";
 	private final Pattern pattern = Pattern.compile(regex);
-	
+
 	public CommandMods() {
 		super();
-		this.setUnlocalizedName("mods").setTextureName("discloader:mods").setDescription("mods").setUsage("mods [<mod>]");
+		this.setUnlocalizedName("mods").setTextureName("discloader:mods").setDescription("mods")
+				.setUsage("mods [<mod>]");
 	}
 
 	public void execute(MessageCreateEvent e) {
 		RichEmbed embed = new RichEmbed().setColor(0x55cdF2);
 		Matcher modMatch = pattern.matcher(e.message.content);
 		if (modMatch.find()) {
-			
+			String mod = modMatch.group(1);
+			System.out.println(mod);
 		}
-		
+
 		if (e.args.length == 2) {
 			String mod = e.args[1];
 			System.out.println(mod);
 			ModContainer mc = ModRegistry.mods.get(mod);
 			if (mc != null) {
 				embed.setThumbnail(Constants.MissingTexture);
-				embed.addField("Description", mc.modInfo.desc(), true)
-						.addField("Version", mc.modInfo.version(), true)
+				embed.addField("Description", mc.modInfo.desc(), true).addField("Version", mc.modInfo.version(), true)
 						.addField("Author(s)", mc.modInfo.author(), true);
 			}
 		} else {

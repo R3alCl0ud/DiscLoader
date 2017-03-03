@@ -4,7 +4,7 @@ package io.discloader.discloader.entity.embed;
  * @author Perry Berman
  *
  */
-public class EmbedAuthor {
+public class MessageEmbedAuthor {
 
 	/**
 	 * The author's website
@@ -21,17 +21,17 @@ public class EmbedAuthor {
 	 */
 	public String iconURL;
 	
-	public EmbedAuthor(String name, String url, String icon_url) {
+	public MessageEmbedAuthor(String name, String url, String icon_url) {
 		this.name = name;
 		this.url = url;
 		this.iconURL = icon_url;
 	}
 	
-	public EmbedAuthor(String name, String url) {
+	public MessageEmbedAuthor(String name, String url) {
 		this(name, url, null);
 	}
 	
-	public EmbedAuthor(String name) {
+	public MessageEmbedAuthor(String name) {
 		this(name, null, null);
 	}
 }

@@ -5,7 +5,7 @@ package io.discloader.discloader.entity.embed;
  * @author Perry Berman
  * @since 0.0.1
  */
-public class EmbedField {
+public class MessageEmbedField {
 
 	/**
 	 * Is the field displayed inline
@@ -25,7 +25,7 @@ public class EmbedField {
 	 * @param value The content of the field
 	 * @param inline Should the field be displayed inline
 	 */
-	public EmbedField(String name, String value, boolean inline) {
+	public MessageEmbedField(String name, String value, boolean inline) {
 		this.setName(name);
 		this.setValue(value);
 		this.setInline(inline);

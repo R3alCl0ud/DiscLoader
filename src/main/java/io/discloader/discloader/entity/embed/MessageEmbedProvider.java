@@ -4,12 +4,12 @@ package io.discloader.discloader.entity.embed;
  * @author Perry Berman
  *
  */
-public class EmbedProvider {
+public class MessageEmbedProvider {
 
 	/**
 	 * 
 	 */
-	public EmbedProvider() {
+	public MessageEmbedProvider() {
 		// TODO Auto-generated constructor stub
 	}
 

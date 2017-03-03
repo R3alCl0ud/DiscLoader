@@ -28,10 +28,11 @@ public class APIRequest {
 	public CompletableFuture<String> future;
 
 	/**
-	 * @param url
-	 * @param method
-	 * @param auth
-	 * @param data
+	 * Creates a new APIRequest
+	 * @param url The endpoint's url
+	 * @param method The request method to use
+	 * @param auth Does the endpoint require authorization
+	 * @param data The payload to attach to the request
 	 */
 	public APIRequest(String url, int method, boolean auth, Object data) {
 		this.url = url;
@@ -49,7 +50,7 @@ public class APIRequest {
 	/**
 	 * Converts the {@link APIRequest} URL to the corresponding API Endpoint
 	 * 
-	 * @param url
+	 * @param url The url of the endpoint
 	 * @return API Endpoint {@link Constants.Endpoints}
 	 */
 	public String getRoute(String url) {

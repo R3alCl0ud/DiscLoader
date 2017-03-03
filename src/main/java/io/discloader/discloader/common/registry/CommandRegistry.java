@@ -36,12 +36,17 @@ public class CommandRegistry {
 	}
 
 	/**
-	 * Do not use this method
-	 * @param command
-	 * @param name
-	 * @param idHint
+	 * Registers a command. <u>This method is to only be internally executed by
+	 * DiscLoader itself</u><br>
+	 * Mod makers should never call this method, it is considered bad practice,
+	 * and will stop the client from starting up in the future
+	 * 
+	 * @param command The command to register
+	 * @param name The namespaced name of the command
+	 * @param idHint what the command's id should be if no other command is
+	 *            already registered with the id
 	 */
-	public static void registerCommand(Command command, String name, int idHint) {
+	private static void registerCommand(Command command, String name, int idHint) {
 		int id = idHint;
 		if (id == -1) {
 			id = (int) (Math.round(Math.random() * (maxID - minID)) + minID);
@@ -55,13 +60,15 @@ public class CommandRegistry {
 	}
 
 	/**
-	 * @param command
-	 * @param name
+	 * Registers a command. 
+	 * 
+	 * @param command The command to be registered
+	 * @param name A unique name for the command. It is <u>strongly</u>
+	 *            recommended that this should be the command's unlocalized name
 	 */
 	public static void registerCommand(Command command, String name) {
 		if (ProgressLogger.phaseNumber != 2) {
-			System.out.println("HALTING.......\nERROR: Commands must be registered in the PreINIT Phase");
-			System.exit(1);
+//			System.err.println(String.format("", ));
 		}
 		registerCommand(command, addPrefix(name), -1);
 	}

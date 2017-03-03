@@ -11,7 +11,6 @@ import io.discloader.discloader.entity.Role;
 import io.discloader.discloader.entity.impl.IGuildChannel;
 import io.discloader.discloader.network.json.ChannelJSON;
 import io.discloader.discloader.util.Constants;
-import io.discloader.discloader.util.Constants.Permissions;
 
 public class GuildChannel extends Channel implements IGuildChannel {
 	/**
@@ -24,10 +23,16 @@ public class GuildChannel extends Channel implements IGuildChannel {
 	 */
 	public final Guild guild;
 
-	public Permissions permission;
-
+	
 	public int position;
 
+	/**
+	 * A {@link HashMap} of the channel's {@link Overwrite overwrites}. Indexed
+	 * by {@link Overwrite#id}.
+	 * 
+	 * @author Perry Berman
+	 * @since 0.0.1
+	 */
 	public HashMap<String, Overwrite> overwrites;
 
 	/**
@@ -49,14 +54,6 @@ public class GuildChannel extends Channel implements IGuildChannel {
 		this.overwrites = new HashMap<String, Overwrite>();
 	}
 
-	public void setup(ChannelJSON data) {
-		super.setup(data);
-
-		this.name = data.name;
-
-		this.position = data.position;
-	}
-
 	public HashMap<String, GuildMember> getMembers() {
 		HashMap<String, GuildMember> members = new HashMap<String, GuildMember>();
 		for (GuildMember member : this.guild.members.values()) {
@@ -64,6 +61,17 @@ public class GuildChannel extends Channel implements IGuildChannel {
 				members.put(member.id, member);
 		}
 		return members;
+	}
+
+	public HashMap<String, Overwrite> overwritesOf(GuildMember member) {
+		HashMap<String, Overwrite> Overwrites = new HashMap<String, Overwrite>();
+		for (Role role : member.getRoleList().values()) {
+			if (this.overwrites.get(role.id) != null)
+				Overwrites.put(role.id, this.overwrites.get(role.id));
+		}
+		if (this.overwrites.get(member.id) != null)
+			Overwrites.put(member.id, this.overwrites.get(member.id));
+		return Overwrites;
 	}
 
 	public Permission permissionsFor(GuildMember member) {
@@ -79,19 +87,13 @@ public class GuildChannel extends Channel implements IGuildChannel {
 		return new Permission(member, this, raw);
 	}
 
-	public HashMap<String, Overwrite> overwritesOf(GuildMember member) {
-		HashMap<String, Overwrite> Overwrites = new HashMap<String, Overwrite>();
-		for (Role role : member.getRoleList().values()) {
-			if (this.overwrites.get(role.id) != null)
-				Overwrites.put(role.id, this.overwrites.get(role.id));
-		}
-		if (this.overwrites.get(member.id) != null)
-			Overwrites.put(member.id, this.overwrites.get(member.id));
-		return Overwrites;
+	@Override
+	public CompletableFuture<? extends IGuildChannel> setName(String name) {
+		return null;
 	}
 
 	@Override
-	public CompletableFuture<? extends IGuildChannel> setName(String name) {
+	public CompletableFuture<? extends IGuildChannel> setPermissions(int allow, int deny, String type) {
 		return null;
 	}
 
@@ -100,9 +102,12 @@ public class GuildChannel extends Channel implements IGuildChannel {
 		return null;
 	}
 
-	@Override
-	public CompletableFuture<? extends IGuildChannel> setPermissions(int allow, int deny, String type) {
-		return null;
+	public void setup(ChannelJSON data) {
+		super.setup(data);
+
+		this.name = data.name;
+
+		this.position = data.position;
 	}
 
 }

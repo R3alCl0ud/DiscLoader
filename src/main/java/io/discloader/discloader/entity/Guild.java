@@ -137,17 +137,23 @@ public class Guild {
 
 	/**
 	 * A HashMap of the guild's custom emojis. Indexed by {@link Emoji#id}
+	 * 
 	 * @author Perry Berman
 	 */
 	public HashMap<String, Emoji> emojis;
 
 	/**
-	 * A Private HashMap of the guild's raw voice states. Indexed by {@link GuildMember#id}
+	 * A Private HashMap of the guild's raw voice states. Indexed by
+	 * {@link GuildMember#id}
+	 * 
 	 * @author Perry Berman
 	 */
 	private HashMap<String, VoiceState> rawStates;
 
-	public VoiceRegion region;
+	/**
+	 * The guild's current voice region
+	 */
+	public VoiceRegion voiceRegion;
 
 	/**
 	 * Creates a new guild
@@ -165,7 +171,7 @@ public class Guild {
 		this.presences = new HashMap<String, Presence>();
 		this.emojis = new HashMap<>();
 		this.rawStates = new HashMap<>();
-		this.region = new VoiceRegion("us-central");
+		this.voiceRegion = new VoiceRegion("us-central");
 
 		if (data.unavailable == true) {
 			this.available = false;
@@ -341,14 +347,27 @@ public class Guild {
 	}
 
 	/**
+	 * Gets a HashMap of GuildMembers that are in the guild.
 	 * 
-	 * @param limit The number of members to load.
-	 * @param before
+	 * @param limit max number of members to return (1-1000) default 50
+	 * @param after The highest user id in the previous page
 	 * @return A CompletableFuture that completes with a HashMap of GuildMembers
 	 *         if successful, null otherwise.
 	 */
-	public CompletableFuture<HashMap<String, GuildMember>> fetchMembers(int limit, String before) {
-		return null;
+	public CompletableFuture<HashMap<String, GuildMember>> fetchMembers(int limit, String after) {
+		return this.loader.rest.loadGuildMembers(this, limit, after);
+	}
+
+	/**
+	 * Gets a HashMap of GuildMembers that are in the guild. <u>Only retrieves
+	 * 50 members</u>
+	 * 
+	 * @param after The highest user id in the previous page
+	 * @return A CompletableFuture that completes with a HashMap of GuildMembers
+	 *         if successful, null otherwise.
+	 */
+	public CompletableFuture<HashMap<String, GuildMember>> fetchMembers(String after) {
+		return this.loader.rest.loadGuildMembers(this, 50, after);
 	}
 
 	/**
@@ -395,6 +414,11 @@ public class Guild {
 		this.presences.put(guildPresence.user.id, presence);
 	}
 
+	/**
+	 * Sets up a guild with data from the gateway
+	 * 
+	 * @param data The guild's data
+	 */
 	public void setup(GuildJSON data) {
 
 		this.name = data.name;
@@ -402,7 +426,7 @@ public class Guild {
 		this.iconURL = this.icon != null ? Constants.Endpoints.guildIcon(this.id, this.icon) : null;
 		this.ownerID = data.owner_id;
 		this.memberCount = data.member_count;
-		this.region = new VoiceRegion(data.region);
+		this.voiceRegion = new VoiceRegion(data.region);
 		this.large = data.large;
 		ProgressLogger.step(1, 7, "Caching Roles");
 		if (data.roles.length > 0) {

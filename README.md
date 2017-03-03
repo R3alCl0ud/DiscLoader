@@ -11,12 +11,14 @@ Created to replace the method daisy chaining confusion of other Java libraries f
 - Editing messages and embeds
 - Deleting messages
 - Command System
+- A Voice connection system
 
 # Todo
 - Finish constants registry.
 - Finish packet reading.
 - Parse EmbedJSONs to a MessageEmbed type.
 - Add methods for editing a Channel's data.
+- add better documentation
 
 ### Command Line Arguments
 

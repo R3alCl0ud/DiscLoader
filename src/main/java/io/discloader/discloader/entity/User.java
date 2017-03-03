@@ -1,13 +1,9 @@
 package io.discloader.discloader.entity;
 
-import java.text.MessageFormat;
-
-import io.discloader.discloader.client.registry.TextureRegistry;
 import io.discloader.discloader.client.render.texture.icon.UserIcon;
 import io.discloader.discloader.client.render.util.IIcon;
 import io.discloader.discloader.common.DiscLoader;
 import io.discloader.discloader.network.json.UserJSON;
-import io.discloader.discloader.util.Constants.Endpoints;
 
 /**
  * Represents a user on discord
@@ -75,12 +71,7 @@ public class User {
 
 		this.avatar = new UserIcon(this, user.avatar.getIconName());
 
-		// this.avatarURL = this.avatar != null ? Endpoints.avatar(this.id,
-		// this.avatar) : null;
-
 		this.bot = user.bot;
-
-		// TextureRegistry.registerUserIcon();
 	}
 
 	/**
@@ -102,9 +93,6 @@ public class User {
 		if (data.bot == true || data.bot == false)
 			this.bot = data.bot;
 
-		// this.avatarURL = this.avatar != null ? Endpoints.avatar(this.id,
-		// this.avatar) : null;
-
 		return this;
 	}
 
@@ -115,12 +103,7 @@ public class User {
 
 		this.avatar = new UserIcon(this, data.avatar);
 
-		// this.avatarURL = this.avatar != null ? Endpoints.avatar(this.id,
-		// this.avatar) : null;
-
 		this.bot = data.bot;
-
-//		TextureRegistry.registerUserIcon(new UserIcon(this));
 
 	}
 
@@ -130,6 +113,6 @@ public class User {
 	 * @return {@literal <@}{@link #id this.id}{@literal>}
 	 */
 	public String toString() {
-		return MessageFormat.format("<@{0}>", new Object[] { this.id });
+		return String.format("<@%s>", this.id);
 	}
 }

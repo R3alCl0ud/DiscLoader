@@ -13,25 +13,36 @@ import io.discloader.discloader.network.json.ChannelJSON;
 import io.discloader.discloader.util.Constants.ChannelType;
 
 /**
+ * Represents a TextChannel in a Guild on Discord
+ * 
+ * 
  * @author Perry Berman
- *
+ * @since 0.0.1
+ * @version 3
  */
 public class TextChannel extends GuildChannel implements ITextChannel {
+
 	/**
-	 * A {@link HashMap} of the channel's cached messages. Indexed by {@link Message#id}.
+	 * A {@link HashMap} of the channel's cached messages. Indexed by
+	 * {@link Message#id}.
+	 * 
 	 * @author Perry Berman
 	 * @since 0.0.1
 	 */
 	private final HashMap<String, Message> messages;
-	
+
 	/**
 	 * The channel's topic
+	 * 
+	 * @author Perry Berman
 	 * @since 0.0.3
 	 */
 	public String topic;
 
 	/**
 	 * Creates a new TextChannel object
+	 * 
+	 * @author Perry Berman
 	 * @param guild
 	 * @param data
 	 */
@@ -42,27 +53,16 @@ public class TextChannel extends GuildChannel implements ITextChannel {
 		this.messages = new HashMap<String, Message>();
 	}
 
-
 	public void setup(ChannelJSON data) {
 		super.setup(data);
 
 		this.topic = data.topic;
 	}
 
-	/**
-	 * Sends a {@link Message} to the channel.
-	 * @param content The content to change the content to
-	 * @return A Future that completes with a {@link Message} if successful,  
-	 */
 	public CompletableFuture<Message> sendMessage(String content) {
 		return this.loader.rest.sendMessage(this, content, null, null, null);
 	}
 
-	/**
-	 * Sends a {@link Message} to the channel.
-	 * @param embed The embed to send
-	 * @return A Future that completes with a {@link Message} if successful,  
-	 */
 	public CompletableFuture<Message> sendEmbed(RichEmbed embed) {
 		File file = null;
 		Attachment attachment = null;
@@ -74,11 +74,6 @@ public class TextChannel extends GuildChannel implements ITextChannel {
 		return this.loader.rest.sendMessage(this, " ", embed, attachment, file);
 	}
 
-	/**
-	 * Sends a {@link Message} to the channel.
-	 * @param content The content to change the content to
-	 * @return A Future that completes with a {@link Message} if successful,  
-	 */
 	public CompletableFuture<Message> sendMessage(String content, RichEmbed embed) {
 		File file = null;
 		Attachment attachment = null;
@@ -100,5 +95,4 @@ public class TextChannel extends GuildChannel implements ITextChannel {
 		return this.messages;
 	}
 
-	
 }

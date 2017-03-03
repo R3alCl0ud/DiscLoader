@@ -13,23 +13,23 @@ import io.discloader.discloader.util.DLNameSpacedMap;
 public class Command {
 
 	protected static DLNameSpacedMap<Command> commands = CommandRegistry.commands;
-	
+
 	public static void registerCommands() {
 		commands.addObject(0, "help", new CommandHelp().setUnlocalizedName("help").setId(0));
 		commands.addObject(1, "mods", new CommandMods().setId(1));
 		commands.addObject(2, "invite", new CommandInvite().setId(2));
 	}
-	
+
 	private String unlocalizedName;
-	
+
 	private String textureName = "discloader:missing-texture";
-	
+
 	private String description = "default description";
-	
+
 	private String usage = null;
 
 	private int id;
-	
+
 	protected IIcon icon;
 
 	/**
@@ -38,12 +38,11 @@ public class Command {
 	public Command() {
 		this.icon = null;
 	}
-	
-	
+
 	/**
 	 * executes the command
 	 * 
-	 * @param e The MessageCreateEvent 
+	 * @param e The MessageCreateEvent
 	 */
 	public void execute(MessageCreateEvent e) {
 		return;
@@ -76,7 +75,7 @@ public class Command {
 	public String getTextureName() {
 		return textureName;
 	}
-	
+
 	/**
 	 * @return the unlocalizedName
 	 */
@@ -96,6 +95,7 @@ public class Command {
 
 	/**
 	 * @param description the description to set
+	 * @return this.
 	 */
 	public Command setDescription(String description) {
 		this.description = description;
@@ -104,6 +104,7 @@ public class Command {
 
 	/**
 	 * @param id the id to set
+	 * @return this.
 	 */
 	public Command setId(int id) {
 		this.id = id;
@@ -112,7 +113,9 @@ public class Command {
 
 	/**
 	 * Sets the name of the texture for this command
+	 * 
 	 * @param textureName MODID:icons.commands.unlocalizedName
+	 * @return this.
 	 */
 	public Command setTextureName(String textureName) {
 		this.textureName = textureName;
@@ -130,6 +133,7 @@ public class Command {
 
 	/**
 	 * @param usage the usage to set
+	 * @return this.
 	 */
 	public Command setUsage(String usage) {
 		this.usage = usage;

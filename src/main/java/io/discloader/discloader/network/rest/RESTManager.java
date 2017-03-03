@@ -22,6 +22,7 @@ import io.discloader.discloader.entity.User;
 import io.discloader.discloader.entity.channels.TextChannel;
 import io.discloader.discloader.entity.channels.VoiceChannel;
 import io.discloader.discloader.entity.impl.ITextChannel;
+import io.discloader.discloader.entity.sendable.FetchMembers;
 import io.discloader.discloader.entity.sendable.RichEmbed;
 import io.discloader.discloader.entity.sendable.SendableMessage;
 import io.discloader.discloader.network.json.ChannelJSON;
@@ -31,6 +32,8 @@ import io.discloader.discloader.network.json.MessageJSON;
 import io.discloader.discloader.network.json.OAuthApplicationJSON;
 import io.discloader.discloader.network.json.UserJSON;
 import io.discloader.discloader.util.Constants;
+import io.discloader.discloader.util.Constants.Endpoints;
+import io.discloader.discloader.util.Constants.Methods;
 
 public class RESTManager {
 	public Gson gson;
@@ -154,6 +157,20 @@ public class RESTManager {
 		return future;
 	}
 
+	public CompletableFuture<HashMap<String, GuildMember>> loadGuildMembers(Guild guild, int limit, String after) {
+		CompletableFuture<HashMap<String, GuildMember>> future = new CompletableFuture<>();
+		FetchMembers fetchMem = new FetchMembers(limit, after);
+		this.makeRequest(Endpoints.guildMembers(guild.id), Methods.GET, true, fetchMem).thenAcceptAsync(action -> {
+			HashMap<String, GuildMember> members = new HashMap<>();
+			MemberJSON[] data = Constants.gson.fromJson(action, MemberJSON[].class);
+			for (MemberJSON mem : data) {
+				members.put(mem.user.id, guild.addMember(mem));
+			}
+			future.complete(members);
+		});
+		return future;
+	}
+
 	public CompletableFuture<VoiceChannel> createVoiceChannel(Guild guild, JSONObject data) {
 		CompletableFuture<VoiceChannel> future = new CompletableFuture<VoiceChannel>();
 		this.makeRequest(Constants.Endpoints.guildChannels(guild.id), Constants.Methods.POST, true,
@@ -185,7 +202,5 @@ public class RESTManager {
 
 		return future;
 	}
-	
-	
 
 }
