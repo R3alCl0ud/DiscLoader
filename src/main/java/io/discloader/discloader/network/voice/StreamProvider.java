@@ -3,10 +3,7 @@
  */
 package io.discloader.discloader.network.voice;
 
-import io.discloader.discloader.entity.voice.VoiceConnection;
-
 import java.net.DatagramPacket;
-import java.nio.ByteBuffer;
 import java.util.Arrays;
 
 import com.iwebpp.crypto.TweetNaclFast.SecretBox;
@@ -14,25 +11,20 @@ import com.sedmelluq.discord.lavaplayer.player.AudioPlayer;
 import com.sedmelluq.discord.lavaplayer.player.hook.AudioOutputHook;
 import com.sedmelluq.discord.lavaplayer.track.playback.AudioFrame;
 
+import io.discloader.discloader.entity.voice.VoiceConnection;
+
 /**
  * @author Perry Berman
  *
  */
 public class StreamProvider implements AudioOutputHook {
 
-    public final VoiceConnection conection;
+    public final VoiceConnection connection;
 
     private final StreamSender sender;
 
-    private final int HEADER_LENGTH = 24;
-    private final int TypeIndex = 0;
-    private final int VersionIndex = 1;
-    private final int SequenceIndex = 2;
-    private final int TimestampIndex = 4;
-    private final int SSRCIndex = 8;
-
-    private final byte TYPE = (byte) 0x80;
-    private final byte VERSION = (byte) 0x78;
+    private char sequence = 0;
+    private int timestamp = 0;
 
     private byte[] rawAudio;
     private byte[] rawPacket;
@@ -41,14 +33,16 @@ public class StreamProvider implements AudioOutputHook {
     public UDPVoiceClient udpClient;
 
     public SecretBox nacl;
+    
+    
 
     public StreamProvider(VoiceConnection connection) {
-        this.conection = connection;
+        this.connection = connection;
 
         this.sender = new StreamSender(this);
 
         this.ws = connection.getWs();
-        
+
         this.udpClient = connection.getUdpClient();
     }
 
@@ -69,37 +63,44 @@ public class StreamProvider implements AudioOutputHook {
         return bytes;
     }
 
-    public void generatePacket(char sequence, int SSRC, byte[] rawAudio) {
-        this.rawAudio = rawAudio;
-        ByteBuffer buffer = ByteBuffer.allocate(rawAudio.length + 12);
-
-        buffer.put(TypeIndex, TYPE);
-        buffer.put(VersionIndex, VERSION);
-
-        int timestamp = (int) (System.currentTimeMillis() & 0xFF);
-        buffer.putChar(SequenceIndex, sequence);
-        buffer.putInt(TimestampIndex, timestamp);
-        buffer.putInt(SSRCIndex, SSRC);
-        System.arraycopy(rawAudio, 0, buffer.array(), 12, rawAudio.length);
-
-        this.rawPacket = buffer.array();
-    }
-
-    public DatagramPacket getEncryptedPacket() {
-        
-        byte[] nonce = new byte[HEADER_LENGTH];
-        
-        System.arraycopy(getNonce(), 0, nonce, 0, 12);
-        
-        byte[] encrypted = nacl.box(getRawAudio(), nonce);
-        
-        return new DatagramPacket(encrypted, encrypted.length, this.udpClient.voice_gateway);
-    }
-    
     public byte[] getNonce() {
         return Arrays.copyOf(rawPacket, 12);
     }
-    
+
+    public DatagramPacket getNextPacket() {
+        DatagramPacket nextPacket = null;
+
+        AudioFrame frame = this.connection.player.provide();
+
+        try {
+            if (frame != null && ws != null) {
+                byte[] rawAudio = frame.data;
+                if (rawAudio != null && rawAudio.length != 0) {
+                    StreamPacket packet = new StreamPacket(sequence, timestamp, connection.getSSRC(), rawAudio);
+                    nextPacket = packet.toEncryptedPacket(udpClient.voice_gateway, ws.getSecretKey());
+
+                    if (sequence + 1 > Character.MAX_VALUE) {
+                        sequence = 0;
+                    } else {
+                        sequence++;
+                    }
+                }
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        if (nextPacket != null) {
+            timestamp += 960;
+        }
+
+        return nextPacket;
+    }
+
+    public boolean isOpen() {
+        return this.sender.isOpen();
+    }
     
     @Override
     public AudioFrame outgoingFrame(AudioPlayer player, AudioFrame frame) {
@@ -123,5 +124,5 @@ public class StreamProvider implements AudioOutputHook {
     public void close() {
         this.sender.close();
     }
-    
+
 }

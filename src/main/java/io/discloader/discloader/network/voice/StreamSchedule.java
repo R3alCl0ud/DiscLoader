@@ -1,9 +1,4 @@
-/**
- * 
- */
 package io.discloader.discloader.network.voice;
-
-import io.discloader.discloader.entity.voice.VoiceConnection;
 
 import java.util.ArrayList;
 
@@ -13,6 +8,9 @@ import com.sedmelluq.discord.lavaplayer.player.event.AudioEventAdapter;
 import com.sedmelluq.discord.lavaplayer.tools.FriendlyException;
 import com.sedmelluq.discord.lavaplayer.track.AudioPlaylist;
 import com.sedmelluq.discord.lavaplayer.track.AudioTrack;
+import com.sedmelluq.discord.lavaplayer.track.AudioTrackEndReason;
+
+import io.discloader.discloader.entity.voice.VoiceConnection;
 
 /**
  * @author Perry Berman
@@ -20,18 +18,30 @@ import com.sedmelluq.discord.lavaplayer.track.AudioTrack;
  */
 public class StreamSchedule extends AudioEventAdapter implements AudioLoadResultHandler {
 
-    public ArrayList<AudioTrack> tracks;
+    public final ArrayList<AudioTrack> tracks;
     private AudioPlayer player;
     protected VoiceConnection connection;
 
     public StreamSchedule(AudioPlayer player, VoiceConnection connection) {
         this.player = player;
-        
+
         this.tracks = new ArrayList<>();
         this.connection = connection;
         this.player.addListener(this);
-        
-//        player.
+    }
+
+    public void startNext() {
+        if (tracks.size() > 0) {
+            this.connection.getWs().setSpeaking(true);
+            if (!connection.provider.isOpen()) {
+                connection.provider.start();
+            }
+            AudioTrack nextTrack = tracks.get(0);
+            player.startTrack(nextTrack, true);
+        } else {
+            this.connection.getWs().setSpeaking(false);
+            connection.provider.close();
+        }
     }
 
     @Override
@@ -45,13 +55,18 @@ public class StreamSchedule extends AudioEventAdapter implements AudioLoadResult
     }
 
     @Override
-    public void onTrackStart(AudioPlayer player, AudioTrack track) {
-      // A track started playing
-        System.out.println("TrackStart");
-        this.connection.getWs().setSpeaking(true);
-        this.connection.provider.start();
+    public void onTrackEnd(AudioPlayer player, AudioTrack track, AudioTrackEndReason endReason) {
+        if (endReason == AudioTrackEndReason.FINISHED || endReason == AudioTrackEndReason.LOAD_FAILED) {
+            tracks.remove(track);
+            startNext();
+        }
     }
-    
+
+    @Override
+    public void onTrackStart(AudioPlayer player, AudioTrack track) {
+        
+    }
+
     @Override
     public void loadFailed(FriendlyException arg0) {
         arg0.printStackTrace();
@@ -59,7 +74,7 @@ public class StreamSchedule extends AudioEventAdapter implements AudioLoadResult
 
     @Override
     public void noMatches() {
-        System.out.println("Failed to load requested track");
+        // oh well, looks like old man jenkins got lost again.
     }
 
     @Override
@@ -67,14 +82,13 @@ public class StreamSchedule extends AudioEventAdapter implements AudioLoadResult
         for (AudioTrack track : playlist.getTracks()) {
             tracks.add(track);
         }
-        player.startTrack(tracks.get(0),  true);
+        startNext();
     }
 
     @Override
     public void trackLoaded(AudioTrack track) {
-        System.out.println(track.getInfo().title);
         tracks.add(track);
-        player.startTrack(tracks.get(0),  true);
+        startNext();
     }
 
 }

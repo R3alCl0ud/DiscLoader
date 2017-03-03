@@ -1,11 +1,9 @@
 package io.discloader.discloader.network.voice;
 
-import java.io.IOException;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
-import java.net.NoRouteToHostException;
 
-import com.sedmelluq.discord.lavaplayer.track.playback.AudioFrame;
+import io.discloader.discloader.entity.voice.VoiceConnection;
 
 /**
  * @author Perry Berman
@@ -15,16 +13,16 @@ public class StreamSender {
     private final StreamProvider provider;
     private DatagramSocket udpSocket;
     private Thread packetThread;
-    private VoiceWebSocket ws;
-
+    // private VoiceWebSocket ws;
+    private final VoiceConnection connection;
+    
     public StreamSender(StreamProvider streamer) {
         this.provider = streamer;
-        this.ws = provider.ws;
-        // this.udpSocket = streamer.conection.getUdpClient().udpSocket;
+        this.connection = provider.connection;
     }
 
     public void sendPackets() {
-        udpSocket = provider.conection.getUdpClient().udpSocket;
+        udpSocket = connection.getUdpClient().udpSocket;
         packetThread = new Thread("Some stream") {
             @Override
             public void run() {
@@ -32,19 +30,13 @@ public class StreamSender {
 
                 while (!udpSocket.isClosed() && !packetThread.isInterrupted()) {
                     try {
-                        if ((System.currentTimeMillis() - lastSent) < 20) {
-                            AudioFrame frame = provider.conection.player.provide();
+                        if ((System.currentTimeMillis() - lastSent) > 20) {
 
-                            if (frame != null) {
-                            	provider.ws.setSequence(provider.ws.getSequence() + 1);
-                                char seq = (char) provider.ws.getSequence();
-                                provider.ws.getSecretKey();
-                                DatagramPacket send = new StreamPacket(seq, (int) System.currentTimeMillis(), provider.conection.getSSRC(), frame.data).toEncryptedPacket(provider.udpClient.voice_gateway, provider.ws.getSecretKey());
-                                udpSocket.send(send);
-                            }
+                        } else {
+                            DatagramPacket packet = provider.getNextPacket();
+                            if (packet != null)
+                                udpSocket.send(packet);
                         }
-                    } catch (NoRouteToHostException e) {
-                        e.printStackTrace();
                     } catch (Exception e) {
                         e.printStackTrace();
                     } finally {
@@ -76,6 +68,13 @@ public class StreamSender {
         if (packetThread != null) {
             packetThread.interrupt();
         }
+    }
+
+    /**
+     * @return the open
+     */
+    public boolean isOpen() {
+        return packetThread != null;
     }
 
 }

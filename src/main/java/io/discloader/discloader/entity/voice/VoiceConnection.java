@@ -36,260 +36,278 @@ import com.sedmelluq.discord.lavaplayer.track.AudioTrack;
  */
 public class VoiceConnection {
 
-	protected AudioPlayerManager manager;
-	protected StreamSchedule trackScheduler;
+    protected AudioPlayerManager manager;
+    protected StreamSchedule trackScheduler;
 
-	/**
-	 * The connection's AudioPlayer
-	 */
-	public AudioPlayer player;
+    /**
+     * The connection's AudioPlayer
+     */
+    public AudioPlayer player;
 
-	public final Guild guild;
-	public final VoiceChannel channel;
-	public final DiscLoader loader;
-	public final StreamProvider provider;
-	private final CompletableFuture<VoiceConnection> future;
-	private final VoiceWebSocket ws;
-	private final UDPVoiceClient udpClient;
+    public final Guild guild;
+    public final VoiceChannel channel;
+    public final DiscLoader loader;
+    public final StreamProvider provider;
+    private final CompletableFuture<VoiceConnection> future;
+    private final VoiceWebSocket ws;
+    private final UDPVoiceClient udpClient;
 
-	private boolean stateUpdated = false;
+    private boolean stateUpdated = false;
 
-	/**
-	 * Voice Server Endpoint.
-	 */
-	private String endpoint;
+    /**
+     * Voice Server Endpoint.
+     */
+    private String endpoint;
 
-	/**
-	 * Voice Server authentication token.
-	 */
-	private String token;
+    /**
+     * Voice Server authentication token.
+     */
+    private String token;
 
-	private String userID;
+    private String userID;
 
-	private String sessionID;
+    private String sessionID;
 
-	private int port;
+    private int port;
 
-	private int SSRC;
+    private int SSRC;
 
-	private ArrayList<IVoiceConnectionListener> listeners;
+    private ArrayList<IVoiceConnectionListener> listeners;
 
-	@SuppressWarnings("unused")
-	private HashMap<Integer, String> SSRCs;
+    private boolean speaking;
 
-	public VoiceConnection(VoiceChannel channel, CompletableFuture<VoiceConnection> future) {
-		this.channel = channel;
-		this.guild = channel.guild;
-		this.loader = channel.loader;
-		this.future = future;
-		this.udpClient = new UDPVoiceClient(this);
-		this.ws = new VoiceWebSocket(this);
-		this.provider = new StreamProvider(this);
-		this.SSRCs = new HashMap<>();
-		this.listeners = new ArrayList<>();
-		this.userID = this.loader.user.id;
+    @SuppressWarnings("unused")
+    private HashMap<Integer, String> SSRCs;
 
-		this.manager = new DefaultAudioPlayerManager();
-		AudioSourceManagers.registerLocalSource(this.manager);
-		AudioSourceManagers.registerRemoteSources(this.manager);
-		this.player = manager.createPlayer();
-		this.trackScheduler = new StreamSchedule(this.player, this);
+    public VoiceConnection(VoiceChannel channel, CompletableFuture<VoiceConnection> future) {
+        this.channel = channel;
+        this.guild = channel.guild;
+        this.loader = channel.loader;
+        this.future = future;
+        this.udpClient = new UDPVoiceClient(this);
+        this.ws = new VoiceWebSocket(this);
+        this.provider = new StreamProvider(this);
+        this.SSRCs = new HashMap<>();
+        this.listeners = new ArrayList<>();
+        this.userID = this.loader.user.id;
 
-		this.sendStateUpdate();
-	}
+        this.manager = new DefaultAudioPlayerManager();
+        AudioSourceManagers.registerLocalSource(this.manager);
+        AudioSourceManagers.registerRemoteSources(this.manager);
+        this.player = manager.createPlayer();
 
-	public void addListener(IVoiceConnectionListener listener) {
-		this.listeners.add(listener);
-	}
+        // player.
+        // manager.s
+        this.trackScheduler = new StreamSchedule(this.player, this);
 
-	public void connectUDP(VoiceReady data) {
-		InetSocketAddress externalAddress = null;
-		int tries = 0;
-		while (externalAddress == null) {
-			externalAddress = this.udpClient.discoverAddress(new InetSocketAddress(this.endpoint, data.port),
-					data.ssrc);
-			tries++;
-			if (externalAddress == null && tries > 5) {
-				System.err.print("IP discovery failed!");
-				return;
-			}
-		}
-		String payload = Constants.gson.toJson(new VoicePacket(1,
-				new VoiceUDPBegin(new VoiceData(externalAddress.getHostString(), externalAddress.getPort()))));
-		this.ws.send(payload);
-		this.ws.startHeartbeat(data.heartbeat_interval);
-	}
+        this.sendStateUpdate();
+    }
 
-	public void disconnected(String reason) {
-		for (IVoiceConnectionListener e : this.listeners) {
-			e.disconnected(reason);
-		}
-	}
+    /**
+     * Something....
+     * 
+     * @param listener The listener to add
+     */
+    public void addListener(IVoiceConnectionListener listener) {
+        this.listeners.add(listener);
+    }
 
-	public void endpointReceived(String endpoint, String token) {
-		this.setEndpoint(endpoint.substring(0, endpoint.length() - 3));
-		this.setToken(token);
-		if (this.stateUpdated) {
-			this.socketReady();
-		}
-	}
+    /**
+     * Scary internal stuff<br>
+     * <u>
+     * <h1>Do Not Touch<br>
+     * Unless you are sure you know what you are doing</u></h1><br>
+     * 
+     * @param data udp information
+     */
+    public void connectUDP(VoiceReady data) {
+        InetSocketAddress externalAddress = null;
+        int tries = 0;
+        while (externalAddress == null) {
+            externalAddress = this.udpClient.discoverAddress(new InetSocketAddress(this.endpoint, data.port), data.ssrc);
+            tries++;
+            if (externalAddress == null && tries > 5) {
+                System.err.print("IP discovery failed!");
+                return;
+            }
+        }
+        String payload = Constants.gson.toJson(new VoicePacket(1, new VoiceUDPBegin(new VoiceData(externalAddress.getHostString(), externalAddress.getPort()))));
+        this.ws.send(payload);
+        this.ws.startHeartbeat(data.heartbeat_interval);
+    }
 
-	/**
-	 * @return the endpoint
-	 */
-	public String getEndpoint() {
-		return this.endpoint;
-	}
+    public void disconnected(String reason) {
+        for (IVoiceConnectionListener e : this.listeners) {
+            e.disconnected(reason);
+        }
+    }
 
-	/**
-	 * @return the future
-	 */
-	public CompletableFuture<VoiceConnection> getFuture() {
-		return future;
-	}
+    /**
+     * Scary internal stuff<br>
+     * <u>
+     * <h1>Do Not Touch<br>
+     * Unless you are sure you know what you are doing</u></h1><br>
+     * 
+     * @param endpoint The voice server to connect to...
+     * @param token The token to use for authentication
+     */
+    public void endpointReceived(String endpoint, String token) {
+        this.endpoint = endpoint.substring(0, endpoint.length() - 3);
+        this.token = token;
+        if (this.stateUpdated) {
+            this.socketReady();
+        }
+    }
 
-	/**
-	 * The port the voice connection is opened on.
-	 * 
-	 * @return the port
-	 */
-	public int getPort() {
-		return this.port;
-	}
+    /**
+     * @return the endpoint
+     */
+    public String getEndpoint() {
+        return this.endpoint;
+    }
 
-	/**
-	 * @return the sessionID
-	 */
-	public String getSessionID() {
-		return this.sessionID;
-	}
+    /**
+     * @return the future
+     */
+    public CompletableFuture<VoiceConnection> getFuture() {
+        return future;
+    }
 
-	/**
-	 * @return the sSRC
-	 */
-	public int getSSRC() {
-		return this.SSRC;
-	}
+    /**
+     * The port the voice connection is opened on.
+     * 
+     * @return the port
+     */
+    public int getPort() {
+        return this.port;
+    }
 
-	/**
-	 * @return the token
-	 */
-	public String getToken() {
-		return this.token;
-	}
+    /**
+     * @return the sessionID
+     */
+    public String getSessionID() {
+        return this.sessionID;
+    }
 
-	/**
-	 * @return the udpClient
-	 */
-	public UDPVoiceClient getUdpClient() {
-		return this.udpClient;
-	}
+    /**
+     * @return the sSRC
+     */
+    public int getSSRC() {
+        return this.SSRC;
+    }
 
-	/**
-	 * @return the userID
-	 */
-	public String getUserID() {
-		return this.userID;
-	}
+    /**
+     * @return the token
+     */
+    public String getToken() {
+        return this.token;
+    }
 
-	/**
-	 * @return the ws
-	 */
-	public VoiceWebSocket getWs() {
-		return ws;
-	}
+    /**
+     * @return the udpClient
+     */
+    public UDPVoiceClient getUdpClient() {
+        return this.udpClient;
+    }
 
-	/**
-	 * @return the stateUpdated
-	 */
-	public boolean isStateUpdated() {
-		return stateUpdated;
-	}
+    /**
+     * @return the userID
+     */
+    public String getUserID() {
+        return this.userID;
+    }
 
-	public AudioPlayer play(AudioTrack track) {
-		trackScheduler.trackLoaded(track);
-		return this.player;
-	}
+    /**
+     * @return the ws
+     */
+    public VoiceWebSocket getWs() {
+        return ws;
+    }
 
-	public AudioPlayer play(File track) {
-		this.manager.loadItem(track.getAbsolutePath(), this.trackScheduler);
-		return this.player;
-	}
+    /**
+     * 
+     * @return true if the client is speaking, false otherwise
+     */
+    public boolean isSpeaking() {
+        return this.speaking;
+    }
 
-	public AudioPlayer play(String track) {
+    /**
+     * @return the stateUpdated
+     */
+    public boolean isStateUpdated() {
+        return this.stateUpdated;
+    }
 
-		this.manager.loadItem(track, this.trackScheduler);
-		return this.player;
-	}
+    public AudioPlayer play(AudioTrack track) {
+        trackScheduler.trackLoaded(track);
+        return this.player;
+    }
 
-	public void ready() {
-		for (IVoiceConnectionListener e : this.listeners) {
-			e.ready();
-		}
-	}
+    public AudioPlayer play(File track) {
+        this.manager.loadItem(track.getAbsolutePath(), this.trackScheduler);
+        return this.player;
+    }
 
-	public void sendStateUpdate() {
-		VoiceStateUpdate d = new VoiceStateUpdate(this.guild, this.channel, false, false);
-		this.loader.socket.send(new Packet(Constants.OPCodes.VOICE_STATE_UPDATE, d));
-	}
+    public AudioPlayer play(String track) {
+        this.manager.loadItem(track, this.trackScheduler);
+        return this.player;
+    }
 
-	/**
-	 * @param endpoint the endpoint to set
-	 */
-	public void setEndpoint(String endpoint) {
-		this.endpoint = endpoint;
-	}
+    /**
+     * Executes when the voice connection has finished being setup
+     */
+    public void ready() {
+        for (IVoiceConnectionListener e : this.listeners) {
+            e.ready();
+        }
+    }
 
-	/**
-	 * @param port the port to set
-	 */
-	public void setPort(int port) {
-		this.port = port;
-	}
+    private void sendStateUpdate() {
+        VoiceStateUpdate d = new VoiceStateUpdate(this.guild, this.channel, false, false);
+        this.loader.socket.send(new Packet(Constants.OPCodes.VOICE_STATE_UPDATE, d));
+    }
 
-	/**
-	 * @param sessionID the sessionID to set
-	 */
-	public void setSessionID(String sessionID) {
-		this.sessionID = sessionID;
-	}
+    /**
+     * Undocumented for a reason
+     * 
+     * @param sessionID
+     */
+    public void setSessionID(String sessionID) {
+        this.sessionID = sessionID;
+    }
 
-	/**
-	 * @param SSRC the SSRC to set
-	 */
-	public void setSSRC(int SSRC) {
-		this.SSRC = SSRC;
-	}
+    public void setSpeaking(boolean speaking) {
+        this.speaking = speaking;
+        this.ws.setSpeaking(speaking);
+    }
 
-	/**
-	 * @param stateUpdated the stateUpdated to set
-	 */
-	public void setStateUpdated(boolean stateUpdated) {
-		this.stateUpdated = stateUpdated;
-	}
+    public void setSSRC(int SSRC) {
+        this.SSRC = SSRC;
+    }
 
-	/**
-	 * @param token the token to set
-	 */
-	public void setToken(String token) {
-		this.token = token;
-	}
+    /**
+     * @param stateUpdated the stateUpdated to set
+     */
+    public void setStateUpdated(boolean stateUpdated) {
+        this.stateUpdated = stateUpdated;
+    }
 
-	/**
-	 * @param userID the userID to set
-	 */
-	public void setUserID(String userID) {
-		this.userID = userID;
-	}
+    /**
+     * @param userID the userID to set
+     */
+    public void setUserID(String userID) {
+        this.userID = userID;
+    }
 
-	public void socketReady() {
-		try {
-			this.ws.connect(this.endpoint, this.token);
-		} catch (IOException e) {
-			e.printStackTrace();
-		} catch (WebSocketException e) {
-			e.printStackTrace();
-		}
-	}
+    private void socketReady() {
+        try {
+            this.ws.connect(this.endpoint, this.token);
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (WebSocketException e) {
+            e.printStackTrace();
+        }
+    }
 
 }

@@ -3,7 +3,6 @@ package io.discloader.discloader.common;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Timer;
-import java.util.TimerTask;
 import java.util.concurrent.CompletableFuture;
 import java.util.logging.Logger;
 
@@ -43,312 +42,348 @@ import io.discloader.discloader.util.Constants;
  */
 public class DiscLoader {
 
-	public class Gateway {
-		public String url;
-		public int shards;
-	}
-	
-	public static final Logger LOG = new DLLogger("DiscLoader").getLogger();
+    private class Gateway {
+        public String url;
+        // public int shards;
+    }
 
-	public static final HashMap<String, IEventListener> handlers = new HashMap<String, IEventListener>();
+    public static final Logger LOG = new DLLogger("DiscLoader").getLogger();
 
-	public static void addEventHandler(IEventListener e) {
-		handlers.put(e.toString(), e);
-	}
+    public static final HashMap<String, IEventListener> handlers = new HashMap<String, IEventListener>();
 
-	public DiscSocket socket;
+    public static void addEventHandler(IEventListener e) {
+        handlers.put(e.toString(), e);
+    }
 
-	public String token;
+    public final DiscSocket socket;
 
-	public boolean ready;
+    public String token;
 
-	public final ClientRegistry clientRegistry;
+    public boolean ready;
 
-	public RESTManager rest;
-	public final AudioPlayerManager playerManager;
+    public final ClientRegistry clientRegistry;
 
-	public final int shards;
+    public RESTManager rest;
+    public final AudioPlayerManager playerManager;
 
-	public final int shard;
-	
-	/**
-	 * A HashMap of the client's cached users. Indexed by {@link User#id}.
-	 * 
-	 * @author Perry Berman
-	 * @see User
-	 * @see HashMap
-	 */
-	public HashMap<String, User> users;
+    public final int shards;
 
-	/**
-	 * A HashMap of the client's cached channels. Indexed by {@link Channel#id}.
-	 * 
-	 * @author Perry Berman
-	 * @see Channel
-	 * @see HashMap
-	 */
-	public HashMap<String, Channel> channels;
+    public final int shard;
 
-	public HashMap<String, GroupChannel> groupChannels;
+    /**
+     * A HashMap of the client's cached users. Indexed by {@link User#id}.
+     * 
+     * @author Perry Berman
+     * @see User
+     * @see HashMap
+     */
+    public HashMap<String, User> users;
 
-	/**
-	 * A HashMap of the client's cached PrivateChannels. Indexed by
-	 * {@link Channel#id}.
-	 * 
-	 * @see Channel
-	 * @see PrivateChannel
-	 * @see HashMap
-	 * @author Perry Berman
-	 */
-	public HashMap<String, PrivateChannel> privateChannels;
-	
-	/**
-	 * A HashMap of the client's cached TextChannels. Indexed by
-	 * {@link Channel#id}.
-	 * 
-	 * @see Channel
-	 * @see TextChannel
-	 * @see HashMap
-	 * @author Perry Berman
-	 */
-	public HashMap<String, TextChannel> textChannels;
+    /**
+     * A HashMap of the client's cached channels. Indexed by {@link Channel#id}.
+     * 
+     * @author Perry Berman
+     * @see Channel
+     * @see HashMap
+     */
+    public HashMap<String, Channel> channels;
 
-	/**
-	 * A HashMap of the client's cached VoiceChannels. Indexed by
-	 * {@link Channel#id}.
-	 * 
-	 * @see Channel
-	 * @see VoiceChannel
-	 * @see HashMap
-	 * @author Perry Berman
-	 */
-	public HashMap<String, VoiceChannel> voiceChannels;
+    /**
+     * A HashMap of the client's cached groupDM channels. Indexed by {@link Channel#id}
+     */
+    public HashMap<String, GroupChannel> groupChannels;
 
-	/**
-	 * A HashMap of the client's voice connections. Indexed by {@link Guild#id}.
-	 * @author Perry Berman
-	 * @since 0.0.3
-	 */
-	public HashMap<String, VoiceConnection> voiceConnections;
+    /**
+     * A HashMap of the client's cached PrivateChannels. Indexed by {@link Channel#id}.
+     * 
+     * @see Channel
+     * @see PrivateChannel
+     * @see HashMap
+     * @author Perry Berman
+     */
+    public HashMap<String, PrivateChannel> privateChannels;
 
-	/**
-	 * A HashMap of the client's cached Guilds. Indexed by {@link Guild#id}
-	 * 
-	 * @see Guild
-	 * @see HashMap
-	 * @author Perry Berman
-	 */
-	public HashMap<String, Guild> guilds;
+    /**
+     * A HashMap of the client's cached TextChannels. Indexed by {@link Channel#id}.
+     * 
+     * @see Channel
+     * @see TextChannel
+     * @see HashMap
+     * @author Perry Berman
+     */
+    public HashMap<String, TextChannel> textChannels;
 
-	/**
-	 * The User we are currently logged in as.
-	 */
-	public DLUser user;
-	
-	public Timer timer;
-	
-	
+    /**
+     * A HashMap of the client's cached VoiceChannels. Indexed by {@link Channel#id}.
+     * 
+     * @see Channel
+     * @see VoiceChannel
+     * @see HashMap
+     * @author Perry Berman
+     */
+    public HashMap<String, VoiceChannel> voiceChannels;
 
-	public DiscLoader(int shards, int shard) {
+    /**
+     * A HashMap of the client's voice connections. Indexed by {@link Guild#id}.
+     * 
+     * @author Perry Berman
+     * @since 0.0.3
+     */
+    public HashMap<String, VoiceConnection> voiceConnections;
 
-		this.shards = shards;
+    /**
+     * A HashMap of the client's cached Guilds. Indexed by {@link Guild#id}
+     * 
+     * @see Guild
+     * @see HashMap
+     * @author Perry Berman
+     */
+    public HashMap<String, Guild> guilds;
 
-		this.shard = shard;
+    /**
+     * The User we are currently logged in as.
+     */
+    public DLUser user;
 
-		this.socket = new DiscSocket(this);
+    public Timer timer;
 
-		this.rest = new RESTManager(this);
+    private boolean started = false;
 
-		this.clientRegistry = new ClientRegistry();
+    /**
+     * The DiscLoader client object <br>
+     * <H1>How To Use</H1>
+     * 
+     * <pre>
+     * public static void main(String... args) {
+     *     // create a new instance of DiscLoader
+     *     DiscLoader loader = new DiscLoader();
+     * 
+     *     // make it do it's startup stuff
+     *     loader.startup();
+     * 
+     *     // since it's probably done, time to login
+     *     loader.login(TOKEN);
+     *
+     * }
+     * </pre>
+     */
+    public DiscLoader() {
+        this(1, 0);
+    }
 
-		this.users = new HashMap<String, User>();
+    /**
+     * The DiscLoader client object <br>
+     * <H1>How To Use</H1>
+     * 
+     * <pre>
+     * public static void main(String... args) {
+     *     // create a new instance of DiscLoader
+     *     DiscLoader loader = new DiscLoader();
+     * 
+     *     // make it do it's startup stuff
+     *     loader.startup();
+     * 
+     *     // since it's probably done, time to login
+     *     loader.login(TOKEN);
+     *
+     * }
+     * </pre>
+     */
+    public DiscLoader(int shards, int shard) {
 
-		this.channels = new HashMap<String, Channel>();
-		
-		this.groupChannels = new HashMap<String, GroupChannel>();
+        this.shards = shards;
 
-		this.privateChannels = new HashMap<String, PrivateChannel>();
+        this.shard = shard;
 
-		this.textChannels = new HashMap<String, TextChannel>();
+        this.socket = new DiscSocket(this);
 
-		this.voiceChannels = new HashMap<String, VoiceChannel>();
-		
-		this.voiceConnections = new HashMap<String, VoiceConnection>();
+        this.rest = new RESTManager(this);
 
-		this.guilds = new HashMap<String, Guild>();
+        this.clientRegistry = new ClientRegistry();
 
-		this.timer = new Timer();
+        this.users = new HashMap<String, User>();
 
-		this.playerManager = new DefaultAudioPlayerManager();
+        this.channels = new HashMap<String, Channel>();
 
-		this.ready = false;
-		
-	}
+        this.groupChannels = new HashMap<String, GroupChannel>();
 
-	public Channel addChannel(ChannelJSON data) {
-		return this.addChannel(data, null);
-	}
+        this.privateChannels = new HashMap<String, PrivateChannel>();
 
-	public Channel addChannel(ChannelJSON data, Guild guild) {
-		boolean exists = this.channels.containsKey(data.id);
-		Channel channel = null;
-		if (data.type == Constants.ChannelTypes.DM) {
-			channel = new PrivateChannel(this, data);
-		} else if (data.type == Constants.ChannelTypes.groupDM) {
-			channel = new Channel(this, data);
-		} else {
-			if (guild != null) {
-				if (data.type == Constants.ChannelTypes.text) {
-					channel = new TextChannel(guild, data);
-					guild.textChannels.put(channel.id, (TextChannel) channel);
-				} else if (data.type == Constants.ChannelTypes.voice) {
-					channel = new VoiceChannel(guild, data);
-					guild.voiceChannels.put(channel.id, (VoiceChannel) channel);
-				}
-			}
-		}
+        this.textChannels = new HashMap<String, TextChannel>();
 
-		if (channel != null) {
-			switch (channel.getType()) {
-			case TEXT:
-				this.textChannels.put(channel.id, (TextChannel) channel);
-				break;
-			case DM:
-				this.privateChannels.put(channel.id, (PrivateChannel) channel);
-				break;
-			case VOICE:
-				this.voiceChannels.put(channel.id, (VoiceChannel) channel);
-				break;
-			default:
-				this.channels.put(channel.id, channel);
-			}
-			this.channels.put(channel.id, channel);
-			if (!exists && this.ready) {
-				this.emit(Constants.Events.CHANNEL_CREATE, channel);
-			}
-			return channel;
-		}
+        this.voiceChannels = new HashMap<String, VoiceChannel>();
 
-		return null;
-	}
+        this.voiceConnections = new HashMap<String, VoiceConnection>();
 
-	public Guild addGuild(GuildJSON guild) {
-		boolean exists = this.guilds.containsKey(guild.id);
+        this.guilds = new HashMap<String, Guild>();
 
-		Guild newGuild = new Guild(this, guild);
-		this.guilds.put(newGuild.id, newGuild);
-		if (!exists && this.socket.status == Constants.Status.READY) {
-			this.emit(Constants.Events.GUILD_CREATE, newGuild);
-		}
-		return newGuild;
-	}
+        this.timer = new Timer();
 
-	public User addUser(UserJSON data) {
-		if (this.users.containsKey(data.id))
-			return this.users.get(data.id);
-		User user = new User(this, data);
-		this.users.put(user.id, user);
-		return user;
-	}
+        this.playerManager = new DefaultAudioPlayerManager();
 
-	public void checkReady() {
-		if (this.socket.status != Constants.Status.READY && this.socket.status != Constants.Status.NEARLY) {
-			int unavailable = 0;
-			for (Guild guild : this.guilds.values()) {
-				unavailable += guild.available ? 0 : 1;
-			}
-			ProgressLogger.progress(this.guilds.size() - unavailable, this.guilds.size(), "Guilds Cached");
-			if (unavailable == 0) {
-				for (Guild guild : this.guilds.values()) {
-					if (guild.memberCount != guild.members.size() && !guild.large) {
-					}
-				}
+        this.ready = false;
 
-				this.socket.status = Constants.Status.NEARLY;
-				this.emitReady();
-			}
-		}
-	}
+    }
 
-	/**
-	 * @param event
-	 */
-	public void emit(String event) {
-		this.emit(event, null);
-	}
+    public Channel addChannel(ChannelJSON data) {
+        return this.addChannel(data, null);
+    }
 
-	/**
-	 * 
-	 * @param event
-	 * @param data
-	 */
-	public void emit(String event, Object data) {
-		for (ModContainer mod : ModRegistry.mods.values()) {
-			mod.emit(event, data);
-		}
-	}
+    public Channel addChannel(ChannelJSON data, Guild guild) {
+        boolean exists = this.channels.containsKey(data.id);
+        Channel channel = null;
+        if (data.type == Constants.ChannelTypes.DM) {
+            channel = new PrivateChannel(this, data);
+        } else if (data.type == Constants.ChannelTypes.groupDM) {
+            channel = new Channel(this, data);
+        } else {
+            if (guild != null) {
+                if (data.type == Constants.ChannelTypes.text) {
+                    channel = new TextChannel(guild, data);
+                    guild.textChannels.put(channel.id, (TextChannel) channel);
+                } else if (data.type == Constants.ChannelTypes.voice) {
+                    channel = new VoiceChannel(guild, data);
+                    guild.voiceChannels.put(channel.id, (VoiceChannel) channel);
+                }
+            }
+        }
 
-	public void emitReady() {
-		this.socket.status = Constants.Status.READY;
-		this.ready = true;
-		CommandHandler.handleCommands = true;
-		this.emit(Constants.Events.READY, this);
-		Main.window.postInit();
-		for (IEventListener e : handlers.values()) {
-			e.Ready(this);
-		}
-	}
+        if (channel != null) {
+            switch (channel.getType()) {
+                case TEXT:
+                    this.textChannels.put(channel.id, (TextChannel) channel);
+                    break;
+                case DM:
+                    this.privateChannels.put(channel.id, (PrivateChannel) channel);
+                    break;
+                case VOICE:
+                    this.voiceChannels.put(channel.id, (VoiceChannel) channel);
+                    break;
+                default:
+                    this.channels.put(channel.id, channel);
+            }
+            this.channels.put(channel.id, channel);
+            if (!exists && this.ready) {
+                this.emit(Constants.Events.CHANNEL_CREATE, channel);
+            }
+            return channel;
+        }
 
-	/**
-	 * Connects the current instance of the {@link DiscLoader loader} into
-	 * Discord's gateway servers
-	 * 
-	 * @param token your API token
-	 * @return {@literal CompletableFuture<String>}
-	 */
-	public CompletableFuture<String> login(String token) {
-		this.token = token;
-		CompletableFuture<String> future;
-		future = this.rest.makeRequest(Constants.Endpoints.gateway, Constants.Methods.GET, true);
+        return null;
+    }
 
-		future.thenAcceptAsync(text -> {
-			Gson gson = new Gson();
-			Gateway gateway = gson.fromJson(text, Gateway.class);
-			try {
-				this.socket.connectSocket(gateway.url + "?v=6&encoding=json");
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
-		});
-		return future;
-	}
+    public Guild addGuild(GuildJSON guild) {
+        boolean exists = this.guilds.containsKey(guild.id);
 
-	/**
-	 * This method <u><b>must</b></u> be called to start DiscLoader.
-	 * <br>As it begins the setup process for DiscLoader to be able to function correctly<br>
-	 * It <u><b>will</b></u> crash otherwise
-	 * 
-	 * @author Perry Berman
-	 * @since 0.0.3
-	 */
-	public void startup() {
+        Guild newGuild = new Guild(this, guild);
+        this.guilds.put(newGuild.id, newGuild);
+        if (!exists && this.socket.status == Constants.Status.READY) {
+            this.emit(Constants.Events.GUILD_CREATE, newGuild);
+        }
+        return newGuild;
+    }
+
+    public User addUser(UserJSON data) {
+        if (this.users.containsKey(data.id))
+            return this.users.get(data.id);
+        User user = new User(this, data);
+        this.users.put(user.id, user);
+        return user;
+    }
+
+    public void checkReady() {
+        if (this.socket.status != Constants.Status.READY && this.socket.status != Constants.Status.NEARLY) {
+            int unavailable = 0;
+            for (Guild guild : this.guilds.values()) {
+                unavailable += guild.available ? 0 : 1;
+            }
+            ProgressLogger.progress(this.guilds.size() - unavailable, this.guilds.size(), "Guilds Cached");
+            if (unavailable == 0) {
+                for (Guild guild : this.guilds.values()) {
+                    if (guild.memberCount != guild.members.size() && !guild.large) {
+                    }
+                }
+
+                this.socket.status = Constants.Status.NEARLY;
+                this.emitReady();
+            }
+        }
+    }
+
+    /**
+     * @param event
+     */
+    public void emit(String event) {
+        this.emit(event, null);
+    }
+
+    /**
+     * 
+     * @param event
+     * @param data
+     */
+    public void emit(String event, Object data) {
+        for (ModContainer mod : ModRegistry.mods.values()) {
+            mod.emit(event, data);
+        }
+    }
+
+    public void emitReady() {
+        this.socket.status = Constants.Status.READY;
+        this.ready = true;
+        CommandHandler.handleCommands = true;
+        this.emit(Constants.Events.READY, this);
+        Main.window.postInit();
+        for (IEventListener e : handlers.values()) {
+            e.Ready(this);
+        }
+    }
+
+    /**
+     * Connects the current instance of the {@link DiscLoader loader} into Discord's gateway servers
+     * 
+     * @param token your API token
+     * @return {@literal CompletableFuture<String>}
+     */
+    public CompletableFuture<String> login(String token) {
+        this.token = token;
+        CompletableFuture<String> future;
+        future = this.rest.makeRequest(Constants.Endpoints.gateway, Constants.Methods.GET, true);
+
+        future.thenAcceptAsync(text -> {
+            Gson gson = new Gson();
+            Gateway gateway = gson.fromJson(text, Gateway.class);
+            try {
+                this.socket.connectSocket(gateway.url + "?v=6&encoding=json");
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        });
+        return future;
+    }
+
+    /**
+     * This method <u><b>must</b></u> be called to start DiscLoader. <br>
+     * As it begins the setup process for DiscLoader to be able to function correctly<br>
+     * It <u><b>will</b></u> crash otherwise
+     * 
+     * @author Perry Berman
+     * @since 0.0.3
+     */
+    public void startup() {
+        if (started)
+            return;
+
+        started = true;
         if (Main.usegui) {
             Main.window = new WindowFrame(this);
         } else {
             ProgressLogger.stage(1, 3, "Mod Discovery");
             ModDiscoverer.checkModDir();
             ArrayList<ModCandidate> candidates = ModDiscoverer.discoverMods();
-            TimerTask checkCandidates = new TimerTask() {
-
-                @Override
-                public void run() {
-                    ProgressLogger.stage(2, 3, "Discovering Mod Containers");
-                    ModRegistry.checkCandidates(candidates);
-                }
-
-            };
-            this.timer.schedule(checkCandidates, 500);
+            ProgressLogger.stage(2, 3, "Discovering Mod Containers");
+            ModRegistry.checkCandidates(candidates);
         }
-	}
+    }
 
 }

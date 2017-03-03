@@ -66,11 +66,13 @@ public class VoiceWebSocket extends WebSocketAdapter {
     public int getSequence() {
         return this.sequence;
     }
-    
+
     public byte[] getSecretKey() {
-    	byte[] secret = new byte[secretKey.length];
-    	System.arraycopy(secretKey, 0, secret, 0, secretKey.length);
-    	return secret;
+        byte[] secret = new byte[secretKey.length];
+        for (int key = 0; key < secretKey.length; key++) {
+            secret[key] = (byte) secretKey[key];
+        }
+        return secret;
     }
 
     public void onConnected(WebSocket ws, Map<String, List<String>> arg1) throws Exception {
@@ -83,7 +85,6 @@ public class VoiceWebSocket extends WebSocketAdapter {
     }
 
     public void onTextMessage(WebSocket ws, String text) throws Exception {
-        System.out.println(text);
         SocketPacket packet = this.gson.fromJson(text, SocketPacket.class);
         switch (packet.op) {
             case READY:
@@ -100,7 +101,7 @@ public class VoiceWebSocket extends WebSocketAdapter {
                 this.connection.ready();
                 break;
             case SPEAKING:
-            	break;
+                break;
         }
     }
 
@@ -115,8 +116,8 @@ public class VoiceWebSocket extends WebSocketAdapter {
     }
 
     public void setSequence(int s) {
-    	if (s > this.sequence) 
-    		this.sequence = s;
+        if (s > this.sequence)
+            this.sequence = s;
     }
 
     public void setSpeaking(boolean isSpeaking) {

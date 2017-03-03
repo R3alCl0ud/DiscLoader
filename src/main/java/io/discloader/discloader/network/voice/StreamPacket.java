@@ -42,8 +42,8 @@ public class StreamPacket {
 		this.timestamp = buffer.getInt(4);
 		this.ssrc = buffer.getInt(8);
 
-		byte[] audio = new byte[buffer.array().length - 12];
-		System.arraycopy(buffer.array(), 12, audio, 0, audio.length);
+		byte[] audio = new byte[buffer.array().length - NONCE_LENGTH];
+		System.arraycopy(buffer.array(), NONCE_LENGTH, audio, 0, audio.length);
 		this.encodedAudio = audio;
 	}
 
@@ -52,7 +52,8 @@ public class StreamPacket {
 		this.sequence = sequence;
 		this.timestamp = timestamp;
 		this.ssrc = ssrc;
-		ByteBuffer buffer = ByteBuffer.allocate(encodedAudio.length + NONCE_LENGTH);
+		int len = encodedAudio != null ? encodedAudio.length : 0;
+		ByteBuffer buffer = ByteBuffer.allocate(len + NONCE_LENGTH);
 
 		buffer.put(TypeIndex, TYPE);
 		buffer.put(VersionIndex, VERSION);
@@ -69,9 +70,9 @@ public class StreamPacket {
 	}
 
 	public DatagramPacket toEncryptedPacket(InetSocketAddress address, byte[] secretKey) {
-		byte[] nonce = new byte[12];
+		byte[] nonce = new byte[HEADER_LENGTH];
 		
-		System.arraycopy(getRawPacket(), 0, nonce, 0, 12);
+		System.arraycopy(getRawPacket(), 0, nonce, 0, NONCE_LENGTH);
 		
 		SecretBox nacl = new SecretBox(secretKey);
 		byte[] encryptedAudio = nacl.box(getEncodedAudio(), nonce);
@@ -80,11 +81,11 @@ public class StreamPacket {
 	}
 	
 	public byte[] getEncodedAudio() {
-		return Arrays.copyOf(this.encodedAudio, this.encodedAudio.length);
+		return Arrays.copyOf(encodedAudio, encodedAudio.length);
 	}
 
 	public byte[] getNonce() {
-		return Arrays.copyOf(rawPacket, 12);
+		return Arrays.copyOf(rawPacket, NONCE_LENGTH);
 	}
 
 	public byte[] getRawPacket() {
