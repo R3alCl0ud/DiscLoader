@@ -25,9 +25,9 @@ import io.discloader.discloader.network.gateway.DiscSocketListener;
  * 
  * @author Perry Berman
  * @since v0.0.1
- * @version First draft
+ * @version 17
  */
-public class Constants {
+public final class Constants {
 
     public static enum ChannelType {
         TEXT, VOICE, DM, GROUPDM
