@@ -4,7 +4,7 @@ public class EmojiJSON {
 	public String id;
 	public String name;
 
-	public RoleJSON[] roles;
+	public String[] roles;
 
 	public boolean requires_colons;
 	public boolean managed;

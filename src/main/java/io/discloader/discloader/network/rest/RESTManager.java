@@ -14,6 +14,7 @@ import com.google.gson.Gson;
 
 import io.discloader.discloader.common.DiscLoader;
 import io.discloader.discloader.entity.Attachment;
+import io.discloader.discloader.entity.Emoji;
 import io.discloader.discloader.entity.Guild;
 import io.discloader.discloader.entity.GuildMember;
 import io.discloader.discloader.entity.Message;
@@ -22,6 +23,7 @@ import io.discloader.discloader.entity.User;
 import io.discloader.discloader.entity.channels.TextChannel;
 import io.discloader.discloader.entity.channels.VoiceChannel;
 import io.discloader.discloader.entity.impl.ITextChannel;
+import io.discloader.discloader.entity.sendable.CreateEmoji;
 import io.discloader.discloader.entity.sendable.FetchMembers;
 import io.discloader.discloader.entity.sendable.RichEmbed;
 import io.discloader.discloader.entity.sendable.SendableMessage;
@@ -200,6 +202,33 @@ public class RESTManager {
 					future.complete(new OAuth2Application(appData, owner));
 				});
 
+		return future;
+	}
+
+	public CompletableFuture<Emoji> deleteEmoji(Emoji emoji) {
+		CompletableFuture<Emoji> future = new CompletableFuture<>();
+		this.makeRequest(Endpoints.guildEmoji(emoji.guild.id, emoji.id), Methods.DELETE, true)
+				.thenAcceptAsync(action -> {
+					future.complete(emoji);
+				});
+		return future;
+	}
+
+	public CompletableFuture<GuildMember> kickMember(GuildMember member) {
+		CompletableFuture<GuildMember> future = new CompletableFuture<>();
+		this.makeRequest(Endpoints.guildMember(member.guild.id, member.id), Methods.DELETE, true)
+				.thenAcceptAsync(action -> {
+					future.complete(member);
+				});
+		return future;
+	}
+
+	public CompletableFuture<Emoji> createEmoji(Guild guild, String name, String image) {
+		CompletableFuture<Emoji> future = new CompletableFuture<>();
+		CreateEmoji ce = new CreateEmoji(name, image);
+		this.makeRequest(Endpoints.guildEmojis(guild.id), Methods.POST, true, ce).thenAcceptAsync(action -> {
+			System.out.println(action);
+		});
 		return future;
 	}
 

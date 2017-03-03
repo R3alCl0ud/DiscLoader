@@ -1,5 +1,6 @@
 package io.discloader.discloader.entity;
 
+import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -183,6 +184,10 @@ public class Guild {
 		}
 	}
 
+	public GuildMember addMember(MemberJSON data) {
+		return this.addMember(data, false);
+	}
+
 	public GuildMember addMember(MemberJSON data, boolean shouldEmit) {
 		boolean exists = this.members.containsKey(data.user.id);
 		GuildMember member = new GuildMember(this, data);
@@ -197,10 +202,6 @@ public class Guild {
 			}
 		}
 		return member;
-	}
-
-	public GuildMember addMember(MemberJSON data) {
-		return this.addMember(data, false);
 	}
 
 	public GuildMember addMember(User user, String[] roles, boolean deaf, boolean mute, String nick,
@@ -229,6 +230,35 @@ public class Guild {
 			this.loader.emit(Constants.Events.GUILD_ROLE_CREATE, role);
 		}
 		return role;
+	}
+
+	/**
+	 * Creates a new custom emoji
+	 * 
+	 * @param name The name of the new emoji
+	 * @param image The file
+	 * @return A Future the completes with the created Emoji if successful.
+	 */
+	public CompletableFuture<Emoji> createEmoji(String name, File image) {
+		String base64 = null;
+		try {
+			base64 = new String(
+					"data:image/jpg;base64," + Base64.encodeBase64String(Files.readAllBytes(image.toPath())));
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		return this.createEmoji(name, base64);
+	}
+
+	/**
+	 * Creates a new custom emoji
+	 * 
+	 * @param name The name of the emoji
+	 * @param image The emoji's image encoded to base64
+	 * @return A Future the completes with the created Emoji if successful.
+	 */
+	public CompletableFuture<Emoji> createEmoji(String name, String image) {
+		return this.loader.rest.createEmoji(this, name, image);
 	}
 
 	/**

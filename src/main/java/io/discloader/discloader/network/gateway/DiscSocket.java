@@ -2,7 +2,6 @@ package io.discloader.discloader.network.gateway;
 
 import java.io.IOException;
 import java.util.Timer;
-import java.util.TimerTask;
 
 import org.json.JSONObject;
 
@@ -41,7 +40,7 @@ public class DiscSocket {
 	public boolean normalReady = false;
 	public boolean reconnecting = false;
 
-	private TimerTask heartbeatInterval;
+	private Thread heartbeatThread = null;
 
 	public Timer timer = new Timer();
 
@@ -71,16 +70,37 @@ public class DiscSocket {
 		this.ws.connect();
 	}
 
-	public void keepAlive(int interval) {
-		DiscSocket socket = this;
-		this.heartbeatInterval = new TimerTask() {
+	public void keepAlive(final int interval) {
+		heartbeatThread = new Thread("HeartbeatThread") {
 			@Override
 			public void run() {
-				socket.loader.emit("debug", "Sending heartbeat");
-				socket.sendHeartbeat(true);
+
+				try {
+					Thread.sleep(interval);
+				} catch (InterruptedException e) {
+					e.printStackTrace();
+				}
+
+				while (ws.isOpen() && !heartbeatThread.isInterrupted()) {
+					sendHeartbeat(true);
+					try {
+						Thread.sleep(interval);
+					} catch (InterruptedException e) {
+						e.printStackTrace();
+					}
+				}
+
 			}
 		};
-		timer.scheduleAtFixedRate(this.heartbeatInterval, interval, interval);
+		heartbeatThread.setPriority((Thread.NORM_PRIORITY + Thread.MAX_PRIORITY) / 2);
+		heartbeatThread.setDaemon(true);
+		heartbeatThread.start();
+	}
+
+	public void killHeartbeat() {
+		if (heartbeatThread != null) {
+			heartbeatThread.interrupt();
+		}
 	}
 
 	public void sendHeartbeat(boolean normal) {
@@ -94,7 +114,7 @@ public class DiscSocket {
 		this.send(payload, true);
 		this.lastHeartbeatAck = false;
 	}
-	
+
 	public void send(Object payload, boolean force) {
 		this.ws.sendText(Constants.gson.toJson(payload));
 	}
@@ -102,7 +122,7 @@ public class DiscSocket {
 	public void send(Object payload) {
 		this.ws.sendText(Constants.gson.toJson(payload));
 	}
-	
+
 	public void send(JSONObject payload, boolean force) {
 		this.ws.sendText(payload.toString());
 	}
