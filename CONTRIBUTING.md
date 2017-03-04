@@ -9,4 +9,5 @@ See below for specific IDEs
 
 ### Steps for Eclipse
 - run `gradlew(.bat) eclipse`
-- import the 
+- import the folder as a project
+- convert the project to a maven project
