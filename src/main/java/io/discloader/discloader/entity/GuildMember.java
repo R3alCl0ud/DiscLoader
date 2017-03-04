@@ -18,177 +18,154 @@ import io.discloader.discloader.util.Constants;
  */
 public class GuildMember {
 
-	/**
-	 * The loader instance that cached the member.
-	 */
-	public final DiscLoader loader;
+    /**
+     * The loader instance that cached the member.
+     */
+    public final DiscLoader loader;
 
-	/**
-	 * The member's nickname, or null if the user has no nickname
-	 */
-	public String nick;
+    /**
+     * The member's nickname, or null if the user has no nickname
+     */
+    public String nick;
 
-	/**
-	 * The member's Snowflake ID.
-	 * 
-	 * @see User
-	 */
-	public final String id;
+    /**
+     * The member's Snowflake ID.
+     * 
+     * @see User
+     */
+    public final String id;
 
-	/**
-	 * The member's user object
-	 */
-	public final User user;
+    /**
+     * The member's user object
+     */
+    public final User user;
 
-	/**
-	 * The guild the member is in
-	 */
-	public final Guild guild;
+    /**
+     * The guild the member is in
+     */
+    public final Guild guild;
 
-	private String[] roleIDs;
+    private String[] roleIDs;
 
-	/**
-	 * Whether or not the member's mic is muted
-	 */
-	public boolean mute;
-	/**
-	 * Whether or not the member
-	 */
-	public boolean deaf;
+    /**
+     * Whether or not the member's mic is muted
+     */
+    public boolean mute;
+    /**
+     * Whether or not the member
+     */
+    public boolean deaf;
 
-	/**
-	 * Member's old presence. Has a value of {@code null} unless
-	 */
-	public Presence frozenPresence;
+    /**
+     * Member's old presence. Has a value of {@code null} unless
+     */
+    public Presence frozenPresence;
 
-	/**
-	 * A {@link Date} object representing when the member joined the
-	 * {@link Guild}.
-	 */
-	public final Date joinedAt;
+    /**
+     * A {@link Date} object representing when the member joined the {@link Guild}.
+     */
+    public final Date joinedAt;
 
-	/**
-	 * Default GuildMember constructor
-	 * 
-	 * @param guild
-	 *            The {@link Guild} the member belongs to
-	 * @param data
-	 *            The member's data
-	 */
-	public GuildMember(Guild guild, MemberJSON data) {
-		this.loader = guild.loader;
-		this.user = this.loader.addUser(data.user);
-		this.id = this.user.id;
-		this.guild = guild;
-		this.nick = data.nick != null ? data.nick : this.user.username;
-		this.joinedAt = Constants.parseISO8601(data.joined_at);
-		this.roleIDs = data.roles;
+    public GuildMember(Guild guild, MemberJSON data) {
+        this.loader = guild.loader;
+        this.user = this.loader.addUser(data.user);
+        this.id = this.user.id;
+        this.guild = guild;
+        this.nick = data.nick != null ? data.nick : this.user.username;
+        this.joinedAt = Constants.parseISO8601(data.joined_at);
+        this.roleIDs = data.roles;
 
-		this.deaf = data.deaf;
-		this.mute = this.deaf ? true : data.mute;
+        this.deaf = data.deaf;
+        this.mute = this.deaf ? true : data.mute;
 
-	}
+    }
 
-	public GuildMember(Guild guild, User user) {
-		this.id = user.id;
+    public GuildMember(Guild guild, User user) {
+        this.id = user.id;
 
-		this.user = user;
+        this.user = user;
 
-		this.guild = guild;
-		
-		this.loader = guild.loader;
-		
-		this.joinedAt = null;
-	}
+        this.guild = guild;
 
-	/**
-	 * @param guild
-	 * @param user
-	 * @param roles
-	 * @param deaf
-	 * @param mute
-	 * @param nick
-	 */
-	public GuildMember(Guild guild, User user, String[] roles, boolean deaf, boolean mute, String nick) {
-		this.id = user.id;
-		this.user = user;
-		this.guild = guild;
-		this.loader = guild.loader;
-		this.nick = nick != null ? nick : this.user.username;
-		this.roleIDs = roles;
-		this.joinedAt = Date.from(Instant.now());
-		this.deaf = deaf;
-		this.mute = this.deaf == true ? true : mute;
-	}
+        this.loader = guild.loader;
 
-	/**
-	 * @param data
-	 */
-	public GuildMember(GuildMember data) {
-		this.id = data.id;
-		this.loader = data.loader;
-		this.user = data.user;
-		this.guild = data.guild;
-		this.nick = data.nick;
-		this.roleIDs = data.roleIDs;
-		this.joinedAt = data.joinedAt;
-		this.deaf = data.deaf;
-		this.mute = this.deaf ? true : data.mute;
-	}
+        this.joinedAt = null;
+    }
 
-	/**
-	 * Bans the member from the {@link Guild} if the {@link DiscLoader loader}
-	 * has suficient permissions
-	 * 
-	 * @see Permission
-	 * @return A CompletableFuture that completes with {@code this} if
-	 *         successfull
-	 */
-	public CompletableFuture<GuildMember> ban() {
-		return null;
-	}
+    public GuildMember(Guild guild, User user, String[] roles, boolean deaf, boolean mute, String nick) {
+        this.id = user.id;
+        this.user = user;
+        this.guild = guild;
+        this.loader = guild.loader;
+        this.nick = nick != null ? nick : this.user.username;
+        this.roleIDs = roles;
+        this.joinedAt = Date.from(Instant.now());
+        this.deaf = deaf;
+        this.mute = this.deaf == true ? true : mute;
+    }
 
-	public Presence getPresence() {
-		return this.guild.presences.get(this.user.id);
-	}
+    public GuildMember(GuildMember data) {
+        this.id = data.id;
+        this.loader = data.loader;
+        this.user = data.user;
+        this.guild = data.guild;
+        this.nick = data.nick;
+        this.roleIDs = data.roleIDs;
+        this.joinedAt = data.joinedAt;
+        this.deaf = data.deaf;
+        this.mute = this.deaf ? true : data.mute;
+    }
 
-	public HashMap<String, Role> getRoleList() {
-		HashMap<String, Role> roles = new HashMap<String, Role>();
-		for (String id : this.roleIDs) {
-			roles.put(id, this.guild.roles.get(id));
-		}
-		return roles;
-	}
+    /**
+     * Bans the member from the {@link Guild} if the {@link DiscLoader loader} has sufficient permissions
+     * 
+     * @see Permission
+     * @return A CompletableFuture that completes with {@code this} if successful
+     */
+    public CompletableFuture<GuildMember> ban() {
+        return null;
+    }
 
-	/**
-	 * Kicks the member from the {@link Guild} if the {@link DiscLoader loader}
-	 * has suficient permissions
-	 * 
-	 * @see Permission
-	 * @return A CompletableFuture that completes with {@code this} if
-	 *         successfull
-	 */
-	public CompletableFuture<GuildMember> kick() {
-		return null;
-	}
+    public Presence getPresence() {
+        return this.guild.presences.get(this.user.id);
+    }
 
-	/**
-	 * Sets the member's nickname if the {@link DiscLoader loader} has suficient
-	 * permissions
-	 * 
-	 * @param nick
-	 * @see Permission
-	 * @return A CompletableFuture that completes with {@code this} if
-	 *         successfull
-	 */
-	public CompletableFuture<GuildMember> setNick(String nick) {
-		return this.loader.rest.setNick(this, nick);
-	}
+    /**
+     * @return A HashMap of the member's roles. indexed by {@link Role#id}
+     */
+    public HashMap<String, Role> getRoleList() {
+        HashMap<String, Role> roles = new HashMap<String, Role>();
+        for (String id : this.roleIDs) {
+            roles.put(id, this.guild.roles.get(id));
+        }
+        return roles;
+    }
 
-	/**
-	 * Same as {@link User#toString()}
-	 */
-	public String toString() {
-		return this.user.toString();
-	}
+    /**
+     * Kicks the member from the {@link Guild} if the {@link DiscLoader loader} has sufficient permissions
+     * 
+     * @see Permission
+     * @return A CompletableFuture that completes with {@code this} if successful
+     */
+    public CompletableFuture<GuildMember> kick() {
+        return null;
+    }
+
+    /**
+     * Sets the member's nickname if the {@link DiscLoader loader} has suficient permissions
+     * 
+     * @param nick
+     * @see Permission
+     * @return A CompletableFuture that completes with {@code this} if successful
+     */
+    public CompletableFuture<GuildMember> setNick(String nick) {
+        return this.loader.rest.setNick(this, nick);
+    }
+
+    /**
+     * Same as {@link User#toString()}
+     */
+    public String toString() {
+        return this.user.toString();
+    }
 }

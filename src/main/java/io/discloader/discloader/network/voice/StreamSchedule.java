@@ -32,10 +32,6 @@ public class StreamSchedule extends AudioEventAdapter implements AudioLoadResult
 
     public void startNext() {
         if (tracks.size() > 0) {
-            this.connection.getWs().setSpeaking(true);
-            if (!connection.provider.isOpen()) {
-                connection.provider.start();
-            }
             AudioTrack nextTrack = tracks.get(0);
             player.startTrack(nextTrack, true);
         } else {
@@ -64,7 +60,10 @@ public class StreamSchedule extends AudioEventAdapter implements AudioLoadResult
 
     @Override
     public void onTrackStart(AudioPlayer player, AudioTrack track) {
-        
+        this.connection.getWs().setSpeaking(true);
+        if (!connection.provider.isOpen()) {
+            connection.provider.start();
+        }
     }
 
     @Override
@@ -74,6 +73,7 @@ public class StreamSchedule extends AudioEventAdapter implements AudioLoadResult
 
     @Override
     public void noMatches() {
+        System.out.println("Nothing......");
         // oh well, looks like old man jenkins got lost again.
     }
 

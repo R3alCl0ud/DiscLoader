@@ -12,6 +12,7 @@ import com.neovisionaries.ws.client.WebSocketFactory;
 
 import io.discloader.discloader.common.DiscLoader;
 import io.discloader.discloader.util.Constants;
+import io.discloader.discloader.util.Constants.Status;
 
 /**
  * @author Perry Berman
@@ -20,14 +21,13 @@ import io.discloader.discloader.util.Constants;
 public class DiscSocket {
 
 	/**
-	 * 
+	 * The current instance of DiscLoader
 	 */
 	public DiscLoader loader;
 
 	private DiscSocketListener socketListener;
-	/**
-	 * 
-	 */
+
+	
 	public WebSocket ws;
 
 	public String sessionID;
@@ -54,7 +54,7 @@ public class DiscSocket {
 
 		this.socketListener = new DiscSocketListener(this);
 
-		this.status = Constants.Status.IDLE;
+		this.status = Status.IDLE;
 	}
 
 	/**
@@ -101,6 +101,11 @@ public class DiscSocket {
 		if (heartbeatThread != null) {
 			heartbeatThread.interrupt();
 		}
+	}
+	
+	public void setReady() {
+	    status = Status.READY;
+//	    socketListener.handleQueue();
 	}
 
 	public void sendHeartbeat(boolean normal) {

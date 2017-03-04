@@ -20,186 +20,179 @@ import io.discloader.discloader.util.Constants;
  */
 public class Message {
 
-	/**
-	 * The message's Snowflake ID.
-	 */
-	public final String id;
-	
-	/**
-	 * The message's content
-	 */
-	public String content;
-	
-	/**
-	 * The time at which the message has been edited. is null if the message has
-	 * not been edited
-	 */
-	public String edited_timestamp;
-	
-	/**
-	 * Used for checking if the message has been sent
-	 */
-	public String nonce;
-	
-	/**
-	 * The id of the webhook that sent the message. {@code null} if sent by a
-	 * bot/user account
-	 */
-	public String webhookID;
+    /**
+     * The message's Snowflake ID.
+     */
+    public final String id;
 
-	/**
-	 * Whether or not the message was sent using /tts
-	 */
-	public boolean tts;
+    /**
+     * The message's content
+     */
+    public String content;
 
-	/**
-	 * Whether or not you can edit the message. <br>
-	 * will always be true when {@code author.id == this.loader.user.id}
-	 */
-	public boolean editable;
+    /**
+     * The time at which the message has been edited. is null if the message has not been edited
+     */
+    public String edited_timestamp;
 
-	/**
-	 * Is the messaged pinned in the {@link #channel}
-	 */
-	public boolean pinned;
+    /**
+     * Used for checking if the message has been sent
+     */
+    public String nonce;
 
-	/**
-	 * The time at which the message was sent
-	 */
-	public final Date timestamp;
-	public Date editedAt;
+    /**
+     * The id of the webhook that sent the message. {@code null} if sent by a bot/user account
+     */
+    public String webhookID;
 
-	/**
-	 * An object containing the information about who was mentioned in the
-	 * message
-	 */
-	public Mentions mentions;
+    /**
+     * Whether or not the message was sent using /tts
+     */
+    public boolean tts;
 
-	/**
-	 * The current instance of DiscLoader
-	 */
-	public final DiscLoader loader;
+    /**
+     * Whether or not you can edit the message. <br>
+     * will always be true when {@code author.id == this.loader.user.id}
+     */
+    public boolean editable;
 
-	/**
-	 * The channel the message was sent in
-	 */
-	public final ITextChannel channel;
+    /**
+     * Is the messaged pinned in the {@link #channel}
+     */
+    public boolean pinned;
 
-	/**
-	 * The user who authored the message
-	 */
-	public final User author;
+    /**
+     * The time at which the message was sent
+     */
+    public final Date timestamp;
 
-	/**
-	 * The guild the {@link #channel} is in. is {@code null} if
-	 * {@link Channel#type} is "dm" or "groupDM"
-	 */
-	public Guild guild;
+    /**
+     * The time at which the message was lasted edited at
+     */
+    public Date editedAt;
 
-	/**
-	 * The member who sent the message if applicable
-	 */
-	public GuildMember member;
+    /**
+     * An object containing the information about who was mentioned in the message
+     */
+    public Mentions mentions;
 
-	/**
-	 * Creates a new message object
-	 * 
-	 * @param channel The channel the message was sent in
-	 * @param data The message's data
-	 */
-	public Message(ITextChannel channel, MessageJSON data) {
-		this.id = data.id;
+    /**
+     * The current instance of DiscLoader
+     */
+    public final DiscLoader loader;
 
-		this.channel = channel;
-		
-		if (this.channel.isPrivate()) {
-			PrivateChannel privateChannel = (PrivateChannel) channel;
-			this.loader = privateChannel.loader;
-		} else {
-			TextChannel textChannel = (TextChannel) channel;
-			this.loader = textChannel.loader;
-			this.guild = textChannel.guild;
-		}
+    /**
+     * The channel the message was sent in
+     */
+    public final ITextChannel channel;
 
-		if (!this.loader.users.containsKey(data.author.id)) {
-			this.author = this.loader.addUser(data.author);
-		} else {
-			this.author = this.loader.users.get(data.author.id);
-		}
+    /**
+     * The user who authored the message
+     */
+    public final User author;
 
-		this.mentions = new Mentions(this, data.mentions, data.mention_roles, data.mention_everyone);
+    /**
+     * The guild the {@link #channel} is in. is {@code null} if {@link Channel#type} is "dm" or "groupDM"
+     */
+    public Guild guild;
 
-		this.timestamp = Constants.parseISO8601(data.timestamp);
+    /**
+     * The member who sent the message if applicable
+     */
+    public GuildMember member;
 
-		this.editedAt = data.edited_timestamp != null ? Constants.parseISO8601(data.edited_timestamp) : null;
-		
-		this.member = this.guild != null ? this.guild.members.get(this.author.id) : null;
+    /**
+     * Creates a new message object
+     * 
+     * @param channel The channel the message was sent in
+     * @param data The message's data
+     */
+    public Message(ITextChannel channel, MessageJSON data) {
+        this.id = data.id;
 
-		this.editable = this.loader.user.id == this.author.id;
+        this.channel = channel;
 
-		this.tts = data.tts;
+        if (this.channel.isPrivate()) {
+            PrivateChannel privateChannel = (PrivateChannel) channel;
+            this.loader = privateChannel.loader;
+        } else {
+            TextChannel textChannel = (TextChannel) channel;
+            this.loader = textChannel.loader;
+            this.guild = textChannel.guild;
+        }
 
-		this.content = data.content;
+        if (!this.loader.users.containsKey(data.author.id)) {
+            this.author = this.loader.addUser(data.author);
+        } else {
+            this.author = this.loader.users.get(data.author.id);
+        }
 
-		this.nonce = data.nonce;
-	}
+        this.mentions = new Mentions(this, data.mentions, data.mention_roles, data.mention_everyone);
 
-	/**
-	 * Deletes the message if the loader has suficient permissions
-	 * 
-	 * @see Constants.PermissionFlags
-	 * @return A Future that completes with {@literal this} when sucessfull
-	 */
-	public CompletableFuture<Message> delete() {
-		return this.loader.rest.deleteMessage(this.channel, this);
-	}
+        this.timestamp = Constants.parseISO8601(data.timestamp);
 
-	/**
-	 * Edit's the messages content. Only possible if the {@link DiscLoader
-	 * loader} is the message's {@link #author}
-	 * 
-	 * @param embed The new embed for the message
-	 * @return A Future that completes with {@literal this} when sucessfull
-	 */
-	public CompletableFuture<Message> edit(RichEmbed embed) {
-		return this.edit(null, embed);
-	}
+        this.editedAt = data.edited_timestamp != null ? Constants.parseISO8601(data.edited_timestamp) : null;
 
-	/**
-	 * Edit's the messages content. Only possible if the {@link DiscLoader
-	 * loader} is the message's {@link #author}
-	 * 
-	 * @param content The new content of the message
-	 * @return A Future that completes with {@literal this} when sucessfull
-	 */
-	public CompletableFuture<Message> edit(String content) {
-		return this.edit(content, null);
-	}
+        this.member = this.guild != null ? this.guild.members.get(this.author.id) : null;
 
-	/**
-	 * Edit's the messages content. Only possible if the {@link DiscLoader
-	 * loader} is the message's {@link #author}
-	 * 
-	 * @param content The new content of the message
-	 * @param embed The new embed for the message
-	 * @return A Future that completes with {@literal this} when sucessfull
-	 */
-	public CompletableFuture<Message> edit(String content, RichEmbed embed) {
-		return this.loader.rest.editMessage(this.channel, this, content, embed, null, null);
-	}
+        this.editable = this.loader.user.id == this.author.id;
 
-	/**
-	 * @param data
-	 * @return this
-	 */
-	public Message patch(MessageJSON data) {
-		this.content = data.content;
+        this.tts = data.tts;
 
-		this.mentions.patch(data.mentions, data.mention_roles, data.mention_everyone);
+        this.content = data.content;
 
-		this.editedAt = Constants.parseISO8601(data.edited_timestamp);
+        this.nonce = data.nonce;
+    }
 
-		return this;
-	}
+    /**
+     * Deletes the message if the loader has suficient permissions
+     * 
+     * @see Constants.PermissionFlags
+     * @return A Future that completes with {@literal this} when sucessfull
+     */
+    public CompletableFuture<Message> delete() {
+        return this.loader.rest.deleteMessage(this.channel, this);
+    }
+
+    /**
+     * Edit's the messages content. Only possible if the {@link DiscLoader loader} is the message's {@link #author}
+     * 
+     * @param embed The new embed for the message
+     * @return A Future that completes with {@literal this} when sucessfull
+     */
+    public CompletableFuture<Message> edit(RichEmbed embed) {
+        return this.edit(null, embed);
+    }
+
+    /**
+     * Edit's the messages content. Only possible if the {@link DiscLoader loader} is the message's {@link #author}
+     * 
+     * @param content The new content of the message
+     * @return A Future that completes with {@literal this} when sucessfull
+     */
+    public CompletableFuture<Message> edit(String content) {
+        return this.edit(content, null);
+    }
+
+    /**
+     * Edit's the messages content. Only possible if the {@link DiscLoader loader} is the message's {@link #author}
+     * 
+     * @param content The new content of the message
+     * @param embed The new embed for the message
+     * @return A Future that completes with {@literal this} when sucessfull
+     */
+    public CompletableFuture<Message> edit(String content, RichEmbed embed) {
+        return this.loader.rest.editMessage(this.channel, this, content, embed, null, null);
+    }
+
+    public Message patch(MessageJSON data) {
+        this.content = data.content;
+
+        this.mentions.patch(data.mentions, data.mention_roles, data.mention_everyone);
+
+        this.editedAt = Constants.parseISO8601(data.edited_timestamp);
+
+        return this;
+    }
 
 }

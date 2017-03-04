@@ -96,8 +96,6 @@ public class VoiceConnection {
 		AudioSourceManagers.registerRemoteSources(this.manager);
 		this.player = manager.createPlayer();
 
-		// player.
-		// manager.s
 		this.trackScheduler = new StreamSchedule(this.player, this);
 
 		this.sendStateUpdate();

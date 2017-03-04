@@ -11,3 +11,4 @@ build/*
 logs/*
 Fumes.mp3
 drowning.mp3
+dependency-reduced-pom.xml

@@ -8,6 +8,7 @@ version = ""
 
 repositories {
     mavenCentral()
+    jcenter()
 }
 
 jar {
@@ -25,6 +26,7 @@ dependencies {
 	compile 'com.neovisionaries:nv-websocket-client:1.31'
 	compile group: 'com.neovisionaries', name: 'nv-websocket-client', version: '1.31'
   compile "joda-time:joda-time:2.2"
+  compile 'com.sedmelluq:lavaplayer:1.2.24'
   testCompile "junit:junit:4.12"
 }
 
