@@ -22,6 +22,9 @@ public interface IChannel {
 	 * @author Perry Berman
 	 */
 	boolean isPrivate();
-
+	/**
+	 * Sets up the channel for use.
+	 * @param data Channel data.
+	 */
 	void setup(ChannelJSON data);
 }
