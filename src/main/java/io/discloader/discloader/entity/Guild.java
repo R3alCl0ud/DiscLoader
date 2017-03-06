@@ -594,4 +594,11 @@ public class Guild {
 		return this.loader.rest.modifyGuild(this, new JSONObject().put("region", region));
 	}
 
+	/**
+	 * Syncs the guild to the client if the logged in user is not a bot
+	 */
+	public void sync() {
+		this.loader.syncGuilds(this.id);
+	}
+
 }

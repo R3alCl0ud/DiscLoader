@@ -48,13 +48,14 @@ public class TextChannel extends GuildChannel implements ITextChannel {
 	 */
 	public TextChannel(Guild guild, ChannelJSON data) {
 		super(guild, data);
-		this.type = ChannelType.TEXT;
 
 		this.messages = new HashMap<String, Message>();
 	}
 
 	public void setup(ChannelJSON data) {
 		super.setup(data);
+
+		this.type = ChannelType.TEXT;
 
 		this.topic = data.topic;
 	}

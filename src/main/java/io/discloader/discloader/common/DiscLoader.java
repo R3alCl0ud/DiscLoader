@@ -29,6 +29,7 @@ import io.discloader.discloader.entity.channels.GroupChannel;
 import io.discloader.discloader.entity.channels.PrivateChannel;
 import io.discloader.discloader.entity.channels.TextChannel;
 import io.discloader.discloader.entity.channels.VoiceChannel;
+import io.discloader.discloader.entity.sendable.Packet;
 import io.discloader.discloader.entity.voice.VoiceConnection;
 import io.discloader.discloader.network.gateway.DiscSocket;
 import io.discloader.discloader.network.json.ChannelJSON;
@@ -344,6 +345,7 @@ public class DiscLoader {
 			if (unavailable == 0) {
 				for (Guild guild : this.guilds.values()) {
 					if (guild.memberCount != guild.members.size() && !guild.large) {
+//						guild.sync();
 					}
 				}
 
@@ -431,6 +433,18 @@ public class DiscLoader {
 			ProgressLogger.stage(2, 3, "Discovering Mod Containers");
 			ModRegistry.checkCandidates(candidates);
 		}
+	}
+
+	/**
+	 * Syncs guilds to client if the logged in user is not a bot
+	 * @param guildIDs the ids of the guilds to sync
+	 */
+	public void syncGuilds(String... guildIDs) {
+		if (this.user.bot)
+			return;
+
+		Packet packet = new Packet(12, guildIDs);
+		this.socket.send(packet);
 	}
 
 }
