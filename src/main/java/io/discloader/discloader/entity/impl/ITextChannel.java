@@ -26,6 +26,15 @@ public interface ITextChannel extends IChannel {
 	HashMap<String, Message> getMessages();
 
 	/**
+	 * Pins a message to the channel if not already pinned, and the client has
+	 * sufficient permissions
+	 * 
+	 * @param message The message to pin
+	 * @return A Future that completes with the pinned message if successful.
+	 */
+	CompletableFuture<Message> pinMessage(Message message);
+
+	/**
 	 * Sends a {@link Message} to the channel.
 	 * 
 	 * @param embed The embed to send
@@ -49,4 +58,13 @@ public interface ITextChannel extends IChannel {
 	 * @return A Future that completes with a {@link Message} if successful.
 	 */
 	CompletableFuture<Message> sendMessage(String content, RichEmbed embed);
+
+	/**
+	 * Unpins a message if it is pinned in the channel.
+	 * 
+	 * @param message The message to unpin.
+	 * @return A Future that completes with a {@link Message} if successful.
+	 */
+	CompletableFuture<Message> unpinMessage(Message message);
+
 }

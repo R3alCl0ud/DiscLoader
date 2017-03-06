@@ -76,4 +76,14 @@ public class PrivateChannel extends Channel implements ITextChannel {
 		return this.loader.rest.sendMessage(this, content, embed, attachment, file);
 	}
 
+	@Override
+	public CompletableFuture<Message> pinMessage(Message message) {
+		return null;
+	}
+
+	@Override
+	public CompletableFuture<Message> unpinMessage(Message message) {
+		return null;
+	}
+
 }

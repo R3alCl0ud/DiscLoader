@@ -21,7 +21,7 @@ public class Game {
 	/**
 	 * @param game
 	 */
-	public Game(GameJSON game) {
+	public Game(Game game) {
 		this.name = game.name;
 		this.type = game.type;
 		this.url = game.url;
@@ -31,7 +31,7 @@ public class Game {
 	/**
 	 * @param game
 	 */
-	public Game(Game game) {
+	public Game(GameJSON game) {
 		this.name = game.name;
 		this.type = game.type;
 		this.url = game.url;

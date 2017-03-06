@@ -37,6 +37,7 @@ import io.discloader.discloader.network.json.GuildJSON;
 import io.discloader.discloader.network.json.UserJSON;
 import io.discloader.discloader.network.rest.RESTManager;
 import io.discloader.discloader.util.DLUtil;
+import io.discloader.discloader.util.DLUtil.Status;
 
 /**
  * The DiscLoader client object <br>
@@ -341,15 +342,17 @@ public class DiscLoader {
 			for (Guild guild : this.guilds.values()) {
 				unavailable += guild.available ? 0 : 1;
 			}
+			// System.out.println(unavailable);
 			ProgressLogger.progress(this.guilds.size() - unavailable, this.guilds.size(), "Guilds Cached");
 			if (unavailable == 0) {
-				for (Guild guild : this.guilds.values()) {
-					if (guild.memberCount != guild.members.size() && !guild.large) {
-//						guild.sync();
-					}
-				}
+				// for (Guild guild : this.guilds.values()) {
+				// if (guild.memberCount != guild.members.size() &&
+				// !guild.large && !guild.isSyncing()) {
+				// guild.sync();
+				// }
+				// }
 
-				this.socket.status = DLUtil.Status.NEARLY;
+				this.socket.status = Status.NEARLY;
 				this.emitReady();
 			}
 		}
@@ -437,6 +440,7 @@ public class DiscLoader {
 
 	/**
 	 * Syncs guilds to client if the logged in user is not a bot
+	 * 
 	 * @param guildIDs the ids of the guilds to sync
 	 */
 	public void syncGuilds(String... guildIDs) {

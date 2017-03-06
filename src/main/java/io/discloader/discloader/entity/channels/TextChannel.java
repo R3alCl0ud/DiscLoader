@@ -52,16 +52,19 @@ public class TextChannel extends GuildChannel implements ITextChannel {
 		this.messages = new HashMap<String, Message>();
 	}
 
-	public void setup(ChannelJSON data) {
-		super.setup(data);
-
-		this.type = ChannelType.TEXT;
-
-		this.topic = data.topic;
+	@Override
+	public Message getMessage(String id) {
+		return this.messages.get(id);
 	}
 
-	public CompletableFuture<Message> sendMessage(String content) {
-		return this.loader.rest.sendMessage(this, content, null, null, null);
+	@Override
+	public HashMap<String, Message> getMessages() {
+		return this.messages;
+	}
+
+	@Override
+	public CompletableFuture<Message> pinMessage(Message message) {
+		return null;
 	}
 
 	public CompletableFuture<Message> sendEmbed(RichEmbed embed) {
@@ -75,6 +78,10 @@ public class TextChannel extends GuildChannel implements ITextChannel {
 		return this.loader.rest.sendMessage(this, " ", embed, attachment, file);
 	}
 
+	public CompletableFuture<Message> sendMessage(String content) {
+		return this.loader.rest.sendMessage(this, content, null, null, null);
+	}
+
 	public CompletableFuture<Message> sendMessage(String content, RichEmbed embed) {
 		File file = null;
 		Attachment attachment = null;
@@ -86,14 +93,17 @@ public class TextChannel extends GuildChannel implements ITextChannel {
 		return this.loader.rest.sendMessage(this, content, embed, attachment, file);
 	}
 
-	@Override
-	public Message getMessage(String id) {
-		return this.messages.get(id);
+	public void setup(ChannelJSON data) {
+		super.setup(data);
+
+		this.type = ChannelType.TEXT;
+
+		this.topic = data.topic;
 	}
 
 	@Override
-	public HashMap<String, Message> getMessages() {
-		return this.messages;
+	public CompletableFuture<Message> unpinMessage(Message message) {
+		return null;
 	}
 
 }

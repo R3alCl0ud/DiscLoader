@@ -156,6 +156,8 @@ public class Guild {
 	 */
 	public VoiceRegion voiceRegion;
 
+	private boolean syncing = false;
+
 	/**
 	 * Creates a new guild
 	 * 
@@ -303,7 +305,7 @@ public class Guild {
 	 * @since 0.0.3
 	 */
 	public CompletableFuture<Role> createRole() {
-		return null;
+		return this.createRole(null, 0, 0, false, false);
 	}
 
 	/**
@@ -317,7 +319,7 @@ public class Guild {
 	 * @since 0.0.3
 	 */
 	public CompletableFuture<Role> createRole(String name, int permissions, int color) {
-		return null;
+		return this.createRole(name, permissions, color, false, false);
 	}
 
 	/**
@@ -484,10 +486,23 @@ public class Guild {
 	}
 
 	/**
+	 * Makes the client leave the guild
+	 * 
+	 * @return A Future that completes with {@code this} if successful.
+	 */
+	public CompletableFuture<Guild> leave() {
+		CompletableFuture<Guild> future = new CompletableFuture<>();
+		this.kickMember(members.get(this.loader.user.id)).thenAcceptAsync(action -> {
+			future.complete(this);
+		});
+		return future;
+	}
+
+	/**
 	 * Sets the guild's icon if the loader has sufficient permissions
 	 * 
 	 * @param icon location of icon file on disk
-	 * @return CompletableFuture
+	 * @return A Future that completes with {@code this} if successful.
 	 * @throws IOException
 	 */
 	public CompletableFuture<Guild> setIcon(String icon) throws IOException {
@@ -500,7 +515,7 @@ public class Guild {
 	 * Sets the guild's name if the loader has sufficient permissions
 	 * 
 	 * @param name The guild's new name
-	 * @return CompletableFuture
+	 * @return A Future that completes with {@code this} if successful.
 	 */
 	public CompletableFuture<Guild> setName(String name) {
 		return this.loader.rest.modifyGuild(this, new JSONObject().put("name", name));
@@ -588,17 +603,25 @@ public class Guild {
 	 * Sets the Guild's voice region to the specified region
 	 * 
 	 * @param region The new voice region
-	 * @return {@link CompletableFuture}
+	 * @return A Future that completes with {@code this} if successful.
 	 */
 	public CompletableFuture<Guild> setVoiceRegion(String region) {
 		return this.loader.rest.modifyGuild(this, new JSONObject().put("region", region));
 	}
 
 	/**
-	 * Syncs the guild to the client if the logged in user is not a bot
+	 * Syncs the guild to the client if the logged in user is not a bot.
 	 */
 	public void sync() {
+		if (isSyncing()) {
+			DiscLoader.LOG.warning("Cannot sync a guild that is already syncing");
+			return;
+		}
 		this.loader.syncGuilds(this.id);
+	}
+
+	public boolean isSyncing() {
+		return syncing;
 	}
 
 }

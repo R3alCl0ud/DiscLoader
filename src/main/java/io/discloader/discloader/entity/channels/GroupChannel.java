@@ -72,4 +72,14 @@ public class GroupChannel extends Channel implements ITextChannel {
 		return this.messages;
 	}
 
+	@Override
+	public CompletableFuture<Message> pinMessage(Message message) {
+		return null;
+	}
+
+	@Override
+	public CompletableFuture<Message> unpinMessage(Message message) {
+		return null;
+	}
+
 }

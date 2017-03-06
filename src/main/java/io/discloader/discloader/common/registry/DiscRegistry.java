@@ -1,3 +1,4 @@
+
 package io.discloader.discloader.common.registry;
 
 import java.util.HashMap;
@@ -8,6 +9,10 @@ import io.discloader.discloader.common.discovery.ModContainer;
 import io.discloader.discloader.common.event.MessageCreateEvent;
 
 /**
+ * This class has been deprecated for being unoptimized.
+ * 
+ * @see CommandRegistry
+ * @see ModRegistry
  * @author Perry Berman
  *
  */
@@ -17,9 +22,9 @@ public class DiscRegistry {
 	public final DiscLoader loader;
 
 	public static String prefix;
-	
+
 	public static final HashMap<String, Command> commands = new HashMap<String, Command>();
-	
+
 	private static ModContainer currentActiveMod;
 
 	public DiscRegistry(DiscLoader loader) {
@@ -50,10 +55,10 @@ public class DiscRegistry {
 			cmd.execute(e);
 		}
 	}
-	
+
 	public static Command getCommand(String label) {
 		for (String key : commands.keySet()) {
-//			String modID = key.split(":")[0];
+			// String modID = key.split(":")[0];
 			String commandID = key.split(":")[1];
 			if (commandID.equals(label)) {
 				System.out.printf("%s\n", key);
@@ -62,5 +67,5 @@ public class DiscRegistry {
 		}
 		return null;
 	}
-	
+
 }

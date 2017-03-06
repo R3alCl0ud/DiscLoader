@@ -1,7 +1,7 @@
 package io.discloader.discloader.network.gateway;
 
 import java.io.IOException;
-import java.util.Timer;
+import java.util.ArrayList;
 
 import org.json.JSONObject;
 
@@ -27,7 +27,6 @@ public class DiscSocket {
 
 	private DiscSocketListener socketListener;
 
-	
 	public WebSocket ws;
 
 	public String sessionID;
@@ -42,9 +41,13 @@ public class DiscSocket {
 
 	private Thread heartbeatThread = null;
 
-	public Timer timer = new Timer();
+	private Thread resetRemaining = null;
+
+	private int remaining = 0;
 
 	public Gson gson = new Gson();
+
+	private ArrayList<Object> queue;
 
 	/**
 	 * @param loader
@@ -55,6 +58,8 @@ public class DiscSocket {
 		this.socketListener = new DiscSocketListener(this);
 
 		this.status = Status.IDLE;
+
+		this.queue = new ArrayList<>();
 	}
 
 	/**
@@ -68,6 +73,35 @@ public class DiscSocket {
 				"gzip");
 		this.ws.addListener(this.socketListener);
 		this.ws.connect();
+		resetRemaining = new Thread("t") {
+			public void run() {
+				while (ws.isOpen() && !resetRemaining.isInterrupted()) {
+					remaining = 120;
+					handleQueue();
+					try {
+						Thread.sleep(60000);
+					} catch (InterruptedException e) {
+						e.printStackTrace();
+					}
+
+				}
+			}
+		};
+		// resetRemaining.setPriority((Thread.NORM_PRIORITY +
+		// Thread.MAX_PRIORITY) / 2);
+		// resetRemaining.setDaemon(true);
+		// resetRemaining.start();
+	}
+
+	public void handleQueue() {
+		if (!ws.isOpen() || remaining == 0 || queue.isEmpty())
+			return;
+
+		Object payload = queue.get(0);
+		remaining--;
+		this.ws.sendText(DLUtil.gson.toJson(payload));
+		queue.remove(payload);
+		handleQueue();
 	}
 
 	public void keepAlive(final int interval) {
@@ -100,12 +134,38 @@ public class DiscSocket {
 	public void killHeartbeat() {
 		if (heartbeatThread != null) {
 			heartbeatThread.interrupt();
+			heartbeatThread = null;
+		}
+		if (resetRemaining != null) {
+			resetRemaining.interrupt();
+			resetRemaining = null;
 		}
 	}
-	
-	public void setReady() {
-	    status = Status.READY;
-//	    socketListener.handleQueue();
+
+	public void send(Object payload) {
+		send(payload, false);
+	}
+
+	public void send(Object payload, boolean force) {
+		// if (force) {
+		this.ws.sendText(DLUtil.gson.toJson(payload));
+		// return;
+		// }
+		// this.queue.add(payload);
+		// handleQueue();
+	}
+
+	public void send(JSONObject payload) {
+		send(payload, false);
+	}
+
+	public void send(JSONObject payload, boolean force) {
+		// if (force) {
+		this.ws.sendText(payload.toString());
+		// return;
+		// }
+		// this.queue.add(payload);
+		// handleQueue();
 	}
 
 	public void sendHeartbeat(boolean normal) {
@@ -120,19 +180,7 @@ public class DiscSocket {
 		this.lastHeartbeatAck = false;
 	}
 
-	public void send(Object payload, boolean force) {
-		this.ws.sendText(DLUtil.gson.toJson(payload));
-	}
-
-	public void send(Object payload) {
-		this.ws.sendText(DLUtil.gson.toJson(payload));
-	}
-
-	public void send(JSONObject payload, boolean force) {
-		this.ws.sendText(payload.toString());
-	}
-
-	public void send(JSONObject packet) {
-		this.send(packet, false);
+	public void setReady() {
+		status = Status.READY;
 	}
 }
