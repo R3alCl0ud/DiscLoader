@@ -1,5 +1,5 @@
 /**
- * 
+ * Contains core registries
  * 
  * @author Perry Berman
  */
