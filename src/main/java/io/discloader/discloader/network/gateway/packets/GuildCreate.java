@@ -6,7 +6,7 @@ import io.discloader.discloader.common.event.GuildCreateEvent;
 import io.discloader.discloader.entity.Guild;
 import io.discloader.discloader.network.gateway.DiscSocket;
 import io.discloader.discloader.network.json.GuildJSON;
-import io.discloader.discloader.util.Constants;
+import io.discloader.discloader.util.DLUtil;
 
 public class GuildCreate extends DLPacket {
 
@@ -26,8 +26,8 @@ public class GuildCreate extends DLPacket {
 			if (!guild.available && !data.unavailable) {
 				guild.setup(data);
 				this.socket.loader.checkReady();
-				if (this.socket.status == Constants.Status.READY && this.socket.loader.ready) {
-					this.socket.loader.emit(Constants.Events.GUILD_CREATE, new GuildCreateEvent(guild));
+				if (this.socket.status == DLUtil.Status.READY && this.socket.loader.ready) {
+					this.socket.loader.emit(DLUtil.Events.GUILD_CREATE, new GuildCreateEvent(guild));
 				}
 			}
 			

@@ -10,7 +10,7 @@ import io.discloader.discloader.entity.channels.TextChannel;
 import io.discloader.discloader.entity.impl.ITextChannel;
 import io.discloader.discloader.entity.sendable.RichEmbed;
 import io.discloader.discloader.network.json.MessageJSON;
-import io.discloader.discloader.util.Constants;
+import io.discloader.discloader.util.DLUtil;
 
 /**
  * Represents a message object on the api
@@ -129,9 +129,9 @@ public class Message {
 
         this.mentions = new Mentions(this, data.mentions, data.mention_roles, data.mention_everyone);
 
-        this.timestamp = Constants.parseISO8601(data.timestamp);
+        this.timestamp = DLUtil.parseISO8601(data.timestamp);
 
-        this.editedAt = data.edited_timestamp != null ? Constants.parseISO8601(data.edited_timestamp) : null;
+        this.editedAt = data.edited_timestamp != null ? DLUtil.parseISO8601(data.edited_timestamp) : null;
 
         this.member = this.guild != null ? this.guild.members.get(this.author.id) : null;
 
@@ -147,7 +147,7 @@ public class Message {
     /**
      * Deletes the message if the loader has suficient permissions
      * 
-     * @see Constants.PermissionFlags
+     * @see DLUtil.PermissionFlags
      * @return A Future that completes with {@literal this} when sucessfull
      */
     public CompletableFuture<Message> delete() {
@@ -190,7 +190,7 @@ public class Message {
 
         this.mentions.patch(data.mentions, data.mention_roles, data.mention_everyone);
 
-        this.editedAt = Constants.parseISO8601(data.edited_timestamp);
+        this.editedAt = DLUtil.parseISO8601(data.edited_timestamp);
 
         return this;
     }

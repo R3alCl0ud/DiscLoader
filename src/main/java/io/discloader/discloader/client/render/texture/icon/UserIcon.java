@@ -8,7 +8,7 @@ import javax.swing.ImageIcon;
 
 import io.discloader.discloader.client.render.texture.AbstractTexture;
 import io.discloader.discloader.entity.User;
-import io.discloader.discloader.util.Constants.Endpoints;
+import io.discloader.discloader.util.DLUtil.Endpoints;
 
 /**
  * @author Perry Berman

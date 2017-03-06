@@ -7,7 +7,7 @@ import io.discloader.discloader.entity.GuildMember;
 import io.discloader.discloader.network.gateway.DiscSocket;
 import io.discloader.discloader.network.json.GuildMembersChunkJSON;
 import io.discloader.discloader.network.json.MemberJSON;
-import io.discloader.discloader.util.Constants;
+import io.discloader.discloader.util.DLUtil;
 
 import java.util.HashMap;
 
@@ -32,9 +32,9 @@ public class GuildMembersChunk extends DLPacket {
         for (MemberJSON m : data.members) {
             members.put(m.user.id, guild.addMember(m));
         }
-        if (!this.loader.ready && this.socket.status != Constants.Status.READY) {
+        if (!this.loader.ready && this.socket.status != DLUtil.Status.READY) {
             this.loader.checkReady();
-        } else if (this.loader.ready && this.socket.status == Constants.Status.READY) {
+        } else if (this.loader.ready && this.socket.status == DLUtil.Status.READY) {
             for (IEventListener e : DiscLoader.handlers.values()) {
                 e.GuildMembersChunk(members);
             }

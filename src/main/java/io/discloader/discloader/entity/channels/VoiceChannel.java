@@ -7,7 +7,7 @@ import io.discloader.discloader.entity.impl.IGuildChannel;
 import io.discloader.discloader.entity.impl.IVoiceChannel;
 import io.discloader.discloader.entity.voice.VoiceConnection;
 import io.discloader.discloader.network.json.ChannelJSON;
-import io.discloader.discloader.util.Constants.ChannelType;
+import io.discloader.discloader.util.DLUtil.ChannelType;
 
 /**
  * @author Perry Berman

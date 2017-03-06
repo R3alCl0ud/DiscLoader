@@ -7,7 +7,7 @@ import io.discloader.discloader.entity.Guild;
 import io.discloader.discloader.entity.channels.Channel;
 import io.discloader.discloader.network.gateway.DiscSocket;
 import io.discloader.discloader.network.json.ChannelJSON;
-import io.discloader.discloader.util.Constants;
+import io.discloader.discloader.util.DLUtil;
 
 /**
  * @author Perry Berman
@@ -45,7 +45,7 @@ public class ChannelDelete extends DLPacket {
 			break;
 		}
 		ChannelDeleteEvent event = new ChannelDeleteEvent(channel);
-		this.socket.loader.emit(Constants.Events.CHANNEL_DELETE, event);
+		this.socket.loader.emit(DLUtil.Events.CHANNEL_DELETE, event);
 		for (IEventListener e : DiscLoader.handlers.values()) {
 			e.ChannelDelete(event);
 		}

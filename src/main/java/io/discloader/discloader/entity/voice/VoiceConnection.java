@@ -27,7 +27,7 @@ import io.discloader.discloader.network.voice.payloads.VoiceData;
 import io.discloader.discloader.network.voice.payloads.VoicePacket;
 import io.discloader.discloader.network.voice.payloads.VoiceReady;
 import io.discloader.discloader.network.voice.payloads.VoiceUDPBegin;
-import io.discloader.discloader.util.Constants;
+import io.discloader.discloader.util.DLUtil;
 
 /**
  * Represents a connection to a voice channel in Discord.
@@ -127,7 +127,7 @@ public class VoiceConnection {
 				return;
 			}
 		}
-		String payload = Constants.gson.toJson(new VoicePacket(1,
+		String payload = DLUtil.gson.toJson(new VoicePacket(1,
 				new VoiceUDPBegin(new VoiceData(externalAddress.getHostString(), externalAddress.getPort()))));
 		this.ws.send(payload);
 		this.ws.startHeartbeat(data.heartbeat_interval);
@@ -259,7 +259,7 @@ public class VoiceConnection {
 
 	private void sendStateUpdate() {
 		VoiceStateUpdate d = new VoiceStateUpdate(this.guild, this.channel, false, false);
-		this.loader.socket.send(new Packet(Constants.OPCodes.VOICE_STATE_UPDATE, d));
+		this.loader.socket.send(new Packet(DLUtil.OPCodes.VOICE_STATE_UPDATE, d));
 	}
 
 	/**

@@ -8,7 +8,7 @@ import io.discloader.discloader.entity.Presence;
 import io.discloader.discloader.entity.User;
 import io.discloader.discloader.network.gateway.DiscSocket;
 import io.discloader.discloader.network.json.PresenceJSON;
-import io.discloader.discloader.util.Constants;
+import io.discloader.discloader.util.DLUtil;
 
 /**
  * @author Perry Berman
@@ -39,7 +39,7 @@ public class PresenceUpdate extends DLPacket {
 		User oldUser = new User(user);
 		user.patch(data.user);
 		if (!user.equals(oldUser)) {
-			this.socket.loader.emit(Constants.Events.USER_UPDATE, new UserUpdateEvent(user, oldUser));
+			this.socket.loader.emit(DLUtil.Events.USER_UPDATE, new UserUpdateEvent(user, oldUser));
 		}
 
 		Guild guild = data.guild_id != null ? this.socket.loader.guilds.get(data.guild_id) : null;
@@ -47,7 +47,7 @@ public class PresenceUpdate extends DLPacket {
 			GuildMember member = guild.members.get(user.id);
 			if (member == null && !data.status.equalsIgnoreCase("offline")) {
 				member = guild.addMember(user, data.roles, false, false, data.nick, false);
-				this.socket.loader.emit(Constants.Events.GUILD_MEMBER_AVAILABLE, member);
+				this.socket.loader.emit(DLUtil.Events.GUILD_MEMBER_AVAILABLE, member);
 			}
 			if (member != null) {
 				GuildMember oldMember = new GuildMember(member);
@@ -55,7 +55,7 @@ public class PresenceUpdate extends DLPacket {
 					oldMember.frozenPresence = new Presence(member.getPresence());
 				}
 				guild.setPresence(data);
-				this.socket.loader.emit(Constants.Events.PRESENCE_UPDATE,
+				this.socket.loader.emit(DLUtil.Events.PRESENCE_UPDATE,
 						new GuildMemberUpdateEvent(member, oldMember, guild));
 			} else {
 				guild.setPresence(data);

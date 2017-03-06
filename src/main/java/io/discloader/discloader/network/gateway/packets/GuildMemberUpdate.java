@@ -7,7 +7,7 @@ import io.discloader.discloader.entity.Guild;
 import io.discloader.discloader.entity.GuildMember;
 import io.discloader.discloader.network.gateway.DiscSocket;
 import io.discloader.discloader.network.json.MemberJSON;
-import io.discloader.discloader.util.Constants.Status;
+import io.discloader.discloader.util.DLUtil.Status;
 
 /**
  * @author Perry Berman

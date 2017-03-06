@@ -10,7 +10,7 @@ import io.discloader.discloader.entity.Message;
 import io.discloader.discloader.entity.impl.ITextChannel;
 import io.discloader.discloader.entity.sendable.RichEmbed;
 import io.discloader.discloader.network.json.ChannelJSON;
-import io.discloader.discloader.util.Constants.ChannelType;
+import io.discloader.discloader.util.DLUtil.ChannelType;
 
 /**
  * Represents a TextChannel in a Guild on Discord

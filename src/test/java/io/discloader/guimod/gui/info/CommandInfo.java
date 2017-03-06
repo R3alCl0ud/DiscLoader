@@ -7,7 +7,7 @@ import javax.swing.ImageIcon;
 import javax.swing.JLabel;
 
 import io.discloader.discloader.client.command.Command;
-import io.discloader.discloader.util.Constants;
+import io.discloader.discloader.util.DLUtil;
 
 public class CommandInfo<T extends Command> extends AbstractInfo<T> {
 
@@ -26,7 +26,7 @@ public class CommandInfo<T extends Command> extends AbstractInfo<T> {
 		this.add(this.id = new JLabel("id: "));
 		this.add(this.usage = new JLabel("Usage: "));
 		this.add(this.desc = new JLabel("Description: "));
-		this.add(new Box.Filler(new Dimension(0, 300), new Dimension(0, 400), new Dimension(0, (int) Constants.screenSize.getHeight())));
+		this.add(new Box.Filler(new Dimension(0, 300), new Dimension(0, 400), new Dimension(0, (int) DLUtil.screenSize.getHeight())));
 	}
 
 	public void update(Command command) {

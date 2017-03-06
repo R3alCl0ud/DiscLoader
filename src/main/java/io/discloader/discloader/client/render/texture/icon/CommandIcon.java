@@ -11,7 +11,7 @@ import io.discloader.discloader.client.command.Command;
 import io.discloader.discloader.client.registry.TextureRegistry;
 import io.discloader.discloader.client.render.texture.AbstractTexture;
 import io.discloader.discloader.client.render.util.IIcon;
-import io.discloader.discloader.util.Constants;
+import io.discloader.discloader.util.DLUtil;
 
 /**
  * @author Perry Berman
@@ -50,7 +50,7 @@ public class CommandIcon extends AbstractTexture implements IIcon {
         if (file.exists() && file.isFile()) {
             return file;
         }
-        return Constants.MissingTexture;
+        return DLUtil.MissingTexture;
     }
 
     protected ImageIcon createImageIcon(String path) {
@@ -65,7 +65,7 @@ public class CommandIcon extends AbstractTexture implements IIcon {
             return new ImageIcon(imgURL);
         } else {
             try {
-                imgURL = Constants.MissingTexture.toURI().toURL();
+                imgURL = DLUtil.MissingTexture.toURI().toURL();
                 return new ImageIcon(imgURL);
             } catch (MalformedURLException e) {
                 e.printStackTrace();

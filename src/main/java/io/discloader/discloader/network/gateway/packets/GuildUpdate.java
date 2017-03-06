@@ -6,7 +6,7 @@ import io.discloader.discloader.common.event.IEventListener;
 import io.discloader.discloader.entity.Guild;
 import io.discloader.discloader.network.gateway.DiscSocket;
 import io.discloader.discloader.network.json.GuildJSON;
-import io.discloader.discloader.util.Constants;
+import io.discloader.discloader.util.DLUtil;
 
 /**
  * @author Perry Berman
@@ -25,7 +25,7 @@ public class GuildUpdate extends DLPacket {
 		Guild guild = this.loader.guilds.get(data.id);
 		guild.setup(data);
 		GuildUpdateEvent event = new GuildUpdateEvent(guild);
-		this.loader.emit(Constants.Events.GUILD_UPDATE, event);
+		this.loader.emit(DLUtil.Events.GUILD_UPDATE, event);
 		for (IEventListener e : DiscLoader.handlers.values()) {
 			e.GuildUpdate(event);
 		}

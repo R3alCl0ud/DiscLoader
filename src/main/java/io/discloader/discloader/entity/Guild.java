@@ -28,7 +28,7 @@ import io.discloader.discloader.network.json.MemberJSON;
 import io.discloader.discloader.network.json.PresenceJSON;
 import io.discloader.discloader.network.json.RoleJSON;
 import io.discloader.discloader.network.json.VoiceStateJSON;
-import io.discloader.discloader.util.Constants;
+import io.discloader.discloader.util.DLUtil;
 
 /**
  * This represents a Guild in Discord's API
@@ -196,7 +196,7 @@ public class Guild {
 			this.owner = member;
 		if (!exists && this.loader.ready && shouldEmit) {
 			GuildMemberAddEvent event = new GuildMemberAddEvent(member);
-			this.loader.emit(Constants.Events.GUILD_MEMBER_ADD, event);
+			this.loader.emit(DLUtil.Events.GUILD_MEMBER_ADD, event);
 			for (IEventListener e : DiscLoader.handlers.values()) {
 				e.GuildMemberAdd(event);
 			}
@@ -213,7 +213,7 @@ public class Guild {
 			this.owner = member;
 		if (this.loader.ready == true && emitEvent && !exists) {
 			GuildMemberAddEvent event = new GuildMemberAddEvent(member);
-			this.loader.emit(Constants.Events.GUILD_MEMBER_ADD, event);
+			this.loader.emit(DLUtil.Events.GUILD_MEMBER_ADD, event);
 			for (IEventListener e : DiscLoader.handlers.values()) {
 				e.GuildMemberAdd(event);
 			}
@@ -227,9 +227,43 @@ public class Guild {
 		Role role = new Role(this, guildRole);
 		this.roles.put(role.id, role);
 		if (!exists && this.loader.ready) {
-			this.loader.emit(Constants.Events.GUILD_ROLE_CREATE, role);
+			this.loader.emit(DLUtil.Events.GUILD_ROLE_CREATE, role);
 		}
 		return role;
+	}
+
+	/**
+	 * Bans the member from the {@link Guild} if the {@link DiscLoader loader}
+	 * has sufficient permissions
+	 *
+	 * @param member The member to ban from the guild
+	 * @see Permission
+	 * @return A CompletableFuture that completes with {@code this} if
+	 *         successful
+	 */
+	public CompletableFuture<GuildMember> ban(GuildMember member) {
+		return this.loader.rest.banMember(this, member);
+	}
+
+	/**
+	 * Begin a prune operation. Requires the 'KICK_MEMBERS' permission.
+	 * 
+	 * @return A Future that completes with the number of member kicked during
+	 *         the prune operation if successful.
+	 */
+	public CompletableFuture<Integer> beginPrune() {
+		return beginPrune(1);
+	}
+
+	/**
+	 * Begin a prune operation. Requires the 'KICK_MEMBERS' permission.
+	 * 
+	 * @param days The number of days to prune (1 or more)
+	 * @return A Future that completes with the number of member kicked during
+	 *         the prune operation if successful.
+	 */
+	public CompletableFuture<Integer> beginPrune(int days) {
+		return this.loader.rest.beginPrune(this, days);
 	}
 
 	/**
@@ -359,7 +393,7 @@ public class Guild {
 	 */
 	public CompletableFuture<Guild> delete() {
 		CompletableFuture<Guild> future = new CompletableFuture<Guild>();
-		this.loader.rest.makeRequest(Constants.Endpoints.guild(this.id), Constants.Methods.DELETE, true)
+		this.loader.rest.makeRequest(DLUtil.Endpoints.guild(this.id), DLUtil.Methods.DELETE, true)
 				.thenAcceptAsync(data -> {
 					future.complete(this);
 				});
@@ -410,6 +444,45 @@ public class Guild {
 		return this.textChannels.get(this.id);
 	}
 
+	public CompletableFuture<HashMap<String, Invite>> getInvites() {
+		return null;
+	}
+
+	/**
+	 * same as {@link #getPruneCount(int)} but only grabs one days worth
+	 * 
+	 * @return A Future that completes with the number of member that would be
+	 *         kicked in a prune operation
+	 */
+	public CompletableFuture<Integer> getPruneCount() {
+		return getPruneCount(1);
+	}
+
+	/**
+	 * Returns the number of members that would be removed in a prune operation.
+	 * Requires the {@literal KICK_MEMBERS} permission.
+	 * 
+	 * @param count The number of days to count prune for (1 or more)
+	 * @return A Future that completes with the number of member that would be
+	 *         kicked in a prune operation
+	 */
+	public CompletableFuture<Integer> getPruneCount(int count) {
+		return this.loader.rest.pruneCount(this, count);
+	}
+
+	/**
+	 * Kicks the member from the {@link Guild} if the {@link DiscLoader client}
+	 * has sufficient permissions
+	 * 
+	 * @param member The member to kick from the guild
+	 * @see Permission
+	 * @return A CompletableFuture that completes with {@code this} if
+	 *         successful
+	 */
+	public CompletableFuture<GuildMember> kickMember(GuildMember member) {
+		return this.loader.rest.removeMember(this, member);
+	}
+
 	/**
 	 * Sets the guild's icon if the loader has sufficient permissions
 	 * 
@@ -453,7 +526,7 @@ public class Guild {
 
 		this.name = data.name;
 		this.icon = data.icon != null ? data.icon : null;
-		this.iconURL = this.icon != null ? Constants.Endpoints.guildIcon(this.id, this.icon) : null;
+		this.iconURL = this.icon != null ? DLUtil.Endpoints.guildIcon(this.id, this.icon) : null;
 		this.ownerID = data.owner_id;
 		this.memberCount = data.member_count;
 		this.voiceRegion = new VoiceRegion(data.region);

@@ -10,7 +10,7 @@ import io.discloader.discloader.entity.Guild;
 import io.discloader.discloader.entity.channels.Channel;
 import io.discloader.discloader.network.gateway.DiscSocket;
 import io.discloader.discloader.network.json.ChannelJSON;
-import io.discloader.discloader.util.Constants;
+import io.discloader.discloader.util.DLUtil;
 
 /**
  * @author Perry Berman
@@ -37,7 +37,7 @@ public class ChannelCreate extends DLPacket {
 			channel = this.socket.loader.addChannel(data);
 		}
 		ChannelCreateEvent event = new ChannelCreateEvent(channel);
-		this.socket.loader.emit(Constants.Events.CHANNEL_CREATE, event);
+		this.socket.loader.emit(DLUtil.Events.CHANNEL_CREATE, event);
 		for (IEventListener e : DiscLoader.handlers.values()) {
 			e.ChannelCreate(event);
 		}

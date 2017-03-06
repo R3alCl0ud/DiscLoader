@@ -11,7 +11,7 @@ import io.discloader.discloader.entity.User;
 import io.discloader.discloader.entity.impl.ITextChannel;
 import io.discloader.discloader.entity.sendable.RichEmbed;
 import io.discloader.discloader.network.json.ChannelJSON;
-import io.discloader.discloader.util.Constants.ChannelType;
+import io.discloader.discloader.util.DLUtil.ChannelType;
 
 public class GroupChannel extends Channel implements ITextChannel {
 

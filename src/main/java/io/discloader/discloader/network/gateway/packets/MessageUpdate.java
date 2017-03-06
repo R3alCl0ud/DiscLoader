@@ -9,7 +9,7 @@ import io.discloader.discloader.common.event.MessageUpdateEvent;
 import io.discloader.discloader.entity.impl.ITextChannel;
 import io.discloader.discloader.network.gateway.DiscSocket;
 import io.discloader.discloader.network.json.MessageJSON;
-import io.discloader.discloader.util.Constants;
+import io.discloader.discloader.util.DLUtil;
 
 /**
  * @author Perry Berman
@@ -31,7 +31,7 @@ public class MessageUpdate extends DLPacket {
 			channel = this.socket.loader.privateChannels.get(data.channel_id);
 		
 		MessageUpdateEvent event = new MessageUpdateEvent(channel.getMessage(data.id).patch(data));
-		this.socket.loader.emit(Constants.Events.MESSAGE_UPDATE, event);
+		this.socket.loader.emit(DLUtil.Events.MESSAGE_UPDATE, event);
 		for (IEventListener e : DiscLoader.handlers.values()) {
 			e.MessageUpdate(event);
 		}

@@ -3,7 +3,7 @@ package io.discloader.discloader.entity.channels;
 import io.discloader.discloader.common.DiscLoader;
 import io.discloader.discloader.entity.impl.IChannel;
 import io.discloader.discloader.network.json.ChannelJSON;
-import io.discloader.discloader.util.Constants.ChannelType;
+import io.discloader.discloader.util.DLUtil.ChannelType;
 
 public class Channel implements IChannel {
 

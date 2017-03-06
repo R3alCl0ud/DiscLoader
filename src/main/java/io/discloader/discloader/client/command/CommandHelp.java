@@ -9,7 +9,7 @@ import io.discloader.discloader.common.event.MessageCreateEvent;
 import io.discloader.discloader.common.language.LanguageRegistry;
 import io.discloader.discloader.common.registry.CommandRegistry;
 import io.discloader.discloader.entity.sendable.RichEmbed;
-import io.discloader.discloader.util.Constants;
+import io.discloader.discloader.util.DLUtil;
 
 /**
  * 
@@ -34,7 +34,7 @@ public class CommandHelp extends Command {
 			String cmd = e.args[1];
 			Command command = CommandHandler.getCommand(cmd, e.message);
 			if (command != null) {
-				File icon = Constants.MissingTexture;
+				File icon = DLUtil.MissingTexture;
 				IIcon iicon = (CommandIcon) command.getIcon();
 
 				if (iicon != null && iicon.getFile() != null) {

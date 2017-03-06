@@ -4,7 +4,7 @@ import java.util.Collection;
 import java.util.HashMap;
 
 /**
- * Custom hax thingy that stores stuff
+ * Custom hax thing that stores stuff
  * 
  * @author Perry Berman
  * @since 0.0.1

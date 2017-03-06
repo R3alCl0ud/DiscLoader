@@ -10,7 +10,7 @@ import io.discloader.discloader.entity.Guild;
 import io.discloader.discloader.entity.User;
 import io.discloader.discloader.network.gateway.DiscSocket;
 import io.discloader.discloader.network.json.GuildMemberRemoveJSON;
-import io.discloader.discloader.util.Constants;
+import io.discloader.discloader.util.DLUtil;
 
 /**
  * @author Perry Berman
@@ -34,7 +34,7 @@ public class GuildBanRemove extends DLPacket {
 			user = this.loader.addUser(data.user);
 		}
 		GuildBanRemoveEvent event = new GuildBanRemoveEvent(guild, user);
-		this.loader.emit(Constants.Events.GUILD_BAN_REMOVE, event);
+		this.loader.emit(DLUtil.Events.GUILD_BAN_REMOVE, event);
 		for (IEventListener e : DiscLoader.handlers.values()) {
 			e.GuildBanRemove(event);
 		}

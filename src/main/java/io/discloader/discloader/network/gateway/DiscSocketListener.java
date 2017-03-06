@@ -42,10 +42,10 @@ import io.discloader.discloader.network.gateway.packets.RoleUpdate;
 import io.discloader.discloader.network.gateway.packets.SocketPacket;
 import io.discloader.discloader.network.gateway.packets.VoiceServerUpdate;
 import io.discloader.discloader.network.gateway.packets.VoiceStateUpdate;
-import io.discloader.discloader.util.Constants;
-import io.discloader.discloader.util.Constants.OPCodes;
-import io.discloader.discloader.util.Constants.Status;
-import io.discloader.discloader.util.Constants.WSEvents;
+import io.discloader.discloader.util.DLUtil;
+import io.discloader.discloader.util.DLUtil.OPCodes;
+import io.discloader.discloader.util.DLUtil.Status;
+import io.discloader.discloader.util.DLUtil.WSEvents;
 
 public class DiscSocketListener extends WebSocketAdapter {
     public Gson gson = new Gson();
@@ -104,7 +104,7 @@ public class DiscSocketListener extends WebSocketAdapter {
             this.handlers.get(WSEvents.HELLO).handle(packet);
         }
 
-        if (packet.op == Constants.OPCodes.HEARTBEAT_ACK) {
+        if (packet.op == DLUtil.OPCodes.HEARTBEAT_ACK) {
             this.socket.lastHeartbeatAck = true;
             this.loader.emit("debug", "Heartbeat Acknowledged");
         } else if (packet.op == OPCodes.HEARTBEAT) {
@@ -116,7 +116,7 @@ public class DiscSocketListener extends WebSocketAdapter {
         this.setSequence(packet.s);
 
         if (this.socket.status != Status.READY) {
-            if (Constants.EventWhitelist.indexOf(packet.t) == -1) {
+            if (DLUtil.EventWhitelist.indexOf(packet.t) == -1) {
                 this.queue.add(packet);
                 return;
             }

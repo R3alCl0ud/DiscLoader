@@ -7,7 +7,7 @@ import io.discloader.discloader.entity.Guild;
 import io.discloader.discloader.entity.Role;
 import io.discloader.discloader.network.gateway.DiscSocket;
 import io.discloader.discloader.network.json.GuildRoleJSON;
-import io.discloader.discloader.util.Constants;
+import io.discloader.discloader.util.DLUtil;
 
 /**
  * @author Perry Berman
@@ -25,7 +25,7 @@ public class RoleDelete extends DLPacket {
 		Guild guild = this.loader.guilds.get(data.guild_id);
 		Role role = guild.roles.remove(data.role_id);
 		GuildRoleDeleteEvent event = new GuildRoleDeleteEvent(role);
-		this.loader.emit(Constants.Events.GUILD_ROLE_DELETE, event);
+		this.loader.emit(DLUtil.Events.GUILD_ROLE_DELETE, event);
 		for (IEventListener e : DiscLoader.handlers.values()) {
 			e.GuildRoleDelete(event);
 		}

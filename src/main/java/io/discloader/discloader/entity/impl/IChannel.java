@@ -2,7 +2,7 @@ package io.discloader.discloader.entity.impl;
 
 import io.discloader.discloader.entity.channels.Channel;
 import io.discloader.discloader.network.json.ChannelJSON;
-import io.discloader.discloader.util.Constants.ChannelType;
+import io.discloader.discloader.util.DLUtil.ChannelType;
 
 public interface IChannel {
 

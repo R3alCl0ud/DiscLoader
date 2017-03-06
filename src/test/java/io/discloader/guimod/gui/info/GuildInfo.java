@@ -7,7 +7,7 @@ import javax.swing.Box;
 import javax.swing.JLabel;
 
 import io.discloader.discloader.entity.Guild;
-import io.discloader.discloader.util.Constants;
+import io.discloader.discloader.util.DLUtil;
 
 public class GuildInfo<T> extends AbstractInfo<T> {
 
@@ -25,7 +25,7 @@ public class GuildInfo<T> extends AbstractInfo<T> {
 		this.add(this.name = new JLabel("Name: "));
 		this.add(this.id = new JLabel("ID: "));
 		this.add(this.region = new JLabel("Region: "));
-		this.add(new Box.Filler(new Dimension(0, 300), new Dimension(0, 400), new Dimension(0, (int) Constants.screenSize.getHeight())));
+		this.add(new Box.Filler(new Dimension(0, 300), new Dimension(0, 400), new Dimension(0, (int) DLUtil.screenSize.getHeight())));
 		this.id.setForeground(new Color(0xFFFFFF));
 		this.name.setForeground(new Color(0xFFFFFF));
 

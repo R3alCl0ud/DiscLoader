@@ -4,7 +4,7 @@ import java.util.concurrent.CompletableFuture;
 
 import org.json.JSONObject;
 
-import io.discloader.discloader.util.Constants;
+import io.discloader.discloader.util.DLUtil;
 
 /**
  * Represents the user that you are currently logged in as.
@@ -96,7 +96,7 @@ public class DLUser extends User {
 	 * @return this
 	 */
 	public User setPresence(String status, Game game, boolean afk) {
-		JSONObject payload = new JSONObject().put("op", Constants.OPCodes.STATUS_UPDATE);
+		JSONObject payload = new JSONObject().put("op", DLUtil.OPCodes.STATUS_UPDATE);
 		game = game != null ? game : this.presence.game;
 		JSONObject d = new JSONObject().put("game", game != null ? game.toJsonString() : null).put("afk", this.afk)
 				.put("status", status != null ? status : this.presence.status).put("since", 0);

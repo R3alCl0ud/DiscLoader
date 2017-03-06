@@ -10,7 +10,7 @@ import io.discloader.discloader.entity.Guild;
 import io.discloader.discloader.entity.Role;
 import io.discloader.discloader.network.gateway.DiscSocket;
 import io.discloader.discloader.network.json.RoleJSON;
-import io.discloader.discloader.util.Constants;
+import io.discloader.discloader.util.DLUtil;
 
 /**
  * @author Perry Berman
@@ -30,7 +30,7 @@ public class RoleUpdate extends DLPacket {
 		Role oldRole = role.clone();
 		role.update(data.role);
 		GuildRoleUpdateEvent event = new GuildRoleUpdateEvent(role, oldRole);
-		this.loader.emit(Constants.Events.GUILD_ROLE_UPDATE, event);
+		this.loader.emit(DLUtil.Events.GUILD_ROLE_UPDATE, event);
 		for (IEventListener e : DiscLoader.handlers.values()) {
 			e.GuildRoleUpdate(event);
 		}

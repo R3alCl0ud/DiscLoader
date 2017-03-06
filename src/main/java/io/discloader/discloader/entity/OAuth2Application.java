@@ -1,7 +1,7 @@
 package io.discloader.discloader.entity;
 
 import io.discloader.discloader.network.json.OAuthApplicationJSON;
-import io.discloader.discloader.util.Constants;
+import io.discloader.discloader.util.DLUtil;
 
 public class OAuth2Application {
 
@@ -76,7 +76,7 @@ public class OAuth2Application {
 	 * @return The Application's OAuth2 authorization link
 	 */
 	public String getOAuthURL(int permissions) {
-		return Constants.Endpoints.OAuth2Authorize(this.clientID, "bot", permissions);
+		return DLUtil.Endpoints.OAuth2Authorize(this.clientID, "bot", permissions);
 	}
 
 	/**

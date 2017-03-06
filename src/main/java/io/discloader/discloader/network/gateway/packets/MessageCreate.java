@@ -11,8 +11,8 @@ import io.discloader.discloader.entity.Message;
 import io.discloader.discloader.entity.impl.ITextChannel;
 import io.discloader.discloader.network.gateway.DiscSocket;
 import io.discloader.discloader.network.json.MessageJSON;
-import io.discloader.discloader.util.Constants;
-import io.discloader.discloader.util.Constants.ChannelType;
+import io.discloader.discloader.util.DLUtil;
+import io.discloader.discloader.util.DLUtil.ChannelType;
 
 /**
  * @author Perry Berman
@@ -39,12 +39,12 @@ public class MessageCreate extends DLPacket {
 			channel.getMessages().put(message.id, message);
 			MessageCreateEvent event = new MessageCreateEvent(message);
 			if (channel.getType() == ChannelType.TEXT) {
-				this.socket.loader.emit(Constants.Events.MESSAGE_CREATE, event);
+				this.socket.loader.emit(DLUtil.Events.MESSAGE_CREATE, event);
 				for (IEventListener e : DiscLoader.handlers.values()) {
 					e.MessageCreate(event);
 				}
 			} else {
-				this.loader.emit(Constants.Events.PRIVATE_MESSAGE_CREATE, event);
+				this.loader.emit(DLUtil.Events.PRIVATE_MESSAGE_CREATE, event);
 				for (IEventListener e : DiscLoader.handlers.values()) {
 					e.PrivateMessageCreate(event);
 				}

@@ -11,8 +11,8 @@ import com.neovisionaries.ws.client.WebSocketException;
 import com.neovisionaries.ws.client.WebSocketFactory;
 
 import io.discloader.discloader.common.DiscLoader;
-import io.discloader.discloader.util.Constants;
-import io.discloader.discloader.util.Constants.Status;
+import io.discloader.discloader.util.DLUtil;
+import io.discloader.discloader.util.DLUtil.Status;
 
 /**
  * @author Perry Berman
@@ -115,17 +115,17 @@ public class DiscSocket {
 		}
 		this.loader.emit("debug", "Attempting heartbeat");
 		JSONObject payload = new JSONObject();
-		payload.put("op", Constants.OPCodes.HEARTBEAT).put("d", this.s);
+		payload.put("op", DLUtil.OPCodes.HEARTBEAT).put("d", this.s);
 		this.send(payload, true);
 		this.lastHeartbeatAck = false;
 	}
 
 	public void send(Object payload, boolean force) {
-		this.ws.sendText(Constants.gson.toJson(payload));
+		this.ws.sendText(DLUtil.gson.toJson(payload));
 	}
 
 	public void send(Object payload) {
-		this.ws.sendText(Constants.gson.toJson(payload));
+		this.ws.sendText(DLUtil.gson.toJson(payload));
 	}
 
 	public void send(JSONObject payload, boolean force) {

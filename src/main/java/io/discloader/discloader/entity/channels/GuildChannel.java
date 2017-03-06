@@ -10,7 +10,7 @@ import io.discloader.discloader.entity.Permission;
 import io.discloader.discloader.entity.Role;
 import io.discloader.discloader.entity.impl.IGuildChannel;
 import io.discloader.discloader.network.json.ChannelJSON;
-import io.discloader.discloader.util.Constants;
+import io.discloader.discloader.util.DLUtil;
 
 public class GuildChannel extends Channel implements IGuildChannel {
     /**
@@ -57,7 +57,7 @@ public class GuildChannel extends Channel implements IGuildChannel {
     public HashMap<String, GuildMember> getMembers() {
         HashMap<String, GuildMember> members = new HashMap<String, GuildMember>();
         for (GuildMember member : this.guild.members.values()) {
-            if (this.permissionsFor(member).hasPermission(Constants.PermissionFlags.READ_MESSAGES, false))
+            if (this.permissionsFor(member).hasPermission(DLUtil.PermissionFlags.READ_MESSAGES, false))
                 members.put(member.id, member);
         }
         return members;

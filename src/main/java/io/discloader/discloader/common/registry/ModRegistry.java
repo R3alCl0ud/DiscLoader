@@ -16,7 +16,7 @@ import io.discloader.discloader.common.event.DLPreInitEvent;
 import io.discloader.discloader.common.event.IEventListener;
 import io.discloader.discloader.common.language.LanguageRegistry;
 import io.discloader.discloader.common.start.Main;
-import io.discloader.discloader.util.Constants;
+import io.discloader.discloader.util.DLUtil;
 
 public class ModRegistry {
 
@@ -94,7 +94,7 @@ public class ModRegistry {
 		ProgressLogger.stage(1, 3, "Begin PreInit");
 		Command.registerCommands();
 		ProgressLogger.stage(2, 3, "Registering Default Language");
-		LanguageRegistry.registerLanguage(Constants.enUS);
+		LanguageRegistry.registerLanguage(DLUtil.enUS);
 
 		TimerTask pre = new TimerTask() {
 			@Override

@@ -8,7 +8,7 @@ import javax.swing.JLabel;
 
 import io.discloader.discloader.client.render.texture.icon.UserIcon;
 import io.discloader.discloader.entity.User;
-import io.discloader.discloader.util.Constants;
+import io.discloader.discloader.util.DLUtil;
 
 public class UserInfo<T extends User> extends AbstractInfo<T> {
 
@@ -29,7 +29,7 @@ public class UserInfo<T extends User> extends AbstractInfo<T> {
 		this.add(this.avatarHash = new JLabel("Avatar: "));
 		this.add(this.avatarURL = new JLabel("AvatarURL: "));
 		this.add(new Box.Filler(new Dimension(0, 300), new Dimension(0, 400),
-				new Dimension(0, (int) Constants.screenSize.getHeight())));
+				new Dimension(0, (int) DLUtil.screenSize.getHeight())));
 		this.username.setForeground(new Color(0xFFFFFF));
 		this.id.setForeground(new Color(0xFFFFFF));
 		this.avatar.setForeground(new Color(0xFFFFFF));

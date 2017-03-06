@@ -7,7 +7,7 @@ import io.discloader.discloader.entity.Message;
 import io.discloader.discloader.entity.impl.ITextChannel;
 import io.discloader.discloader.network.gateway.DiscSocket;
 import io.discloader.discloader.network.json.MessageJSON;
-import io.discloader.discloader.util.Constants;
+import io.discloader.discloader.util.DLUtil;
 
 /**
  * @author Perry Berman
@@ -30,7 +30,7 @@ public class MessageDelete extends DLPacket {
 			channel = this.socket.loader.privateChannels.get(data.channel_id);
 		
 		MessageDeleteEvent event = new MessageDeleteEvent(new Message(channel, data));
-		this.socket.loader.emit(Constants.Events.MESSAGE_DELETE, event);
+		this.socket.loader.emit(DLUtil.Events.MESSAGE_DELETE, event);
 		for (IEventListener e : DiscLoader.handlers.values()) {
 			e.MessageDelete(event);
 		}
