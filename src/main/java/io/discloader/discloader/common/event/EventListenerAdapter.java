@@ -3,6 +3,7 @@ package io.discloader.discloader.common.event;
 import java.util.HashMap;
 
 import io.discloader.discloader.common.DiscLoader;
+import io.discloader.discloader.entity.Emoji;
 import io.discloader.discloader.entity.GuildMember;
 
 /**
@@ -46,7 +47,7 @@ public abstract class EventListenerAdapter implements IEventListener {
 	}
 
 	@Override
-	public void GuildEmojisUpdate() {
+	public void GuildEmojisUpdate(HashMap<String, Emoji> emojis) {
 	}
 
 	@Override

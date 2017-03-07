@@ -60,6 +60,7 @@ public class Main {
 		parseArgs(args);
 		loader = new DiscLoader(shards, shard);
 		loader.startup();
+		loader.login(token);
 	}
 
 	public static void parseArgs(String... args) {

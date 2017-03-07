@@ -4,6 +4,7 @@ import java.util.HashMap;
 
 import io.discloader.discloader.common.DiscLoader;
 import io.discloader.discloader.common.registry.ModRegistry;
+import io.discloader.discloader.entity.Emoji;
 import io.discloader.discloader.entity.Guild;
 import io.discloader.discloader.entity.GuildMember;
 import io.discloader.discloader.entity.Role;
@@ -65,7 +66,7 @@ public interface IEventListener {
 	 */
 	void GuildDelete(GuildDeleteEvent e);
 
-	void GuildEmojisUpdate();
+	void GuildEmojisUpdate(HashMap<String, Emoji> emojis);
 
 	/**
 	 * Executed when a {@link GuildMember} joins a guild
