@@ -25,14 +25,17 @@ import io.discloader.discloader.entity.channels.TextChannel;
 import io.discloader.discloader.entity.channels.VoiceChannel;
 import io.discloader.discloader.entity.impl.ITextChannel;
 import io.discloader.discloader.entity.sendable.CreateEmoji;
+import io.discloader.discloader.entity.sendable.CreateRole;
 import io.discloader.discloader.entity.sendable.FetchMembers;
 import io.discloader.discloader.entity.sendable.RichEmbed;
 import io.discloader.discloader.entity.sendable.SendableMessage;
 import io.discloader.discloader.network.json.ChannelJSON;
 import io.discloader.discloader.network.json.GuildJSON;
+import io.discloader.discloader.network.json.InviteJSON;
 import io.discloader.discloader.network.json.MemberJSON;
 import io.discloader.discloader.network.json.MessageJSON;
 import io.discloader.discloader.network.json.OAuthApplicationJSON;
+import io.discloader.discloader.network.json.RoleJSON;
 import io.discloader.discloader.network.json.UserJSON;
 import io.discloader.discloader.util.DLUtil;
 import io.discloader.discloader.util.DLUtil.Endpoints;
@@ -80,8 +83,8 @@ public class RESTManager {
 
 	public CompletableFuture<TextChannel> createTextChannel(Guild guild, JSONObject data) {
 		CompletableFuture<TextChannel> future = new CompletableFuture<TextChannel>();
-		this.makeRequest(DLUtil.Endpoints.guildChannels(guild.id), DLUtil.Methods.POST, true,
-				data.put("type", "text")).thenAcceptAsync(action -> {
+		this.makeRequest(DLUtil.Endpoints.guildChannels(guild.id), DLUtil.Methods.POST, true, data.put("type", "text"))
+				.thenAcceptAsync(action -> {
 					future.complete(
 							(TextChannel) this.loader.addChannel(this.gson.fromJson(action, ChannelJSON.class), guild));
 				});
@@ -90,8 +93,8 @@ public class RESTManager {
 
 	public CompletableFuture<VoiceChannel> createVoiceChannel(Guild guild, JSONObject data) {
 		CompletableFuture<VoiceChannel> future = new CompletableFuture<VoiceChannel>();
-		this.makeRequest(DLUtil.Endpoints.guildChannels(guild.id), DLUtil.Methods.POST, true,
-				data.put("type", "voice")).thenAcceptAsync(action -> {
+		this.makeRequest(DLUtil.Endpoints.guildChannels(guild.id), DLUtil.Methods.POST, true, data.put("type", "voice"))
+				.thenAcceptAsync(action -> {
 					future.complete((VoiceChannel) this.loader.addChannel(this.gson.fromJson(action, ChannelJSON.class),
 							guild));
 				});
@@ -130,12 +133,11 @@ public class RESTManager {
 
 	public CompletableFuture<OAuth2Application> getApplicationInfo() {
 		CompletableFuture<OAuth2Application> future = new CompletableFuture<OAuth2Application>();
-		this.makeRequest(DLUtil.Endpoints.currentOAuthApplication, DLUtil.Methods.GET, true)
-				.thenAcceptAsync(data -> {
-					OAuthApplicationJSON appData = this.gson.fromJson(data, OAuthApplicationJSON.class);
-					User owner = this.loader.addUser(appData.owner);
-					future.complete(new OAuth2Application(appData, owner));
-				});
+		this.makeRequest(DLUtil.Endpoints.currentOAuthApplication, DLUtil.Methods.GET, true).thenAcceptAsync(data -> {
+			OAuthApplicationJSON appData = this.gson.fromJson(data, OAuthApplicationJSON.class);
+			User owner = this.loader.addUser(appData.owner);
+			future.complete(new OAuth2Application(appData, owner));
+		});
 
 		return future;
 	}
@@ -204,11 +206,10 @@ public class RESTManager {
 
 	public CompletableFuture<Guild> modifyGuild(Guild guild, JSONObject data) {
 		CompletableFuture<Guild> future = new CompletableFuture<Guild>();
-		this.makeRequest(DLUtil.Endpoints.guild(guild.id), DLUtil.Methods.PATCH, true, data)
-				.thenAcceptAsync(action -> {
-					guild.setup(this.gson.fromJson(action, GuildJSON.class));
-					future.complete(guild);
-				});
+		this.makeRequest(DLUtil.Endpoints.guild(guild.id), DLUtil.Methods.PATCH, true, data).thenAcceptAsync(action -> {
+			guild.setup(this.gson.fromJson(action, GuildJSON.class));
+			future.complete(guild);
+		});
 		return future;
 	}
 
@@ -284,6 +285,27 @@ public class RESTManager {
 				.thenAcceptAsync(action -> {
 					future.complete(member);
 				});
+		return future;
+	}
+
+	public CompletableFuture<Role> createRole(Guild guild, String name, int permissions, int color, boolean hoist,
+			boolean mentionable) {
+		CompletableFuture<Role> future = new CompletableFuture<Role>();
+		CreateRole payload = new CreateRole(name, permissions, color, hoist, mentionable);
+		this.makeRequest(Endpoints.guildRoles(guild.id), Methods.POST, true, payload).thenAcceptAsync(action -> {
+			RoleJSON data = gson.fromJson(action, RoleJSON.class);
+			future.complete(guild.addRole(data));
+		});
+		return future;
+	}
+
+	public CompletableFuture<InviteJSON[]> getInvites(Guild guild) {
+		CompletableFuture<InviteJSON[]> future = new CompletableFuture<>();
+		this.makeRequest(Endpoints.guildInvites(guild.id), Methods.GET, true).thenAcceptAsync(action -> {
+			InviteJSON[] data = gson.fromJson(action, InviteJSON[].class);
+			future.complete(data);
+		});
+
 		return future;
 	}
 

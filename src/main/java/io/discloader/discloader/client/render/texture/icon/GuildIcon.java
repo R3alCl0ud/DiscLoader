@@ -8,6 +8,7 @@ import javax.swing.ImageIcon;
 
 import io.discloader.discloader.client.render.texture.AbstractTexture;
 import io.discloader.discloader.entity.Guild;
+import io.discloader.discloader.entity.invite.InviteGuild;
 
 /**
  * @author Perry Berman
@@ -23,6 +24,13 @@ public class GuildIcon extends AbstractTexture {
 		this.setIconWidth(128);
 		this.setIconName(guild.icon != null ? guild.icon : guild.id);
 
+	}
+
+	public GuildIcon(InviteGuild inviteGuild) {
+		this.guild = null;
+		this.setIconHeight(128);
+		this.setIconWidth(128);
+		this.setIconName(inviteGuild.iconHash != null ? inviteGuild.iconHash : inviteGuild.id);
 	}
 
 	@Override

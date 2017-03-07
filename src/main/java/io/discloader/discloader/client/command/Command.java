@@ -7,8 +7,10 @@ import io.discloader.discloader.common.registry.CommandRegistry;
 import io.discloader.discloader.util.DLNameSpacedMap;
 
 /**
+ * 
+ * 
  * @author Perry Berman
- *
+ * @since 0.0.1
  */
 public class Command {
 

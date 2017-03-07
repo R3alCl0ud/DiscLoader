@@ -20,179 +20,202 @@ import io.discloader.discloader.util.DLUtil;
  */
 public class Message {
 
-    /**
-     * The message's Snowflake ID.
-     */
-    public final String id;
+	/**
+	 * The message's Snowflake ID.
+	 */
+	public final String id;
 
-    /**
-     * The message's content
-     */
-    public String content;
+	/**
+	 * The message's content
+	 */
+	public String content;
 
-    /**
-     * The time at which the message has been edited. is null if the message has not been edited
-     */
-    public String edited_timestamp;
+	/**
+	 * The time at which the message has been edited. is null if the message has
+	 * not been edited
+	 */
+	public String edited_timestamp;
 
-    /**
-     * Used for checking if the message has been sent
-     */
-    public String nonce;
+	/**
+	 * Used for checking if the message has been sent
+	 */
+	public String nonce;
 
-    /**
-     * The id of the webhook that sent the message. {@code null} if sent by a bot/user account
-     */
-    public String webhookID;
+	/**
+	 * The id of the webhook that sent the message. {@code null} if sent by a
+	 * bot/user account
+	 */
+	public String webhookID;
 
-    /**
-     * Whether or not the message was sent using /tts
-     */
-    public boolean tts;
+	/**
+	 * Whether or not the message was sent using /tts
+	 */
+	public boolean tts;
 
-    /**
-     * Whether or not you can edit the message. <br>
-     * will always be true when {@code author.id == this.loader.user.id}
-     */
-    public boolean editable;
+	/**
+	 * Whether or not you can edit the message. <br>
+	 * will always be true when {@code author.id == this.loader.user.id}
+	 */
+	public boolean editable;
 
-    /**
-     * Is the messaged pinned in the {@link #channel}
-     */
-    public boolean pinned;
+	/**
+	 * Is the messaged pinned in the {@link #channel}
+	 */
+	public boolean pinned;
 
-    /**
-     * The time at which the message was sent
-     */
-    public final Date timestamp;
+	/**
+	 * The time at which the message was sent
+	 */
+	public final Date timestamp;
 
-    /**
-     * The time at which the message was lasted edited at
-     */
-    public Date editedAt;
+	/**
+	 * The time at which the message was lasted edited at
+	 */
+	public Date editedAt;
 
-    /**
-     * An object containing the information about who was mentioned in the message
-     */
-    public Mentions mentions;
+	/**
+	 * An object containing the information about who was mentioned in the
+	 * message
+	 */
+	public Mentions mentions;
 
-    /**
-     * The current instance of DiscLoader
-     */
-    public final DiscLoader loader;
+	/**
+	 * The current instance of DiscLoader
+	 */
+	public final DiscLoader loader;
 
-    /**
-     * The channel the message was sent in
-     */
-    public final ITextChannel channel;
+	/**
+	 * The channel the message was sent in
+	 */
+	public final ITextChannel channel;
 
-    /**
-     * The user who authored the message
-     */
-    public final User author;
+	/**
+	 * The user who authored the message
+	 */
+	public final User author;
 
-    /**
-     * The guild the {@link #channel} is in. is {@code null} if {@link Channel#type} is "dm" or "groupDM"
-     */
-    public Guild guild;
+	/**
+	 * The guild the {@link #channel} is in. is {@code null} if
+	 * {@link Channel#type} is "dm" or "groupDM"
+	 */
+	public Guild guild;
 
-    /**
-     * The member who sent the message if applicable
-     */
-    public GuildMember member;
+	/**
+	 * The member who sent the message if applicable
+	 */
+	public GuildMember member;
 
-    /**
-     * Creates a new message object
-     * 
-     * @param channel The channel the message was sent in
-     * @param data The message's data
-     */
-    public Message(ITextChannel channel, MessageJSON data) {
-        this.id = data.id;
+	private final int type;
 
-        this.channel = channel;
+	/**
+	 * Creates a new message object
+	 * 
+	 * @param channel The channel the message was sent in
+	 * @param data The message's data
+	 */
+	public Message(ITextChannel channel, MessageJSON data) {
+		this.id = data.id;
 
-        if (this.channel.isPrivate()) {
-            PrivateChannel privateChannel = (PrivateChannel) channel;
-            this.loader = privateChannel.loader;
-        } else {
-            TextChannel textChannel = (TextChannel) channel;
-            this.loader = textChannel.loader;
-            this.guild = textChannel.guild;
-        }
+		this.channel = channel;
 
-        if (!this.loader.users.containsKey(data.author.id)) {
-            this.author = this.loader.addUser(data.author);
-        } else {
-            this.author = this.loader.users.get(data.author.id);
-        }
+		if (this.channel.isPrivate()) {
+			PrivateChannel privateChannel = (PrivateChannel) channel;
+			this.loader = privateChannel.loader;
+		} else {
+			TextChannel textChannel = (TextChannel) channel;
+			this.loader = textChannel.loader;
+			this.guild = textChannel.guild;
+		}
 
-        this.mentions = new Mentions(this, data.mentions, data.mention_roles, data.mention_everyone);
+		if (!this.loader.users.containsKey(data.author.id)) {
+			this.author = this.loader.addUser(data.author);
+		} else {
+			this.author = this.loader.users.get(data.author.id);
+		}
 
-        this.timestamp = DLUtil.parseISO8601(data.timestamp);
+		this.mentions = new Mentions(this, data.mentions, data.mention_roles, data.mention_everyone);
 
-        this.editedAt = data.edited_timestamp != null ? DLUtil.parseISO8601(data.edited_timestamp) : null;
+		this.timestamp = DLUtil.parseISO8601(data.timestamp);
 
-        this.member = this.guild != null ? this.guild.members.get(this.author.id) : null;
+		this.editedAt = data.edited_timestamp != null ? DLUtil.parseISO8601(data.edited_timestamp) : null;
 
-        this.editable = this.loader.user.id == this.author.id;
+		this.member = this.guild != null ? this.guild.members.get(this.author.id) : null;
 
-        this.tts = data.tts;
+		this.editable = this.loader.user.id == this.author.id;
 
-        this.content = data.content;
+		this.tts = data.tts;
 
-        this.nonce = data.nonce;
-    }
+		this.content = data.content;
 
-    /**
-     * Deletes the message if the loader has suficient permissions
-     * 
-     * @see DLUtil.PermissionFlags
-     * @return A Future that completes with {@literal this} when sucessfull
-     */
-    public CompletableFuture<Message> delete() {
-        return this.loader.rest.deleteMessage(this.channel, this);
-    }
+		this.nonce = data.nonce;
 
-    /**
-     * Edit's the messages content. Only possible if the {@link DiscLoader loader} is the message's {@link #author}
-     * 
-     * @param embed The new embed for the message
-     * @return A Future that completes with {@literal this} when sucessfull
-     */
-    public CompletableFuture<Message> edit(RichEmbed embed) {
-        return this.edit(null, embed);
-    }
+		this.type = data.type;
+	}
 
-    /**
-     * Edit's the messages content. Only possible if the {@link DiscLoader loader} is the message's {@link #author}
-     * 
-     * @param content The new content of the message
-     * @return A Future that completes with {@literal this} when sucessfull
-     */
-    public CompletableFuture<Message> edit(String content) {
-        return this.edit(content, null);
-    }
+	/**
+	 * Deletes the message if the loader has suficient permissions
+	 * 
+	 * @see DLUtil.PermissionFlags
+	 * @return A Future that completes with {@literal this} when sucessfull
+	 */
+	public CompletableFuture<Message> delete() {
+		return this.loader.rest.deleteMessage(this.channel, this);
+	}
 
-    /**
-     * Edit's the messages content. Only possible if the {@link DiscLoader loader} is the message's {@link #author}
-     * 
-     * @param content The new content of the message
-     * @param embed The new embed for the message
-     * @return A Future that completes with {@literal this} when sucessfull
-     */
-    public CompletableFuture<Message> edit(String content, RichEmbed embed) {
-        return this.loader.rest.editMessage(this.channel, this, content, embed, null, null);
-    }
+	/**
+	 * Edit's the messages content. Only possible if the {@link DiscLoader
+	 * loader} is the message's {@link #author}
+	 * 
+	 * @param embed The new embed for the message
+	 * @return A Future that completes with {@literal this} when sucessfull
+	 */
+	public CompletableFuture<Message> edit(RichEmbed embed) {
+		return this.edit(null, embed);
+	}
 
-    public Message patch(MessageJSON data) {
-        this.content = data.content;
+	/**
+	 * Edit's the messages content. Only possible if the {@link DiscLoader
+	 * loader} is the message's {@link #author}
+	 * 
+	 * @param content The new content of the message
+	 * @return A Future that completes with {@literal this} when sucessfull
+	 */
+	public CompletableFuture<Message> edit(String content) {
+		return this.edit(content, null);
+	}
 
-        this.mentions.patch(data.mentions, data.mention_roles, data.mention_everyone);
+	/**
+	 * Edit's the messages content. Only possible if the {@link DiscLoader
+	 * loader} is the message's {@link #author}
+	 * 
+	 * @param content The new content of the message
+	 * @param embed The new embed for the message
+	 * @return A Future that completes with {@literal this} when sucessfull
+	 */
+	public CompletableFuture<Message> edit(String content, RichEmbed embed) {
+		return this.loader.rest.editMessage(this.channel, this, content, embed, null, null);
+	}
 
-        this.editedAt = DLUtil.parseISO8601(data.edited_timestamp);
+	/**
+	 * Checks if the message was sent by a user or if it is a system message.
+	 * <br>
+	 * Ex: "user has pinned a message to this channel." would be a system
+	 * message
+	 * 
+	 * @return true if the message is a system message, false otherwise.
+	 */
+	public boolean isSystem() {
+		return this.type != 0;
+	}
 
-        return this;
-    }
+	public Message patch(MessageJSON data) {
+		this.content = data.content;
+
+		this.mentions.patch(data.mentions, data.mention_roles, data.mention_everyone);
+
+		this.editedAt = DLUtil.parseISO8601(data.edited_timestamp);
+
+		return this;
+	}
 
 }

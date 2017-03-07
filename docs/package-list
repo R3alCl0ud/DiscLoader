@@ -19,6 +19,7 @@ io.discloader.discloader.entity
 io.discloader.discloader.entity.channels
 io.discloader.discloader.entity.embed
 io.discloader.discloader.entity.impl
+io.discloader.discloader.entity.invite
 io.discloader.discloader.entity.sendable
 io.discloader.discloader.entity.sendable.embed
 io.discloader.discloader.entity.voice

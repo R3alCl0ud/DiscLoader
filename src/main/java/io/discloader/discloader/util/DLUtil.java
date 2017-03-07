@@ -95,11 +95,11 @@ public final class DLUtil {
 		public static final String guildBanMember(String guildID, String memberID) {
 			return String.format("%s/%s", guildBans(guildID), memberID);
 		}
-		
+
 		public static final String guildBans(String guildID) {
 			return String.format("%s/bans", guild(guildID));
 		}
-		
+
 		public static final String guildChannels(String guildID) {
 			return String.format("%s/channels", guild(guildID));
 		}
@@ -114,6 +114,10 @@ public final class DLUtil {
 
 		public static final String guildIcon(String guildID, String icon) {
 			return String.format("%s/icons/%s/%s.jpg", CDN, guildID, icon);
+		}
+
+		public static final String guildInvites(String guildID) {
+			return String.format("%s/invites", guild(guildID));
 		}
 
 		public static final String guildMember(String guildID, String memberID) {
@@ -142,6 +146,10 @@ public final class DLUtil {
 
 		public static final String guildRoles(String guildID) {
 			return String.format("%s/roles", guild(guildID));
+		}
+
+		public static final String guildSlash(String guildID, String splashHash) {
+			return String.format("%s/splashes/%s/%s.jpg", CDN, guildID, splashHash);
 		}
 
 		public static final String invite(String id) {

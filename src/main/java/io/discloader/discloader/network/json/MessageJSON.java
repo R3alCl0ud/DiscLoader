@@ -9,6 +9,8 @@ public class MessageJSON {
 	public String nonce;
 	public String webhook_id;
 
+	public int type;
+
 	public boolean tts;
 	public boolean mention_everyone;
 	public boolean pinned;
@@ -17,7 +19,7 @@ public class MessageJSON {
 
 	public UserJSON[] mentions;
 	public RoleJSON[] mention_roles;
-	
+
 	public EmbedJSON[] embeds;
 
 }
