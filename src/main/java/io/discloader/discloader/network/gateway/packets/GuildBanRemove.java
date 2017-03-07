@@ -18,9 +18,6 @@ import io.discloader.discloader.util.DLUtil;
  */
 public class GuildBanRemove extends DLPacket {
 
-	/**
-	 * @param socket
-	 */
 	public GuildBanRemove(DiscSocket socket) {
 		super(socket);
 	}

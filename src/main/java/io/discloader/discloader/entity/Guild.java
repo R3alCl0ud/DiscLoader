@@ -176,7 +176,7 @@ public class Guild {
 	/**
 	 * Creates a new guild
 	 * 
-	 * @param loader
+	 * @param loader The current instance of DiscLoader
 	 * @param data The guild's data
 	 */
 	public Guild(DiscLoader loader, GuildJSON data) {
@@ -367,7 +367,7 @@ public class Guild {
 	/**
 	 * Creates a new {@link VoiceChannel}
 	 * 
-	 * @param name
+	 * @param name The channel's name
 	 * @return A future that completes with a new {@link VoiceChannel} Object if
 	 *         successful.
 	 */
@@ -532,7 +532,8 @@ public class Guild {
 	 * 
 	 * @param icon location of icon file on disk
 	 * @return A Future that completes with {@code this} if successful.
-	 * @throws IOException
+	 * @throws IOException Exception thrown if there is an error reading icon
+	 *             file
 	 */
 	public CompletableFuture<Guild> setIcon(String icon) throws IOException {
 		String base64 = new String(

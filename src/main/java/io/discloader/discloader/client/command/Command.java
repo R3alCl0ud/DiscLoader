@@ -125,7 +125,7 @@ public class Command {
 	}
 
 	/**
-	 * @param unlocalizedName
+	 * @param unlocalizedName The new unlocalizedName for the command
 	 * @return this
 	 */
 	public Command setUnlocalizedName(String unlocalizedName) {

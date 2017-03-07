@@ -39,13 +39,6 @@ public class TextChannel extends GuildChannel implements ITextChannel {
 	 */
 	public String topic;
 
-	/**
-	 * Creates a new TextChannel object
-	 * 
-	 * @author Perry Berman
-	 * @param guild
-	 * @param data
-	 */
 	public TextChannel(Guild guild, ChannelJSON data) {
 		super(guild, data);
 

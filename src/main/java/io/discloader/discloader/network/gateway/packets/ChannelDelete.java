@@ -15,9 +15,6 @@ import io.discloader.discloader.util.DLUtil;
  */
 public class ChannelDelete extends DLPacket {
 
-	/**
-	 * @param socket
-	 */
 	public ChannelDelete(DiscSocket socket) {
 		super(socket);
 	}

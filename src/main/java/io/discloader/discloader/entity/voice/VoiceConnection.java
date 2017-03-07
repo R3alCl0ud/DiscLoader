@@ -262,15 +262,15 @@ public class VoiceConnection {
 		this.loader.socket.send(new Packet(DLUtil.OPCodes.VOICE_STATE_UPDATE, d));
 	}
 
-	/**
-	 * Undocumented for a reason
-	 * 
-	 * @param sessionID
-	 */
 	public void setSessionID(String sessionID) {
 		this.sessionID = sessionID;
 	}
 
+	/**
+	 * 
+	 * 
+	 * @param speaking Whether or not to speak
+	 */
 	public void setSpeaking(boolean speaking) {
 		this.speaking = speaking;
 		this.ws.setSpeaking(speaking);

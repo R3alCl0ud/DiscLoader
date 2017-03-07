@@ -15,9 +15,6 @@ import io.discloader.discloader.util.DLUtil;
  */
 public class MessageDelete extends DLPacket {
 
-	/**
-	 * 
-	 */
 	public MessageDelete(DiscSocket socket) {
 		super(socket);
 	}

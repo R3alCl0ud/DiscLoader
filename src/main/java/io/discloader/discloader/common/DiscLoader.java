@@ -360,18 +360,10 @@ public class DiscLoader {
 		}
 	}
 
-	/**
-	 * @param event
-	 */
 	public void emit(String event) {
 		this.emit(event, null);
 	}
 
-	/**
-	 * 
-	 * @param event
-	 * @param data
-	 */
 	public void emit(String event, Object data) {
 		for (ModContainer mod : ModRegistry.mods.values()) {
 			mod.emit(event, data);

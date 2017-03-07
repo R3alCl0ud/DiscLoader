@@ -66,7 +66,7 @@ public interface IGuildChannel extends IChannel {
 	/**
 	 * Sets position in a channel's {@link Guild}
 	 * 
-	 * @param position
+	 * @param position The new possition of the channel
 	 * @return A completed future with the position set.
 	 */
 	CompletableFuture<? extends IGuildChannel> setPosition(int position);

@@ -17,9 +17,6 @@ import java.util.HashMap;
  */
 public class GuildMembersChunk extends DLPacket {
 
-    /**
-     * @param socket
-     */
     public GuildMembersChunk(DiscSocket socket) {
         super(socket);
     }

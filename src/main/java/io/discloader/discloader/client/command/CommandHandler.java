@@ -37,8 +37,8 @@ public class CommandHandler {
     }
 
     /**
-     * @param label
-     * @param message
+     * @param label The label of the command
+     * @param message The message the label is from
      * @return A Command if a command was found, {@code null} if no command was found
      */
     public static Command getCommand(String label, Message message) {

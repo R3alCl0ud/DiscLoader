@@ -18,9 +18,6 @@ import io.discloader.discloader.util.DLUtil;
  */
 public class ChannelCreate extends DLPacket {
 
-	/**
-	 * @param socket
-	 */
 	public ChannelCreate(DiscSocket socket) {
 		super(socket);
 	}

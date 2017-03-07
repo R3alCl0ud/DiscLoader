@@ -108,7 +108,7 @@ public class DLUser extends User {
 	/**
 	 * Sets the user's status.
 	 * 
-	 * @param status
+	 * @param status The new status, can be {@literal online}, {@literal idle}, {@literal dnd}, {@literal invisible}, etc..
 	 * @return this
 	 */
 	public User setStatus(String status) {

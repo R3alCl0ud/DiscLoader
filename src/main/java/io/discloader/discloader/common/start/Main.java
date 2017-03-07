@@ -40,10 +40,6 @@ public class Main {
 		return LOGGER;
 	}
 
-	/**
-	 * @param args
-	 * @throws IOException
-	 */
 	public static void main(String... args) throws IOException {
 		LOGGER = DiscLoader.LOG;
 		System.setOut(new DLPrintStream(System.out, LOGGER));

@@ -20,9 +20,6 @@ import io.discloader.discloader.util.DLUtil.ChannelType;
  */
 public class MessageCreate extends DLPacket {
 
-	/**
-	 * @param socket
-	 */
 	public MessageCreate(DiscSocket socket) {
 		super(socket);
 	}
@@ -30,7 +27,7 @@ public class MessageCreate extends DLPacket {
 	@Override
 	public void handle(SocketPacket packet) {
 		MessageJSON data = this.gson.fromJson(gson.toJson(packet.d), MessageJSON.class);
-//		System.out.print("Gets here?");
+		// System.out.print("Gets here?");
 		try {
 			ITextChannel channel = this.socket.loader.textChannels.get(data.channel_id);
 			if (channel == null)

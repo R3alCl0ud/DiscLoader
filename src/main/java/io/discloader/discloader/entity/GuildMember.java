@@ -167,10 +167,10 @@ public class GuildMember {
 	}
 
 	/**
-	 * Sets the member's nickname if the {@link DiscLoader loader} has suficient
+	 * Sets the member's nickname if the {@link DiscLoader loader} has sufficient
 	 * permissions
 	 * 
-	 * @param nick
+	 * @param nick The member's new nickname
 	 * @see Permission
 	 * @return A CompletableFuture that completes with {@code this} if
 	 *         successful

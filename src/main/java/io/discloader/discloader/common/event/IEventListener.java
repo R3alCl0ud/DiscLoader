@@ -149,7 +149,7 @@ public interface IEventListener {
 	 * attempting to load. All commands <u>must</u> be registered on this event
 	 * being called in your mod.
 	 * 
-	 * @param preInitEvent
+	 * @param preInitEvent A DLPreInitEvent Object
 	 */
 	void PreInit(DLPreInitEvent preInitEvent);
 
@@ -166,7 +166,7 @@ public interface IEventListener {
 	 * executed when receiving packets from {@link VoiceConnection
 	 * VoiceConnections}
 	 * 
-	 * @param raw
+	 * @param raw the raw text from each websocket connection
 	 */
 	void raw(String raw);
 

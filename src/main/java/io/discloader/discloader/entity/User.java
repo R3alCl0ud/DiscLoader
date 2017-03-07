@@ -57,9 +57,6 @@ public class User {
 		}
 	}
 
-	/**
-	 * @param user
-	 */
 	public User(User user) {
 		this.loader = user.loader;
 
@@ -77,8 +74,8 @@ public class User {
 	/**
 	 * Updates a user's information
 	 * 
-	 * @param data
-	 * @return this
+	 * @param data The user's new data
+	 * @return this 
 	 */
 	public User patch(UserJSON data) {
 		if (data.username != null)

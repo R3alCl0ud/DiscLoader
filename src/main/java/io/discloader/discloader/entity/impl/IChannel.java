@@ -19,6 +19,7 @@ public interface IChannel {
 	 * Whether or not the channel is a dm channel. Is always {@literal true} if
 	 * {@link Channel#type type} is {@literal "groupDM"} or {@literal "dm"}
 	 * 
+	 * @return true if the channel is a dm/groupDM channel, false otherwise
 	 * @author Perry Berman
 	 */
 	boolean isPrivate();

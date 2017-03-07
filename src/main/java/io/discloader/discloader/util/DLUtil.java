@@ -431,9 +431,11 @@ public final class DLUtil {
 	}
 
 	/**
-	 * @param file
+	 * A more efficient readAllBytes method
+	 * 
+	 * @param file the file to read
 	 * @return A byte array containing the file's data
-	 * @throws IOException
+	 * @throws IOException thrown if there is an error reading the file
 	 */
 	public static final byte[] readAllBytes(File file) throws IOException {
 		try (InputStream is = new FileInputStream(file)) {

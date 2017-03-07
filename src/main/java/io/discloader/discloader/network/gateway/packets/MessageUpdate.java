@@ -17,9 +17,6 @@ import io.discloader.discloader.util.DLUtil;
  */
 public class MessageUpdate extends DLPacket {
 
-	/**
-	 * @param socket
-	 */
 	public MessageUpdate(DiscSocket socket) {
 		super(socket);
 	}

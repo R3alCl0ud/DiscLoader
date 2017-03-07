@@ -13,9 +13,7 @@ import io.discloader.discloader.network.json.VoiceServerUpdateJSON;
  */
 public class VoiceServerUpdate extends DLPacket {
 
-    /**
-     * @param socket
-     */
+
     public VoiceServerUpdate(DiscSocket socket) {
         super(socket);
     }

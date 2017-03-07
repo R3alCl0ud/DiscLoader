@@ -16,9 +16,6 @@ import io.discloader.discloader.util.DLUtil;
  */
 public class PresenceUpdate extends DLPacket {
 
-	/**
-	 * @param socket
-	 */
 	public PresenceUpdate(DiscSocket socket) {
 		super(socket);
 	}
