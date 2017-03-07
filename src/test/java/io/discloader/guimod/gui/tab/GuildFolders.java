@@ -14,7 +14,7 @@ import io.discloader.guimod.gui.list.GuildList;
  * @author Perry Berman
  *
  */
-public class GuildFolders<T extends Guild> extends AbstractFolder<T, GuildList<T>, GuildInfo<T>> {
+public class GuildFolders<T extends Guild> extends AbstractTab<T, GuildList<T>, GuildInfo<T>> {
 
 	private static final long serialVersionUID = -1589736360078814907L;
 

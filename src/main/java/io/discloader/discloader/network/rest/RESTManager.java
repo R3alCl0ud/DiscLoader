@@ -21,11 +21,13 @@ import io.discloader.discloader.entity.Message;
 import io.discloader.discloader.entity.OAuth2Application;
 import io.discloader.discloader.entity.Role;
 import io.discloader.discloader.entity.User;
+import io.discloader.discloader.entity.channels.GuildChannel;
 import io.discloader.discloader.entity.channels.TextChannel;
 import io.discloader.discloader.entity.channels.VoiceChannel;
 import io.discloader.discloader.entity.impl.ITextChannel;
 import io.discloader.discloader.entity.sendable.CreateEmoji;
 import io.discloader.discloader.entity.sendable.CreateRole;
+import io.discloader.discloader.entity.sendable.EditChannel;
 import io.discloader.discloader.entity.sendable.FetchMembers;
 import io.discloader.discloader.entity.sendable.RichEmbed;
 import io.discloader.discloader.entity.sendable.SendableMessage;
@@ -304,6 +306,19 @@ public class RESTManager {
 		this.makeRequest(Endpoints.guildInvites(guild.id), Methods.GET, true).thenAcceptAsync(action -> {
 			InviteJSON[] data = gson.fromJson(action, InviteJSON[].class);
 			future.complete(data);
+		});
+
+		return future;
+	}
+
+	public CompletableFuture<GuildChannel> modifyGuildChannel(GuildChannel channel, String name, String topic,
+			int position, int bitrate, int userLimit) {
+		CompletableFuture<GuildChannel> future = new CompletableFuture<>();
+		EditChannel d = new EditChannel(name, topic, position, bitrate, userLimit);
+		this.makeRequest(Endpoints.channel(channel.id), Methods.PATCH, true, d).thenAcceptAsync(action -> {
+			ChannelJSON cd = gson.fromJson(action, ChannelJSON.class);
+			channel.setup(cd);
+			future.complete(channel);
 		});
 
 		return future;

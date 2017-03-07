@@ -20,7 +20,6 @@ import io.discloader.discloader.client.logger.DLLogger;
 import io.discloader.discloader.client.logger.ProgressLogger;
 import io.discloader.discloader.common.DiscLoader;
 import io.discloader.discloader.common.event.IEventListener;
-import io.discloader.discloader.entity.sendable.Packet;
 import io.discloader.discloader.network.gateway.packets.ChannelCreate;
 import io.discloader.discloader.network.gateway.packets.ChannelDelete;
 import io.discloader.discloader.network.gateway.packets.ChannelUpdate;
@@ -48,6 +47,7 @@ import io.discloader.discloader.network.gateway.packets.SocketPacket;
 import io.discloader.discloader.network.gateway.packets.VoiceServerUpdate;
 import io.discloader.discloader.network.gateway.packets.VoiceStateUpdate;
 import io.discloader.discloader.network.gateway.packets.request.GatewayResume;
+import io.discloader.discloader.network.voice.payloads.VoicePacket;
 import io.discloader.discloader.util.DLUtil;
 import io.discloader.discloader.util.DLUtil.OPCodes;
 import io.discloader.discloader.util.DLUtil.Status;
@@ -61,13 +61,15 @@ public class DiscSocketListener extends WebSocketAdapter {
 
 	private int retries = 0;
 
-	private Thread reconnectionThread = null;
+	private long timeout = 5000;
 
 	private final Logger logger = new DLLogger("Gateway Listener").getLogger();
 
 	public HashMap<String, DLPacket> handlers;
 
 	public List<SocketPacket> queue;
+
+	private Thread reconnection = null;
 
 	public DiscSocketListener(DiscSocket socket) {
 		this.socket = socket;
@@ -116,7 +118,7 @@ public class DiscSocketListener extends WebSocketAdapter {
 			this.loader.emit("debug", "Heartbeat Acknowledged");
 		} else if (packet.op == OPCodes.HEARTBEAT) {
 			JSONObject payload = new JSONObject().put("op", OPCodes.HEARTBEAT).put("d", this.socket.s);
-			this.socket.send(payload);
+			this.socket.send(payload, true);
 			this.loader.emit("debug", "Recieved gateway heartbeat");
 		}
 
@@ -160,10 +162,18 @@ public class DiscSocketListener extends WebSocketAdapter {
 		if (isServer) {
 			logger.severe(String.format("Gateway connection was closed by the server. Close Code: %d, Reason: %s",
 					frame_1.getCloseCode(), frame_1.getCloseReason()));
+			if (frame_1.getCloseCode() != 1000) {
+				// if connection wasn't closed properly try to reconnect
+				tryReconnecting();
+			}
 		} else {
-			logger.severe("Client was disconnected from the gateway");
+			logger.severe(String.format("Client was disconnected from the gateway, Code: %d", frame_2.getCloseCode()));
+			if (frame_2.getCloseCode() != 1000) {
+				// if connection wasn't closed properly try to reconnect
+				tryReconnecting();
+			}
 		}
-		tryReconnecting();
+
 	}
 
 	@Override
@@ -198,7 +208,7 @@ public class DiscSocketListener extends WebSocketAdapter {
 
 		JSONObject packet = new JSONObject();
 		packet.put("op", 2).put("d", payload);
-		this.socket.send(packet);
+		this.socket.send(packet, true);
 		this.socket.s = -1;
 	}
 
@@ -208,25 +218,44 @@ public class DiscSocketListener extends WebSocketAdapter {
 	}
 
 	public void sendResume() {
-		Packet d = new Packet(OPCodes.RESUME, new GatewayResume(socket.sessionID, loader.token, socket.s));
+		if (retries > 3) {
+			sendNewIdentify();
+			return;
+		}
+
+		VoicePacket d = new VoicePacket(OPCodes.RESUME, new GatewayResume(socket.sessionID, loader.token, socket.s));
+		System.out.println(gson.toJson(d));
 		socket.send(d, true);
 	}
 
 	public void tryReconnecting() {
 		this.socket.status = Status.RECONNECTING;
 		logger.info("Attempting to reconnect to the gateway");
+		retries++;
+		if (reconnection == null) {
+			reconnection = new Thread("") {
+				public void run() {
+					if (socket.status == Status.RECONNECTING && retries < 3 && !interrupted()) {
 
-		if (socket.status == Status.RECONNECTING && !reconnectionThread.isInterrupted() && retries < 5) {
-			retries++;
-			try {
-				socket.ws = socket.ws.recreate().connect();
-			} catch (WebSocketException e) {
-				e.printStackTrace();
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
+						try {
+							Thread.sleep(timeout * retries);
+						} catch (InterruptedException e1) {
+							e1.printStackTrace();
+						}
 
+						try {
+							socket.ws = socket.ws.recreate().connect();
+						} catch (WebSocketException e) {
+							e.printStackTrace();
+						} catch (IOException e) {
+							e.printStackTrace();
+						}
+					}
+				}
+			};
 		}
+		reconnection.setPriority((Thread.NORM_PRIORITY + Thread.MAX_PRIORITY) / 2);
+		reconnection.setDaemon(true);
+		reconnection.start();
 	}
-
 }

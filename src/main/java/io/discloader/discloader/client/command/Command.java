@@ -20,6 +20,7 @@ public class Command {
 		commands.addObject(0, "help", new CommandHelp().setUnlocalizedName("help").setId(0));
 		commands.addObject(1, "mods", new CommandMods().setId(1));
 		commands.addObject(2, "invite", new CommandInvite().setId(2));
+		commands.addObject(3, "resume", new CommandResume().setUnlocalizedName("resume").setId(3));
 	}
 
 	private String unlocalizedName;

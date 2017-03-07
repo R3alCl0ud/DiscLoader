@@ -24,7 +24,7 @@ public abstract class AbstractList<T> extends JPanel {
 
 	public AbstractList(DiscLoader loader) {
 		this.loader = loader;
-		this.items = new ArrayList<T>();
+		this.items = new ArrayList<>();
 		JScrollPane pane = new JScrollPane();
 		JScrollBar bar = new JScrollBar();
 		bar.setUI(new ScrollBar());

@@ -43,7 +43,7 @@ public class DiscSocket {
 
 	private Thread resetRemaining = null;
 
-	private int remaining = 0;
+	private int remaining = 120;
 
 	public Gson gson = new Gson();
 
@@ -73,7 +73,7 @@ public class DiscSocket {
 				"gzip");
 		this.ws.addListener(this.socketListener);
 		this.ws.connect();
-		resetRemaining = new Thread("t") {
+		resetRemaining = new Thread("RemaingResetter") {
 			public void run() {
 				while (ws.isOpen() && !resetRemaining.isInterrupted()) {
 					remaining = 120;
@@ -87,6 +87,9 @@ public class DiscSocket {
 				}
 			}
 		};
+		resetRemaining.setPriority((Thread.NORM_PRIORITY + Thread.MAX_PRIORITY) / 2);
+		resetRemaining.setDaemon(true);
+		resetRemaining.start();
 	}
 
 	public void handleQueue() {
@@ -95,8 +98,11 @@ public class DiscSocket {
 
 		Object payload = queue.get(0);
 		remaining--;
-		// if (payload instanceof JSONObject)
-		this.ws.sendText(DLUtil.gson.toJson(payload));
+		if (payload instanceof JSONObject) {
+			ws.sendText(payload.toString());
+		} else {
+			this.ws.sendText(DLUtil.gson.toJson(payload));
+		}
 		queue.remove(payload);
 		handleQueue();
 	}
@@ -144,12 +150,12 @@ public class DiscSocket {
 	}
 
 	public void send(Object payload, boolean force) {
-		// if (force) {
-		this.ws.sendText(DLUtil.gson.toJson(payload));
-		// return;
-		// }
-		// this.queue.add(payload);
-		// handleQueue();
+		if (force) {
+			this.ws.sendText(DLUtil.gson.toJson(payload));
+			return;
+		}
+		this.queue.add(payload);
+		handleQueue();
 	}
 
 	public void send(JSONObject payload) {
@@ -157,12 +163,12 @@ public class DiscSocket {
 	}
 
 	public void send(JSONObject payload, boolean force) {
-		// if (force) {
-		this.ws.sendText(payload.toString());
-		// return;
-		// }
-		// this.queue.add(payload);
-		// handleQueue();
+		if (force) {
+			this.ws.sendText(payload.toString());
+			return;
+		}
+		this.queue.add(payload);
+		handleQueue();
 	}
 
 	public void sendHeartbeat(boolean normal) {

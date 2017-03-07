@@ -6,7 +6,7 @@ public class ChannelJSON {
 	public String topic;
 	public String last_message_id;
 	public String guild_id;
-	
+
 	public int type;
 	public int user_limit;
 	public int position;
@@ -16,4 +16,6 @@ public class ChannelJSON {
 
 	public OverwriteJSON[] permission_overwrites;
 	public UserJSON[] recipients;
+
+	public UserJSON recipient;
 }

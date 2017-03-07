@@ -7,7 +7,7 @@ import io.discloader.discloader.common.DiscLoader;
 import io.discloader.guimod.gui.info.CommandInfo;
 import io.discloader.guimod.gui.list.CommandList;
 
-public class CommandsTab<T extends Command> extends AbstractFolder<T, CommandList<T>, CommandInfo<T>> {
+public class CommandsTab<T extends Command> extends AbstractTab<T, CommandList<T>, CommandInfo<T>> {
 
 	private static final long serialVersionUID = -2269526589617580218L;
 

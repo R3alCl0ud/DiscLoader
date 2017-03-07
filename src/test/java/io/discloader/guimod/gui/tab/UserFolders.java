@@ -7,7 +7,7 @@ import io.discloader.discloader.entity.User;
 import io.discloader.guimod.gui.info.UserInfo;
 import io.discloader.guimod.gui.list.UserList;
 
-public class UserFolders<T extends User> extends AbstractFolder<T, UserList<T>, UserInfo<T>> {
+public class UserFolders<T extends User> extends AbstractTab<T, UserList<T>, UserInfo<T>> {
 
 	private static final long serialVersionUID = 3191743262883151288L;
 

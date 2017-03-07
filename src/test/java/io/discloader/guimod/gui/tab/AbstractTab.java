@@ -13,14 +13,14 @@ import io.discloader.discloader.common.DiscLoader;
 import io.discloader.guimod.gui.info.AbstractInfo;
 import io.discloader.guimod.gui.list.AbstractList;
 
-public abstract class AbstractFolder<T, V extends AbstractList<T>, S extends AbstractInfo<T>> extends JPanel implements ListSelectionListener {
+public abstract class AbstractTab<T, V extends AbstractList<T>, S extends AbstractInfo<T>> extends JPanel implements ListSelectionListener {
 
 	private static final long serialVersionUID = -335604613355001641L;
 	public final DiscLoader loader;
 	public S info;
 	public V list;
 
-	public AbstractFolder(DiscLoader loader) {
+	public AbstractTab(DiscLoader loader) {
 		this.loader = loader;
 		this.list = this.createList();
 		this.setBackground(new Color(0x2C2F33));

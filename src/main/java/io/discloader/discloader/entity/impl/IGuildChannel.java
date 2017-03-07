@@ -42,6 +42,18 @@ public interface IGuildChannel extends IChannel {
 	Permission permissionsFor(GuildMember member);
 
 	/**
+	 * Changes the channels settings
+	 * 
+	 * @param name The new name for the channel
+	 * @param position The new position for the channel
+	 * @param bitrate The new bitrate
+	 * @param userLimit The new userLimit
+	 * @return A Future that completes with a IGuildChannel if successful
+	 */
+	CompletableFuture<? extends IGuildChannel> edit(String name, String topic, int position, int bitrate,
+			int userLimit);
+
+	/**
 	 * Sets the name of the channel.
 	 * 
 	 * @param name New name for the channel who we are modifying.

@@ -182,11 +182,11 @@ public class Guild {
 	public Guild(DiscLoader loader, GuildJSON data) {
 		this.loader = loader;
 
-		this.members = new HashMap<String, GuildMember>();
-		this.textChannels = new HashMap<String, TextChannel>();
-		this.voiceChannels = new HashMap<String, VoiceChannel>();
-		this.roles = new HashMap<String, Role>();
-		this.presences = new HashMap<String, Presence>();
+		this.members = new HashMap<>();
+		this.textChannels = new HashMap<>();
+		this.voiceChannels = new HashMap<>();
+		this.roles = new HashMap<>();
+		this.presences = new HashMap<>();
 		this.emojis = new HashMap<>();
 		this.rawStates = new HashMap<>();
 		this.voiceRegion = new VoiceRegion("us-central");

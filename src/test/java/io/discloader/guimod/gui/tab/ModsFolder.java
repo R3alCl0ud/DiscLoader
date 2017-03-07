@@ -7,7 +7,7 @@ import io.discloader.discloader.common.discovery.ModContainer;
 import io.discloader.guimod.gui.info.ModInfo;
 import io.discloader.guimod.gui.list.ModList;
 
-public class ModsFolder<T extends ModContainer> extends AbstractFolder<T, ModList<T>, ModInfo<T>> {
+public class ModsFolder<T extends ModContainer> extends AbstractTab<T, ModList<T>, ModInfo<T>> {
 
 	private static final long serialVersionUID = -920545644404939296L;
 

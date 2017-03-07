@@ -1,16 +1,5 @@
 package io.discloader.guimod.gui;
 
-import io.discloader.discloader.client.command.Command;
-import io.discloader.discloader.common.DiscLoader;
-import io.discloader.discloader.common.discovery.ModContainer;
-import io.discloader.discloader.common.language.LanguageRegistry;
-import io.discloader.discloader.entity.Guild;
-import io.discloader.discloader.entity.User;
-import io.discloader.guimod.gui.tab.CommandsTab;
-import io.discloader.guimod.gui.tab.GuildFolders;
-import io.discloader.guimod.gui.tab.ModsFolder;
-import io.discloader.guimod.gui.tab.UserFolders;
-
 import java.awt.GridLayout;
 import java.awt.Image;
 import java.net.URL;
@@ -18,6 +7,19 @@ import java.net.URL;
 import javax.swing.ImageIcon;
 import javax.swing.JPanel;
 import javax.swing.JTabbedPane;
+
+import io.discloader.discloader.client.command.Command;
+import io.discloader.discloader.common.DiscLoader;
+import io.discloader.discloader.common.discovery.ModContainer;
+import io.discloader.discloader.common.language.LanguageRegistry;
+import io.discloader.discloader.entity.Guild;
+import io.discloader.discloader.entity.User;
+import io.discloader.discloader.entity.channels.Channel;
+import io.discloader.guimod.gui.tab.ChannelTab;
+import io.discloader.guimod.gui.tab.CommandsTab;
+import io.discloader.guimod.gui.tab.GuildFolders;
+import io.discloader.guimod.gui.tab.ModsFolder;
+import io.discloader.guimod.gui.tab.UserFolders;
 
 public class TabbedPanel extends JPanel {
 
@@ -34,6 +36,7 @@ public class TabbedPanel extends JPanel {
 		tabbedPane.addTab("Users",
 				resizeImageIcon(createImageIcon("texture.gui.icons.missing-icon", "Missing Icon"), 16, 16),
 				new UserFolders<User>(this.loader), "Users");
+		tabbedPane.addTab("Channels", new ChannelTab<Channel>(loader));
 		tabbedPane.addTab("Guilds",
 				resizeImageIcon(createImageIcon("texture.gui.icons.missing-icon", "Missing Icon"), 16, 16),
 				new GuildFolders<Guild>(this.loader), "Guilds");

@@ -37,7 +37,13 @@ public class PrivateChannel extends Channel implements ITextChannel {
 
 	public void setup(ChannelJSON data) {
 		super.setup(data);
-
+		
+		this.recipient = loader.users.get(data.recipient.id);
+		
+		if (recipient == null) {
+			recipient = loader.addUser(data.recipient);
+		}
+		
 	}
 
 	@Override

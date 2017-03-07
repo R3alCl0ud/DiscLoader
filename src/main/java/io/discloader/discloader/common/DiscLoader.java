@@ -388,6 +388,7 @@ public class DiscLoader {
 	 * @return {@literal CompletableFuture<String>}
 	 */
 	public CompletableFuture<String> login(String token) {
+		startup();
 		this.token = token;
 		CompletableFuture<String> future;
 		future = this.rest.makeRequest(DLUtil.Endpoints.gateway, DLUtil.Methods.GET, true);
