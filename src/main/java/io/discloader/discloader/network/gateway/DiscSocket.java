@@ -49,9 +49,6 @@ public class DiscSocket {
 
 	private ArrayList<Object> queue;
 
-	/**
-	 * @param loader
-	 */
 	public DiscSocket(DiscLoader loader) {
 		this.loader = loader;
 
@@ -62,11 +59,6 @@ public class DiscSocket {
 		this.queue = new ArrayList<>();
 	}
 
-	/**
-	 * @throws IOException
-	 * @throws WebSocketException
-	 * 
-	 */
 	public void connectSocket(String gateway) throws WebSocketException, IOException {
 		System.out.printf("Connecting use gateway: %s", gateway);
 		this.ws = new WebSocketFactory().setConnectionTimeout(15000).createSocket(gateway).addHeader("Accept-Encoding",

@@ -45,6 +45,7 @@ public interface IGuildChannel extends IChannel {
 	 * Changes the channels settings
 	 * 
 	 * @param name The new name for the channel
+	 * @param topic The new topic
 	 * @param position The new position for the channel
 	 * @param bitrate The new bitrate
 	 * @param userLimit The new userLimit

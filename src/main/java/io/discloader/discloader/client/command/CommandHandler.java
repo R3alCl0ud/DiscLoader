@@ -32,7 +32,6 @@ public class CommandHandler {
 
         Command command = getCommand(label, message);
         if (command != null) {
-        	System.out.println(command.getUnlocalizedName());
             command.execute(e);
         }
     }

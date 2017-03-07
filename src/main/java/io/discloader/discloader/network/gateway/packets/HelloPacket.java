@@ -5,14 +5,14 @@ import io.discloader.discloader.network.json.Hello;
 
 public class HelloPacket extends DLPacket {
 
-	public HelloPacket(DiscSocket socket) {
-		super(socket);
-	}
+    public HelloPacket(DiscSocket socket) {
+        super(socket);
+    }
 
-	@Override
-	public void handle(SocketPacket packet) {
-		Hello hello = this.socket.gson.fromJson(this.socket.gson.toJson(packet.d), Hello.class);
-		this.socket.keepAlive(hello.heartbeat_interval);
-	}
+    @Override
+    public void handle(SocketPacket packet) {
+        Hello hello = this.socket.gson.fromJson(this.socket.gson.toJson(packet.d), Hello.class);
+        this.socket.keepAlive(hello.heartbeat_interval);
+    }
 
 }
