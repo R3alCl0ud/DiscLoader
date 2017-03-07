@@ -3,10 +3,10 @@
  */
 package io.discloader.discloader.common;
 
+import java.io.IOException;
+
 import io.discloader.discloader.client.command.CommandHandler;
 import io.discloader.discloader.common.start.Main;
-
-import java.io.IOException;
 
 /**
  * @author Perry Berman

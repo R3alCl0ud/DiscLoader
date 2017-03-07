@@ -115,6 +115,7 @@ public class ModRegistry {
 		ProgressLogger.phase(3, 3, "Init");
 		ProgressLogger.stage(1, 3, "Waiting to Login");
 		resetStep();
+		Main.loader.login(Main.token);
 	}
 
 	public static void load(String modid) {
