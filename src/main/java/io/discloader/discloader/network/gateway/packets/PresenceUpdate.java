@@ -2,10 +2,10 @@ package io.discloader.discloader.network.gateway.packets;
 
 import io.discloader.discloader.common.event.GuildMemberUpdateEvent;
 import io.discloader.discloader.common.event.UserUpdateEvent;
-import io.discloader.discloader.entity.Guild;
-import io.discloader.discloader.entity.GuildMember;
 import io.discloader.discloader.entity.Presence;
-import io.discloader.discloader.entity.User;
+import io.discloader.discloader.entity.guild.Guild;
+import io.discloader.discloader.entity.guild.GuildMember;
+import io.discloader.discloader.entity.user.User;
 import io.discloader.discloader.network.gateway.DiscSocket;
 import io.discloader.discloader.network.json.PresenceJSON;
 import io.discloader.discloader.util.DLUtil;

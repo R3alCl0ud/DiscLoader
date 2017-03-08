@@ -3,7 +3,7 @@ package io.discloader.discloader.network.gateway.packets;
 import com.google.gson.Gson;
 
 import io.discloader.discloader.common.event.GuildCreateEvent;
-import io.discloader.discloader.entity.Guild;
+import io.discloader.discloader.entity.guild.Guild;
 import io.discloader.discloader.network.gateway.DiscSocket;
 import io.discloader.discloader.network.json.GuildJSON;
 import io.discloader.discloader.util.DLUtil;

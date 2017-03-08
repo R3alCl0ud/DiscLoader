@@ -3,8 +3,8 @@ package io.discloader.discloader.common.event;
 import java.util.HashMap;
 
 import io.discloader.discloader.common.DiscLoader;
-import io.discloader.discloader.entity.Emoji;
-import io.discloader.discloader.entity.GuildMember;
+import io.discloader.discloader.entity.guild.Emoji;
+import io.discloader.discloader.entity.guild.GuildMember;
 
 /**
  * Default Implementation of the {@link IEventListener}

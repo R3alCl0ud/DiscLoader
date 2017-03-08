@@ -7,7 +7,7 @@ import javax.swing.Box;
 import javax.swing.JLabel;
 
 import io.discloader.discloader.client.render.texture.icon.UserIcon;
-import io.discloader.discloader.entity.User;
+import io.discloader.discloader.entity.user.User;
 import io.discloader.discloader.util.DLUtil;
 
 public class UserInfo<T extends User> extends AbstractInfo<T> {

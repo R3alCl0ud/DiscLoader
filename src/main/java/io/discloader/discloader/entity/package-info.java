@@ -1,5 +1,5 @@
 /**
- * Contains the objects used in Discord's API
+ * Contains the objects used in Discord's API, Like Users, and Guilds
  * 
  * @author Perry Berman
  * @since 0.0.1

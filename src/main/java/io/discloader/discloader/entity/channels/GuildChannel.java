@@ -3,12 +3,12 @@ package io.discloader.discloader.entity.channels;
 import java.util.HashMap;
 import java.util.concurrent.CompletableFuture;
 
-import io.discloader.discloader.entity.Guild;
-import io.discloader.discloader.entity.GuildMember;
 import io.discloader.discloader.entity.Overwrite;
-import io.discloader.discloader.entity.Permission;
-import io.discloader.discloader.entity.Role;
+import io.discloader.discloader.entity.guild.Guild;
+import io.discloader.discloader.entity.guild.GuildMember;
+import io.discloader.discloader.entity.guild.Role;
 import io.discloader.discloader.entity.impl.IGuildChannel;
+import io.discloader.discloader.entity.user.Permission;
 import io.discloader.discloader.network.json.ChannelJSON;
 import io.discloader.discloader.util.DLUtil;
 

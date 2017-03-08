@@ -3,7 +3,7 @@ package io.discloader.guimod.gui.list;
 import javax.swing.DefaultListModel;
 
 import io.discloader.discloader.common.DiscLoader;
-import io.discloader.discloader.entity.Guild;
+import io.discloader.discloader.entity.guild.Guild;
 
 public class GuildList<T extends Guild> extends AbstractList<T> {
 	private static final long serialVersionUID = -1589736360078814907L;

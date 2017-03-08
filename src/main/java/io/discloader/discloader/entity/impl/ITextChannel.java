@@ -3,8 +3,8 @@ package io.discloader.discloader.entity.impl;
 import java.util.HashMap;
 import java.util.concurrent.CompletableFuture;
 
-import io.discloader.discloader.entity.Message;
-import io.discloader.discloader.entity.sendable.RichEmbed;
+import io.discloader.discloader.entity.RichEmbed;
+import io.discloader.discloader.entity.message.Message;
 
 /**
  * @author perryberman

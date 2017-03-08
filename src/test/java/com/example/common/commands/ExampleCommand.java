@@ -5,7 +5,7 @@ package com.example.common.commands;
 
 import io.discloader.discloader.client.command.Command;
 import io.discloader.discloader.common.event.MessageCreateEvent;
-import io.discloader.discloader.entity.Message;
+import io.discloader.discloader.entity.message.Message;
 
 /**
  * @author Perry Berman

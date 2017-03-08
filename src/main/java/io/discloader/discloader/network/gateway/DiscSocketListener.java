@@ -214,6 +214,7 @@ public class DiscSocketListener extends WebSocketAdapter {
         packet.put("op", 2).put("d", payload);
         this.socket.send(packet, true);
         this.socket.s = -1;
+        retries = 0;
     }
 
     public void setSequence(int s) {

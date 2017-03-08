@@ -1,6 +1,6 @@
 package io.discloader.discloader.common.event;
 
-import io.discloader.discloader.entity.Message;
+import io.discloader.discloader.entity.message.Message;
 
 /**
  * @author Perry Berman

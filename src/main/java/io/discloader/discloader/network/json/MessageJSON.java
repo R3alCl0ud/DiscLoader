@@ -1,25 +1,25 @@
 package io.discloader.discloader.network.json;
 
 public class MessageJSON {
-	public String id;
-	public String content;
-	public String channel_id;
-	public String timestamp;
-	public String edited_timestamp;
-	public String nonce;
-	public String webhook_id;
+    public String id;
+    public String content;
+    public String channel_id;
+    public String timestamp;
+    public String edited_timestamp;
+    public String nonce;
+    public String webhook_id;
 
-	public int type;
+    public int type;
 
-	public boolean tts;
-	public boolean mention_everyone;
-	public boolean pinned;
+    public boolean tts;
+    public boolean mention_everyone;
+    public boolean pinned;
 
-	public UserJSON author;
+    public UserJSON author;
 
-	public UserJSON[] mentions;
-	public RoleJSON[] mention_roles;
-
-	public EmbedJSON[] embeds;
+    public UserJSON[] mentions;
+    public RoleJSON[] mention_roles;
+    public EmbedJSON[] embeds;
+    public AttachmentJSON[] attachments;
 
 }

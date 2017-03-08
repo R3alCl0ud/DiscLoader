@@ -5,8 +5,8 @@ import java.util.Locale;
 import io.discloader.discloader.common.event.MessageCreateEvent;
 import io.discloader.discloader.common.language.LanguageRegistry;
 import io.discloader.discloader.common.registry.CommandRegistry;
-import io.discloader.discloader.entity.Guild;
-import io.discloader.discloader.entity.Message;
+import io.discloader.discloader.entity.guild.Guild;
+import io.discloader.discloader.entity.message.Message;
 
 /**
  * @author Perry Berman

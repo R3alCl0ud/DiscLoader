@@ -1,7 +1,7 @@
 package io.discloader.discloader.entity.sendable;
 
-import io.discloader.discloader.entity.Guild;
 import io.discloader.discloader.entity.channels.Channel;
+import io.discloader.discloader.entity.guild.Guild;
 
 /**
  * @author Perry Berman

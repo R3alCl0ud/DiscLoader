@@ -4,11 +4,11 @@ import java.util.HashMap;
 
 import io.discloader.discloader.common.DiscLoader;
 import io.discloader.discloader.common.registry.ModRegistry;
-import io.discloader.discloader.entity.Emoji;
-import io.discloader.discloader.entity.Guild;
-import io.discloader.discloader.entity.GuildMember;
-import io.discloader.discloader.entity.Role;
-import io.discloader.discloader.entity.User;
+import io.discloader.discloader.entity.guild.Emoji;
+import io.discloader.discloader.entity.guild.Guild;
+import io.discloader.discloader.entity.guild.GuildMember;
+import io.discloader.discloader.entity.guild.Role;
+import io.discloader.discloader.entity.user.User;
 import io.discloader.discloader.entity.voice.VoiceConnection;
 
 /**

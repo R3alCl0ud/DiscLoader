@@ -17,7 +17,7 @@ import com.google.gson.Gson;
 
 import io.discloader.discloader.common.DiscLoader;
 import io.discloader.discloader.common.language.Language;
-import io.discloader.discloader.entity.Permission;
+import io.discloader.discloader.entity.user.Permission;
 import io.discloader.discloader.network.gateway.DiscSocketListener;
 
 /**

@@ -8,7 +8,7 @@ import io.discloader.discloader.client.render.util.IIcon;
 import io.discloader.discloader.common.event.MessageCreateEvent;
 import io.discloader.discloader.common.language.LanguageRegistry;
 import io.discloader.discloader.common.registry.CommandRegistry;
-import io.discloader.discloader.entity.sendable.RichEmbed;
+import io.discloader.discloader.entity.RichEmbed;
 import io.discloader.discloader.util.DLUtil;
 
 /**

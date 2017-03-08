@@ -3,8 +3,8 @@
  */
 package io.discloader.discloader.common.event;
 
-import io.discloader.discloader.entity.Guild;
-import io.discloader.discloader.entity.User;
+import io.discloader.discloader.entity.guild.Guild;
+import io.discloader.discloader.entity.user.User;
 
 /**
  * @author Perry Berman

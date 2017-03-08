@@ -4,11 +4,11 @@ import java.io.File;
 import java.util.HashMap;
 import java.util.concurrent.CompletableFuture;
 
-import io.discloader.discloader.entity.Attachment;
-import io.discloader.discloader.entity.Guild;
-import io.discloader.discloader.entity.Message;
+import io.discloader.discloader.entity.RichEmbed;
+import io.discloader.discloader.entity.guild.Guild;
 import io.discloader.discloader.entity.impl.ITextChannel;
-import io.discloader.discloader.entity.sendable.RichEmbed;
+import io.discloader.discloader.entity.message.Message;
+import io.discloader.discloader.entity.sendable.Attachment;
 import io.discloader.discloader.network.json.ChannelJSON;
 import io.discloader.discloader.util.DLUtil.ChannelType;
 

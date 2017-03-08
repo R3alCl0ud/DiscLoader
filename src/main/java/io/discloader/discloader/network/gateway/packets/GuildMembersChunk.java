@@ -2,8 +2,8 @@ package io.discloader.discloader.network.gateway.packets;
 
 import io.discloader.discloader.common.DiscLoader;
 import io.discloader.discloader.common.event.IEventListener;
-import io.discloader.discloader.entity.Guild;
-import io.discloader.discloader.entity.GuildMember;
+import io.discloader.discloader.entity.guild.Guild;
+import io.discloader.discloader.entity.guild.GuildMember;
 import io.discloader.discloader.network.gateway.DiscSocket;
 import io.discloader.discloader.network.json.GuildMembersChunkJSON;
 import io.discloader.discloader.network.json.MemberJSON;

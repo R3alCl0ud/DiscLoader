@@ -8,7 +8,7 @@ import java.util.regex.Pattern;
 import io.discloader.discloader.common.discovery.ModContainer;
 import io.discloader.discloader.common.event.MessageCreateEvent;
 import io.discloader.discloader.common.registry.ModRegistry;
-import io.discloader.discloader.entity.sendable.RichEmbed;
+import io.discloader.discloader.entity.RichEmbed;
 import io.discloader.discloader.util.DLUtil;
 
 /**

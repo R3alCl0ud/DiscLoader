@@ -2,7 +2,7 @@ package io.discloader.discloader.entity.sendable;
 
 import java.io.File;
 
-import io.discloader.discloader.entity.Attachment;
+import io.discloader.discloader.entity.RichEmbed;
 
 /**
  * @author Perry Berman

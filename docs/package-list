@@ -18,10 +18,13 @@ io.discloader.discloader.common.start
 io.discloader.discloader.entity
 io.discloader.discloader.entity.channels
 io.discloader.discloader.entity.embed
+io.discloader.discloader.entity.guild
 io.discloader.discloader.entity.impl
 io.discloader.discloader.entity.invite
+io.discloader.discloader.entity.message
+io.discloader.discloader.entity.message.embed
 io.discloader.discloader.entity.sendable
-io.discloader.discloader.entity.sendable.embed
+io.discloader.discloader.entity.user
 io.discloader.discloader.entity.voice
 io.discloader.discloader.network.gateway
 io.discloader.discloader.network.gateway.packets

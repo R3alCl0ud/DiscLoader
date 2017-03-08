@@ -2,7 +2,7 @@ package io.discloader.discloader.entity.channels;
 
 import java.util.concurrent.CompletableFuture;
 
-import io.discloader.discloader.entity.Guild;
+import io.discloader.discloader.entity.guild.Guild;
 import io.discloader.discloader.entity.impl.IGuildChannel;
 import io.discloader.discloader.entity.impl.IVoiceChannel;
 import io.discloader.discloader.entity.voice.VoiceConnection;

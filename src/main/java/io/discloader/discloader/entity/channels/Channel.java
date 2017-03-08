@@ -45,6 +45,9 @@ public class Channel implements IChannel {
 
     public void setup(ChannelJSON data) {
         this.id = data.id;
+    }
 
+    public String toMention() {
+        return String.format("<#%s>", id);
     }
 }
