@@ -661,5 +661,9 @@ public class Guild {
 		}
 		this.loader.syncGuilds(this.id);
 	}
+	
+	public void updateVoiceState(VoiceState state) {
+		rawStates.put(state.member.id, state);
+	}
 
 }

@@ -179,4 +179,6 @@ public interface IEventListener {
 	void Ready(DiscLoader loader);
 
 	void UserUpdate(UserUpdateEvent e);
+
+	void VoiceStateUpdate(VoiceStateUpdateEvent e);
 }

@@ -11,8 +11,6 @@ public class VoiceState {
 	public final GuildMember member;
 	public final Guild guild;
 
-//	private String session_id;
-
 	public boolean deaf;
 	public boolean mute;
 	public boolean suppressed;

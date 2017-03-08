@@ -134,4 +134,9 @@ public abstract class EventListenerAdapter implements IEventListener {
 	public void UserUpdate(UserUpdateEvent e) {
 	}
 
+	@Override
+	public void VoiceStateUpdate(VoiceStateUpdateEvent e) {
+
+	}
+
 }

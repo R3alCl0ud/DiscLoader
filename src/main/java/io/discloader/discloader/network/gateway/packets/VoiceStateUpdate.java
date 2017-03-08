@@ -3,9 +3,15 @@
  */
 package io.discloader.discloader.network.gateway.packets;
 
+import io.discloader.discloader.common.DiscLoader;
+import io.discloader.discloader.common.event.IEventListener;
+import io.discloader.discloader.common.event.VoiceStateUpdateEvent;
+import io.discloader.discloader.entity.guild.Guild;
 import io.discloader.discloader.entity.voice.VoiceConnection;
+import io.discloader.discloader.entity.voice.VoiceState;
 import io.discloader.discloader.network.gateway.DiscSocket;
 import io.discloader.discloader.network.json.VoiceStateJSON;
+import io.discloader.discloader.util.DLUtil.Status;
 
 /**
  * @author Perry Berman
@@ -13,19 +19,28 @@ import io.discloader.discloader.network.json.VoiceStateJSON;
  */
 public class VoiceStateUpdate extends DLPacket {
 
-
 	public VoiceStateUpdate(DiscSocket socket) {
 		super(socket);
 	}
-	
+
 	public void handle(SocketPacket packet) {
 		String d = this.gson.toJson(packet.d);
 		VoiceStateJSON data = this.gson.fromJson(d, VoiceStateJSON.class);
-		VoiceConnection connection = this.loader.voiceConnections.get(data.guild_id);
-		if (connection.getUserID().equals(data.user_id)) {
-		    connection.setSessionID(data.session_id);
-		    connection.setStateUpdated(true);
+		Guild guild = loader.guilds.get(data.guild_id);
+		VoiceConnection connection = this.loader.voiceConnections.get(guild.id);
+		if (connection != null && connection.getUserID().equals(data.user_id)) {
+			connection.setSessionID(data.session_id);
+			connection.setStateUpdated(true);
+		}
+		VoiceState currentState = new VoiceState(data, guild);
+		guild.updateVoiceState(currentState);
+		VoiceState oldState = guild.getRawStates().get(data.user_id);
+		if (loader.ready && loader.socket.status == Status.READY && oldState != null) {
+			VoiceStateUpdateEvent event = new VoiceStateUpdateEvent(oldState, currentState);
+			for (IEventListener e : DiscLoader.handlers.values()) {
+				e.VoiceStateUpdate(event);
+			}
 		}
 	}
-	
+
 }
