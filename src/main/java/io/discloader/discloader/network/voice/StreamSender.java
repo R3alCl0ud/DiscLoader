@@ -15,7 +15,7 @@ public class StreamSender {
     private Thread packetThread;
     // private VoiceWebSocket ws;
     private final VoiceConnection connection;
-    
+
     public StreamSender(StreamProvider streamer) {
         this.provider = streamer;
         this.connection = provider.connection;
@@ -27,16 +27,16 @@ public class StreamSender {
             @Override
             public void run() {
                 long lastSent = System.currentTimeMillis();
-
                 while (!udpSocket.isClosed() && !packetThread.isInterrupted()) {
                     try {
                         if ((System.currentTimeMillis() - lastSent) > 20) {
 
-                        } else {
-                            DatagramPacket packet = provider.getNextPacket();
-                            if (packet != null)
-                                udpSocket.send(packet);
                         }
+
+                        DatagramPacket packet = provider.getNextPacket();
+                        if (packet != null)
+                            udpSocket.send(packet);
+
                     } catch (Exception e) {
                         e.printStackTrace();
                     } finally {
@@ -62,6 +62,7 @@ public class StreamSender {
         packetThread.setPriority((Thread.NORM_PRIORITY + Thread.MAX_PRIORITY) / 2);
         packetThread.setDaemon(true);
         packetThread.start();
+
     }
 
     public void close() {

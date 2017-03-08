@@ -47,6 +47,7 @@ public class StreamSchedule extends AudioEventAdapter implements AudioLoadResult
 
     @Override
     public void onPlayerResume(AudioPlayer player) {
+        this.connection.getWs().setSpeaking(true);
         this.connection.provider.start();
     }
 
