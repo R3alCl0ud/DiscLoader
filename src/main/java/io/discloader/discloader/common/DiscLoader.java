@@ -268,6 +268,8 @@ public class DiscLoader {
 
 		this.ready = false;
 
+		ModRegistry.loader = this;
+
 	}
 
 	public Channel addChannel(ChannelJSON data) {

@@ -504,6 +504,14 @@ public class Guild {
 		return this.loader.rest.pruneCount(this, days);
 	}
 
+	public HashMap<String, VoiceState> getRawStates() {
+		return rawStates;
+	}
+
+	public boolean isSyncing() {
+		return syncing;
+	}
+
 	/**
 	 * Kicks the member from the {@link Guild} if the {@link DiscLoader client}
 	 * has sufficient permissions
@@ -652,10 +660,6 @@ public class Guild {
 			return;
 		}
 		this.loader.syncGuilds(this.id);
-	}
-
-	public boolean isSyncing() {
-		return syncing;
 	}
 
 }

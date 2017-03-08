@@ -72,10 +72,10 @@ public class LanguageRegistry {
 
 	/**
 	 * Adds a language to the registry
+	 * 
 	 * @param lang The language to register
 	 */
 	public static void registerLanguage(Language lang) {
-		System.out.print(lang.getLocale().toLanguageTag());
 		if (!langs.localizedNames.containsKey(lang.getLocale())) {
 			langs.localizedNames.put(lang.getLocale(), lang.types);
 			return;

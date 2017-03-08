@@ -27,6 +27,8 @@ public class ModRegistry {
 	 */
 	public static ModContainer activeMod = null;
 
+	public static DiscLoader loader;
+
 	/**
 	 * A {@link HashMap} of the mods loaded by the client. Indexed by
 	 * {@link Mod#modid()}
@@ -111,11 +113,16 @@ public class ModRegistry {
 			load(mod.modInfo.modid());
 			activeMod = null;
 		}
-
+		if (i == 1) {
+			DLPreInitEvent event = new DLPreInitEvent(loader);
+			for (IEventListener e : DiscLoader.handlers.values()) {
+				e.PreInit(event);
+			}
+		}
 		ProgressLogger.phase(3, 3, "Init");
 		ProgressLogger.stage(1, 3, "Waiting to Login");
 		resetStep();
-//		Main.loader.login(Main.token);
+		// Main.loader.login(Main.token);
 	}
 
 	public static void load(String modid) {
@@ -129,11 +136,8 @@ public class ModRegistry {
 
 		ProgressLogger.progress(3, 3, "Executing PreInit handler in: " + mod.modInfo.modid());
 		mods.put(mod.modInfo.modid(), mod);
-		DLPreInitEvent event = new DLPreInitEvent(Main.loader);
+		DLPreInitEvent event = new DLPreInitEvent(loader);
 		mod.emit("preInit", event);
-		for (IEventListener e : DiscLoader.handlers.values()) {
-			e.PreInit(event);
-		}
 		if (loadMod.containsKey(mod.modInfo.modid())) {
 			activeMod = preInitMods.get(loadMod.get(mod.modInfo.modid()));
 		} else {
