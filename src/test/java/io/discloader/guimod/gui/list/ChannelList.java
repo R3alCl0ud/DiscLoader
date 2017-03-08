@@ -15,7 +15,8 @@ public class ChannelList<T extends Channel> extends AbstractList<T> {
         super(loader);
     }
 
-    public DefaultListModel<Object> createListModel() {
+    @SuppressWarnings("unchecked")
+	public DefaultListModel<Object> createListModel() {
         DefaultListModel<Object> listModel = new DefaultListModel<>();
         for (Channel c : loader.channels.values()) {
             switch (c.getType()) {

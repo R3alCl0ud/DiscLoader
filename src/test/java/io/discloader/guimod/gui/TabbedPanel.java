@@ -15,6 +15,7 @@ import io.discloader.discloader.common.language.LanguageRegistry;
 import io.discloader.discloader.entity.channels.Channel;
 import io.discloader.discloader.entity.guild.Guild;
 import io.discloader.discloader.entity.user.User;
+import io.discloader.guimod.gui.embed.EmbedBuilder;
 import io.discloader.guimod.gui.tab.ChannelTab;
 import io.discloader.guimod.gui.tab.CommandsTab;
 import io.discloader.guimod.gui.tab.GuildFolders;
@@ -41,6 +42,7 @@ public class TabbedPanel extends JPanel {
 				resizeImageIcon(createImageIcon("texture.gui.icons.missing-icon", "Missing Icon"), 16, 16),
 				new GuildFolders<Guild>(this.loader), "Guilds");
 
+		tabbedPane.addTab("Embed Builder", new EmbedBuilder());
 		tabbedPane.setTabLayoutPolicy(JTabbedPane.SCROLL_TAB_LAYOUT);
 		this.add(tabbedPane);
 		this.validate();
