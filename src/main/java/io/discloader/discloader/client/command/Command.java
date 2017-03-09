@@ -16,10 +16,14 @@ public class Command {
 
 	protected static DLNameSpacedMap<Command> commands = CommandRegistry.commands;
 
+	public static boolean defaultCommands = true;
+
 	public static void registerCommands() {
-		commands.addObject(0, "help", new CommandHelp().setUnlocalizedName("help").setId(0));
-		commands.addObject(1, "mods", new CommandMods().setId(1));
-		commands.addObject(2, "invite", new CommandInvite().setId(2));
+		if (defaultCommands) {
+			commands.addObject(0, "help", new CommandHelp().setUnlocalizedName("help").setId(0));
+			commands.addObject(1, "mods", new CommandMods().setId(1));
+			commands.addObject(2, "invite", new CommandInvite().setId(2));
+		}
 	}
 
 	private String unlocalizedName;
