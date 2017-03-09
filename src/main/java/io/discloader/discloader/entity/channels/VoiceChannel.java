@@ -70,6 +70,13 @@ public class VoiceChannel extends GuildChannel implements IGuildChannel, IVoiceC
 	@Override
 	public CompletableFuture<VoiceConnection> join() {
 		CompletableFuture<VoiceConnection> future = new CompletableFuture<VoiceConnection>();
+		if (loader.voiceConnections.containsKey(guild.id)) {
+			loader.voiceConnections.get(guild.id).disconnect().thenAcceptAsync(action -> {
+				VoiceConnection connection = new VoiceConnection(this, future);
+				loader.voiceConnections.put(this.guild.id, connection);
+			});
+			return future;
+		}
 		VoiceConnection connection = new VoiceConnection(this, future);
 		this.loader.voiceConnections.put(this.guild.id, connection);
 		return future;
@@ -77,6 +84,9 @@ public class VoiceChannel extends GuildChannel implements IGuildChannel, IVoiceC
 
 	@Override
 	public CompletableFuture<VoiceConnection> leave() {
+		if (loader.voiceConnections.containsKey(guild.id)) {
+			return loader.voiceConnections.get(guild.id).disconnect();
+		}
 		return null;
 	}
 
