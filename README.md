@@ -4,6 +4,8 @@ Created to replace the method daisy chaining confusion of other Java libraries f
 
 [Documentation](https://r3alcl0ud.github.io/DiscLoader/)
 
+[Example](null)
+
 # Done
 - Connecting to the gateway via websocket
 - Change username/nickname/guild name
