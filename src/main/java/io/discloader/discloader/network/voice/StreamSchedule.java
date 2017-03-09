@@ -21,49 +21,61 @@ public class StreamSchedule extends AudioEventAdapter implements AudioLoadResult
     public final ArrayList<AudioTrack> tracks;
     private AudioPlayer player;
     protected VoiceConnection connection;
+    private boolean b;
 
-    public StreamSchedule(AudioPlayer player, VoiceConnection connection) {
+    public StreamSchedule(AudioPlayer player, VoiceConnection connection, boolean b) {
         this.player = player;
 
+        this.b = b;
         this.tracks = new ArrayList<>();
         this.connection = connection;
         this.player.addListener(this);
     }
 
     public void startNext() {
-        if (tracks.size() > 0) {
-            AudioTrack nextTrack = tracks.get(0);
-            player.startTrack(nextTrack, true);
-        } else {
-            this.connection.getWs().setSpeaking(false);
-            connection.provider.close();
-        }
+        if (b)
+            if (tracks.size() > 0) {
+                AudioTrack nextTrack = tracks.get(0);
+                player.startTrack(nextTrack, true);
+            } else {
+                this.connection.getWs().setSpeaking(false);
+                connection.provider.close();
+            }
     }
 
     @Override
     public void onPlayerPause(AudioPlayer player) {
-        this.connection.provider.close();
+        if (b)
+            this.connection.provider.close();
     }
 
     @Override
     public void onPlayerResume(AudioPlayer player) {
         this.connection.getWs().setSpeaking(true);
-        this.connection.provider.start();
+        if (b)
+            this.connection.provider.start();
     }
 
     @Override
     public void onTrackEnd(AudioPlayer player, AudioTrack track, AudioTrackEndReason endReason) {
-        if (endReason == AudioTrackEndReason.FINISHED || endReason == AudioTrackEndReason.LOAD_FAILED) {
-            tracks.remove(track);
-            startNext();
+        if (b) {
+            if (endReason == AudioTrackEndReason.FINISHED || endReason == AudioTrackEndReason.LOAD_FAILED) {
+                tracks.remove(track);
+                startNext();
+            } else {
+                // this.connection.provider.close();
+                startNext();
+            }
         }
     }
 
     @Override
     public void onTrackStart(AudioPlayer player, AudioTrack track) {
-        this.connection.getWs().setSpeaking(true);
-        if (!connection.provider.isOpen()) {
-            connection.provider.start();
+        if (b) {
+            if (!connection.provider.isOpen()) {
+                connection.provider.start();
+            }
+            this.connection.getWs().setSpeaking(true);
         }
     }
 
@@ -80,16 +92,20 @@ public class StreamSchedule extends AudioEventAdapter implements AudioLoadResult
 
     @Override
     public void playlistLoaded(AudioPlaylist playlist) {
-        for (AudioTrack track : playlist.getTracks()) {
-            tracks.add(track);
+        if (b) {
+            for (AudioTrack track : playlist.getTracks()) {
+                tracks.add(track);
+            }
+            startNext();
         }
-        startNext();
     }
 
     @Override
     public void trackLoaded(AudioTrack track) {
-        tracks.add(track);
-        startNext();
+        if (b) {
+            tracks.add(track);
+            startNext();
+        }
     }
 
 }

@@ -106,7 +106,7 @@
 		<dependency>
 			<groupId>com.sedmelluq</groupId>
 			<artifactId>lavaplayer</artifactId>
-			<version>1.2.27</version>
+			<version>1.2.29</version>
 		</dependency>
 		<dependency>
 			<groupId>pl.project13.maven</groupId>
