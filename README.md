@@ -6,6 +6,20 @@ Created to replace the method daisy chaining confusion of other Java libraries f
 
 [Example](https://github.com/R3alCl0ud/DiscLoader/blob/master/example/com/example/Example.java)
 
+```xml
+<repository>
+  <id>maven</id>
+  <name>DiscLoader Maven Repo</name>
+  <url>http://discloader.io:8080/repository/maven/</url>
+</repository>
+<dependency>
+  <groupId>io.discloader</groupId>
+  <artifactId>discloader</artifactId>
+  <version>0.1.0</version>
+</dependency>
+```
+
+
 # Done
 - Connecting to the gateway via websocket
 - Change username/nickname/guild name

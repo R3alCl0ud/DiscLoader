@@ -21,5 +21,4 @@ public class Example extends EventListenerAdapter {
 			e.message.channel.sendMessage(String.format("Hello %s", e.message.author));
 		}
 	}
-
 }
