@@ -4,7 +4,7 @@ Created to replace the method daisy chaining confusion of other Java libraries f
 
 [Documentation](https://r3alcl0ud.github.io/DiscLoader/)
 
-[Example](null)
+[Example](https://github.com/R3alCl0ud/DiscLoader/blob/master/example/com/example/Example.java)
 
 # Done
 - Connecting to the gateway via websocket
