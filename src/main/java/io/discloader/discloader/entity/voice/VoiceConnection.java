@@ -74,7 +74,7 @@ public class VoiceConnection {
 
 	private int SSRC;
 
-	private ArrayList<IVoiceConnectionListener> listeners;
+	public final ArrayList<IVoiceConnectionListener> listeners;
 
 	private boolean speaking;
 

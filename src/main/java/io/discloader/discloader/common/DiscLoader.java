@@ -66,7 +66,6 @@ public class DiscLoader {
 
 	private class Gateway {
 		public String url;
-		// public int shards;
 	}
 
 	public static final Logger LOG = new DLLogger("DiscLoader").getLogger();
