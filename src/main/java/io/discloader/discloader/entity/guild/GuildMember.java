@@ -12,6 +12,7 @@ import io.discloader.discloader.entity.user.Permission;
 import io.discloader.discloader.entity.user.User;
 import io.discloader.discloader.entity.voice.VoiceState;
 import io.discloader.discloader.network.json.MemberJSON;
+import io.discloader.discloader.network.rest.actions.ModifyMember;
 import io.discloader.discloader.util.DLUtil;
 
 /**
@@ -55,11 +56,11 @@ public class GuildMember {
 	/**
 	 * Whether or not the member's mic is muted
 	 */
-	public boolean mute;
+	private boolean mute;
 	/**
 	 * Whether or not the member
 	 */
-	public boolean deaf;
+	private boolean deaf;
 
 	/**
 	 * Member's old presence. Has a value of {@code null} unless
@@ -134,6 +135,11 @@ public class GuildMember {
 		return this.guild.ban(this);
 	}
 
+	public CompletableFuture<GuildMember> deafen() {
+		ModifyMember future = new ModifyMember(this, nick, getRoleList(), mute, true, getVoiceChannel());
+		return future.execute();
+	}
+
 	/**
 	 * @return The members current presence.
 	 */
@@ -160,6 +166,10 @@ public class GuildMember {
 		return null;
 	}
 
+	public VoiceState getVoiceState() {
+		return guild.getRawStates().get(id);
+	}
+
 	/**
 	 * Gives a member a new role
 	 * 
@@ -168,6 +178,14 @@ public class GuildMember {
 	 */
 	public CompletableFuture<GuildMember> giveRole(Role role) {
 		return this.loader.rest.giveRole(this, role);
+	}
+
+	public boolean isDeaf() {
+		return getVoiceState().deaf;
+	}
+
+	public boolean isMute() {
+		return getVoiceState().mute;
 	}
 
 	/**
@@ -183,7 +201,13 @@ public class GuildMember {
 	}
 
 	public CompletableFuture<GuildMember> move(VoiceChannel channel) {
-		return null;
+		ModifyMember future = new ModifyMember(this, channel);
+		return future.execute();
+	}
+
+	public CompletableFuture<GuildMember> mute() {
+		ModifyMember future = new ModifyMember(this, nick, getRoleList(), true, deaf, getVoiceChannel());
+		return future.execute();
 	}
 
 	/**
@@ -217,4 +241,15 @@ public class GuildMember {
 	public String toMention() {
 		return String.format("<@!%s>", id);
 	}
+
+	public CompletableFuture<GuildMember> unDeafen() {
+		ModifyMember future = new ModifyMember(this, nick, getRoleList(), mute, false, getVoiceChannel());
+		return future.execute();
+	}
+
+	public CompletableFuture<GuildMember> unMute() {
+		ModifyMember future = new ModifyMember(this, nick, getRoleList(), false, deaf, getVoiceChannel());
+		return future.execute();
+	}
+
 }

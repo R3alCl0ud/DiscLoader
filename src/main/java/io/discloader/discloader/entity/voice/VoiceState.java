@@ -21,7 +21,6 @@ public class VoiceState {
 		this.deaf = data.deaf || data.self_deaf ? true : false;
 		this.mute = data.mute || data.self_mute ? true : false;
 		this.suppressed = data.suppress;
-
 		this.channel = guild.voiceChannels.get(data.channel_id);
 	}
 }
