@@ -1,5 +1,7 @@
 package io.discloader.discloader.client.command;
 
+import java.util.regex.Pattern;
+
 import io.discloader.discloader.client.registry.TextureRegistry;
 import io.discloader.discloader.client.render.util.IIcon;
 import io.discloader.discloader.common.event.MessageCreateEvent;
@@ -32,6 +34,8 @@ public class Command {
 
 	private String description = "default description";
 
+	private String argsRegex = "(.*)";
+
 	private String usage = null;
 
 	private int id;
@@ -49,9 +53,26 @@ public class Command {
 	 * executes the command
 	 * 
 	 * @param e The MessageCreateEvent
+	 * @param args The args parsed from {@link #getArgsPattern()}
+	 */
+	public void execute(MessageCreateEvent e, String[] args) {
+		execute(e);
+	}
+
+	/**
+	 * executes the command
+	 * 
+	 * @param e The MessageCreateEvent
 	 */
 	public void execute(MessageCreateEvent e) {
 		return;
+	}
+
+	/**
+	 * @return the argsRegex
+	 */
+	public Pattern getArgsPattern() {
+		return Pattern.compile(argsRegex);
 	}
 
 	/**
@@ -97,6 +118,13 @@ public class Command {
 			this.usage = this.getUnlocalizedName();
 		}
 		return this.usage;
+	}
+
+	/**
+	 * @param argsRegex the argsRegex to set
+	 */
+	public void setArgsRegex(String argsRegex) {
+		this.argsRegex = argsRegex;
 	}
 
 	/**

@@ -20,19 +20,19 @@ public class CommandHelp extends Command {
 
 	public CommandHelp() {
 		super();
-		this.setTextureName("discloader:help").setDescription("Displays information about the available commands")
+		setTextureName("discloader:help").setDescription("Displays information about the available commands")
 				.setUsage("help [<command>]");
 	}
 
-	public void execute(MessageCreateEvent e) {
+	public void execute(MessageCreateEvent e, String[] args) {
 		RichEmbed embed = new RichEmbed()
 				.setFooter(String.format("type `%shelp <page>` to tab threw the pages", CommandHandler.prefix),
 						e.loader.user.avatar.toString())
-				.setAuthor(e.loader.user.username, "http://discloader.io", e.loader.user.avatar.toString()).setColor(0x08a2ff);
-
-		if (e.args.length == 2) {
-			String cmd = e.args[1];
-			Command command = CommandHandler.getCommand(cmd, e.message);
+				.setAuthor(e.loader.user.username, "http://discloader.io", e.loader.user.avatar.toString())
+				.setColor(0x08a2ff);
+		Command command;
+		embed.setThumbnail(this.getIcon().getFile());
+		if (args.length == 1 && (command = CommandHandler.getCommand(args[0], e.message)) != null) {
 			if (command != null) {
 				File icon = DLUtil.MissingTexture;
 				IIcon iicon = (CommandIcon) command.getIcon();
@@ -45,15 +45,24 @@ public class CommandHelp extends Command {
 						.addField("Description", this.getCommandDesc(command), true)
 						.addField("Usage", command.getUsage(), true);
 			}
+		} else if (args.length == 1) {
+			String commands = "";
+			int page = Integer.parseInt(args[0], 10);
+			int size = CommandRegistry.commands.entries().size();
+			Command[] cmds = CommandRegistry.commands.entries().toArray(new Command[size]);
+			for (int i = 0 + (10 * page); i < (10 * (page + 1)) && i < size; i++) {
+				String desc = this.getCommandDesc(cmds[i]);
+				commands = String.format("%s**%s**: %s\n", commands, cmds[i].getUnlocalizedName(), desc);
+			}
+			embed.addField("Commands", commands, true);
+			embed.setTitle(String.format("Help. Page: 1/%d", (size / 10) + size % 10 != 0 ? 1 : 0));
 		} else {
-			embed.setThumbnail(this.getIcon().getFile());
 			String commands = "";
 			int size = CommandRegistry.commands.entries().size();
 			Command[] cmds = CommandRegistry.commands.entries().toArray(new Command[size]);
 			for (int i = 0; i < 10 && i < cmds.length; i++) {
 				String desc = this.getCommandDesc(cmds[i]);
-				commands = String.format("%s**%s**: %s\n", commands, cmds[i].getUnlocalizedName(),
-						desc);
+				commands = String.format("%s**%s**: %s\n", commands, cmds[i].getUnlocalizedName(), desc);
 			}
 			embed.addField("Commands", commands, true);
 			embed.setTitle(String.format("Help. Page: 1/%d", (size / 10) + size % 10 != 0 ? 1 : 0));
@@ -68,5 +77,5 @@ public class CommandHelp extends Command {
 		}
 		return desc;
 	}
-	
+
 }

@@ -36,7 +36,6 @@ public class StreamSchedule extends AudioEventAdapter implements AudioLoadResult
 		if (b)
 			if (tracks.size() > 0) {
 				AudioTrack nextTrack = tracks.get(0);
-				System.out.println(nextTrack.getState());
 				player.startTrack(nextTrack, true);
 			} else {
 				this.connection.getWs().setSpeaking(false);

@@ -9,7 +9,7 @@ public class CommandInvite extends Command {
 		this.setUnlocalizedName("invite").setUsage("invite").setDescription("returns the OAuth2 invite link");
 	}
 
-	public void execute(MessageCreateEvent e) {
+	public void execute(MessageCreateEvent e, String[] args) {
 		e.loader.user.getOAuth2Application().thenAcceptAsync(App -> {
 			e.message.channel.sendMessage(App.getOAuthURL());
 		});

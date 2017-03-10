@@ -182,6 +182,10 @@ public class GuildMember {
 		return this.guild.kickMember(this);
 	}
 
+	public CompletableFuture<GuildMember> move(VoiceChannel channel) {
+		return null;
+	}
+
 	/**
 	 * Sets the member's nickname if the {@link DiscLoader loader} has
 	 * sufficient permissions

@@ -52,7 +52,7 @@ public class DiscRegistry {
 	public static void executeCommand(MessageCreateEvent e) {
 		Command cmd = getCommand(e.message.content.split(" ")[0].substring(prefix.length()));
 		if (cmd != null) {
-			cmd.execute(e);
+			// cmd.execute(e);
 		}
 	}
 
