@@ -99,4 +99,14 @@ public class TextChannel extends GuildChannel implements ITextChannel {
 		return null;
 	}
 
+	@Override
+	public HashMap<String, Message> fetchMessages() {
+		return null;
+	}
+
+	@Override
+	public Message fetchMessage(String id) {
+		return null;
+	}
+
 }

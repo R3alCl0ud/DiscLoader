@@ -18,6 +18,10 @@ public interface ITextChannel extends IChannel {
 	 */
 	Message getMessage(String id);
 
+	HashMap<String, Message> fetchMessages();
+
+	Message fetchMessage(String id);
+
 	/**
 	 * Gets the channels cached messages
 	 * 

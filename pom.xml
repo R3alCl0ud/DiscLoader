@@ -6,12 +6,6 @@
 	<artifactId>discloader</artifactId>
 	<name>DiscLoader</name>
 	<version>0.1.0</version>
-	<versioning>
-		<release>0.0.3</release>
-		<versions>
-			<version>0.0.1</version>
-		</versions>
-	</versioning>
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<maven.compiler.source>1.8</maven.compiler.source>

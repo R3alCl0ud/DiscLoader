@@ -37,13 +37,13 @@ public class PrivateChannel extends Channel implements ITextChannel {
 
 	public void setup(ChannelJSON data) {
 		super.setup(data);
-		
+
 		this.recipient = loader.users.get(data.recipient.id);
-		
+
 		if (recipient == null) {
 			recipient = loader.addUser(data.recipient);
 		}
-		
+
 	}
 
 	@Override
@@ -89,6 +89,16 @@ public class PrivateChannel extends Channel implements ITextChannel {
 
 	@Override
 	public CompletableFuture<Message> unpinMessage(Message message) {
+		return null;
+	}
+
+	@Override
+	public HashMap<String, Message> fetchMessages() {
+		return null;
+	}
+
+	@Override
+	public Message fetchMessage(String id) {
 		return null;
 	}
 
