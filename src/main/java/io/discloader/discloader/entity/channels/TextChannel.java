@@ -8,8 +8,11 @@ import io.discloader.discloader.entity.RichEmbed;
 import io.discloader.discloader.entity.guild.Guild;
 import io.discloader.discloader.entity.impl.ITextChannel;
 import io.discloader.discloader.entity.message.Message;
+import io.discloader.discloader.entity.message.MessageFetchOptions;
 import io.discloader.discloader.entity.sendable.Attachment;
 import io.discloader.discloader.network.json.ChannelJSON;
+import io.discloader.discloader.network.rest.actions.RESTFetchMessage;
+import io.discloader.discloader.network.rest.actions.RESTFetchMessages;
 import io.discloader.discloader.util.DLUtil.ChannelType;
 
 /**
@@ -43,6 +46,21 @@ public class TextChannel extends GuildChannel implements ITextChannel {
 		super(guild, data);
 
 		this.messages = new HashMap<String, Message>();
+	}
+
+	@Override
+	public CompletableFuture<Message> fetchMessage(String id) {
+		return new RESTFetchMessage(this, id).execute();
+	}
+
+	@Override
+	public CompletableFuture<HashMap<String, Message>> fetchMessages() {
+		return fetchMessages(new MessageFetchOptions());
+	}
+
+	@Override
+	public CompletableFuture<HashMap<String, Message>> fetchMessages(MessageFetchOptions options) {
+		return new RESTFetchMessages(this, options).execute();
 	}
 
 	@Override
@@ -96,16 +114,6 @@ public class TextChannel extends GuildChannel implements ITextChannel {
 
 	@Override
 	public CompletableFuture<Message> unpinMessage(Message message) {
-		return null;
-	}
-
-	@Override
-	public HashMap<String, Message> fetchMessages() {
-		return null;
-	}
-
-	@Override
-	public Message fetchMessage(String id) {
 		return null;
 	}
 

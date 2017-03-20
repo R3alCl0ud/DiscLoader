@@ -5,6 +5,7 @@ import java.util.concurrent.CompletableFuture;
 
 import io.discloader.discloader.entity.RichEmbed;
 import io.discloader.discloader.entity.message.Message;
+import io.discloader.discloader.entity.message.MessageFetchOptions;
 
 /**
  * @author perryberman
@@ -18,9 +19,22 @@ public interface ITextChannel extends IChannel {
 	 */
 	Message getMessage(String id);
 
-	HashMap<String, Message> fetchMessages();
+	/**
+	 * @return A HashMap of fetched messages
+	 */
+	CompletableFuture<HashMap<String, Message>> fetchMessages();
 
-	Message fetchMessage(String id);
+	/**
+	 * @param options The fetch options to use
+	 * @return
+	 */
+	CompletableFuture<HashMap<String, Message>> fetchMessages(MessageFetchOptions options);
+
+	/**
+	 * @param id The id of the message to fetch
+	 * @return a new message object
+	 */
+	CompletableFuture<Message> fetchMessage(String id);
 
 	/**
 	 * Gets the channels cached messages

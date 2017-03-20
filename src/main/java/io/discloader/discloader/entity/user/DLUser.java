@@ -2,11 +2,11 @@ package io.discloader.discloader.entity.user;
 
 import java.util.concurrent.CompletableFuture;
 
-import org.json.JSONObject;
-
 import io.discloader.discloader.entity.Game;
 import io.discloader.discloader.entity.Presence;
-import io.discloader.discloader.util.DLUtil;
+import io.discloader.discloader.entity.sendable.Packet;
+import io.discloader.discloader.entity.sendable.SendablePresenceUpdate;
+import io.discloader.discloader.util.DLUtil.OPCodes;
 
 /**
  * Represents the user that you are currently logged in as.
@@ -63,7 +63,7 @@ public class DLUser extends User {
 	 * @param afk Whether or not you are afk
 	 * @return this
 	 */
-	public User setAFK(boolean afk) {
+	public DLUser setAFK(boolean afk) {
 		return this.setPresence(null, null, this.afk);
 	}
 
@@ -85,8 +85,8 @@ public class DLUser extends User {
 	 * @param game The name of the game you are playing
 	 * @return this
 	 */
-	public User setGame(String game) {
-		return this.setPresence(null, game != null ? new Game(game) : null, this.afk);
+	public DLUser setGame(String game) {
+		return this.setPresence(presence.status, game != null ? new Game(game) : null, this.afk);
 	}
 
 	/**
@@ -97,14 +97,12 @@ public class DLUser extends User {
 	 * @param afk Are you afk?
 	 * @return this
 	 */
-	public User setPresence(String status, Game game, boolean afk) {
-		JSONObject payload = new JSONObject().put("op", DLUtil.OPCodes.STATUS_UPDATE);
-		game = game != null ? game : this.presence.game;
-
-		JSONObject d = new JSONObject().put("game", game != null ? game.toJsonString() : null).put("afk", this.afk)
-				.put("status", status != null ? status : this.presence.status).put("since", 0);
+	public DLUser setPresence(String status, Game game, boolean afk) {
+		String g = game != null ? game.toJsonString() : "null";
+		SendablePresenceUpdate d = new SendablePresenceUpdate(g, status, afk, 0);
+		Packet payload = new Packet(OPCodes.STATUS_UPDATE, d);
 		this.presence.update(status, game);
-//		this.loader.socket.send(payload.put("d", d).toString());
+		this.loader.socket.send(payload);
 		return this;
 	}
 
@@ -115,7 +113,7 @@ public class DLUser extends User {
 	 *            {@literal dnd}, {@literal invisible}, etc..
 	 * @return this
 	 */
-	public User setStatus(String status) {
+	public DLUser setStatus(String status) {
 		return this.setPresence(status, null, this.afk);
 	}
 

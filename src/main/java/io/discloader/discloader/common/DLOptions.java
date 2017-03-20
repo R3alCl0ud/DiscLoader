@@ -14,6 +14,10 @@ public class DLOptions {
 
 	/**
 	 * The prefix to look for
+	 * 
+	 * <pre>
+	 * default = "/";
+	 * </pre>
 	 */
 	public String prefix = "/";
 
@@ -23,9 +27,13 @@ public class DLOptions {
 	public boolean defaultCommands = true;
 
 	/**
-	 * Do you want the loading window to be shown?
+	 * Do you want the loading window to be shown?<br>
+	 * 
+	 * <pre>
+	 * Default = false;
+	 * </pre>
 	 */
-	public boolean useWindow = true;
+	public boolean useWindow = false;
 
 	public int shard = 0;
 
@@ -36,11 +44,11 @@ public class DLOptions {
 	}
 
 	public DLOptions(int shard, int shards) {
-		this("TOKEN", "/", true, true, 0, 1);
+		this("TOKEN", "/", true, false, 0, 1);
 	}
 
 	public DLOptions(String token, String prefix) {
-		this(token, prefix, true, true, 0, 1);
+		this(token, prefix, true, false, 0, 1);
 	}
 
 	public DLOptions(String token, String prefix, boolean defaultCommands, boolean useWindow) {
@@ -57,6 +65,6 @@ public class DLOptions {
 	}
 
 	public DLOptions(String token, String prefix, int shard, int shards) {
-		this(token, prefix, true, true, shard, shards);
+		this(token, prefix, true, false, shard, shards);
 	}
 }

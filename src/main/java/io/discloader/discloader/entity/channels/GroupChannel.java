@@ -8,9 +8,12 @@ import io.discloader.discloader.common.DiscLoader;
 import io.discloader.discloader.entity.RichEmbed;
 import io.discloader.discloader.entity.impl.ITextChannel;
 import io.discloader.discloader.entity.message.Message;
+import io.discloader.discloader.entity.message.MessageFetchOptions;
 import io.discloader.discloader.entity.sendable.Attachment;
 import io.discloader.discloader.entity.user.User;
 import io.discloader.discloader.network.json.ChannelJSON;
+import io.discloader.discloader.network.rest.actions.RESTFetchMessage;
+import io.discloader.discloader.network.rest.actions.RESTFetchMessages;
 import io.discloader.discloader.util.DLUtil.ChannelType;
 
 public class GroupChannel extends Channel implements ITextChannel {
@@ -36,30 +39,19 @@ public class GroupChannel extends Channel implements ITextChannel {
 		this.recipients = new HashMap<>();
 	}
 
-	public CompletableFuture<Message> sendMessage(String content) {
-		return this.loader.rest.sendMessage(this, content, null, null, null);
+	@Override
+	public CompletableFuture<Message> fetchMessage(String id) {
+		return new RESTFetchMessage(this, id).execute();
 	}
 
-	public CompletableFuture<Message> sendEmbed(RichEmbed embed) {
-		File file = null;
-		Attachment attachment = null;
-		if (embed.thumbnail != null && embed.thumbnail.file != null) {
-			file = embed.thumbnail.file;
-			embed.thumbnail.file = null;
-			attachment = new Attachment(file.getName());
-		}
-		return this.loader.rest.sendMessage(this, " ", embed, attachment, file);
+	@Override
+	public CompletableFuture<HashMap<String, Message>> fetchMessages() {
+		return fetchMessages(new MessageFetchOptions());
 	}
 
-	public CompletableFuture<Message> sendMessage(String content, RichEmbed embed) {
-		File file = null;
-		Attachment attachment = null;
-		if (embed.thumbnail != null && embed.thumbnail.file != null) {
-			file = embed.thumbnail.file;
-			embed.thumbnail.file = null;
-			attachment = new Attachment(file.getName());
-		}
-		return this.loader.rest.sendMessage(this, content, embed, attachment, file);
+	@Override
+	public CompletableFuture<HashMap<String, Message>> fetchMessages(MessageFetchOptions options) {
+		return new RESTFetchMessages(this, options).execute();
 	}
 
 	@Override
@@ -77,18 +69,34 @@ public class GroupChannel extends Channel implements ITextChannel {
 		return null;
 	}
 
+	public CompletableFuture<Message> sendEmbed(RichEmbed embed) {
+		File file = null;
+		Attachment attachment = null;
+		if (embed.thumbnail != null && embed.thumbnail.file != null) {
+			file = embed.thumbnail.file;
+			embed.thumbnail.file = null;
+			attachment = new Attachment(file.getName());
+		}
+		return this.loader.rest.sendMessage(this, " ", embed, attachment, file);
+	}
+
+	public CompletableFuture<Message> sendMessage(String content) {
+		return this.loader.rest.sendMessage(this, content, null, null, null);
+	}
+
+	public CompletableFuture<Message> sendMessage(String content, RichEmbed embed) {
+		File file = null;
+		Attachment attachment = null;
+		if (embed.thumbnail != null && embed.thumbnail.file != null) {
+			file = embed.thumbnail.file;
+			embed.thumbnail.file = null;
+			attachment = new Attachment(file.getName());
+		}
+		return this.loader.rest.sendMessage(this, content, embed, attachment, file);
+	}
+
 	@Override
 	public CompletableFuture<Message> unpinMessage(Message message) {
-		return null;
-	}
-
-	@Override
-	public HashMap<String, Message> fetchMessages() {
-		return null;
-	}
-
-	@Override
-	public Message fetchMessage(String id) {
 		return null;
 	}
 
