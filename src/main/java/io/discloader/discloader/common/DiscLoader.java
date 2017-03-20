@@ -463,7 +463,7 @@ public class DiscLoader {
 		System.setErr(new DLErrorStream(System.err, LOG));
 		System.setProperty("http.agent", "DiscLoader");
 		started = true;
-		if (Main.usegui) {
+		if (Main.usegui == true) {
 			Main.window = new WindowFrame(this);
 		} else {
 			ProgressLogger.stage(1, 3, "Mod Discovery");

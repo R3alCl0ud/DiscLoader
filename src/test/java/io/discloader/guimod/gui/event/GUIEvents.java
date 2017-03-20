@@ -15,7 +15,7 @@ public class GUIEvents extends EventListenerAdapter {
 	private static WindowFrame window = Main.window;
 	private TabbedPanel tabs;
 	private Logger logger = new DLLogger("GUI MOD").getLogger();
-	
+
 	public void PreInit(DLPreInitEvent e) {
 		logger.info(e.activeMod.modInfo.name());
 	}
@@ -43,5 +43,5 @@ public class GUIEvents extends EventListenerAdapter {
 		this.tabs = tabs;
 		return tabs;
 	}
-	
+
 }

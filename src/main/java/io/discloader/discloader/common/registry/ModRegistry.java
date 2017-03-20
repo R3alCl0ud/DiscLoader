@@ -99,7 +99,10 @@ public class ModRegistry {
 
 		ProgressLogger.stage(3, 3, "Execute PreInit");
 		preInit();
-
+		DLPreInitEvent event = new DLPreInitEvent(loader);
+		for (IEventListener e : DiscLoader.handlers.values()) {
+			e.PreInit(event);
+		}
 	}
 
 	public static void preInit() {
@@ -111,18 +114,11 @@ public class ModRegistry {
 				continue;
 			}
 			load(mod.modInfo.modid());
-			activeMod = null;
-		}
-		if (i == 1) {
-			DLPreInitEvent event = new DLPreInitEvent(loader);
-			for (IEventListener e : DiscLoader.handlers.values()) {
-				e.PreInit(event);
-			}
+			// activeMod = null;
 		}
 		ProgressLogger.phase(3, 3, "Init");
 		ProgressLogger.stage(1, 3, "Waiting to Login");
 		resetStep();
-		// Main.loader.login(Main.token);
 	}
 
 	public static void load(String modid) {

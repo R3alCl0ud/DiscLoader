@@ -11,6 +11,7 @@ import com.google.gson.Gson;
 import io.discloader.discloader.client.command.CommandHandler;
 import io.discloader.discloader.client.render.WindowFrame;
 import io.discloader.discloader.common.DiscLoader;
+import io.discloader.discloader.common.event.EventListenerAdapter;
 import io.discloader.discloader.common.logger.DLErrorStream;
 import io.discloader.discloader.common.logger.DLPrintStream;
 
@@ -54,8 +55,15 @@ public class Main {
 			token = options.auth.token;
 		}
 		parseArgs(args);
+		DiscLoader.addEventHandler(new EventListenerAdapter() {
+			public void Ready(DiscLoader loader) {
+				System.out.printf("Ready as user: %s", loader.user.username);
+			}
+		});
+
 		loader = new DiscLoader(shards, shard);
 		loader.login(token);
+
 	}
 
 	public static void parseArgs(String... args) {
