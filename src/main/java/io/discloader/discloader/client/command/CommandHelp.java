@@ -45,7 +45,7 @@ public class CommandHelp extends Command {
 						.addField("Description", this.getCommandDesc(command), true)
 						.addField("Usage", command.getUsage(), true);
 			}
-		} else if (args.length == 1) {
+		} else if (args.length == 1 && args[0].length() > 0) {
 			String commands = "";
 			int page = Integer.parseInt(args[0], 10);
 			int size = CommandRegistry.commands.entries().size();

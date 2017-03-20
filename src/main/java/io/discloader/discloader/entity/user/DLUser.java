@@ -6,6 +6,7 @@ import io.discloader.discloader.entity.Game;
 import io.discloader.discloader.entity.Presence;
 import io.discloader.discloader.entity.sendable.Packet;
 import io.discloader.discloader.entity.sendable.SendablePresenceUpdate;
+import io.discloader.discloader.util.DLUtil;
 import io.discloader.discloader.util.DLUtil.OPCodes;
 
 /**
@@ -98,11 +99,10 @@ public class DLUser extends User {
 	 * @return this
 	 */
 	public DLUser setPresence(String status, Game game, boolean afk) {
-		String g = game != null ? game.toJsonString() : "null";
-		SendablePresenceUpdate d = new SendablePresenceUpdate(g, status, afk, 0);
-		Packet payload = new Packet(OPCodes.STATUS_UPDATE, d);
-		this.presence.update(status, game);
-		this.loader.socket.send(payload);
+		SendablePresenceUpdate d = new SendablePresenceUpdate(game, status, afk, 0);
+		Packet payload = new Packet(3, d);
+		presence.update(status, game);
+		loader.socket.send(payload);
 		return this;
 	}
 

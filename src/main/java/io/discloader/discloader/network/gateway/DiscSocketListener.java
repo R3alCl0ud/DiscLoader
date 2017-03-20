@@ -7,7 +7,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.logging.Logger;
 
-import org.json.JSONArray;
 import org.json.JSONObject;
 
 import com.google.gson.Gson;
@@ -20,6 +19,7 @@ import io.discloader.discloader.client.logger.DLLogger;
 import io.discloader.discloader.client.logger.ProgressLogger;
 import io.discloader.discloader.common.DiscLoader;
 import io.discloader.discloader.common.event.IEventListener;
+import io.discloader.discloader.entity.sendable.Packet;
 import io.discloader.discloader.network.gateway.packets.ChannelCreate;
 import io.discloader.discloader.network.gateway.packets.ChannelDelete;
 import io.discloader.discloader.network.gateway.packets.ChannelUpdate;
@@ -47,8 +47,8 @@ import io.discloader.discloader.network.gateway.packets.RoleUpdate;
 import io.discloader.discloader.network.gateway.packets.SocketPacket;
 import io.discloader.discloader.network.gateway.packets.VoiceServerUpdate;
 import io.discloader.discloader.network.gateway.packets.VoiceStateUpdate;
+import io.discloader.discloader.network.gateway.packets.request.GatewayIdentify;
 import io.discloader.discloader.network.gateway.packets.request.GatewayResume;
-import io.discloader.discloader.network.voice.payloads.VoicePacket;
 import io.discloader.discloader.util.DLUtil;
 import io.discloader.discloader.util.DLUtil.OPCodes;
 import io.discloader.discloader.util.DLUtil.Status;
@@ -110,6 +110,11 @@ public class DiscSocketListener extends WebSocketAdapter {
 	public void handle(SocketPacket packet) {
 		if (packet.op == OPCodes.RECONNECT) {
 			this.setSequence(packet.s);
+			return;
+		}
+
+		if (packet.op == OPCodes.INVALID_SESSION) {
+			sendNewIdentify();
 			return;
 		}
 
@@ -195,28 +200,25 @@ public class DiscSocketListener extends WebSocketAdapter {
 	}
 
 	public void sendNewIdentify() {
-		if (!socket.loader.token.startsWith("Bot")) {
-			token = socket.loader.token;
+		if (!loader.token.startsWith("Bot")) {
+			token = loader.token;
 		}
 
-		JSONObject payload = new JSONObject();
 		JSONObject properties = new JSONObject().put("$os", "DiscLoader").put("$browser", "DiscLoader").put("$device",
 				"DiscLoader");
-		payload.put("token", token).put("large_threshold", 250).put("compress", false).put("properties", properties);
+		GatewayIdentify payload = new GatewayIdentify(token, 250, properties);
 
 		try {
 			if (this.loader.shards > 1) {
-				JSONArray te = new JSONArray().put(this.loader.shard).put(this.loader.shards);
-				payload.put("shard", te);
+				payload.setShard(loader.shard, loader.shards);
 			}
 		} catch (NullPointerException e) {
 			e.printStackTrace();
 		}
 
-		JSONObject packet = new JSONObject();
-		packet.put("op", 2).put("d", payload);
-		this.socket.send(packet, true);
-		this.socket.s = -1;
+		Packet packet = new Packet(OPCodes.IDENTIFY, payload);
+		socket.send(packet, true);
+		socket.s = -1;
 		retries = 0;
 	}
 
@@ -231,7 +233,7 @@ public class DiscSocketListener extends WebSocketAdapter {
 			return;
 		}
 		System.out.println(socket.sessionID != null);
-		VoicePacket d = new VoicePacket(OPCodes.RESUME, new GatewayResume(socket.sessionID, token, socket.s));
+		Packet d = new Packet(OPCodes.RESUME, new GatewayResume(socket.sessionID, token, socket.s));
 		System.out.println(gson.toJson(d));
 		socket.send(d, true);
 	}
@@ -239,11 +241,11 @@ public class DiscSocketListener extends WebSocketAdapter {
 	public void tryReconnecting() {
 		this.socket.status = Status.RECONNECTING;
 		logger.info("Attempting to reconnect to the gateway");
-		retries++;
 		if (reconnection == null) {
-			reconnection = new Thread("") {
+			reconnection = new Thread("GatewayReconnector") {
 				public void run() {
 					if (socket.status == Status.RECONNECTING && !interrupted()) {
+						retries++;
 						try {
 							Thread.sleep(timeout * retries);
 						} catch (InterruptedException e1) {
