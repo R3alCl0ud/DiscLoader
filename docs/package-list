@@ -31,6 +31,7 @@ io.discloader.discloader.network.gateway.packets
 io.discloader.discloader.network.gateway.packets.request
 io.discloader.discloader.network.json
 io.discloader.discloader.network.rest
+io.discloader.discloader.network.rest.actions
 io.discloader.discloader.network.voice
 io.discloader.discloader.network.voice.payloads
 io.discloader.discloader.util
