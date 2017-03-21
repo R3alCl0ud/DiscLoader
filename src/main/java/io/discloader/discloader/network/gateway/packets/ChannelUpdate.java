@@ -34,6 +34,12 @@ public class ChannelUpdate extends DLPacket {
 		} else {
 			channel = loader.addChannel(data);
 		}
+		if (oldChannel instanceof ITextChannel) {
+			ITextChannel oitc = (ItextChannel) oldChannel, itc = (ITextChannel) channel;
+			for (Message message : oldChannel.getMessages().values()) {
+				itc.getMessages().put(message.id, message);
+			}
+		}
 		ChannelUpdateEvent event = new ChannelUpdateEvent(channel, oldChannel);
 		loader.emit(Events.CHANNEL_UPDATE, event);
 		for (IEventListener e : DiscLoader.handlers.values()) {
