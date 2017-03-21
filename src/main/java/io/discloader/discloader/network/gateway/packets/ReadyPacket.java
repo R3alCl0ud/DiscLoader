@@ -23,19 +23,23 @@ public class ReadyPacket extends DLPacket {
         this.socket.sessionID = ready.session_id;
 
         // setup the Loaders user object
-        this.socket.loader.user = new DLUser(this.loader.addUser(ready.user));
-        if (this.socket.loader.user.bot == true) {
-            this.socket.loader.token = "Bot " + this.socket.loader.token;
-        }
+        try {
+            loader.user = new DLUser(this.loader.addUser(ready.user));
+            if (loader.user.bot == true) {
+                this.socket.loader.token = "Bot " + this.socket.loader.token;
+            }
 
-        // load the guilds
-        for (GuildJSON guild : ready.guilds) {
-            this.socket.loader.addGuild(guild);
-        }
+            // load the guilds
+            for (GuildJSON guild : ready.guilds) {
+                this.socket.loader.addGuild(guild);
+            }
 
-        // load the private channels
-        for (ChannelJSON data : ready.private_channels) {
-            this.socket.loader.addChannel(data);
+            // load the private channels
+            for (ChannelJSON data : ready.private_channels) {
+                this.socket.loader.addChannel(data);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
         }
 
         // check if the loader is ready to rock & roll

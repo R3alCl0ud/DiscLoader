@@ -14,7 +14,6 @@ import io.discloader.discloader.common.DiscLoader;
 import io.discloader.discloader.common.event.EventListenerAdapter;
 import io.discloader.discloader.common.logger.DLErrorStream;
 import io.discloader.discloader.common.logger.DLPrintStream;
-import io.discloader.discloader.entity.user.UserProfile;
 
 /**
  * DiscLoader client entry point
@@ -57,10 +56,13 @@ public class Main {
         }
         parseArgs(args);
         DiscLoader.addEventHandler(new EventListenerAdapter() {
+            public void raw(String text) {
+                // System.out.println(text);
+            }
+
             public void Ready(DiscLoader loader) {
                 System.out.printf("Ready as user: %s", loader.user.username);
-                // UserProfile profile = loader.user.getProfile().join();
-
+                loader.user.setGame("DiscLoader");
             }
         });
 

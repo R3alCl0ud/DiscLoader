@@ -113,10 +113,9 @@ public class RESTQueue {
                     };
                     this_arg.loader.timer.schedule(wait, Integer.parseInt(headers.get("retry-after").get(0), 10) + 500);
                     return;
-                } else if (code != 200 || code != 201 || code != 204 || code != 304) {
-                    this_arg.queue.remove(0);
+                } else if (code != 200 && code != 201 && code != 204 && code != 304) {
+                    this_arg.queue.remove(apiRequest);
                     this_arg.loader.emit("raw", response.getBody());
-                    // System.out.println(response.getBody());
                     ExceptionJSON data = DLUtil.gson.fromJson(response.getBody(), ExceptionJSON.class);
                     switch (code) {
                         case 401:
@@ -124,9 +123,10 @@ public class RESTQueue {
                             break;
                         default:
                             apiRequest.future.completeExceptionally(new UnknownException(data));
+                            break;
                     }
                 } else {
-                    this_arg.queue.remove(0);
+                    this_arg.queue.remove(apiRequest);
                     this_arg.loader.emit("raw", response.getBody());
                     apiRequest.future.complete(response.getBody());
                 }

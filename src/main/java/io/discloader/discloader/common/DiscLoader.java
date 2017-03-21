@@ -40,6 +40,7 @@ import io.discloader.discloader.network.json.GuildJSON;
 import io.discloader.discloader.network.json.UserJSON;
 import io.discloader.discloader.network.rest.RESTManager;
 import io.discloader.discloader.util.DLUtil;
+import io.discloader.discloader.util.DLUtil.Endpoints;
 import io.discloader.discloader.util.DLUtil.Status;
 
 /**
@@ -90,6 +91,8 @@ public class DiscLoader {
     public int shards;
 
     public int shard;
+
+    private CompletableFuture<String> future;
 
     /**
      * A HashMap of the client's cached users. Indexed by {@link User#id}.
@@ -364,11 +367,6 @@ public class DiscLoader {
             }
             ProgressLogger.progress(this.guilds.size() - unavailable, this.guilds.size(), "Guilds Cached");
             if (unavailable == 0) {
-                for (Guild guild : this.guilds.values()) {
-                    if (guild.memberCount != guild.members.size() && !guild.large && !guild.isSyncing() && !user.bot) {
-                        guild.sync();
-                    }
-                }
 
                 this.socket.status = Status.NEARLY;
                 try {
@@ -407,21 +405,38 @@ public class DiscLoader {
      * @return {@literal CompletableFuture<String>}
      */
     public CompletableFuture<String> login(String token) {
+        future = new CompletableFuture<>();
         startup();
+        System.out.println(future.join());
         this.token = token;
-        CompletableFuture<String> future;
-        future = this.rest.makeRequest(DLUtil.Endpoints.gateway, DLUtil.Methods.GET, true);
 
-        future.thenAcceptAsync(text -> {
-            Gson gson = new Gson();
-            Gateway gateway = gson.fromJson(text, Gateway.class);
-            try {
-                this.socket.connectSocket(gateway.url + "?v=6&encoding=json");
-            } catch (Exception e) {
-                e.printStackTrace();
+        CompletableFuture<String> future2 = null;
+        try {
+            future2 = this.rest.makeRequest(Endpoints.gateway, DLUtil.Methods.GET, true);
+            System.out.println(future2.isDone());
+            future2.thenAcceptAsync(text -> {
+                Gson gson = new Gson();
+                Gateway gateway = gson.fromJson(text, Gateway.class);
+                try {
+                    this.socket.connectSocket(gateway.url + "?v=6&encoding=json");
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            });
+            if (future2.isDone()) {
+                String text = future2.get();
+                Gson gson = new Gson();
+                Gateway gateway = gson.fromJson(text, Gateway.class);
+                try {
+                    this.socket.connectSocket(gateway.url + "?v=6&encoding=json");
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
             }
-        });
-        return future;
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return future2;
     }
 
     /**
@@ -447,13 +462,14 @@ public class DiscLoader {
      * @author Perry Berman
      * @since 0.0.3
      */
-    public void startup() {
-        if (started)
-            return;
+    private String startup() {
+        if (started) {
+            doneLoading();
+            return "ready";
+        }
         System.setOut(new DLPrintStream(System.out, LOG));
         System.setErr(new DLErrorStream(System.err, LOG));
         System.setProperty("http.agent", "DiscLoader");
-        started = true;
         if (Main.usegui == true) {
             Main.window = new WindowFrame(this);
         } else {
@@ -463,6 +479,8 @@ public class DiscLoader {
             ProgressLogger.stage(2, 3, "Discovering Mod Containers");
             ModRegistry.checkCandidates(candidates);
         }
+        started = true;
+        return "ready";
     }
 
     /**
@@ -475,7 +493,7 @@ public class DiscLoader {
             return;
 
         Packet packet = new Packet(12, guildIDs);
-        this.socket.send(packet);
+        this.socket.send(packet, true);
     }
 
     /**
@@ -492,6 +510,10 @@ public class DiscLoader {
         Command.defaultCommands = options.defaultCommands;
         CommandHandler.prefix = options.prefix;
         return this;
+    }
+
+    public void doneLoading() {
+        future.complete("ready");
     }
 
 }

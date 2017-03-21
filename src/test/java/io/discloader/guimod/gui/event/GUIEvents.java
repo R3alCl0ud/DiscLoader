@@ -17,7 +17,7 @@ public class GUIEvents extends EventListenerAdapter {
 	private Logger logger = new DLLogger("GUI MOD").getLogger();
 
 	public void PreInit(DLPreInitEvent e) {
-		logger.info(e.activeMod.modInfo.name());
+//		logger.info(e.activeMod.modInfo.name());
 	}
 
 	@Override

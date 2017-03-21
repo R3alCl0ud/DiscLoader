@@ -30,7 +30,7 @@ import io.discloader.discloader.network.gateway.DiscSocketListener;
 public final class DLUtil {
 
     public static enum ChannelType {
-        TEXT, VOICE, DM, GROUPDM
+        TEXT, VOICE, DM, GROUPDM, CHANNEL
     }
 
     /**

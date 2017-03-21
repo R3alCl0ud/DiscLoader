@@ -7,52 +7,52 @@ import io.discloader.discloader.util.DLUtil.ChannelType;
 
 public class Channel implements IChannel {
 
-	/**
-	 * The channel's Snowflake ID.
-	 */
-	public String id;
+    /**
+     * The channel's Snowflake ID.
+     */
+    public String id;
 
-	protected ChannelType type;
+    protected ChannelType type;
 
-	/**
-	 * The current instance of DiscLoader
-	 */
-	public final DiscLoader loader;
+    /**
+     * The current instance of DiscLoader
+     */
+    public final DiscLoader loader;
 
-	public Channel(DiscLoader loader, ChannelJSON data) {
-		this.loader = loader;
+    public Channel(DiscLoader loader, ChannelJSON data) {
+        this.loader = loader;
 
-		this.type = null;
+        this.type = ChannelType.CHANNEL;
 
-		if (data != null)
-			this.setup(data);
-	}
+        if (data != null)
+            this.setup(data);
+    }
 
-	@Override
-	public String getID() {
-		return this.id;
-	}
+    @Override
+    public String getID() {
+        return this.id;
+    }
 
-	@Override
-	public ChannelType getType() {
-		return this.type;
-	}
+    @Override
+    public ChannelType getType() {
+        return this.type;
+    }
 
-	@Override
-	public boolean isPrivate() {
-		return this.type != ChannelType.TEXT && this.type != ChannelType.VOICE;
-	}
+    @Override
+    public boolean isPrivate() {
+        return this.type != ChannelType.TEXT && this.type != ChannelType.VOICE;
+    }
 
-	public void setup(ChannelJSON data) {
-		this.id = data.id;
-	}
+    public void setup(ChannelJSON data) {
+        this.id = data.id;
+    }
 
-	public String toMention() {
-		return String.format("<#%s>", id);
-	}
+    public String toMention() {
+        return String.format("<#%s>", id);
+    }
 
-	@Override
-	public DiscLoader getLoader() {
-		return loader;
-	}
+    @Override
+    public DiscLoader getLoader() {
+        return loader;
+    }
 }
