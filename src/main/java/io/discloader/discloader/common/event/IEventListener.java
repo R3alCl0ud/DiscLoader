@@ -178,6 +178,13 @@ public interface IEventListener {
 	 */
 	void Ready(DiscLoader loader);
 
+	/**
+	 * Emitted when a user starts typing in an {@link ITextChannel}
+	 * 
+	 * @param event A {@link TypingStartEvent} object
+	 */
+	void TypingStart(TypingStartEvent event);
+
 	void UserUpdate(UserUpdateEvent e);
 
 	void VoiceStateUpdate(VoiceStateUpdateEvent e);

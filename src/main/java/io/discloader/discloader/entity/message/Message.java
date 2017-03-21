@@ -15,18 +15,27 @@ import io.discloader.discloader.entity.impl.ITextChannel;
 import io.discloader.discloader.entity.message.embed.MessageEmbed;
 import io.discloader.discloader.entity.user.User;
 import io.discloader.discloader.network.json.MessageJSON;
+import io.discloader.discloader.network.rest.actions.PinMessage;
+import io.discloader.discloader.network.rest.actions.UnpinMessage;
 import io.discloader.discloader.util.DLUtil;
 
 /**
- * Represents a message object on the api
+ * Represents a message object on the api <br>
+ * <b>How to send messages</b>
+ * 
+ * <pre>
+ * Message message = ITextChannel.sendMessage(content).join();
+ * </pre>
  * 
  * @author Perry Berman
  * @since 0.0.1
+ * @see ITextChannel#sendMessage(String, RichEmbed)
+ * @see ISnowflake
  */
 public class Message {
 
 	/**
-	 * The message's Snowflake ID.
+	 * The message's {@link ISnowflake Snowflake} ID.
 	 */
 	public final String id;
 
@@ -55,18 +64,9 @@ public class Message {
 	/**
 	 * Whether or not the message was sent using /tts
 	 */
-	public boolean tts;
+	private boolean tts;
 
-	/**
-	 * Whether or not you can edit the message. <br>
-	 * will always be true when {@code author.id == this.loader.user.id}
-	 */
-	public boolean editable;
-
-	/**
-	 * Is the messaged pinned in the {@link #channel}
-	 */
-	public boolean pinned;
+	private boolean pinned;
 
 	/**
 	 * The time at which the message was sent
@@ -153,8 +153,6 @@ public class Message {
 
 		this.member = this.guild != null ? this.guild.members.get(this.author.id) : null;
 
-		this.editable = this.loader.user.id == this.author.id;
-
 		this.tts = data.tts;
 
 		this.content = data.content;
@@ -217,9 +215,30 @@ public class Message {
 	 * message
 	 * 
 	 * @return true if the message is a system message, false otherwise.
+	 * @since 0.1.0
 	 */
 	public boolean isSystem() {
 		return this.type != 0;
+	}
+
+	/**
+	 * Whether or not you can edit the message.
+	 * 
+	 * @return {@code true} when {@link #author}.id equals {@link #loader}
+	 *         .user.id, {@code false} otherwise.
+	 * @since 0.1.0
+	 */
+	public boolean isEditable() {
+		return loader.user.id.equals(author.id);
+	}
+
+	/**
+	 * Is the messaged pinned in the {@link #channel}
+	 * 
+	 * @return {@code true} if {@code this} is pinned, {@code false} otherwise.
+	 */
+	public boolean isPinned() {
+		return pinned;
 	}
 
 	public Message patch(MessageJSON data) {
@@ -229,7 +248,39 @@ public class Message {
 
 		this.editedAt = DLUtil.parseISO8601(data.edited_timestamp);
 
+		pinned = data.pinned;
+
 		return this;
+	}
+
+	/**
+	 * Pins {@code this} to the {@link #channel}
+	 * 
+	 * @return A Future that completes with {@code this} if successful.
+	 */
+	public CompletableFuture<Message> pin() {
+		CompletableFuture<Message> future = new PinMessage(this).execute();
+		future.thenAcceptAsync(action -> this.pinned = true);
+		return future;
+	}
+
+	/**
+	 * Unpins {@code this} from the {@link #channel}
+	 * 
+	 * @return A Future that completes with {@code this} if successful.
+	 */
+	public CompletableFuture<Message> unpin() {
+		CompletableFuture<Message> future = new UnpinMessage(this).execute();
+		future.thenAcceptAsync(action -> this.pinned = false);
+		return future;
+	}
+
+	/**
+	 * 
+	 * @return true if {@code this} was sent using /tts
+	 */
+	public boolean isTTS() {
+		return tts;
 	}
 
 }

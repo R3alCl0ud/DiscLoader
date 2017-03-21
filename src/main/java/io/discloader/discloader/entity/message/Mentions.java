@@ -18,76 +18,103 @@ import io.discloader.discloader.network.json.UserJSON;
  */
 public class Mentions {
 
-    /**
-     * The current instance of DiscLoader
-     */
-    public final DiscLoader loader;
+	/**
+	 * The current instance of DiscLoader
+	 */
+	public final DiscLoader loader;
 
-    /**
-     * The message these mentions apply to
-     */
-    public final Message message;
+	/**
+	 * The message these mentions apply to
+	 */
+	public final Message message;
 
-    /**
-     * The channel the {@link #message} was sent in.
-     */
-    public final ITextChannel channel;
+	/**
+	 * The channel the {@link #message} was sent in.
+	 */
+	public final ITextChannel channel;
 
-    /**
-     * The guild the message was sent in. null if message was sent in a private channel.
-     */
-    public final Guild guild;
+	/**
+	 * The guild the message was sent in. null if message was sent in a private
+	 * channel.
+	 */
+	public final Guild guild;
 
-    /**
-     * Whether or not {@literal @everyone} was mentioned
-     */
-    public boolean everyone;
+	private boolean everyone;
 
-    /**
-     * Whether or not you were mentioned
-     */
-    public boolean isMentioned;
+	/**
+	 * A HashMap of mentioned Users. Indexed by {@link User#id}.
+	 */
+	public final HashMap<String, User> users;
 
-    /**
-     * A HashMap of mentioned Users. Indexed by {@link User#id}.
-     */
-    public HashMap<String, User> users;
+	/**
+	 * A HashMap of mentioned Roles. Indexed by {@link Role#id}.
+	 */
+	public final HashMap<String, Role> roles;
 
-    /**
-     * A HashMap of mentioned Roles. Indexed by {@link Role#id}.
-     */
-    public HashMap<String, Role> roles;
+	public Mentions(Message message, UserJSON[] mentions, RoleJSON[] mention_roles, boolean mention_everyone) {
+		this.message = message;
+		loader = message.loader;
+		everyone = mention_everyone;
+		guild = message.guild != null ? message.guild : null;
+		channel = message.channel;
+		users = new HashMap<>();
+		roles = new HashMap<>();
+		for (UserJSON data : mentions) {
+			User user = loader.users.get(data.id);
+			if (user == null)
+				user = loader.addUser(data);
+			users.put(data.id, user);
+		}
+		if (guild != null) {
+			for (RoleJSON data : mention_roles) {
+				roles.put(data.id, guild.roles.get(data.id));
+			}
+		}
+	}
 
-    public Mentions(Message message, UserJSON[] mentions, RoleJSON[] mention_roles, boolean mention_everyone) {
-        this.message = message;
-        this.loader = this.message.loader;
-        this.everyone = mention_everyone;
-        this.isMentioned = this.everyone ? true : false;
-        this.guild = this.message.guild != null ? this.message.guild : null;
-        this.channel = message.channel;
-        this.users = new HashMap<String, User>();
-        this.roles = new HashMap<String, Role>();
-        for (UserJSON data : mentions) {
-            this.users.put(data.id, this.loader.addUser(data));
-        }
-        if (this.guild != null) {
-            for (RoleJSON data : mention_roles) {
-                this.roles.put(data.id, this.guild.roles.get(data.id));
-            }
-        }
-    }
+	public void patch(UserJSON[] mentions, RoleJSON[] mention_roles, boolean mention_everyone) {
+		everyone = mention_everyone;
+		users.clear();
+		roles.clear();
+		for (UserJSON data : mentions) {
+			User user = loader.users.get(data.id);
+			if (user == null)
+				user = loader.addUser(data);
+			users.put(data.id, user);
+		}
+		if (guild != null) {
+			for (RoleJSON data : mention_roles) {
+				roles.put(data.id, guild.roles.get(data.id));
+			}
+		}
+	}
 
-    public void patch(UserJSON[] mentions, RoleJSON[] mention_roles, boolean mention_everyone) {
-        users.clear();
-        roles.clear();
-        for (UserJSON data : mentions) {
-            this.users.put(data.id, this.loader.addUser(data));
-        }
-        if (this.guild != null) {
-            for (RoleJSON data : mention_roles) {
-                this.roles.put(data.id, this.guild.roles.get(data.id));
-            }
-        }
-    }
+	/**
+	 * Whether or not you were mentioned
+	 * 
+	 * @return true if you were mentioned
+	 */
+	public boolean isMentioned() {
+		return isMentioned(loader.user);
+	}
+
+	public boolean isMentioned(User user) {
+		boolean mentioned = everyone ? true : users.containsKey(user.id);
+		return mentioned;
+	}
+
+	public boolean isMentioned(Role role) {
+		return roles.containsKey(role.id);
+	}
+
+	/**
+	 * Whether or not {@literal @everyone} was mentioned
+	 * 
+	 * @return true if the {@link #message}'s content contains
+	 *         {@literal @everyone}, false otherwise
+	 */
+	public boolean mentionedEveryone() {
+		return everyone;
+	}
 
 }

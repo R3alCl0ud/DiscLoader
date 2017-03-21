@@ -12,8 +12,11 @@ import io.discloader.discloader.entity.message.MessageFetchOptions;
 import io.discloader.discloader.entity.sendable.Attachment;
 import io.discloader.discloader.entity.user.User;
 import io.discloader.discloader.network.json.ChannelJSON;
-import io.discloader.discloader.network.rest.actions.RESTFetchMessage;
-import io.discloader.discloader.network.rest.actions.RESTFetchMessages;
+import io.discloader.discloader.network.rest.actions.FetchMessage;
+import io.discloader.discloader.network.rest.actions.FetchMessages;
+import io.discloader.discloader.network.rest.actions.PinMessage;
+import io.discloader.discloader.network.rest.actions.StartTyping;
+import io.discloader.discloader.network.rest.actions.UnpinMessage;
 import io.discloader.discloader.util.DLUtil.ChannelType;
 
 public class GroupChannel extends Channel implements ITextChannel {
@@ -30,18 +33,26 @@ public class GroupChannel extends Channel implements ITextChannel {
 
 	private final HashMap<String, Message> messages;
 
+	private HashMap<String, User> typing;
+
 	public GroupChannel(DiscLoader loader, ChannelJSON data) {
 		super(loader, data);
 
-		this.type = ChannelType.GROUPDM;
+		type = ChannelType.GROUPDM;
 
-		this.messages = new HashMap<String, Message>();
-		this.recipients = new HashMap<>();
+		messages = new HashMap<>();
+		typing = new HashMap<>();
+		recipients = new HashMap<>();
+	}
+
+	@Override
+	public CompletableFuture<HashMap<String, Message>> deleteMessages(Message... messages) {
+		return null;
 	}
 
 	@Override
 	public CompletableFuture<Message> fetchMessage(String id) {
-		return new RESTFetchMessage(this, id).execute();
+		return new FetchMessage(this, id).execute();
 	}
 
 	@Override
@@ -51,7 +62,7 @@ public class GroupChannel extends Channel implements ITextChannel {
 
 	@Override
 	public CompletableFuture<HashMap<String, Message>> fetchMessages(MessageFetchOptions options) {
-		return new RESTFetchMessages(this, options).execute();
+		return new FetchMessages(this, options).execute();
 	}
 
 	@Override
@@ -65,8 +76,23 @@ public class GroupChannel extends Channel implements ITextChannel {
 	}
 
 	@Override
-	public CompletableFuture<Message> pinMessage(Message message) {
+	public CompletableFuture<HashMap<String, Message>> getPinnedMessages() {
 		return null;
+	}
+
+	@Override
+	public HashMap<String, User> getTyping() {
+		return typing;
+	}
+
+	@Override
+	public boolean isTyping(User user) {
+		return typing.containsKey(user.id);
+	}
+
+	@Override
+	public CompletableFuture<Message> pinMessage(Message message) {
+		return new PinMessage(message).execute();
 	}
 
 	public CompletableFuture<Message> sendEmbed(RichEmbed embed) {
@@ -96,8 +122,13 @@ public class GroupChannel extends Channel implements ITextChannel {
 	}
 
 	@Override
+	public CompletableFuture<HashMap<String, User>> startTyping() {
+		return new StartTyping(this).execute();
+	}
+
+	@Override
 	public CompletableFuture<Message> unpinMessage(Message message) {
-		return null;
+		return new UnpinMessage(message).execute();
 	}
 
 }

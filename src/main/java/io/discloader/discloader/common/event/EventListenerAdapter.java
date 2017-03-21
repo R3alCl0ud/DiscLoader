@@ -139,4 +139,8 @@ public abstract class EventListenerAdapter implements IEventListener {
 
 	}
 
+	@Override
+	public void TypingStart(TypingStartEvent event) {
+	}
+
 }

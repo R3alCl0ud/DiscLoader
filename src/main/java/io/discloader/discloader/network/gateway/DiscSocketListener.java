@@ -45,6 +45,7 @@ import io.discloader.discloader.network.gateway.packets.RoleCreate;
 import io.discloader.discloader.network.gateway.packets.RoleDelete;
 import io.discloader.discloader.network.gateway.packets.RoleUpdate;
 import io.discloader.discloader.network.gateway.packets.SocketPacket;
+import io.discloader.discloader.network.gateway.packets.TypingStart;
 import io.discloader.discloader.network.gateway.packets.VoiceServerUpdate;
 import io.discloader.discloader.network.gateway.packets.VoiceStateUpdate;
 import io.discloader.discloader.network.gateway.packets.request.GatewayIdentify;
@@ -103,6 +104,7 @@ public class DiscSocketListener extends WebSocketAdapter {
 		this.register(WSEvents.MESSAGE_CREATE, new MessageCreate(this.socket));
 		this.register(WSEvents.MESSAGE_UPDATE, new MessageUpdate(this.socket));
 		this.register(WSEvents.MESSAGE_DELETE, new MessageDelete(this.socket));
+		this.register(WSEvents.TYPING_START, new TypingStart(this.socket));
 		this.register(WSEvents.VOICE_STATE_UPDATE, new VoiceStateUpdate(this.socket));
 		this.register(WSEvents.VOICE_SERVER_UPDATE, new VoiceServerUpdate(this.socket));
 	}

@@ -93,7 +93,6 @@ public class DiscSocket {
 		if (payload instanceof JSONObject) {
 			ws.sendText(payload.toString());
 		} else {
-			System.out.println(DLUtil.gson.toJson(payload));
 			ws.sendText(DLUtil.gson.toJson(payload));
 		}
 		queue.remove(payload);

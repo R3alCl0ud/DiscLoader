@@ -15,9 +15,9 @@ public class MessageFetchOptions {
 
 	public MessageFetchOptions() {
 		limit = 50;
-		this.around = "";
-		this.after = "";
-		this.before = "";
+		around = "";
+		after = "";
+		before = "";
 	}
 
 	public MessageFetchOptions setAfter(Message after) {

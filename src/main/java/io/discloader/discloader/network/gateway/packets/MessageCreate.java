@@ -27,13 +27,15 @@ public class MessageCreate extends DLPacket {
 	@Override
 	public void handle(SocketPacket packet) {
 		MessageJSON data = this.gson.fromJson(gson.toJson(packet.d), MessageJSON.class);
-		// System.out.print("Gets here?");
 		try {
 			ITextChannel channel = this.socket.loader.textChannels.get(data.channel_id);
 			if (channel == null)
 				channel = this.socket.loader.privateChannels.get(data.channel_id);
 			Message message = new Message(channel, data);
 			channel.getMessages().put(message.id, message);
+			if (channel.isTyping(message.author)) {
+				channel.getTyping().remove(message.author.id);
+			}
 			MessageCreateEvent event = new MessageCreateEvent(message);
 			if (channel.getType() == ChannelType.TEXT) {
 				this.socket.loader.emit(DLUtil.Events.MESSAGE_CREATE, event);

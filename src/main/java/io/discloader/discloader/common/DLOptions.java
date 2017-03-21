@@ -35,6 +35,8 @@ public class DLOptions {
 	 */
 	public boolean useWindow = false;
 
+	public boolean selfbot = false;
+
 	public int shard = 0;
 
 	public int shards = 1;

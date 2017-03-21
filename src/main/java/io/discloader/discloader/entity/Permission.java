@@ -1,4 +1,4 @@
-package io.discloader.discloader.entity.user;
+package io.discloader.discloader.entity;
 
 import io.discloader.discloader.entity.channels.Channel;
 import io.discloader.discloader.entity.guild.GuildMember;
