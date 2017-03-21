@@ -3,7 +3,6 @@
  */
 package io.discloader.discloader.network.gateway.packets;
 
-import io.discloader.discloader.common.DiscLoader;
 import io.discloader.discloader.common.event.GuildDeleteEvent;
 import io.discloader.discloader.common.event.IEventListener;
 import io.discloader.discloader.entity.guild.Guild;
@@ -37,7 +36,7 @@ public class GuildDelete extends DLPacket {
 			if (this.socket.status == DLUtil.Status.READY && this.socket.loader.ready) {
 				GuildDeleteEvent event =  new GuildDeleteEvent(guild);
 				this.socket.loader.emit(DLUtil.Events.GUILD_DELETE, event);
-				for (IEventListener e : DiscLoader.handlers.values()) {
+				for (IEventListener e : loader.handlers) {
 					e.GuildDelete(event);
 				}
 			}

@@ -1,6 +1,5 @@
 package io.discloader.discloader.network.gateway.packets;
 
-import io.discloader.discloader.common.DiscLoader;
 import io.discloader.discloader.common.discovery.Mod.EventHandler;
 import io.discloader.discloader.common.event.GuildRoleCreateEvent;
 import io.discloader.discloader.common.event.IEventListener;
@@ -31,7 +30,7 @@ public class RoleCreate extends DLPacket{
 		Role role = guild.addRole(data.role);
 		GuildRoleCreateEvent event = new GuildRoleCreateEvent(role);
 		this.loader.emit(DLUtil.Events.GUILD_ROLE_CREATE, event);
-		for (IEventListener e : DiscLoader.handlers.values()) {
+		for (IEventListener e : loader.handlers) {
 			e.GuildRoleCreate(event);
 		}
 	}

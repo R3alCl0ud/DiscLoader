@@ -1,6 +1,5 @@
 package io.discloader.discloader.network.gateway.packets;
 
-import io.discloader.discloader.common.DiscLoader;
 import io.discloader.discloader.common.event.IEventListener;
 import io.discloader.discloader.entity.guild.Emoji;
 import io.discloader.discloader.entity.guild.Guild;
@@ -26,7 +25,7 @@ public class EmojiUpdate extends DLPacket {
 		}
 		if (shouldEmit()) {
 			loader.emit(Events.GUILD_EMOJIS_UPDATE, guild.emojis);
-			for (IEventListener e : DiscLoader.handlers.values()) {
+			for (IEventListener e : loader.handlers) {
 				e.GuildEmojisUpdate(guild.emojis);
 			}
 		}

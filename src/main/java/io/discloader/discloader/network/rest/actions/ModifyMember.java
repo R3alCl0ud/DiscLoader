@@ -27,9 +27,9 @@ public class ModifyMember {
 		this.channel_id = channel.id;
 		this.member = member;
 		this.nick = member.nick;
-		this.roles = new String[member.getRoleList().size()];
+		this.roles = new String[member.getRoles().size()];
 		int i = 0;
-		for (Role r : member.getRoleList().values()) {
+		for (Role r : member.getRoles().values()) {
 			roles[i] = r.id;
 			i++;
 		}

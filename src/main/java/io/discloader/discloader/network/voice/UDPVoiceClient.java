@@ -1,13 +1,13 @@
 package io.discloader.discloader.network.voice;
 
-import io.discloader.discloader.entity.voice.VoiceConnection;
-
 import java.io.IOException;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetSocketAddress;
 import java.net.SocketException;
 import java.nio.ByteBuffer;
+
+import io.discloader.discloader.entity.voice.VoiceConnection;
 
 public class UDPVoiceClient {
 

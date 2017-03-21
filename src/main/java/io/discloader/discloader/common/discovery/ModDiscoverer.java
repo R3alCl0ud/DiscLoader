@@ -1,10 +1,5 @@
 package io.discloader.discloader.common.discovery;
 
-import io.discloader.discloader.client.logger.ProgressLogger;
-import io.discloader.discloader.client.registry.TextureRegistry;
-import io.discloader.discloader.common.DiscLoader;
-import io.discloader.discloader.common.start.Main;
-
 import java.io.File;
 import java.net.URL;
 import java.net.URLClassLoader;
@@ -15,6 +10,11 @@ import java.util.jar.JarFile;
 import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
+import io.discloader.discloader.client.logger.ProgressLogger;
+import io.discloader.discloader.client.registry.TextureRegistry;
+import io.discloader.discloader.common.DiscLoader;
+import io.discloader.discloader.common.start.Main;
 
 /**
  * 

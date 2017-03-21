@@ -3,7 +3,6 @@
  */
 package io.discloader.discloader.network.gateway.packets;
 
-import io.discloader.discloader.common.DiscLoader;
 import io.discloader.discloader.common.event.GuildMemberRemoveEvent;
 import io.discloader.discloader.common.event.IEventListener;
 import io.discloader.discloader.entity.guild.Guild;
@@ -29,7 +28,7 @@ public class GuildMemberRemove extends DLPacket {
 		GuildMember member = guild.members.remove(data.user.id);
 		GuildMemberRemoveEvent event = new GuildMemberRemoveEvent(member);
 		if (this.loader.ready && this.socket.status == Status.READY) {
-			for (IEventListener e : DiscLoader.handlers.values()) {
+			for (IEventListener e : loader.handlers) {
 				e.GuildMemberRemove(event);
 			}
 		}

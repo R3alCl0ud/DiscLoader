@@ -19,7 +19,7 @@ public class GUIMod {
 	public static GUIMod instance;
 
 	public GUIMod() {
-		DiscLoader.addEventHandler(new GUIEvents());
+		DiscLoader.getDiscLoader().addEventHandler(new GUIEvents());
 	}
 
 	@EventHandler

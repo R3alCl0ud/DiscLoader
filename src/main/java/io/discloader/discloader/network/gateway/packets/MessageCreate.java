@@ -4,7 +4,6 @@
 package io.discloader.discloader.network.gateway.packets;
 
 import io.discloader.discloader.client.command.CommandHandler;
-import io.discloader.discloader.common.DiscLoader;
 import io.discloader.discloader.common.event.IEventListener;
 import io.discloader.discloader.common.event.MessageCreateEvent;
 import io.discloader.discloader.entity.impl.ITextChannel;
@@ -39,12 +38,12 @@ public class MessageCreate extends DLPacket {
 			MessageCreateEvent event = new MessageCreateEvent(message);
 			if (channel.getType() == ChannelType.TEXT) {
 				this.socket.loader.emit(DLUtil.Events.MESSAGE_CREATE, event);
-				for (IEventListener e : DiscLoader.handlers.values()) {
+				for (IEventListener e : loader.handlers) {
 					e.MessageCreate(event);
 				}
 			} else {
 				this.loader.emit(DLUtil.Events.PRIVATE_MESSAGE_CREATE, event);
-				for (IEventListener e : DiscLoader.handlers.values()) {
+				for (IEventListener e : loader.handlers) {
 					e.PrivateMessageCreate(event);
 				}
 			}

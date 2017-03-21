@@ -190,7 +190,8 @@ public class DiscSocketListener extends WebSocketAdapter {
 	@Override
 	public void onTextMessage(WebSocket ws, String text) throws Exception {
 		this.socket.loader.emit("raw", text);
-		for (IEventListener e : DiscLoader.handlers.values()) {
+		// ws.
+		for (IEventListener e : loader.handlers) {
 			e.raw(text);
 		}
 		SocketPacket packet = gson.fromJson(text, SocketPacket.class);

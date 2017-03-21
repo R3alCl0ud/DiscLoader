@@ -17,7 +17,7 @@ public class Game {
 	/**
 	 * The link to the user's Twitch Stream. (Currently it is only possible to
 	 * stream using Twitch on discord)<br>
-	 * is null if {@link #streaming} is {@code false}
+	 * is null if {@link #isStreaming()} is {@code false}
 	 */
 	public String url;
 

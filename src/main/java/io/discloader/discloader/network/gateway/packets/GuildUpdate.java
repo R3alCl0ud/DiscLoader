@@ -1,6 +1,5 @@
 package io.discloader.discloader.network.gateway.packets;
 
-import io.discloader.discloader.common.DiscLoader;
 import io.discloader.discloader.common.event.GuildUpdateEvent;
 import io.discloader.discloader.common.event.IEventListener;
 import io.discloader.discloader.entity.guild.Guild;
@@ -26,7 +25,7 @@ public class GuildUpdate extends DLPacket {
 		guild.setup(data);
 		GuildUpdateEvent event = new GuildUpdateEvent(guild);
 		this.loader.emit(DLUtil.Events.GUILD_UPDATE, event);
-		for (IEventListener e : DiscLoader.handlers.values()) {
+		for (IEventListener e : loader.handlers) {
 			e.GuildUpdate(event);
 		}
 	}

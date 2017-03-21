@@ -8,12 +8,30 @@ import io.discloader.discloader.entity.message.Message;
  */
 public class MessageUpdateEvent extends DLEvent {
 
-	public final Message message;
-	
-	public MessageUpdateEvent(Message message) {
+	private final Message message;
+
+	private final Message oldMessage;
+
+	public MessageUpdateEvent(Message message, Message oldMessage) {
 		super(message.loader);
 
 		this.message = message;
+
+		this.oldMessage = oldMessage;
+	}
+
+	/**
+	 * @return the oldMessage
+	 */
+	public Message getOldMessage() {
+		return oldMessage;
+	}
+
+	/**
+	 * @return the message
+	 */
+	public Message getMessage() {
+		return message;
 	}
 
 }

@@ -3,7 +3,6 @@
  */
 package io.discloader.discloader.network.gateway.packets;
 
-import io.discloader.discloader.common.DiscLoader;
 import io.discloader.discloader.common.event.IEventListener;
 import io.discloader.discloader.common.event.VoiceStateUpdateEvent;
 import io.discloader.discloader.entity.guild.Guild;
@@ -37,7 +36,7 @@ public class VoiceStateUpdate extends DLPacket {
 		VoiceState oldState = guild.getRawStates().get(data.user_id);
 		if (loader.ready && loader.socket.status == Status.READY && oldState != null) {
 			VoiceStateUpdateEvent event = new VoiceStateUpdateEvent(oldState, currentState);
-			for (IEventListener e : DiscLoader.handlers.values()) {
+			for (IEventListener e : loader.handlers) {
 				e.VoiceStateUpdate(event);
 			}
 		}

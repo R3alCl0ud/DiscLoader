@@ -3,6 +3,7 @@ package io.discloader.discloader.entity.guild;
 import java.math.BigDecimal;
 
 import io.discloader.discloader.common.DiscLoader;
+import io.discloader.discloader.entity.Permission;
 import io.discloader.discloader.entity.message.Message;
 import io.discloader.discloader.network.json.RoleJSON;
 
@@ -12,116 +13,183 @@ import io.discloader.discloader.network.json.RoleJSON;
  * @author Perry Berman
  */
 public class Role {
-    /**
-     * The role's Snowflake ID.
-     */
-    public final String id;
-    /**
-     * The role's name
-     */
-    public String name;
-    /**
-     * The 53bit permissions integer for the role
-     */
-    public int permissions;
-    /**
-     * The color users with this role should display as
-     */
-    public int color;
-    /**
-     * The role's position in the role hiarchy
-     */
-    public int position;
-    /**
-     * Whether or not online users are displayed seperately
-     */
-    public boolean hoist;
-    /**
-     * Something to do with bots
-     */
-    public final boolean managed;
-    /**
-     * Can everyone mention this role
-     */
-    public boolean mentionable;
+	/**
+	 * The role's Snowflake ID.
+	 */
+	public final String id;
+	/**
+	 * The role's name
+	 */
+	private String name;
 
-    /**
-     * The {@link Guild} the role belongs to.
-     */
-    public final Guild guild;
+	/**
+	 * The 53bit permissions integer for the role
+	 */
+	private int permissions;
 
-    /**
-     * The current instance of DiscLoader
-     */
-    public final DiscLoader loader;
+	/**
+	 * The color users with this role should display as
+	 */
+	private int color;
 
-    /**
-     * Creates a new role object
-     * 
-     * @param guild The guild the role belongs to
-     * @param role The role's data
-     */
-    public Role(Guild guild, RoleJSON role) {
-        this.guild = guild;
-        this.loader = this.guild.loader;
-        this.id = role.id;
-        this.name = role.name;
-        this.color = new BigDecimal(role.color).intValue();
-        this.permissions = new BigDecimal(role.permissions).intValue();
-        this.position = new BigDecimal(role.position).intValue();
-        this.hoist = role.hoist;
-        this.mentionable = role.mentionable;
-        this.managed = role.managed;
-    }
+	/**
+	 * The role's position in the role hiarchy
+	 */
+	private int position;
 
-    private Role(Guild guild, String id, String name, int color, int permissions, int position, boolean hoist, boolean mentionable, boolean managed) {
-        this.guild = guild;
-        this.loader = this.guild.loader;
-        this.id = id;
-        this.name = name;
-        this.color = color;
-        this.permissions = permissions;
-        this.position = position;
-        this.hoist = hoist;
-        this.mentionable = mentionable;
-        this.managed = managed;
-    }
+	/**
+	 * Whether or not online users are displayed seperately
+	 */
+	private boolean hoist;
 
-    public Role clone() {
-        return new Role(this.guild, this.id, this.name, this.color, this.permissions, this.position, this.hoist, this.mentionable, this.managed);
-    }
+	/**
+	 * Something to do with bots
+	 */
+	private final boolean managed;
 
-    public Role update(RoleJSON role) {
-        this.name = role.name;
-        this.color = new BigDecimal(role.color).intValue();
-        this.permissions = new BigDecimal(role.permissions).intValue();
-        this.position = new BigDecimal(role.position).intValue();
-        this.hoist = role.hoist;
-        this.mentionable = role.mentionable;
-        return this;
-    }
+	/**
+	 * Can everyone mention this role
+	 */
+	private boolean mentionable;
 
-    public Role update(String name, int color, int permissions, int position, boolean hoist, boolean mentionable) {
-        this.name = name;
+	/**
+	 * The {@link Guild} the role belongs to.
+	 */
+	public final Guild guild;
 
-        this.color = color;
+	/**
+	 * The current instance of DiscLoader
+	 */
+	public final DiscLoader loader;
 
-        this.permissions = permissions;
+	/**
+	 * Creates a new role object
+	 * 
+	 * @param guild The guild the role belongs to
+	 * @param role The role's data
+	 */
+	public Role(Guild guild, RoleJSON role) {
+		this.guild = guild;
+		this.loader = this.guild.loader;
+		this.id = role.id;
+		this.name = role.name;
+		this.color = new BigDecimal(role.color).intValue();
+		this.permissions = new BigDecimal(role.permissions).intValue();
+		this.position = new BigDecimal(role.position).intValue();
+		this.hoist = role.hoist;
+		this.mentionable = role.mentionable;
+		this.managed = role.managed;
+	}
 
-        this.position = position;
+	/**
+	 * @return the color
+	 */
+	public int getColor() {
+		return color;
+	}
 
-        this.hoist = hoist;
+	/**
+	 * Gets the role's name
+	 * 
+	 * @return the name of the role
+	 */
+	public String getName() {
+		return name;
+	}
 
-        this.mentionable = mentionable;
+	/**
+	 * Creates a new {@link Permission} object containing the role's
+	 * permissions.
+	 * 
+	 * @return the role's permissions
+	 */
+	public Permission getPermissions() {
+		return new Permission(this, permissions);
+	}
 
-        return this;
-    }
+	/**
+	 * @return the position of the role.
+	 */
+	public int getPosition() {
+		return position;
+	}
 
-    /**
-     * @return A string that is in the correct format for mentioning this role in a {@link Message}
-     */
-    public String toMention() {
-        return String.format("<@&%s>", id);
-    }
+	/**
+	 * Checks if {@link GuildMember members} with this role are shown seperately
+	 * from online users.
+	 * 
+	 * @return {@code true} if this role is hoisted, {@code false} otherwise.
+	 */
+	public boolean isHoisted() {
+		return hoist;
+	}
+
+	/**
+	 * @return the managed
+	 */
+	public boolean isManaged() {
+		return managed;
+	}
+
+	/**
+	 * @return the mentionable
+	 */
+	public boolean isMentionable() {
+		return mentionable;
+	}
+
+	/**
+	 * @param color the color to set
+	 */
+	public void setColor(int color) {
+		this.color = color;
+	}
+
+	/**
+	 * @param hoist the hoist to set
+	 */
+	public void setHoist(boolean hoist) {
+		this.hoist = hoist;
+	}
+
+	/**
+	 * @param mentionable the mentionable to set
+	 */
+	public void setMentionable(boolean mentionable) {
+		this.mentionable = mentionable;
+	}
+
+	/**
+	 * @param name the name to set
+	 */
+	public void setName(String name) {
+		this.name = name;
+	}
+
+	/**
+	 * @param permissions the permissions to set
+	 */
+	public void setPermissions(int permissions) {
+		this.permissions = permissions;
+	}
+
+	/**
+	 * @param position the position to set
+	 */
+	public void setPosition(int position) {
+		this.position = position;
+	}
+
+	public String toString() {
+		return name;
+	}
+
+	/**
+	 * @return A string that is in the correct format for mentioning this role
+	 *         in a {@link Message}
+	 */
+	public String toMention() {
+		return String.format("<@&%s>", id);
+	}
 
 }

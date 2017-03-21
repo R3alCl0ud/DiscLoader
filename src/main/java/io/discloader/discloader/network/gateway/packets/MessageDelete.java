@@ -1,6 +1,5 @@
 package io.discloader.discloader.network.gateway.packets;
 
-import io.discloader.discloader.common.DiscLoader;
 import io.discloader.discloader.common.event.IEventListener;
 import io.discloader.discloader.common.event.MessageDeleteEvent;
 import io.discloader.discloader.entity.impl.ITextChannel;
@@ -28,7 +27,7 @@ public class MessageDelete extends DLPacket {
 		
 		MessageDeleteEvent event = new MessageDeleteEvent(new Message(channel, data));
 		this.socket.loader.emit(DLUtil.Events.MESSAGE_DELETE, event);
-		for (IEventListener e : DiscLoader.handlers.values()) {
+		for (IEventListener e : loader.handlers) {
 			e.MessageDelete(event);
 		}
 	}

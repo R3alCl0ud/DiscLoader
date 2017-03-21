@@ -1,6 +1,5 @@
 package io.discloader.discloader.network.gateway.packets;
 
-import io.discloader.discloader.common.DiscLoader;
 import io.discloader.discloader.common.event.ChannelDeleteEvent;
 import io.discloader.discloader.common.event.IEventListener;
 import io.discloader.discloader.entity.channels.Channel;
@@ -43,7 +42,7 @@ public class ChannelDelete extends DLPacket {
 		}
 		ChannelDeleteEvent event = new ChannelDeleteEvent(channel);
 		this.socket.loader.emit(DLUtil.Events.CHANNEL_DELETE, event);
-		for (IEventListener e : DiscLoader.handlers.values()) {
+		for (IEventListener e : loader.handlers) {
 			e.ChannelDelete(event);
 		}
 	}

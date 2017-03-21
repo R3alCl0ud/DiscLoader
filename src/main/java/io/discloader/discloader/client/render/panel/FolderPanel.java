@@ -3,15 +3,15 @@
  */
 package io.discloader.discloader.client.render.panel;
 
-import io.discloader.discloader.client.registry.TextureRegistry;
-import io.discloader.discloader.client.render.texture.icon.GuildIcon;
-import io.discloader.discloader.common.DiscLoader;
-
 import java.awt.Dimension;
 
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
+
+import io.discloader.discloader.client.registry.TextureRegistry;
+import io.discloader.discloader.client.render.texture.icon.GuildIcon;
+import io.discloader.discloader.common.DiscLoader;
 
 /**
  * @author Perry Berman

@@ -8,6 +8,7 @@ import io.discloader.discloader.entity.guild.Emoji;
 import io.discloader.discloader.entity.guild.Guild;
 import io.discloader.discloader.entity.guild.GuildMember;
 import io.discloader.discloader.entity.guild.Role;
+import io.discloader.discloader.entity.impl.ITextChannel;
 import io.discloader.discloader.entity.user.User;
 import io.discloader.discloader.entity.voice.VoiceConnection;
 

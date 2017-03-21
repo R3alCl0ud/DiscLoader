@@ -36,7 +36,6 @@ import io.discloader.discloader.network.json.RoleJSON;
 import io.discloader.discloader.network.json.VoiceStateJSON;
 import io.discloader.discloader.util.DLUtil;
 import io.discloader.discloader.util.DLUtil.Endpoints;
-import io.discloader.discloader.util.DLUtil.Permissions;
 
 /**
  * This represents a Guild in Discord's API
@@ -217,7 +216,7 @@ public class Guild {
 		if (!exists && this.loader.ready && shouldEmit) {
 			GuildMemberAddEvent event = new GuildMemberAddEvent(member);
 			this.loader.emit(DLUtil.Events.GUILD_MEMBER_ADD, event);
-			for (IEventListener e : DiscLoader.handlers.values()) {
+			for (IEventListener e : loader.handlers) {
 				e.GuildMemberAdd(event);
 			}
 		}
@@ -234,7 +233,7 @@ public class Guild {
 		if (this.loader.ready == true && emitEvent && !exists) {
 			GuildMemberAddEvent event = new GuildMemberAddEvent(member);
 			this.loader.emit(DLUtil.Events.GUILD_MEMBER_ADD, event);
-			for (IEventListener e : DiscLoader.handlers.values()) {
+			for (IEventListener e : loader.handlers) {
 				e.GuildMemberAdd(event);
 			}
 		}
@@ -494,7 +493,8 @@ public class Guild {
 
 	/**
 	 * Returns the number of members that would be removed in a prune operation.
-	 * Requires the {@link Permissions#KICK_MEMBERS Kick Members} permission.
+	 * Requires the {@link PermissionsNums#KICK_MEMBERS Kick Members}
+	 * permission.
 	 * 
 	 * @param days The number of days to count prune for (1 or more)
 	 * @return A Future that completes with the number of member that would be
@@ -661,7 +661,7 @@ public class Guild {
 		}
 		this.loader.syncGuilds(this.id);
 	}
-	
+
 	public void updateVoiceState(VoiceState state) {
 		rawStates.put(state.member.id, state);
 	}

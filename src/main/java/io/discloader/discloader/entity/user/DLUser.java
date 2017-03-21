@@ -6,8 +6,6 @@ import io.discloader.discloader.entity.Game;
 import io.discloader.discloader.entity.Presence;
 import io.discloader.discloader.entity.sendable.Packet;
 import io.discloader.discloader.entity.sendable.SendablePresenceUpdate;
-import io.discloader.discloader.util.DLUtil;
-import io.discloader.discloader.util.DLUtil.OPCodes;
 
 /**
  * Represents the user that you are currently logged in as.

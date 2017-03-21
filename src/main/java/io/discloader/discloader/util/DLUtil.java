@@ -319,7 +319,7 @@ public final class DLUtil {
 	 * @author Perry Berman
 	 * @since 0.0.1
 	 */
-	public static final class Permissions {
+	public static final class PermissionsNums {
 		public static final int CREATE_INSTANT_INVITE = 0x00000001;
 		public static final int KICK_MEMBERS = 0x00000002;
 		public static final int BAN_MEMBERS = 0x00000004;

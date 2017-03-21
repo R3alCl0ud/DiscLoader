@@ -55,18 +55,17 @@ public class Main {
 			token = options.auth.token;
 		}
 		parseArgs(args);
-		DiscLoader.addEventHandler(new EventListenerAdapter() {
+		loader = new DiscLoader(shards, shard);
+		loader.addEventHandler(new EventListenerAdapter() {
 			public void raw(String text) {
 				System.out.println(text);
 			}
 
 			public void Ready(DiscLoader loader) {
 				System.out.printf("Ready as user: %s", loader.user);
-				loader.textChannels.get("203931969871020033").fetchMessage("293408766911840256").join().pin();
+				loader.textChannels.get("203931969871020033").fetchMessage("293782287189803008").join().pin();
 			}
 		});
-
-		loader = new DiscLoader(shards, shard);
 		loader.login(token);
 
 	}

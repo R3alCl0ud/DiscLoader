@@ -9,6 +9,7 @@ import io.discloader.discloader.common.event.MessageCreateEvent;
 import io.discloader.discloader.common.language.LanguageRegistry;
 import io.discloader.discloader.common.registry.CommandRegistry;
 import io.discloader.discloader.entity.RichEmbed;
+import io.discloader.discloader.entity.message.Message;
 import io.discloader.discloader.util.DLUtil;
 
 /**
@@ -25,6 +26,7 @@ public class CommandHelp extends Command {
 	}
 
 	public void execute(MessageCreateEvent e, String[] args) {
+		Message message = e.getMessage();
 		RichEmbed embed = new RichEmbed()
 				.setFooter(String.format("type `%shelp <page>` to tab threw the pages", CommandHandler.prefix),
 						e.loader.user.avatar.toString())
@@ -32,7 +34,7 @@ public class CommandHelp extends Command {
 				.setColor(0x08a2ff);
 		Command command;
 		embed.setThumbnail(this.getIcon().getFile());
-		if (args.length == 1 && (command = CommandHandler.getCommand(args[0], e.message)) != null) {
+		if (args.length == 1 && (command = CommandHandler.getCommand(args[0], message)) != null) {
 			if (command != null) {
 				File icon = DLUtil.MissingTexture;
 				IIcon iicon = (CommandIcon) command.getIcon();
@@ -67,7 +69,7 @@ public class CommandHelp extends Command {
 			embed.addField("Commands", commands, true);
 			embed.setTitle(String.format("Help. Page: 1/%d", (size / 10) + size % 10 != 0 ? 1 : 0));
 		}
-		e.message.channel.sendEmbed(embed);
+		message.channel.sendEmbed(embed);
 	}
 
 	private String getCommandDesc(Command command) {

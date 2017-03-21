@@ -8,32 +8,32 @@ import io.discloader.discloader.entity.message.Message;
 
 /**
  * The object passed to the {@literal "MessageCreate"} eventHandler
+ * 
  * @author Perry Berman
  * @since 0.0.1_Alpha
  * @see Message
  * @see DiscLoader
  */
-public class MessageCreateEvent {
+public class MessageCreateEvent extends DLEvent {
 
-	/**
-	 * The current instance of the loader.
-	 */
-	public final DiscLoader loader;
-	
 	/**
 	 * The new message received from the gateway.
 	 */
-	public final Message message;
-	
+	private final Message message;
+
 	/**
 	 * The messages arguments.
 	 */
 	public final String[] args;
-	
+
 	public MessageCreateEvent(Message message) {
+		super(message.loader);
 		this.message = message;
-		this.loader = this.message.loader;
 		this.args = this.message.content.split(" ");
+	}
+
+	public Message getMessage() {
+		return message;
 	}
 
 }

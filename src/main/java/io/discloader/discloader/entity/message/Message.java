@@ -18,6 +18,7 @@ import io.discloader.discloader.network.json.MessageJSON;
 import io.discloader.discloader.network.rest.actions.PinMessage;
 import io.discloader.discloader.network.rest.actions.UnpinMessage;
 import io.discloader.discloader.util.DLUtil;
+import io.discloader.discloader.util.ISnowflake;
 
 /**
  * Represents a message object on the api <br>

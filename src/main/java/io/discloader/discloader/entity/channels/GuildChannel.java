@@ -101,7 +101,7 @@ public class GuildChannel extends Channel implements IGuildChannel {
 
 	public HashMap<String, Overwrite> overwritesOf(GuildMember member) {
 		HashMap<String, Overwrite> Overwrites = new HashMap<String, Overwrite>();
-		for (Role role : member.getRoleList().values()) {
+		for (Role role : member.getRoles().values()) {
 			if (this.overwrites.get(role.id) != null)
 				Overwrites.put(role.id, this.overwrites.get(role.id));
 		}
@@ -114,8 +114,8 @@ public class GuildChannel extends Channel implements IGuildChannel {
 		int raw = 0;
 		if (member.id == this.guild.ownerID)
 			return new Permission(member, this, 2146958463);
-		for (Role role : member.getRoleList().values())
-			raw |= role.permissions;
+		for (Role role : member.getRoles().values())
+			raw |= role.getPermissions().asInteger();
 		for (Overwrite overwrite : this.overwritesOf(member).values()) {
 			raw |= overwrite.allow;
 			raw &= ~overwrite.deny;

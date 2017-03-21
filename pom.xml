@@ -129,7 +129,7 @@
 
 	<build>
 		<finalName>${artifactId}-${version}</finalName>
-	
+
 		<plugins>
 			<plugin>
 				<groupId>org.codehaus.mojo</groupId>
@@ -165,6 +165,7 @@
 				<executions>
 					<execution>
 						<id>get-the-git-infos</id>
+						<phase>clean</phase>
 						<goals>
 							<goal>revision</goal>
 						</goals>
@@ -221,6 +222,17 @@
 				</executions>
 				<configuration>
 					<finalName>${project.artifactId}-v${project.version}_${git.commit.id.describe}-${maven.build.timestamp}</finalName>
+				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-javadoc-plugin</artifactId>
+				<configuration>
+					<reportOutputDirectory>${basedir}</reportOutputDirectory>
+					<destDir>docs/${project.version}_${git.commit.id.describe}</destDir>
+					<overview>${basedir}/docs/index.html</overview>
+					<minmemory>128m</minmemory>
+					<maxmemory>1g</maxmemory>
 				</configuration>
 			</plugin>
 		</plugins>
