@@ -134,11 +134,11 @@ public class TextChannel extends GuildChannel implements ITextChannel {
             embed.thumbnail.file = null;
             attachment = new Attachment(file.getName());
         }
-        return this.loader.rest.sendMessage(this, null, embed, attachment, file);
+        return loader.rest.sendMessage(this, null, embed, attachment, file);
     }
 
     public CompletableFuture<Message> sendMessage(String content) {
-        return this.loader.rest.sendMessage(this, content, null, null, null);
+        return loader.rest.sendMessage(this, content, null, null, null);
     }
 
     public CompletableFuture<Message> sendMessage(String content, RichEmbed embed) {

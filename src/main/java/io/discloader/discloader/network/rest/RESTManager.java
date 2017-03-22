@@ -221,9 +221,7 @@ public class RESTManager {
     }
 
     public CompletableFuture<Message> sendMessage(ITextChannel channel, String content, RichEmbed embed, Attachment attachment, File file) {
-        if (content != null && content.length() < 0)
-            return null;
-        else if ((embed == null && attachment == null))
+        if (content != null && content.length() < 0 && (embed == null && attachment == null))
             return null;
         CompletableFuture<Message> msgSent = new CompletableFuture<Message>();
         this.makeRequest(DLUtil.Endpoints.messages(channel.getID()), DLUtil.Methods.POST, true, new SendableMessage(content, embed, attachment, file)).thenAcceptAsync(action -> {
