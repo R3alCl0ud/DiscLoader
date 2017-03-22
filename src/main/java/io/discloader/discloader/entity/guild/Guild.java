@@ -211,8 +211,7 @@ public class Guild {
 		boolean exists = this.members.containsKey(data.user.id);
 		GuildMember member = new GuildMember(this, data);
 		this.members.put(member.id, member);
-		if (member.id.equals(this.ownerID))
-			this.owner = member;
+		if (member.id.equals(this.ownerID)) this.owner = member;
 		if (!exists && this.loader.ready && shouldEmit) {
 			GuildMemberAddEvent event = new GuildMemberAddEvent(member);
 			this.loader.emit(DLUtil.Events.GUILD_MEMBER_ADD, event);
@@ -223,13 +222,11 @@ public class Guild {
 		return member;
 	}
 
-	public GuildMember addMember(User user, String[] roles, boolean deaf, boolean mute, String nick,
-			boolean emitEvent) {
+	public GuildMember addMember(User user, String[] roles, boolean deaf, boolean mute, String nick, boolean emitEvent) {
 		boolean exists = this.members.containsKey(user.id);
 		GuildMember member = new GuildMember(this, user, roles, deaf, mute, nick);
 		this.members.put(member.id, member);
-		if (member.id.equals(this.ownerID))
-			this.owner = member;
+		if (member.id.equals(this.ownerID)) this.owner = member;
 		if (this.loader.ready == true && emitEvent && !exists) {
 			GuildMemberAddEvent event = new GuildMemberAddEvent(member);
 			this.loader.emit(DLUtil.Events.GUILD_MEMBER_ADD, event);
@@ -295,8 +292,7 @@ public class Guild {
 	public CompletableFuture<Emoji> createEmoji(String name, File image) {
 		String base64 = null;
 		try {
-			base64 = new String(
-					"data:image/jpg;base64," + Base64.encodeBase64String(Files.readAllBytes(image.toPath())));
+			base64 = new String("data:image/jpg;base64," + Base64.encodeBase64String(Files.readAllBytes(image.toPath())));
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -351,8 +347,7 @@ public class Guild {
 	 *         successful.
 	 * @since 0.0.3
 	 */
-	public CompletableFuture<Role> createRole(String name, int permissions, int color, boolean hoist,
-			boolean mentionable) {
+	public CompletableFuture<Role> createRole(String name, int permissions, int color, boolean hoist, boolean mentionable) {
 		return loader.rest.createRole(this, name, permissions, color, hoist, mentionable);
 	}
 
@@ -399,8 +394,7 @@ public class Guild {
 	 *         successful.
 	 */
 	public CompletableFuture<VoiceChannel> createVoiceChannel(String name, int bitrate, int userLimit) {
-		return this.loader.rest.createVoiceChannel(this,
-				new JSONObject().put("name", name).put("bitrate", bitrate).put("user_limit", userLimit));
+		return this.loader.rest.createVoiceChannel(this, new JSONObject().put("name", name).put("bitrate", bitrate).put("user_limit", userLimit));
 	}
 
 	/**
@@ -412,10 +406,9 @@ public class Guild {
 	 */
 	public CompletableFuture<Guild> delete() {
 		CompletableFuture<Guild> future = new CompletableFuture<Guild>();
-		this.loader.rest.makeRequest(DLUtil.Endpoints.guild(this.id), DLUtil.Methods.DELETE, true)
-				.thenAcceptAsync(data -> {
-					future.complete(this);
-				});
+		this.loader.rest.makeRequest(DLUtil.Endpoints.guild(this.id), DLUtil.Methods.DELETE, true).thenAcceptAsync(data -> {
+			future.complete(this);
+		});
 		return future;
 	}
 
@@ -547,8 +540,7 @@ public class Guild {
 	 *             file
 	 */
 	public CompletableFuture<Guild> setIcon(String icon) throws IOException {
-		String base64 = new String(
-				"data:image/jpg;base64," + Base64.encodeBase64String(Files.readAllBytes(Paths.get(icon))));
+		String base64 = new String("data:image/jpg;base64," + Base64.encodeBase64String(Files.readAllBytes(Paths.get(icon))));
 		return this.loader.rest.modifyGuild(this, new JSONObject().put("icon", base64));
 	}
 
@@ -563,14 +555,14 @@ public class Guild {
 	}
 
 	public void setPresence(PresenceJSON guildPresence) {
-		if (this.presences.containsKey(guildPresence.user.id)) {
-			this.presences.get(guildPresence.user.id).update(guildPresence);
-			return;
-		}
+		setPresence(guildPresence, false);
+	}
+
+	public void setPresence(PresenceJSON guildPresence, boolean shouldEmit) {
 		Presence presence = new Presence(guildPresence);
-		if (guildPresence.user.id.equals(this.loader.user.id))
-			this.loader.user.presence.update(guildPresence);
-		this.presences.put(guildPresence.user.id, presence);
+		if (guildPresence.user.id.equals(this.loader.user.id)) loader.user.presence.update(guildPresence);
+		presences.put(guildPresence.user.id, presence);
+//		this.e
 	}
 
 	/**

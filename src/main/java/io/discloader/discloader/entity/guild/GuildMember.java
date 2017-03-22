@@ -66,7 +66,7 @@ public class GuildMember {
 	/**
 	 * Member's old presence. Has a value of {@code null} unless
 	 */
-	public Presence frozenPresence;
+	private Presence presence;
 
 	/**
 	 * A {@link Date} object representing when the member joined the
@@ -141,11 +141,22 @@ public class GuildMember {
 		return future.execute();
 	}
 
+	@Override
+	public boolean equals(Object obj) {
+		if (!(obj instanceof GuildMember)) return false;
+		GuildMember member = (GuildMember) obj;
+		if (!guild.id.equals(member.guild.id)) return false;
+		for (Role role : member.getRoles().values()) {
+			if (!getRoles().containsKey(role.id)) return false;
+		}
+
+		return id.equals(member.id) && nick.equals(member.nick);
+	}
+
 	public Role getHighestRole() {
 		Role highest = null;
 		for (Role role : getRoles().values()) {
-			if (highest == null || highest.getPosition() < role.getPosition())
-				highest = role;
+			if (highest == null || highest.getPosition() < role.getPosition()) highest = role;
 		}
 		return highest;
 	}
@@ -154,7 +165,8 @@ public class GuildMember {
 	 * @return The members current presence.
 	 */
 	public Presence getPresence() {
-		return this.guild.presences.get(this.user.id);
+		if (presence == null) presence = guild.presences.get(id);
+		return presence;
 	}
 
 	/**
@@ -162,14 +174,14 @@ public class GuildMember {
 	 */
 	public HashMap<String, Role> getRoles() {
 		HashMap<String, Role> roles = new HashMap<String, Role>();
-		for (String id : this.roleIDs) {
-			roles.put(id, this.guild.roles.get(id));
+		for (String id : roleIDs) {
+			roles.put(id, guild.roles.get(id));
 		}
 		return roles;
 	}
 
 	public VoiceChannel getVoiceChannel() {
-		VoiceState vs = this.guild.getRawStates().get(id);
+		VoiceState vs = guild.getRawStates().get(id);
 		if (vs != null) {
 			return (VoiceChannel) vs.channel;
 		}

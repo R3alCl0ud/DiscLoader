@@ -75,6 +75,22 @@ public class User {
 	}
 
 	/**
+	 * toStrings the user in mention format
+	 * 
+	 * @return {@literal <@}{@link #id this.id}{@literal>}
+	 */
+	public String asMention() {
+		return String.format("<@%s>", id);
+	}
+
+	/**
+	 * @return A Future that completes with the user's profile if successful.
+	 */
+	public CompletableFuture<UserProfile> getProfile() {
+		return new FetchUserProfile(this).execute();
+	}
+
+	/**
 	 * Updates a user's information
 	 * 
 	 * @param data The user's new data
@@ -108,13 +124,6 @@ public class User {
 	}
 
 	/**
-	 * @return A Future that completes with the user's profile if successful.
-	 */
-	public CompletableFuture<UserProfile> getProfile() {
-		return new FetchUserProfile(this).execute();
-	}
-
-	/**
 	 * returns a String in the format of
 	 * 
 	 * <pre>
@@ -125,14 +134,5 @@ public class User {
 	 */
 	public String toString() {
 		return String.format("%s#%s", username, discriminator);
-	}
-
-	/**
-	 * toStrings the user in mention format
-	 * 
-	 * @return {@literal <@}{@link #id this.id}{@literal>}
-	 */
-	public String asMention() {
-		return String.format("<@%s>", id);
 	}
 }

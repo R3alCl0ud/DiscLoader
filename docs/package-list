@@ -10,6 +10,12 @@ io.discloader.discloader.client.render.util
 io.discloader.discloader.common
 io.discloader.discloader.common.discovery
 io.discloader.discloader.common.event
+io.discloader.discloader.common.event.channel
+io.discloader.discloader.common.event.guild
+io.discloader.discloader.common.event.guild.emoji
+io.discloader.discloader.common.event.guild.member
+io.discloader.discloader.common.event.guild.role
+io.discloader.discloader.common.event.message
 io.discloader.discloader.common.exceptions
 io.discloader.discloader.common.language
 io.discloader.discloader.common.logger
