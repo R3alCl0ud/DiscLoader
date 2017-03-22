@@ -9,21 +9,22 @@ import io.discloader.discloader.entity.user.User;
  * @author Perry Berman
  *
  */
-public class UserUpdateEvent {
-	
-	/**
-	 * The current user
-	 */
-	public User user;
-	
-	/**
-	 * The user before the update
-	 */
-	public User oldUser;
+public class UserUpdateEvent extends DLEvent {
 
-	public UserUpdateEvent(User user, User oldUser) {
-		this.user = user;
-		this.oldUser = oldUser;
-	}
+    /**
+     * The current user
+     */
+    public User user;
+
+    /**
+     * The user before the update
+     */
+    public User oldUser;
+
+    public UserUpdateEvent(User user, User oldUser) {
+        super(user.loader);
+        this.user = user;
+        this.oldUser = oldUser;
+    }
 
 }

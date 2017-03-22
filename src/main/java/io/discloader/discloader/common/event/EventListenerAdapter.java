@@ -14,133 +14,133 @@ import io.discloader.discloader.entity.guild.GuildMember;
  */
 public abstract class EventListenerAdapter implements IEventListener {
 
-	@Override
-	public void ChannelCreate(ChannelCreateEvent e) {
-	}
+    @Override
+    public void ChannelCreate(ChannelCreateEvent e) {
+    }
 
-	@Override
-	public void ChannelDelete(ChannelDeleteEvent e) {
-	}
+    @Override
+    public void ChannelDelete(ChannelDeleteEvent e) {
+    }
 
-	@Override
-	public void ChannelPinsUpdate() {
-	}
+    @Override
+    public void ChannelPinsUpdate() {
+    }
 
-	@Override
-	public void ChannelUpdate(ChannelUpdateEvent e) {
-	}
+    @Override
+    public void ChannelUpdate(ChannelUpdateEvent e) {
+    }
 
-	@Override
-	public void GuildBanAdd(GuildBanAddEvent e) {
-	}
+    @Override
+    public void GuildBanAdd(GuildBanAddEvent e) {
+    }
 
-	@Override
-	public void GuildBanRemove(GuildBanRemoveEvent e) {
-	}
+    @Override
+    public void GuildBanRemove(GuildBanRemoveEvent e) {
+    }
 
-	@Override
-	public void GuildCreate(GuildCreateEvent e) {
-	}
+    @Override
+    public void GuildCreate(GuildCreateEvent e) {
+    }
 
-	@Override
-	public void GuildDelete(GuildDeleteEvent e) {
-	}
+    @Override
+    public void GuildDelete(GuildDeleteEvent e) {
+    }
 
-	@Override
-	public void GuildEmojisUpdate(HashMap<String, Emoji> emojis) {
-	}
+    @Override
+    public void GuildEmojisUpdate(HashMap<String, Emoji> emojis) {
+    }
 
-	@Override
-	public void GuildMemberAdd(GuildMemberAddEvent e) {
-	}
+    @Override
+    public void GuildMemberAdd(GuildMemberAddEvent e) {
+    }
 
-	@Override
-	public void GuildMemberAvailable(GuildMember member) {
-	}
+    @Override
+    public void GuildMemberAvailable(GuildMember member) {
+    }
 
-	@Override
-	public void GuildMemberRemove(GuildMemberRemoveEvent e) {
-	}
+    @Override
+    public void GuildMemberRemove(GuildMemberRemoveEvent e) {
+    }
 
-	@Override
-	public void GuildMembersChunk(HashMap<String, GuildMember> members) {
-	}
+    @Override
+    public void GuildMembersChunk(GuildMembersChunkEvent event) {
+    }
 
-	@Override
-	public void GuildMemberUpdate(GuildMemberUpdateEvent e) {
-	}
+    @Override
+    public void GuildMemberUpdate(GuildMemberUpdateEvent e) {
+    }
 
-	@Override
-	public void GuildRoleCreate(GuildRoleCreateEvent e) {
-	}
+    @Override
+    public void GuildRoleCreate(GuildRoleCreateEvent e) {
+    }
 
-	@Override
-	public void GuildRoleDelete(GuildRoleDeleteEvent e) {
-	}
+    @Override
+    public void GuildRoleDelete(GuildRoleDeleteEvent e) {
+    }
 
-	@Override
-	public void GuildRoleUpdate(GuildRoleUpdateEvent e) {
-	}
+    @Override
+    public void GuildRoleUpdate(GuildRoleUpdateEvent e) {
+    }
 
-	@Override
-	public void GuildUpdate(GuildUpdateEvent e) {
-	}
+    @Override
+    public void GuildUpdate(GuildUpdateEvent e) {
+    }
 
-	@Override
-	public void MessageCreate(MessageCreateEvent e) {
-	}
+    @Override
+    public void MessageCreate(MessageCreateEvent e) {
+    }
 
-	@Override
-	public void MessageDelete(MessageDeleteEvent e) {
-	}
+    @Override
+    public void MessageDelete(MessageDeleteEvent e) {
+    }
 
-	@Override
-	public void MessageUpdate(MessageUpdateEvent e) {
-	}
+    @Override
+    public void MessageUpdate(MessageUpdateEvent e) {
+    }
 
-	@Override
-	public void PhaseChange() {
-	}
+    @Override
+    public void PhaseChange() {
+    }
 
-	@Override
-	public void PreInit(DLPreInitEvent preInitEvent) {
-	}
+    @Override
+    public void PreInit(DLPreInitEvent preInitEvent) {
+    }
 
-	@Override
-	public void PresenceUpdate() {
-	}
+    @Override
+    public void PresenceUpdate() {
+    }
 
-	@Override
-	public void PrivateMessageCreate(MessageCreateEvent e) {
-	}
+    @Override
+    public void PrivateMessageCreate(MessageCreateEvent e) {
+    }
 
-	@Override
-	public void PrivateMessageDelete(MessageDeleteEvent e) {
-	}
+    @Override
+    public void PrivateMessageDelete(MessageDeleteEvent e) {
+    }
 
-	@Override
-	public void PrivateMessageUpdate(MessageUpdateEvent e) {
-	}
+    @Override
+    public void PrivateMessageUpdate(MessageUpdateEvent e) {
+    }
 
-	@Override
-	public void raw(String raw) {
-	}
+    @Override
+    public void raw(String raw) {
+    }
 
-	@Override
-	public void Ready(DiscLoader loader) {
-	}
+    @Override
+    public void Ready(DiscLoader loader) {
+    }
 
-	@Override
-	public void UserUpdate(UserUpdateEvent e) {
-	}
+    @Override
+    public void UserUpdate(UserUpdateEvent e) {
+    }
 
-	@Override
-	public void VoiceStateUpdate(VoiceStateUpdateEvent e) {
+    @Override
+    public void VoiceStateUpdate(VoiceStateUpdateEvent e) {
 
-	}
+    }
 
-	@Override
-	public void TypingStart(TypingStartEvent event) {
-	}
+    @Override
+    public void TypingStart(TypingStartEvent event) {
+    }
 
 }
