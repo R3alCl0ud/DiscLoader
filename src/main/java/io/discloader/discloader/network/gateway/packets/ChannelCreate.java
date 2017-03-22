@@ -3,8 +3,8 @@
  */
 package io.discloader.discloader.network.gateway.packets;
 
-import io.discloader.discloader.common.event.ChannelCreateEvent;
 import io.discloader.discloader.common.event.IEventListener;
+import io.discloader.discloader.common.event.channel.ChannelCreateEvent;
 import io.discloader.discloader.entity.channels.Channel;
 import io.discloader.discloader.entity.guild.Guild;
 import io.discloader.discloader.network.gateway.DiscSocket;

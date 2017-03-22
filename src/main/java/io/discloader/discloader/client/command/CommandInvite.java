@@ -1,6 +1,6 @@
 package io.discloader.discloader.client.command;
 
-import io.discloader.discloader.common.event.MessageCreateEvent;
+import io.discloader.discloader.common.event.message.MessageCreateEvent;
 
 public class CommandInvite extends Command {
 

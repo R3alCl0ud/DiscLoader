@@ -1,7 +1,7 @@
 package io.discloader.discloader.network.gateway.packets;
 
-import io.discloader.discloader.common.event.GuildRoleDeleteEvent;
 import io.discloader.discloader.common.event.IEventListener;
+import io.discloader.discloader.common.event.guild.role.GuildRoleDeleteEvent;
 import io.discloader.discloader.entity.guild.Guild;
 import io.discloader.discloader.entity.guild.Role;
 import io.discloader.discloader.network.gateway.DiscSocket;

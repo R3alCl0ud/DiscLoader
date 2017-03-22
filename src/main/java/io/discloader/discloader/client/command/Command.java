@@ -4,7 +4,7 @@ import java.util.regex.Pattern;
 
 import io.discloader.discloader.client.registry.TextureRegistry;
 import io.discloader.discloader.client.render.util.IIcon;
-import io.discloader.discloader.common.event.MessageCreateEvent;
+import io.discloader.discloader.common.event.message.MessageCreateEvent;
 import io.discloader.discloader.common.registry.CommandRegistry;
 import io.discloader.discloader.util.DLNameSpacedMap;
 

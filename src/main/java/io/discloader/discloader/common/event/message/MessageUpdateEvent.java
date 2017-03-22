@@ -1,10 +1,11 @@
-package io.discloader.discloader.common.event;
+package io.discloader.discloader.common.event.message;
 
+import io.discloader.discloader.common.event.DLEvent;
+import io.discloader.discloader.entity.impl.ITextChannel;
 import io.discloader.discloader.entity.message.Message;
 
 /**
  * @author Perry Berman
- *
  */
 public class MessageUpdateEvent extends DLEvent {
 
@@ -32,6 +33,15 @@ public class MessageUpdateEvent extends DLEvent {
 	 */
 	public Message getMessage() {
 		return message;
+	}
+
+	/**
+	 * Gets the message's channel
+	 * 
+	 * @return the {@link #getMessage() message}'s {@link ITextChannel}
+	 */
+	public ITextChannel getChannel() {
+		return message.channel;
 	}
 
 }

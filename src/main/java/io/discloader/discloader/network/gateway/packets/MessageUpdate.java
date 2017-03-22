@@ -4,7 +4,7 @@
 package io.discloader.discloader.network.gateway.packets;
 
 import io.discloader.discloader.common.event.IEventListener;
-import io.discloader.discloader.common.event.MessageUpdateEvent;
+import io.discloader.discloader.common.event.message.MessageUpdateEvent;
 import io.discloader.discloader.entity.impl.ITextChannel;
 import io.discloader.discloader.entity.message.Message;
 import io.discloader.discloader.network.gateway.DiscSocket;

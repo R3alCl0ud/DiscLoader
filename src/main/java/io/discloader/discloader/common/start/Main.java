@@ -7,11 +7,14 @@ import java.nio.file.Paths;
 import java.util.logging.Logger;
 
 import com.google.gson.Gson;
+import com.neovisionaries.ws.client.WebSocketFrame;
 
 import io.discloader.discloader.client.command.CommandHandler;
 import io.discloader.discloader.client.render.WindowFrame;
 import io.discloader.discloader.common.DiscLoader;
 import io.discloader.discloader.common.event.EventListenerAdapter;
+import io.discloader.discloader.common.event.RawEvent;
+import io.discloader.discloader.common.event.ReadyEvent;
 import io.discloader.discloader.common.logger.DLErrorStream;
 import io.discloader.discloader.common.logger.DLPrintStream;
 
@@ -23,11 +26,17 @@ import io.discloader.discloader.common.logger.DLPrintStream;
  */
 public class Main {
 	public static final Gson gson = new Gson();
+
 	public static WindowFrame window;
+
 	public static DiscLoader loader;
+
 	public static boolean usegui = false;
+
 	public static String token;
+
 	private static int shard = 0, shards = 1;
+
 	private static Logger LOGGER;
 
 	public static DiscLoader getLoader() {
@@ -57,11 +66,14 @@ public class Main {
 		parseArgs(args);
 		loader = new DiscLoader(shards, shard);
 		loader.addEventHandler(new EventListenerAdapter() {
-			public void raw(String text) {
-				System.out.println(text);
+			public void RawPacket(RawEvent data) {
+				if (data.isGateway()) {
+					WebSocketFrame frame = data.getFrame();
+					if (frame.isTextFrame()) System.out.println(frame.getPayloadText());
+				}
 			}
 
-			public void Ready(DiscLoader loader) {
+			public void Ready(ReadyEvent event) {
 				System.out.printf("Ready as user: %s", loader.user);
 				loader.textChannels.get("203931969871020033").fetchMessage("293782287189803008").join().pin();
 			}

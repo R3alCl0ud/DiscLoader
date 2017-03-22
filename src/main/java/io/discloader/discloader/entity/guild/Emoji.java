@@ -10,7 +10,8 @@ import io.discloader.discloader.network.json.EmojiJSON;
  * Represents a guild's custom emoji
  * 
  * @author Perry Berman
- * @since 0.0.3
+ * @since Mar 7, 2017
+ * @version 0.1.0
  */
 public class Emoji {
 
@@ -47,7 +48,7 @@ public class Emoji {
 	/**
 	 * The roles this emoji is active for
 	 */
-	public HashMap<String, Role> roles;
+	private String[] roleIDs;
 
 	public Emoji(EmojiJSON data, Guild guild) {
 		this.id = data.id;
@@ -62,11 +63,7 @@ public class Emoji {
 
 		this.loader = guild.loader;
 
-		this.roles = new HashMap<>();
-
-		for (String r : data.roles) {
-			this.roles.put(r, guild.roles.get(r));
-		}
+		roleIDs = data.roles;
 	}
 
 	/**
@@ -79,8 +76,29 @@ public class Emoji {
 	}
 
 	/**
-	 * Returns a string in the correct markdown format for discord emojis
+	 * Checks if an emoji is equivalent to {@code this}
 	 * 
+	 * @param emoji The emoji to check to see if it is the same as {@code this}
+	 * @return {@code true} if all fields match, {@code false} otherwise
+	 */
+	public boolean equals(Emoji emoji) {
+		for (Role role : emoji.getRoles().values()) {
+			// no need to continue if roles don't match up
+			if (!getRoles().containsKey(role.id)) return false;
+		}
+		return id.equals(emoji.id) && guild.id.equals(emoji.guild.id) && name.equals(emoji.name) && managed == emoji.managed;
+	}
+
+	public HashMap<String, Role> getRoles() {
+		HashMap<String, Role> roles = new HashMap<>();
+		for (String r : roleIDs) {
+			roles.put(r, guild.roles.get(r));
+		}
+		return roles;
+	}
+
+	/**
+	 * Returns a string in the correct markdown format for discord emojis
 	 */
 	public String toString() {
 		return String.format("<:%s:%s>", this.name, this.id);

@@ -1,9 +1,10 @@
 /**
  * 
  */
-package io.discloader.discloader.common.event;
+package io.discloader.discloader.common.event.guild.member;
 
 import io.discloader.discloader.common.DiscLoader;
+import io.discloader.discloader.common.event.DLEvent;
 import io.discloader.discloader.entity.guild.Guild;
 import io.discloader.discloader.entity.guild.GuildMember;
 

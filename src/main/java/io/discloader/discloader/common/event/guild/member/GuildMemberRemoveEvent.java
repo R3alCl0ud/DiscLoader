@@ -1,21 +1,20 @@
-package io.discloader.discloader.common.event;
+package io.discloader.discloader.common.event.guild.member;
 
+import io.discloader.discloader.common.event.DLEvent;
 import io.discloader.discloader.entity.guild.Guild;
 import io.discloader.discloader.entity.guild.GuildMember;
 
-public class GuildMemberAddEvent extends DLEvent {
+public class GuildMemberRemoveEvent extends DLEvent {
 
 	public final GuildMember member;
 	
 	public final Guild guild;
 	
-	public GuildMemberAddEvent(GuildMember member) {
+	public GuildMemberRemoveEvent(GuildMember member) {
 		super(member.loader);
 		
 		this.member = member;
 		this.guild = member.guild;
 	}
-
-
 
 }

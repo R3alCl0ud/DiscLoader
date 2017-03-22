@@ -18,7 +18,7 @@ import com.neovisionaries.ws.client.WebSocketFrame;
 import io.discloader.discloader.client.logger.DLLogger;
 import io.discloader.discloader.client.logger.ProgressLogger;
 import io.discloader.discloader.common.DiscLoader;
-import io.discloader.discloader.common.event.IEventListener;
+import io.discloader.discloader.common.event.RawEvent;
 import io.discloader.discloader.entity.sendable.Packet;
 import io.discloader.discloader.network.gateway.packets.ChannelCreate;
 import io.discloader.discloader.network.gateway.packets.ChannelDelete;
@@ -59,6 +59,7 @@ public class DiscSocketListener extends WebSocketAdapter {
 	public Gson gson = new Gson();
 
 	public DiscLoader loader;
+
 	public DiscSocket socket;
 
 	private int retries = 0;
@@ -143,8 +144,7 @@ public class DiscSocketListener extends WebSocketAdapter {
 		}
 
 		if (packet.op == OPCodes.DISPATCH) {
-			if (!this.handlers.containsKey(packet.t))
-				return;
+			if (!this.handlers.containsKey(packet.t)) return;
 			this.handlers.get(packet.t).handle(packet);
 		}
 	}
@@ -167,12 +167,10 @@ public class DiscSocketListener extends WebSocketAdapter {
 		}
 	}
 
-	public void onDisconnected(WebSocket ws, WebSocketFrame frame_1, WebSocketFrame frame_2, boolean isServer)
-			throws Exception {
+	public void onDisconnected(WebSocket ws, WebSocketFrame frame_1, WebSocketFrame frame_2, boolean isServer) throws Exception {
 		this.socket.killHeartbeat();
 		if (isServer) {
-			logger.severe(String.format("Gateway connection was closed by the server. Close Code: %d, Reason: %s",
-					frame_1.getCloseCode(), frame_1.getCloseReason()));
+			logger.severe(String.format("Gateway connection was closed by the server. Close Code: %d, Reason: %s", frame_1.getCloseCode(), frame_1.getCloseReason()));
 			if (frame_1.getCloseCode() != 1000) {
 				// if connection wasn't closed properly try to reconnect
 				tryReconnecting();
@@ -188,12 +186,14 @@ public class DiscSocketListener extends WebSocketAdapter {
 	}
 
 	@Override
+	public void onFrame(WebSocket ws, WebSocketFrame frame) {
+		RawEvent event = new RawEvent(loader, frame);
+		loader.emit(event);
+		loader.emit("RawPacket", event);
+	}
+
+	@Override
 	public void onTextMessage(WebSocket ws, String text) throws Exception {
-		this.socket.loader.emit("raw", text);
-		// ws.
-		for (IEventListener e : loader.handlers) {
-			e.raw(text);
-		}
 		SocketPacket packet = gson.fromJson(text, SocketPacket.class);
 		this.handle(packet);
 	}
@@ -207,8 +207,7 @@ public class DiscSocketListener extends WebSocketAdapter {
 			token = loader.token;
 		}
 
-		JSONObject properties = new JSONObject().put("$os", "DiscLoader").put("$browser", "DiscLoader").put("$device",
-				"DiscLoader");
+		JSONObject properties = new JSONObject().put("$os", "DiscLoader").put("$browser", "DiscLoader").put("$device", "DiscLoader");
 		GatewayIdentify payload = new GatewayIdentify(token, 250, properties);
 
 		try {
@@ -226,8 +225,7 @@ public class DiscSocketListener extends WebSocketAdapter {
 	}
 
 	public void setSequence(int s) {
-		if (s > this.socket.s)
-			this.socket.s = s;
+		if (s > this.socket.s) this.socket.s = s;
 	}
 
 	public void sendResume() {

@@ -1,5 +1,7 @@
-package io.discloader.discloader.common.event;
+package io.discloader.discloader.common.event.channel;
 
+import io.discloader.discloader.common.event.DLEvent;
+import io.discloader.discloader.common.event.IEventListener;
 import io.discloader.discloader.entity.impl.ITextChannel;
 import io.discloader.discloader.entity.user.User;
 

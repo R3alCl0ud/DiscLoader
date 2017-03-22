@@ -1,7 +1,8 @@
-package io.discloader.discloader.common.event;
+package io.discloader.discloader.common.event.guild.member;
 
 import java.util.HashMap;
 
+import io.discloader.discloader.common.event.DLEvent;
 import io.discloader.discloader.entity.guild.Guild;
 import io.discloader.discloader.entity.guild.GuildMember;
 

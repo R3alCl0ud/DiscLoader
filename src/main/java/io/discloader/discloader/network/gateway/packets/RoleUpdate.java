@@ -3,8 +3,8 @@
  */
 package io.discloader.discloader.network.gateway.packets;
 
-import io.discloader.discloader.common.event.GuildRoleUpdateEvent;
 import io.discloader.discloader.common.event.IEventListener;
+import io.discloader.discloader.common.event.guild.role.GuildRoleUpdateEvent;
 import io.discloader.discloader.entity.guild.Guild;
 import io.discloader.discloader.entity.guild.Role;
 import io.discloader.discloader.network.gateway.DiscSocket;

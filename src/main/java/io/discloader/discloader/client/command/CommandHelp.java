@@ -5,7 +5,7 @@ import java.util.Locale;
 
 import io.discloader.discloader.client.render.texture.icon.CommandIcon;
 import io.discloader.discloader.client.render.util.IIcon;
-import io.discloader.discloader.common.event.MessageCreateEvent;
+import io.discloader.discloader.common.event.message.MessageCreateEvent;
 import io.discloader.discloader.common.language.LanguageRegistry;
 import io.discloader.discloader.common.registry.CommandRegistry;
 import io.discloader.discloader.entity.RichEmbed;

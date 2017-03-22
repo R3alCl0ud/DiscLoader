@@ -1,7 +1,7 @@
 package io.discloader.discloader.network.gateway.packets;
 
-import io.discloader.discloader.common.event.GuildMemberUpdateEvent;
 import io.discloader.discloader.common.event.UserUpdateEvent;
+import io.discloader.discloader.common.event.guild.member.GuildMemberUpdateEvent;
 import io.discloader.discloader.entity.Presence;
 import io.discloader.discloader.entity.guild.Guild;
 import io.discloader.discloader.entity.guild.GuildMember;

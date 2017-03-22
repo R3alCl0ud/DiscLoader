@@ -1,5 +1,6 @@
-package io.discloader.discloader.common.event;
+package io.discloader.discloader.common.event.guild.role;
 
+import io.discloader.discloader.common.event.DLEvent;
 import io.discloader.discloader.entity.guild.Role;
 
 public class GuildRoleCreateEvent extends DLEvent {

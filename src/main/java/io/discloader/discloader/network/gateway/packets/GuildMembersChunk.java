@@ -2,8 +2,8 @@ package io.discloader.discloader.network.gateway.packets;
 
 import java.util.HashMap;
 
-import io.discloader.discloader.common.event.GuildMembersChunkEvent;
 import io.discloader.discloader.common.event.IEventListener;
+import io.discloader.discloader.common.event.guild.member.GuildMembersChunkEvent;
 import io.discloader.discloader.entity.guild.Guild;
 import io.discloader.discloader.entity.guild.GuildMember;
 import io.discloader.discloader.network.gateway.DiscSocket;

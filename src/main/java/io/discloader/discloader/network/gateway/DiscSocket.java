@@ -16,7 +16,6 @@ import io.discloader.discloader.util.DLUtil.Status;
 
 /**
  * @author Perry Berman
- *
  */
 public class DiscSocket {
 
@@ -32,11 +31,15 @@ public class DiscSocket {
 	public String sessionID;
 
 	public int s;
+
 	public int status;
 
 	public boolean lastHeartbeatAck;
+
 	public boolean first = true;
+
 	public boolean normalReady = false;
+
 	public boolean reconnecting = false;
 
 	private Thread heartbeatThread = null;
@@ -61,8 +64,7 @@ public class DiscSocket {
 
 	public void connectSocket(String gateway) throws WebSocketException, IOException {
 		System.out.printf("Connecting use gateway: %s", gateway);
-		this.ws = new WebSocketFactory().setConnectionTimeout(15000).createSocket(gateway).addHeader("Accept-Encoding",
-				"gzip");
+		this.ws = new WebSocketFactory().setConnectionTimeout(15000).createSocket(gateway).addHeader("Accept-Encoding", "gzip");
 		this.ws.addListener(this.socketListener);
 		this.ws.connect();
 		resetRemaining = new Thread("RemaingResetter") {
@@ -85,8 +87,7 @@ public class DiscSocket {
 	}
 
 	public void handleQueue() {
-		if (!ws.isOpen() || remaining == 0 || queue.isEmpty())
-			return;
+		if (!ws.isOpen() || remaining == 0 || queue.isEmpty()) return;
 
 		Object payload = queue.get(0);
 		remaining--;
@@ -173,6 +174,10 @@ public class DiscSocket {
 		payload.put("op", DLUtil.OPCodes.HEARTBEAT).put("d", this.s);
 		this.send(payload, true);
 		this.lastHeartbeatAck = false;
+	}
+
+	public void startGuildSync() {
+
 	}
 
 	public void setReady() {
