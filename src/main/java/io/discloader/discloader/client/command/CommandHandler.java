@@ -23,16 +23,13 @@ public class CommandHandler {
 
 	public static void handleMessageCreate(MessageCreateEvent e) {
 		Message message = e.getMessage();
-		if (!handleCommands || message.author.bot
-				|| ((!e.loader.user.bot && selfBot) && !message.author.id.equals(e.loader.user.id))
-				|| message.content.length() < prefix.length()) {
+		if (!handleCommands || message.author.bot || ((!e.loader.user.bot && selfBot) && !message.author.id.equals(e.loader.user.id)) || message.content.length() < prefix.length()) {
 			return;
 		}
 		String[] Args = e.args;
 		String label = Args[0];
 		String rest = "";
-		if (label.length() < message.content.length())
-			rest = message.content.substring(label.length() + 1);
+		if (label.length() < message.content.length()) rest = message.content.substring(label.length() + 1);
 		int argc = Args.length > 1 ? Args.length - 1 : 1;
 
 		if (label.length() < prefix.length() || !label.substring(0, prefix.length()).equals(prefix)) {
@@ -59,8 +56,6 @@ public class CommandHandler {
 			}
 			command.execute(e, args);
 			return;
-		} else {
-			System.out.println("not a command");
 		}
 	}
 
@@ -75,7 +70,7 @@ public class CommandHandler {
 		Locale locale = Locale.US;
 		if (region.startsWith("us")) {
 			locale = Locale.US;
-		} else if (region.startsWith("uk")) {
+		} else if (region.startsWith("london")) {
 			locale = Locale.UK;
 		}
 

@@ -497,7 +497,7 @@ public class Guild {
 		return this.loader.rest.pruneCount(this, days);
 	}
 
-	public HashMap<String, VoiceState> getRawStates() {
+	public HashMap<String, VoiceState> getVoiceStates() {
 		return rawStates;
 	}
 

@@ -5,7 +5,7 @@
 	<groupId>io.discloader</groupId>
 	<artifactId>discloader</artifactId>
 	<name>DiscLoader</name>
-	<version>0.1.0</version>
+	<version>0.0</version>
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<maven.compiler.source>1.8</maven.compiler.source>
@@ -118,17 +118,17 @@
 		<repository>
 			<id>maven</id>
 			<name>DiscLoader Maven Repo</name>
-			<url>http://discloader.io:8080/repository/maven/</url>
+			<url>http://repo.discloader.io/repository/maven/</url>
 		</repository>
 		<snapshotRepository>
 			<id>archiva.snapshots</id>
 			<name>Internal Snapshot Repository</name>
-			<url>http://discloader.io:8080/repository/snapshots/</url>
+			<url>http://repo.discloader.io/repository/snapshots/</url>
 		</snapshotRepository>
 	</distributionManagement>
 
 	<build>
-		<finalName>${artifactId}-${version}</finalName>
+		<finalName>${artifactId}-${version}.${git.closest.tag.commit.count}</finalName>
 
 		<plugins>
 			<plugin>
@@ -234,6 +234,33 @@
 					<minmemory>128m</minmemory>
 					<maxmemory>1g</maxmemory>
 				</configuration>
+			</plugin>
+			<plugin>
+				<artifactId>maven-deploy-plugin</artifactId>
+				<version>2.8.2</version>
+				<executions>
+					<execution>
+						<id>default-deploy</id>
+						<phase>none</phase>
+					</execution>
+					<execution>
+						<id>deploy-file</id>
+						<phase>deploy</phase>
+						<goals>
+							<goal>deploy-file</goal>
+						</goals>
+						<configuration>
+							<repositoryId>maven</repositoryId>
+							<file>target/${artifactId}-${project.version}.${git.closest.tag.commit.count}.jar</file>
+							<url>http://repo.discloader.io/repository/maven/</url>
+							<groupId>io.discloader</groupId>
+							<artifactId>discloader</artifactId>
+							<version>${project.version}.${git.closest.tag.commit.count}</version>
+							<packaging>jar</packaging>
+							<generatePom>true</generatePom>
+						</configuration>
+					</execution>
+				</executions>
 			</plugin>
 		</plugins>
 	</build>

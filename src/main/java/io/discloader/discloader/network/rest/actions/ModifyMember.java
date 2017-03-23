@@ -26,19 +26,18 @@ public class ModifyMember {
 	public ModifyMember(GuildMember member, VoiceChannel channel) {
 		this.channel_id = channel.id;
 		this.member = member;
-		this.nick = member.nick;
+		this.nick = member.getNickname();
 		this.roles = new String[member.getRoles().size()];
 		int i = 0;
 		for (Role r : member.getRoles().values()) {
 			roles[i] = r.id;
 			i++;
 		}
-		mute = member.isMute();
+		mute = member.isMuted();
 		deaf = member.isDeaf();
 	}
 
-	public ModifyMember(GuildMember member, String nick, HashMap<String, Role> roles, boolean mute, boolean deaf,
-			VoiceChannel channel) {
+	public ModifyMember(GuildMember member, String nick, HashMap<String, Role> roles, boolean mute, boolean deaf, VoiceChannel channel) {
 		this.channel_id = channel.id;
 		this.nick = nick;
 		this.mute = mute;
@@ -55,10 +54,9 @@ public class ModifyMember {
 
 	public CompletableFuture<GuildMember> execute() {
 		CompletableFuture<GuildMember> future = new CompletableFuture<>();
-		loader.rest.makeRequest(Endpoints.guildMember(member.guild.id, member.id), Methods.PATCH, true, this)
-				.thenAcceptAsync(action -> {
-					future.complete(member);
-				});
+		loader.rest.makeRequest(Endpoints.guildMember(member.guild.id, member.id), Methods.PATCH, true, this).thenAcceptAsync(action -> {
+			future.complete(member);
+		});
 		return future;
 	}
 

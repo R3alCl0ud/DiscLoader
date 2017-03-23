@@ -5,6 +5,9 @@ import java.util.HashMap;
 import io.discloader.discloader.common.event.channel.ChannelCreateEvent;
 import io.discloader.discloader.common.event.channel.ChannelDeleteEvent;
 import io.discloader.discloader.common.event.channel.ChannelUpdateEvent;
+import io.discloader.discloader.common.event.channel.GuildChannelCreateEvent;
+import io.discloader.discloader.common.event.channel.GuildChannelDeleteEvent;
+import io.discloader.discloader.common.event.channel.GuildChannelUpdateEvent;
 import io.discloader.discloader.common.event.channel.TypingStartEvent;
 import io.discloader.discloader.common.event.guild.GuildBanAddEvent;
 import io.discloader.discloader.common.event.guild.GuildBanRemoveEvent;
@@ -83,6 +86,12 @@ public interface IEventListener {
 	 * @param event The GuildBanRemoveEvent object to be passed to the handler
 	 */
 	void GuildBanRemove(GuildBanRemoveEvent event);
+
+	void GuildChannelCreate(GuildChannelCreateEvent event);
+
+	void GuildChannelDelete(GuildChannelDeleteEvent event);
+
+	void GuildChannelUpdate(GuildChannelUpdateEvent event);
 
 	/**
 	 * Executed when the client joins a new {@link Guild}

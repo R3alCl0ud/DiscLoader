@@ -14,7 +14,6 @@ import io.discloader.discloader.util.DLUtil.Status;
 
 /**
  * @author Perry Berman
- *
  */
 public class VoiceStateUpdate extends DLPacket {
 
@@ -33,7 +32,7 @@ public class VoiceStateUpdate extends DLPacket {
 		}
 		VoiceState currentState = new VoiceState(data, guild);
 		guild.updateVoiceState(currentState);
-		VoiceState oldState = guild.getRawStates().get(data.user_id);
+		VoiceState oldState = guild.getVoiceStates().get(data.user_id);
 		if (loader.ready && loader.socket.status == Status.READY && oldState != null) {
 			VoiceStateUpdateEvent event = new VoiceStateUpdateEvent(oldState, currentState);
 			for (IEventListener e : loader.handlers) {

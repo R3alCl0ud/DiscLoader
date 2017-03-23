@@ -8,11 +8,13 @@ public class GuildEmojiUpdateEvent extends DLEvent {
 
 	private Guild guild;
 
-	private Emoji emoji;
+	private final Emoji emoji;
+	private final Emoji oldEmoji;
 
-	public GuildEmojiUpdateEvent(Emoji emoji) {
+	public GuildEmojiUpdateEvent(Emoji emoji, Emoji oldEmoji) {
 		super(emoji.loader);
-		setEmoji(emoji);
+		this.emoji = emoji;
+		this.oldEmoji = oldEmoji;
 		guild = emoji.guild;
 	}
 
@@ -31,17 +33,10 @@ public class GuildEmojiUpdateEvent extends DLEvent {
 	}
 
 	/**
-	 * @param emoji the emoji to set
+	 * @return the oldEmoji
 	 */
-	protected void setEmoji(Emoji emoji) {
-		this.emoji = emoji;
-	}
-
-	/**
-	 * @param guild the guild to set
-	 */
-	protected void setGuild(Guild guild) {
-		this.guild = guild;
+	public Emoji getOldEmoji() {
+		return oldEmoji;
 	}
 
 }

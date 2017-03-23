@@ -8,15 +8,18 @@ import io.discloader.discloader.entity.channels.Channel;
 
 /**
  * @author Perry Berman
- *
  */
 public class ChannelCreateEvent extends DLEvent {
 
-	public final Channel channel;
-	
+	private final Channel channel;
+
 	public ChannelCreateEvent(Channel channel) {
 		super(channel.loader);
 		this.channel = channel;
+	}
+
+	public Channel getChannel() {
+		return channel;
 	}
 
 }

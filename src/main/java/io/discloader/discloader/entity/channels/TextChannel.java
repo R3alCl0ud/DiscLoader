@@ -97,9 +97,19 @@ public class TextChannel extends GuildChannel implements ITextChannel {
     }
 
     @Override
-    public CompletableFuture<HashMap<String, Message>> getPinnedMessages() {
+    public CompletableFuture<HashMap<String, Message>> fetchPinnedMessages() {
         return new PinnedMessages(this).execute();
     }
+    
+	@Override
+	public HashMap<String, Message> getPinnedMessages() {
+		HashMap<String, Message> pins = new HashMap<>();
+		for (Message message : messages.values()) {
+			if (message.isPinned()) pins.put(message.id, message);
+		}
+		return pins;
+	}
+
 
     @Override
     public HashMap<String, User> getTyping() {

@@ -6,7 +6,6 @@ import java.awt.Dimension;
 import javax.swing.Box;
 import javax.swing.JLabel;
 
-import io.discloader.discloader.client.render.texture.icon.UserIcon;
 import io.discloader.discloader.entity.user.User;
 import io.discloader.discloader.util.DLUtil;
 
@@ -28,8 +27,7 @@ public class UserInfo<T extends User> extends AbstractInfo<T> {
 		this.add(this.id = new JLabel("ID: "));
 		this.add(this.avatarHash = new JLabel("Avatar: "));
 		this.add(this.avatarURL = new JLabel("AvatarURL: "));
-		this.add(new Box.Filler(new Dimension(0, 300), new Dimension(0, 400),
-				new Dimension(0, (int) DLUtil.screenSize.getHeight())));
+		this.add(new Box.Filler(new Dimension(0, 300), new Dimension(0, 400), new Dimension(0, (int) DLUtil.screenSize.getHeight())));
 		this.username.setForeground(new Color(0xFFFFFF));
 		this.id.setForeground(new Color(0xFFFFFF));
 		this.avatar.setForeground(new Color(0xFFFFFF));
@@ -41,9 +39,9 @@ public class UserInfo<T extends User> extends AbstractInfo<T> {
 	public void update(User user) {
 		this.username.setText(String.format("Username: %s#%s", user.username, user.discriminator));
 		this.id.setText(String.format("ID: %s", user.id));
-		this.avatar.setIcon(((UserIcon) user.avatar).getImageIcon(128, 128));
-		this.avatarHash.setText(String.format("Avatar: %s", user.avatar.getIconName()));
-		this.avatarURL.setText(String.format("AvatarURL: %s", user.avatar.toString()));
+		this.avatar.setIcon((user.getAvatar()).getImageIcon(128, 128));
+		this.avatarHash.setText(String.format("Avatar: %s", user.getAvatar().getIconName()));
+		this.avatarURL.setText(String.format("AvatarURL: %s", user.getAvatar().toString()));
 	}
 
 }

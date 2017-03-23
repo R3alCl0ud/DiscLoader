@@ -5,6 +5,9 @@ import java.util.HashMap;
 import io.discloader.discloader.common.event.channel.ChannelCreateEvent;
 import io.discloader.discloader.common.event.channel.ChannelDeleteEvent;
 import io.discloader.discloader.common.event.channel.ChannelUpdateEvent;
+import io.discloader.discloader.common.event.channel.GuildChannelCreateEvent;
+import io.discloader.discloader.common.event.channel.GuildChannelDeleteEvent;
+import io.discloader.discloader.common.event.channel.GuildChannelUpdateEvent;
 import io.discloader.discloader.common.event.channel.TypingStartEvent;
 import io.discloader.discloader.common.event.guild.GuildBanAddEvent;
 import io.discloader.discloader.common.event.guild.GuildBanRemoveEvent;
@@ -67,6 +70,18 @@ public abstract class EventListenerAdapter implements IEventListener {
 	}
 
 	@Override
+	public void GuildChannelCreate(GuildChannelCreateEvent event) {
+	}
+
+	@Override
+	public void GuildChannelDelete(GuildChannelDeleteEvent event) {
+	}
+
+	@Override
+	public void GuildChannelUpdate(GuildChannelUpdateEvent event) {
+	}
+
+	@Override
 	public void GuildCreate(GuildCreateEvent e) {
 	}
 
@@ -75,7 +90,19 @@ public abstract class EventListenerAdapter implements IEventListener {
 	}
 
 	@Override
+	public void GuildEmojiCreate(GuildEmojiCreateEvent event) {
+	}
+
+	@Override
+	public void GuildEmojiDelete(GuildEmojiDeleteEvent event) {
+	}
+
+	@Override
 	public void GuildEmojisUpdate(HashMap<String, Emoji> emojis) {
+	}
+
+	@Override
+	public void GuildEmojiUpdate(GuildEmojiUpdateEvent event) {
 	}
 
 	@Override
@@ -184,18 +211,6 @@ public abstract class EventListenerAdapter implements IEventListener {
 
 	@Override
 	public void VoiceStateUpdate(VoiceStateUpdateEvent e) {
-	}
-
-	@Override
-	public void GuildEmojiCreate(GuildEmojiCreateEvent event) {
-	}
-
-	@Override
-	public void GuildEmojiDelete(GuildEmojiDeleteEvent event) {
-	}
-
-	@Override
-	public void GuildEmojiUpdate(GuildEmojiUpdateEvent event) {
 	}
 
 }

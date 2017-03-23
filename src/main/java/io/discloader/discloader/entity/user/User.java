@@ -14,6 +14,7 @@ import io.discloader.discloader.network.rest.actions.FetchUserProfile;
  * @author Perry Berman
  */
 public class User {
+
 	/**
 	 * The loader instance that cached the user.
 	 */
@@ -30,9 +31,8 @@ public class User {
 	/**
 	 * The hash of the user's avatar
 	 */
-	public IIcon avatar;
+	protected IIcon avatar;
 
-	// public String avatarURL;
 	/**
 	 * The user's four digit discriminator
 	 */
@@ -97,30 +97,22 @@ public class User {
 	 * @return this
 	 */
 	public User patch(UserJSON data) {
-		if (data.username != null)
-			this.username = data.username;
-
-		if (data.discriminator != null)
-			this.discriminator = data.discriminator;
-
-		if (data.avatar != null)
-			this.avatar = new UserIcon(this, data.avatar);
-
-		if (data.bot == true || data.bot == false)
-			this.bot = data.bot;
-
+		setup(data);
 		return this;
 	}
 
 	public void setup(UserJSON data) {
-		this.username = data.username;
+		if (data.username != null) this.username = data.username;
 
-		this.discriminator = data.discriminator;
+		if (data.discriminator != null) this.discriminator = data.discriminator;
 
-		this.avatar = new UserIcon(this, data.avatar);
+		if (data.avatar != null) this.avatar = new UserIcon(this, data.avatar);
 
-		this.bot = data.bot;
+		if (data.bot == true || data.bot == false) this.bot = data.bot;
+	}
 
+	public UserIcon getAvatar() {
+		return (UserIcon) avatar;
 	}
 
 	/**

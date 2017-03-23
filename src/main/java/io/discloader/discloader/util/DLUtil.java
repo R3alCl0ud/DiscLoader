@@ -289,6 +289,8 @@ public final class DLUtil {
 		public static final String TYPING_START = "TypingStart";
 
 		public static final String USER_UPDATE = "UserUpdate";
+
+		public static final String GUILD_EMOJI_UPDATE = "GuildEmojiUpdate";
 	}
 
 	public static final class Methods {

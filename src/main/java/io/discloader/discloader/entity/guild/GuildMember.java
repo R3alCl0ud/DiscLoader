@@ -33,7 +33,7 @@ public class GuildMember {
 	/**
 	 * The member's nickname, or null if the user has no nickname
 	 */
-	public String nick;
+	private String nick;
 
 	/**
 	 * The member's Snowflake ID.
@@ -136,6 +136,12 @@ public class GuildMember {
 		return this.guild.ban(this);
 	}
 
+	/**
+	 * Server deafens a {@link GuildMember} if they are not already server
+	 * deafened
+	 * 
+	 * @return A Future that completes with the deafed member if successful.
+	 */
 	public CompletableFuture<GuildMember> deafen() {
 		ModifyMember future = new ModifyMember(this, nick, getRoles(), mute, true, getVoiceChannel());
 		return future.execute();
@@ -153,15 +159,36 @@ public class GuildMember {
 		return id.equals(member.id) && nick.equals(member.nick);
 	}
 
+	/**
+	 * Determines the member's highest role in the {@link #guild}'s role hiarchy
+	 * 
+	 * @return A Role object
+	 */
 	public Role getHighestRole() {
 		Role highest = null;
 		for (Role role : getRoles().values()) {
-			if (highest == null || highest.getPosition() < role.getPosition()) highest = role;
+			if (highest == null || highest.getPosition() < role.getPosition()) {
+				highest = role;
+				continue;
+			}
 		}
 		return highest;
 	}
 
 	/**
+	 * @return
+	 */
+	public String getName() {
+		return nick != null ? nick : user.username;
+	}
+
+	public String getNickname() {
+		return nick;
+	}
+
+	/**
+	 * Gets the member's presence from their {@link #guild}
+	 * 
 	 * @return The members current presence.
 	 */
 	public Presence getPresence() {
@@ -170,6 +197,8 @@ public class GuildMember {
 	}
 
 	/**
+	 * returns a HashMap of roles that the member belongs to.
+	 * 
 	 * @return A HashMap of the member's roles. indexed by {@link Role#id}
 	 */
 	public HashMap<String, Role> getRoles() {
@@ -180,8 +209,11 @@ public class GuildMember {
 		return roles;
 	}
 
+	/**
+	 * @return
+	 */
 	public VoiceChannel getVoiceChannel() {
-		VoiceState vs = guild.getRawStates().get(id);
+		VoiceState vs = guild.getVoiceStates().get(id);
 		if (vs != null) {
 			return (VoiceChannel) vs.channel;
 		}
@@ -189,14 +221,15 @@ public class GuildMember {
 	}
 
 	public VoiceState getVoiceState() {
-		return guild.getRawStates().get(id);
+		return guild.getVoiceStates().get(id);
 	}
 
 	/**
 	 * Gives a member a new role
 	 * 
 	 * @param roles The roles to give to the member
-	 * @return A Future that completes with the member if successful.
+	 * @return A CompletableFuture that completes with {@code this} if
+	 *         successful
 	 */
 	public CompletableFuture<GuildMember> giveRole(Role... roles) {
 		ArrayList<CompletableFuture<GuildMember>> futures = new ArrayList<>();
@@ -211,11 +244,17 @@ public class GuildMember {
 	}
 
 	public boolean isDeaf() {
-		return getVoiceState().deaf;
+		VoiceState state = getVoiceState();
+		if (state == null) return false;
+
+		return state.deaf;
 	}
 
-	public boolean isMute() {
-		return getVoiceState().mute;
+	public boolean isMuted() {
+		VoiceState state = getVoiceState();
+		if (state == null) return false;
+
+		return state.mute;
 	}
 
 	/**
@@ -235,6 +274,13 @@ public class GuildMember {
 		return future.execute();
 	}
 
+	/**
+	 * Server deafens a {@link GuildMember} if they are not already server
+	 * deafened
+	 * 
+	 * @return A CompletableFuture that completes with {@code this} if
+	 *         successful
+	 */
 	public CompletableFuture<GuildMember> mute() {
 		ModifyMember future = new ModifyMember(this, nick, getRoles(), true, deaf, getVoiceChannel());
 		return future.execute();
@@ -250,7 +296,9 @@ public class GuildMember {
 	 *         successful
 	 */
 	public CompletableFuture<GuildMember> setNick(String nick) {
-		return this.loader.rest.setNick(this, nick);
+		CompletableFuture<GuildMember> future = loader.rest.setNick(this, nick);
+		future.thenAcceptAsync(action -> this.nick = nick);
+		return future;
 	}
 
 	/**

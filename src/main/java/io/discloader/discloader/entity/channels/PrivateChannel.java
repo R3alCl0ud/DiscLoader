@@ -28,127 +28,136 @@ import io.discloader.discloader.util.DLUtil.ChannelType;
  */
 public class PrivateChannel extends Channel implements ITextChannel {
 
-    private HashMap<String, Message> messages;
+	private HashMap<String, Message> messages;
 
-    private HashMap<String, User> typing;
+	private HashMap<String, User> typing;
 
-    /**
-     * The user that this DM Channel was opened with
-     * 
-     * @author Perry Berman
-     */
-    public User recipient;
+	/**
+	 * The user that this DM Channel was opened with
+	 * 
+	 * @author Perry Berman
+	 */
+	public User recipient;
 
-    public PrivateChannel(DiscLoader loader, ChannelJSON data) {
-        super(loader, data);
-        this.type = ChannelType.DM;
-        this.messages = new HashMap<>();
-        typing = new HashMap<>();
-    }
+	public PrivateChannel(DiscLoader loader, ChannelJSON data) {
+		super(loader, data);
+		this.type = ChannelType.DM;
+		this.messages = new HashMap<>();
+		typing = new HashMap<>();
+	}
 
-    @Override
-    public CompletableFuture<HashMap<String, Message>> deleteMessages(HashMap<String, Message> messages) {
-        return new BulkDelete(this, messages).execute();
-    }
+	@Override
+	public CompletableFuture<HashMap<String, Message>> deleteMessages(HashMap<String, Message> messages) {
+		return new BulkDelete(this, messages).execute();
+	}
 
-    @Override
-    public CompletableFuture<HashMap<String, Message>> deleteMessages(Message... messages) {
-        HashMap<String, Message> msgs = new HashMap<>();
-        for (Message message : messages) {
-            msgs.put(message.id, message);
-        }
-        return deleteMessages(msgs);
-    }
+	@Override
+	public CompletableFuture<HashMap<String, Message>> deleteMessages(Message... messages) {
+		HashMap<String, Message> msgs = new HashMap<>();
+		for (Message message : messages) {
+			msgs.put(message.id, message);
+		}
+		return deleteMessages(msgs);
+	}
 
-    @Override
-    public CompletableFuture<Message> fetchMessage(String id) {
-        return new FetchMessage(this, id).execute();
-    }
+	@Override
+	public CompletableFuture<Message> fetchMessage(String id) {
+		return new FetchMessage(this, id).execute();
+	}
 
-    @Override
-    public CompletableFuture<HashMap<String, Message>> fetchMessages() {
-        return fetchMessages(new MessageFetchOptions());
-    }
+	@Override
+	public CompletableFuture<HashMap<String, Message>> fetchMessages() {
+		return fetchMessages(new MessageFetchOptions());
+	}
 
-    @Override
-    public CompletableFuture<HashMap<String, Message>> fetchMessages(MessageFetchOptions options) {
-        return new FetchMessages(this, options).execute();
-    }
+	@Override
+	public CompletableFuture<HashMap<String, Message>> fetchMessages(MessageFetchOptions options) {
+		return new FetchMessages(this, options).execute();
+	}
 
-    @Override
-    public Message getMessage(String id) {
-        return this.messages.get(id);
-    }
+	@Override
+	public Message getMessage(String id) {
+		return this.messages.get(id);
+	}
 
-    @Override
-    public HashMap<String, Message> getMessages() {
-        return this.messages;
-    }
+	@Override
+	public HashMap<String, Message> getMessages() {
+		return this.messages;
+	}
 
-    @Override
-    public CompletableFuture<HashMap<String, Message>> getPinnedMessages() {
-        return new PinnedMessages(this).execute();
-    }
+	@Override
+	public CompletableFuture<HashMap<String, Message>> fetchPinnedMessages() {
+		return new PinnedMessages(this).execute();
+	}
 
-    @Override
-    public HashMap<String, User> getTyping() {
-        return typing;
-    }
+	@Override
+	public HashMap<String, Message> getPinnedMessages() {
+		HashMap<String, Message> pins = new HashMap<>();
+		for (Message message : messages.values()) {
+			if (message.isPinned()) pins.put(message.id, message);
+		}
+		return pins;
+	}
 
-    @Override
-    public boolean isTyping(User user) {
-        return typing.containsKey(user.id);
-    }
+	@Override
+	public HashMap<String, User> getTyping() {
+		return typing;
+	}
 
-    @Override
-    public CompletableFuture<Message> pinMessage(Message message) {
-        return new PinMessage(message).execute();
-    }
+	@Override
+	public boolean isTyping(User user) {
+		return typing.containsKey(user.id);
+	}
 
-    public CompletableFuture<Message> sendEmbed(RichEmbed embed) {
-        File file = null;
-        Attachment attachment = null;
-        if (embed.thumbnail != null && embed.thumbnail.file != null) {
-            file = embed.thumbnail.file;
-            embed.thumbnail.file = null;
-            attachment = new Attachment(file.getName());
-        }
-        return this.loader.rest.sendMessage(this, null, embed, attachment, file);
-    }
+	@Override
+	public CompletableFuture<Message> pinMessage(Message message) {
+		return new PinMessage(message).execute();
+	}
 
-    public CompletableFuture<Message> sendMessage(String content) {
-        return this.loader.rest.sendMessage(this, content, null, null, null);
-    }
+	public CompletableFuture<Message> sendEmbed(RichEmbed embed) {
+		File file = null;
+		Attachment attachment = null;
+		if (embed.thumbnail != null && embed.thumbnail.file != null) {
+			file = embed.thumbnail.file;
+			embed.thumbnail.file = null;
+			attachment = new Attachment(file.getName());
+		}
+		return this.loader.rest.sendMessage(this, null, embed, attachment, file);
+	}
 
-    public CompletableFuture<Message> sendMessage(String content, RichEmbed embed) {
-        File file = null;
-        Attachment attachment = null;
-        if (embed.thumbnail != null && embed.thumbnail.file != null) {
-            file = embed.thumbnail.file;
-            embed.thumbnail.file = null;
-            attachment = new Attachment(file.getName());
-        }
-        return this.loader.rest.sendMessage(this, content, embed, attachment, file);
-    }
+	public CompletableFuture<Message> sendMessage(String content) {
+		return this.loader.rest.sendMessage(this, content, null, null, null);
+	}
 
-    public void setup(ChannelJSON data) {
-        super.setup(data);
-        if (data.recipients[0] != null) {
-            recipient = loader.users.get(data.recipients[0].id);
-            if (recipient == null) {
-                recipient = loader.addUser(data.recipients[0]);
-            }
-        }
-    }
+	public CompletableFuture<Message> sendMessage(String content, RichEmbed embed) {
+		File file = null;
+		Attachment attachment = null;
+		if (embed.thumbnail != null && embed.thumbnail.file != null) {
+			file = embed.thumbnail.file;
+			embed.thumbnail.file = null;
+			attachment = new Attachment(file.getName());
+		}
+		return this.loader.rest.sendMessage(this, content, embed, attachment, file);
+	}
 
-    @Override
-    public CompletableFuture<HashMap<String, User>> startTyping() {
-        return new StartTyping(this).execute();
-    }
+	public void setup(ChannelJSON data) {
+		super.setup(data);
+		if (data.recipients[0] != null) {
+			recipient = loader.users.get(data.recipients[0].id);
+			if (recipient == null) {
+				recipient = loader.addUser(data.recipients[0]);
+			}
+		}
+	}
 
-    @Override
-    public CompletableFuture<Message> unpinMessage(Message message) {
-        return new UnpinMessage(message).execute();
-    }
+	@Override
+	public CompletableFuture<HashMap<String, User>> startTyping() {
+		return new StartTyping(this).execute();
+	}
+
+	@Override
+	public CompletableFuture<Message> unpinMessage(Message message) {
+		return new UnpinMessage(message).execute();
+	}
 
 }

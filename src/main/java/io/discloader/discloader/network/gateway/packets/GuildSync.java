@@ -22,6 +22,8 @@ public class GuildSync extends DLPacket {
 		for (MemberJSON me : data.members) {
 			guild.addMember(me);
 		}
+		
+		
 	}
 
 }

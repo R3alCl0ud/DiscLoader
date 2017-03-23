@@ -10,12 +10,12 @@ Created to replace the method daisy chaining confusion of other Java libraries f
 <repository>
   <id>maven</id>
   <name>DiscLoader Maven Repo</name>
-  <url>http://discloader.io:8080/repository/maven/</url>
+  <url>http://repo.discloader.io/repository/maven/</url>
 </repository>
 <dependency>
   <groupId>io.discloader</groupId>
   <artifactId>discloader</artifactId>
-  <version>0.1.0</version>
+  <version>0.0.112</version>
 </dependency>
 ```
 
