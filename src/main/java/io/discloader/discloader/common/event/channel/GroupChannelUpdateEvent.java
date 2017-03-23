@@ -1,26 +1,28 @@
 package io.discloader.discloader.common.event.channel;
 
-import io.discloader.discloader.entity.channels.GuildChannel;
-import io.discloader.discloader.entity.guild.Guild;
+import java.util.HashMap;
+
+import io.discloader.discloader.entity.channels.GroupChannel;
+import io.discloader.discloader.entity.user.User;
 
 public class GroupChannelUpdateEvent extends ChannelUpdateEvent {
 
-	public GroupChannelUpdateEvent(GuildChannel channel, GuildChannel oldChannel) {
+	public GroupChannelUpdateEvent(GroupChannel channel, GroupChannel oldChannel) {
 		super(channel, oldChannel);
 	}
 
 	@Override
-	public GuildChannel getChannel() {
-		return (GuildChannel) channel;
+	public GroupChannel getChannel() {
+		return (GroupChannel) channel;
 	}
 
 	@Override
-	public GuildChannel getOldChannel() {
-		return (GuildChannel) oldChannel;
+	public GroupChannel getOldChannel() {
+		return (GroupChannel) oldChannel;
 	}
 
-	public Guild getGuild() {
-		return getChannel().guild;
+	public HashMap<String, User> getRecipients() {
+		return getChannel().getRecipients();
 	}
 
 }

@@ -45,6 +45,10 @@ public class PrivateChannel extends Channel implements ITextChannel {
 		this.messages = new HashMap<>();
 		typing = new HashMap<>();
 	}
+	
+	public CompletableFuture<PrivateChannel> close() {
+		return null;
+	}
 
 	@Override
 	public CompletableFuture<HashMap<String, Message>> deleteMessages(HashMap<String, Message> messages) {

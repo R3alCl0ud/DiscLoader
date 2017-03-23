@@ -1,21 +1,21 @@
 package io.discloader.discloader.common.event.channel;
 
-import io.discloader.discloader.entity.channels.GuildChannel;
-import io.discloader.discloader.entity.guild.Guild;
+import io.discloader.discloader.entity.channels.PrivateChannel;
+import io.discloader.discloader.entity.user.User;
 
-public class PrivateChannelDeleteEvent extends ChannelCreateEvent {
+public class PrivateChannelDeleteEvent extends ChannelDeleteEvent {
 
-	public PrivateChannelDeleteEvent(GuildChannel channel) {
+	public PrivateChannelDeleteEvent(PrivateChannel channel) {
 		super(channel);
 	}
 
 	@Override
-	public GuildChannel getChannel() {
-		return (GuildChannel) super.getChannel();
+	public PrivateChannel getChannel() {
+		return (PrivateChannel) super.getChannel();
 	}
 
-	public Guild getGuild() {
-		return getChannel().guild;
+	public User getRecipient() {
+		return getChannel().recipient;
 	}
 
 }

@@ -176,12 +176,17 @@ public class GuildMember {
 	}
 
 	/**
-	 * @return
+	 * @return the member's nickname if they have one, {@link #user}
+	 *         {@link User#username .username}
+	 *         otherwise.
 	 */
 	public String getName() {
 		return nick != null ? nick : user.username;
 	}
 
+	/**
+	 * @return the member's nickname if they have one, null otherwise.
+	 */
 	public String getNickname() {
 		return nick;
 	}
@@ -210,7 +215,9 @@ public class GuildMember {
 	}
 
 	/**
-	 * @return
+	 * Gets the {@link VoiceChannel} that the member is connected to, if they're in a voice channel. 
+	 * 
+	 * @return a {@link VoiceChannel} object if {@link #hasVoiceConnection()} returns true, null otherwise.
 	 */
 	public VoiceChannel getVoiceChannel() {
 		VoiceState vs = guild.getVoiceStates().get(id);
@@ -243,18 +250,25 @@ public class GuildMember {
 		return future;
 	}
 
-	public boolean isDeaf() {
-		VoiceState state = getVoiceState();
-		if (state == null) return false;
+	/**
+	 * Determines if the member is connected to a voice channel in their {@link #guild}
+	 * 
+	 * @return {@code true} if the member has a {@link VoiceState}, {@code false} otherwise.
+	 */
+	public boolean hasVoiceConnection() {
+		return getVoiceState() != null;
+	}
 
-		return state.deaf;
+	public boolean isDeaf() {
+		if (!hasVoiceConnection()) return false;
+
+		return getVoiceState().deaf;
 	}
 
 	public boolean isMuted() {
-		VoiceState state = getVoiceState();
-		if (state == null) return false;
+		if (!hasVoiceConnection()) return false;
 
-		return state.mute;
+		return getVoiceState().mute;
 	}
 
 	/**
@@ -269,6 +283,12 @@ public class GuildMember {
 		return this.guild.kickMember(this);
 	}
 
+	/**
+	 * 
+	 * 
+	 * @param channel The {@link VoiceChannel} to move the member to.
+	 * @return A Future that completes with {@code this} if successful.
+	 */
 	public CompletableFuture<GuildMember> move(VoiceChannel channel) {
 		ModifyMember future = new ModifyMember(this, channel);
 		return future.execute();
