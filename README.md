@@ -15,7 +15,7 @@ Created to replace the method daisy chaining confusion of other Java libraries f
 <dependency>
   <groupId>io.discloader</groupId>
   <artifactId>discloader</artifactId>
-  <version>0.0.112</version>
+  <version>0.1.1</version>
 </dependency>
 ```
 

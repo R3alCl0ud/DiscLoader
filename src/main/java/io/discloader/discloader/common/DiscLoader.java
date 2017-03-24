@@ -22,7 +22,6 @@ import io.discloader.discloader.common.event.DLPreInitEvent;
 import io.discloader.discloader.common.event.IEventListener;
 import io.discloader.discloader.common.event.ReadyEvent;
 import io.discloader.discloader.common.event.UserUpdateEvent;
-import io.discloader.discloader.common.event.VoiceStateUpdateEvent;
 import io.discloader.discloader.common.event.channel.ChannelCreateEvent;
 import io.discloader.discloader.common.event.channel.ChannelDeleteEvent;
 import io.discloader.discloader.common.event.channel.ChannelUpdateEvent;
@@ -55,6 +54,7 @@ import io.discloader.discloader.common.event.message.MessageUpdateEvent;
 import io.discloader.discloader.common.event.message.PrivateMessageCreateEvent;
 import io.discloader.discloader.common.event.message.PrivateMessageDeleteEvent;
 import io.discloader.discloader.common.event.message.PrivateMessageUpdateEvent;
+import io.discloader.discloader.common.event.voice.VoiceStateUpdateEvent;
 import io.discloader.discloader.common.logger.DLErrorStream;
 import io.discloader.discloader.common.logger.DLPrintStream;
 import io.discloader.discloader.common.registry.ModRegistry;
@@ -567,7 +567,7 @@ public class DiscLoader {
 		return future2;
 	}
 
-	public void removeEventandler(IEventListener e) {
+	public void removeEventHandler(IEventListener e) {
 		handlers.remove(e);
 	}
 

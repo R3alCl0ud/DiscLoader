@@ -4,7 +4,7 @@
 package io.discloader.discloader.network.gateway.packets;
 
 import io.discloader.discloader.common.event.IEventListener;
-import io.discloader.discloader.common.event.VoiceStateUpdateEvent;
+import io.discloader.discloader.common.event.voice.VoiceStateUpdateEvent;
 import io.discloader.discloader.entity.guild.Guild;
 import io.discloader.discloader.entity.voice.VoiceConnection;
 import io.discloader.discloader.entity.voice.VoiceState;

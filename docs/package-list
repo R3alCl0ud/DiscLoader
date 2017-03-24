@@ -16,6 +16,7 @@ io.discloader.discloader.common.event.guild.emoji
 io.discloader.discloader.common.event.guild.member
 io.discloader.discloader.common.event.guild.role
 io.discloader.discloader.common.event.message
+io.discloader.discloader.common.event.voice
 io.discloader.discloader.common.exceptions
 io.discloader.discloader.common.language
 io.discloader.discloader.common.logger

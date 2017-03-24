@@ -34,6 +34,7 @@ import io.discloader.discloader.common.event.message.MessageUpdateEvent;
 import io.discloader.discloader.common.event.message.PrivateMessageCreateEvent;
 import io.discloader.discloader.common.event.message.PrivateMessageDeleteEvent;
 import io.discloader.discloader.common.event.message.PrivateMessageUpdateEvent;
+import io.discloader.discloader.common.event.voice.VoiceStateUpdateEvent;
 import io.discloader.discloader.entity.guild.Emoji;
 import io.discloader.discloader.entity.guild.GuildMember;
 

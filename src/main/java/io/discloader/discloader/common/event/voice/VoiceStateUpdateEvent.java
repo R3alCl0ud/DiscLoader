@@ -1,5 +1,6 @@
-package io.discloader.discloader.common.event;
+package io.discloader.discloader.common.event.voice;
 
+import io.discloader.discloader.common.event.DLEvent;
 import io.discloader.discloader.entity.voice.VoiceState;
 
 public class VoiceStateUpdateEvent extends DLEvent {
