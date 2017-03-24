@@ -1,6 +1,6 @@
 package io.discloader.discloader.entity.message;
 
-import io.discloader.discloader.entity.impl.ITextChannel;
+import io.discloader.discloader.entity.channels.ITextChannel;
 
 /**
  * Options for fetching messages from {@link ITextChannel ITextChannels}
@@ -51,7 +51,10 @@ public class MessageFetchOptions {
 	}
 
 	/**
+	 * Sets the limit of how many messages to fetch
+	 * 
 	 * @param limit the limit to set
+	 * @return {@code this}
 	 */
 	public MessageFetchOptions setLimit(int limit) {
 		this.limit = limit;

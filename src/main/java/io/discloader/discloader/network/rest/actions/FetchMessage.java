@@ -2,7 +2,7 @@ package io.discloader.discloader.network.rest.actions;
 
 import java.util.concurrent.CompletableFuture;
 
-import io.discloader.discloader.entity.impl.ITextChannel;
+import io.discloader.discloader.entity.channels.ITextChannel;
 import io.discloader.discloader.entity.message.Message;
 import io.discloader.discloader.network.json.MessageJSON;
 import io.discloader.discloader.util.DLUtil;

@@ -1,5 +1,5 @@
 /**
- * Contains all {@link DLEvent} objects that involve {@link Message messages}.
+ * Contains all event objects that involve messages.
  * 
  * @author Perry Berman
  */

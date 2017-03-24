@@ -2,7 +2,7 @@ package io.discloader.discloader.common.event.channel;
 
 import java.util.HashMap;
 
-import io.discloader.discloader.entity.channels.GroupChannel;
+import io.discloader.discloader.entity.channels.impl.GroupChannel;
 import io.discloader.discloader.entity.user.User;
 
 public class GroupChannelCreateEvent extends ChannelCreateEvent {

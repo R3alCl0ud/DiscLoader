@@ -4,7 +4,7 @@ import java.util.HashMap;
 import java.util.concurrent.CompletableFuture;
 
 import io.discloader.discloader.common.DiscLoader;
-import io.discloader.discloader.entity.channels.VoiceChannel;
+import io.discloader.discloader.entity.channels.impl.VoiceChannel;
 import io.discloader.discloader.entity.guild.GuildMember;
 import io.discloader.discloader.entity.guild.Role;
 import io.discloader.discloader.util.DLUtil.Endpoints;
@@ -24,7 +24,7 @@ public class ModifyMember {
 	private GuildMember member;
 
 	public ModifyMember(GuildMember member, VoiceChannel channel) {
-		this.channel_id = channel.id;
+		this.channel_id = channel.getID();
 		this.member = member;
 		this.nick = member.getNickname();
 		this.roles = new String[member.getRoles().size()];
@@ -38,7 +38,7 @@ public class ModifyMember {
 	}
 
 	public ModifyMember(GuildMember member, String nick, HashMap<String, Role> roles, boolean mute, boolean deaf, VoiceChannel channel) {
-		this.channel_id = channel.id;
+		this.channel_id = channel.getID();
 		this.nick = nick;
 		this.mute = mute;
 		this.deaf = deaf;

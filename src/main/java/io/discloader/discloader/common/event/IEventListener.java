@@ -35,11 +35,11 @@ import io.discloader.discloader.common.event.message.PrivateMessageCreateEvent;
 import io.discloader.discloader.common.event.message.PrivateMessageDeleteEvent;
 import io.discloader.discloader.common.event.message.PrivateMessageUpdateEvent;
 import io.discloader.discloader.common.registry.ModRegistry;
+import io.discloader.discloader.entity.channels.ITextChannel;
 import io.discloader.discloader.entity.guild.Emoji;
 import io.discloader.discloader.entity.guild.Guild;
 import io.discloader.discloader.entity.guild.GuildMember;
 import io.discloader.discloader.entity.guild.Role;
-import io.discloader.discloader.entity.impl.ITextChannel;
 import io.discloader.discloader.entity.user.User;
 import io.discloader.discloader.entity.voice.VoiceConnection;
 

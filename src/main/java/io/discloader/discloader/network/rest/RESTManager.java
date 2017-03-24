@@ -14,14 +14,14 @@ import com.google.gson.Gson;
 
 import io.discloader.discloader.common.DiscLoader;
 import io.discloader.discloader.entity.RichEmbed;
-import io.discloader.discloader.entity.channels.GuildChannel;
-import io.discloader.discloader.entity.channels.TextChannel;
-import io.discloader.discloader.entity.channels.VoiceChannel;
+import io.discloader.discloader.entity.channels.ITextChannel;
+import io.discloader.discloader.entity.channels.impl.GuildChannel;
+import io.discloader.discloader.entity.channels.impl.TextChannel;
+import io.discloader.discloader.entity.channels.impl.VoiceChannel;
 import io.discloader.discloader.entity.guild.Emoji;
 import io.discloader.discloader.entity.guild.Guild;
 import io.discloader.discloader.entity.guild.GuildMember;
 import io.discloader.discloader.entity.guild.Role;
-import io.discloader.discloader.entity.impl.ITextChannel;
 import io.discloader.discloader.entity.message.Message;
 import io.discloader.discloader.entity.sendable.Attachment;
 import io.discloader.discloader.entity.sendable.CreateEmoji;
@@ -290,7 +290,7 @@ public class RESTManager {
 	public CompletableFuture<GuildChannel> modifyGuildChannel(GuildChannel channel, String name, String topic, int position, int bitrate, int userLimit) {
 		CompletableFuture<GuildChannel> future = new CompletableFuture<>();
 		EditChannel d = new EditChannel(name, topic, position, bitrate, userLimit);
-		this.makeRequest(Endpoints.channel(channel.id), Methods.PATCH, true, d).thenAcceptAsync(action -> {
+		this.makeRequest(Endpoints.channel(channel.getID()), Methods.PATCH, true, d).thenAcceptAsync(action -> {
 			ChannelJSON cd = gson.fromJson(action, ChannelJSON.class);
 			channel.setup(cd);
 			future.complete(channel);

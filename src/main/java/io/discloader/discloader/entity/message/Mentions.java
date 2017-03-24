@@ -3,9 +3,9 @@ package io.discloader.discloader.entity.message;
 import java.util.HashMap;
 
 import io.discloader.discloader.common.DiscLoader;
+import io.discloader.discloader.entity.channels.ITextChannel;
 import io.discloader.discloader.entity.guild.Guild;
 import io.discloader.discloader.entity.guild.Role;
-import io.discloader.discloader.entity.impl.ITextChannel;
 import io.discloader.discloader.entity.user.User;
 import io.discloader.discloader.network.json.RoleJSON;
 import io.discloader.discloader.network.json.UserJSON;

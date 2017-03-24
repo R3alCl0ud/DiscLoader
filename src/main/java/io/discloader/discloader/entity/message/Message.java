@@ -6,12 +6,12 @@ import java.util.concurrent.CompletableFuture;
 
 import io.discloader.discloader.common.DiscLoader;
 import io.discloader.discloader.entity.RichEmbed;
-import io.discloader.discloader.entity.channels.Channel;
-import io.discloader.discloader.entity.channels.PrivateChannel;
-import io.discloader.discloader.entity.channels.TextChannel;
+import io.discloader.discloader.entity.channels.ITextChannel;
+import io.discloader.discloader.entity.channels.impl.Channel;
+import io.discloader.discloader.entity.channels.impl.PrivateChannel;
+import io.discloader.discloader.entity.channels.impl.TextChannel;
 import io.discloader.discloader.entity.guild.Guild;
 import io.discloader.discloader.entity.guild.GuildMember;
-import io.discloader.discloader.entity.impl.ITextChannel;
 import io.discloader.discloader.entity.message.embed.MessageEmbed;
 import io.discloader.discloader.entity.user.User;
 import io.discloader.discloader.network.json.MessageJSON;

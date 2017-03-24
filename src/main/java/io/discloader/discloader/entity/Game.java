@@ -17,7 +17,7 @@ public class Game {
 	/**
 	 * The link to the user's Twitch Stream. (Currently it is only possible to
 	 * stream using Twitch on discord)<br>
-	 * is null if {@link #isStreaming()} is {@code false}
+	 * is null if {@link #isStream()} is {@code false}
 	 */
 	public String url;
 
@@ -40,7 +40,9 @@ public class Game {
 	}
 
 	/**
-	 * true {@code if }{@link #type} {@code == 1}
+	 * Checks if {@code this} is a live stream
+	 * 
+	 * @return true {@code if }{@link #type} {@code == 1}
 	 */
 	public boolean isStream() {
 		return this.type != 0 && this.type == 1 ? true : false;

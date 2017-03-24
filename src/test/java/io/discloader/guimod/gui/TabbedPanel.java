@@ -12,7 +12,7 @@ import io.discloader.discloader.client.command.Command;
 import io.discloader.discloader.common.DiscLoader;
 import io.discloader.discloader.common.discovery.ModContainer;
 import io.discloader.discloader.common.language.LanguageRegistry;
-import io.discloader.discloader.entity.channels.Channel;
+import io.discloader.discloader.entity.channels.impl.Channel;
 import io.discloader.discloader.entity.guild.Guild;
 import io.discloader.discloader.entity.user.User;
 import io.discloader.guimod.gui.embed.EmbedBuilder;

@@ -5,9 +5,9 @@ package io.discloader.discloader.network.gateway.packets;
 
 import io.discloader.discloader.common.event.IEventListener;
 import io.discloader.discloader.common.event.channel.ChannelUpdateEvent;
-import io.discloader.discloader.entity.channels.Channel;
+import io.discloader.discloader.entity.channels.ITextChannel;
+import io.discloader.discloader.entity.channels.impl.Channel;
 import io.discloader.discloader.entity.guild.Guild;
-import io.discloader.discloader.entity.impl.ITextChannel;
 import io.discloader.discloader.entity.message.Message;
 import io.discloader.discloader.network.gateway.DiscSocket;
 import io.discloader.discloader.network.json.ChannelJSON;

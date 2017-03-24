@@ -4,7 +4,7 @@
 package io.discloader.discloader.common.event.channel;
 
 import io.discloader.discloader.common.event.DLEvent;
-import io.discloader.discloader.entity.channels.Channel;
+import io.discloader.discloader.entity.channels.impl.Channel;
 
 /**
  * @author Perry Berman

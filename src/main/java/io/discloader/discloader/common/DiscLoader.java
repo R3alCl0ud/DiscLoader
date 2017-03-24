@@ -7,8 +7,6 @@ import java.util.concurrent.CompletableFuture;
 import java.util.logging.Logger;
 
 import com.google.gson.Gson;
-import com.sedmelluq.discord.lavaplayer.player.AudioPlayerManager;
-import com.sedmelluq.discord.lavaplayer.player.DefaultAudioPlayerManager;
 
 import io.discloader.discloader.client.command.Command;
 import io.discloader.discloader.client.command.CommandHandler;
@@ -36,6 +34,7 @@ import io.discloader.discloader.common.event.guild.GuildBanAddEvent;
 import io.discloader.discloader.common.event.guild.GuildBanRemoveEvent;
 import io.discloader.discloader.common.event.guild.GuildCreateEvent;
 import io.discloader.discloader.common.event.guild.GuildDeleteEvent;
+import io.discloader.discloader.common.event.guild.GuildSyncEvent;
 import io.discloader.discloader.common.event.guild.GuildUpdateEvent;
 import io.discloader.discloader.common.event.guild.emoji.GuildEmojiCreateEvent;
 import io.discloader.discloader.common.event.guild.emoji.GuildEmojiDeleteEvent;
@@ -60,11 +59,11 @@ import io.discloader.discloader.common.logger.DLErrorStream;
 import io.discloader.discloader.common.logger.DLPrintStream;
 import io.discloader.discloader.common.registry.ModRegistry;
 import io.discloader.discloader.common.start.Main;
-import io.discloader.discloader.entity.channels.Channel;
-import io.discloader.discloader.entity.channels.GroupChannel;
-import io.discloader.discloader.entity.channels.PrivateChannel;
-import io.discloader.discloader.entity.channels.TextChannel;
-import io.discloader.discloader.entity.channels.VoiceChannel;
+import io.discloader.discloader.entity.channels.impl.Channel;
+import io.discloader.discloader.entity.channels.impl.GroupChannel;
+import io.discloader.discloader.entity.channels.impl.PrivateChannel;
+import io.discloader.discloader.entity.channels.impl.TextChannel;
+import io.discloader.discloader.entity.channels.impl.VoiceChannel;
 import io.discloader.discloader.entity.guild.Guild;
 import io.discloader.discloader.entity.sendable.Packet;
 import io.discloader.discloader.entity.user.DLUser;
@@ -125,8 +124,6 @@ public class DiscLoader {
 
 	public RESTManager rest;
 
-	public final AudioPlayerManager playerManager;
-
 	public int shards;
 
 	public int shard;
@@ -154,6 +151,8 @@ public class DiscLoader {
 	/**
 	 * A HashMap of the client's cached groupDM channels. Indexed by
 	 * {@link Channel#id}
+	 * 
+	 * @author Perry Berman
 	 */
 	public HashMap<String, GroupChannel> groupChannels;
 
@@ -207,8 +206,12 @@ public class DiscLoader {
 	 */
 	public HashMap<String, Guild> guilds;
 
+	private HashMap<String, Guild> syncingGuilds;
+
 	/**
 	 * The User we are currently logged in as.
+	 * 
+	 * @author Perry Berman
 	 */
 	public DLUser user;
 
@@ -226,10 +229,7 @@ public class DiscLoader {
 	 * 	// create a new instance of DiscLoader
 	 * 	DiscLoader loader = new DiscLoader();
 	 * 
-	 * 	// make it do it's startup stuff
-	 * 	loader.startup();
-	 * 
-	 * 	// since it's probably done, time to login
+	 * 	// time to login
 	 * 	loader.login(TOKEN);
 	 *
 	 * }
@@ -243,11 +243,13 @@ public class DiscLoader {
 	 * <pre>
 	 * 
 	 * public static void main(String... args) {
-	 * 	// create a new instance of DiscLoader
-	 * 	DiscLoader loader = new DiscLoader();
+	 * 	DLOptions options = new DLOptions("TOKEN", "PREFIX");
 	 * 
-	 * 	// since it's probably done, time to login
-	 * 	loader.login(TOKEN);
+	 * 	// create a new instance of DiscLoader
+	 * 	DiscLoader loader = new DiscLoader(options);
+	 * 
+	 * 	// time to login
+	 * 	loader.login();
 	 *
 	 * }
 	 * </pre>
@@ -300,37 +302,21 @@ public class DiscLoader {
 	 * @since 0.0.3
 	 */
 	public DiscLoader(int shards, int shard) {
-
 		this.shards = shards;
-
 		this.shard = shard;
-
-		this.socket = new DiscSocket(this);
-
-		this.rest = new RESTManager(this);
-
-		this.clientRegistry = new ClientRegistry();
-
-		this.users = new HashMap<String, User>();
-
-		this.channels = new HashMap<String, Channel>();
-
-		this.groupChannels = new HashMap<String, GroupChannel>();
-
-		this.privateChannels = new HashMap<String, PrivateChannel>();
-
-		this.textChannels = new HashMap<String, TextChannel>();
-
-		this.voiceChannels = new HashMap<String, VoiceChannel>();
-
-		this.voiceConnections = new HashMap<String, VoiceConnection>();
-
-		this.guilds = new HashMap<String, Guild>();
-
-		this.timer = new Timer();
-
-		this.playerManager = new DefaultAudioPlayerManager();
-
+		socket = new DiscSocket(this);
+		rest = new RESTManager(this);
+		clientRegistry = new ClientRegistry();
+		users = new HashMap<String, User>();
+		channels = new HashMap<String, Channel>();
+		groupChannels = new HashMap<String, GroupChannel>();
+		privateChannels = new HashMap<String, PrivateChannel>();
+		textChannels = new HashMap<String, TextChannel>();
+		voiceChannels = new HashMap<String, VoiceChannel>();
+		voiceConnections = new HashMap<String, VoiceConnection>();
+		guilds = new HashMap<>();
+		syncingGuilds = new HashMap<>();
+		timer = new Timer();
 		this.ready = false;
 
 		ModRegistry.loader = this;
@@ -352,10 +338,10 @@ public class DiscLoader {
 			if (guild != null) {
 				if (data.type == DLUtil.ChannelTypes.text) {
 					channel = new TextChannel(guild, data);
-					guild.textChannels.put(channel.id, (TextChannel) channel);
+					guild.textChannels.put(channel.getID(), (TextChannel) channel);
 				} else if (data.type == DLUtil.ChannelTypes.voice) {
 					channel = new VoiceChannel(guild, data);
-					guild.voiceChannels.put(channel.id, (VoiceChannel) channel);
+					guild.voiceChannels.put(channel.getID(), (VoiceChannel) channel);
 				}
 			}
 		}
@@ -363,18 +349,18 @@ public class DiscLoader {
 		if (channel != null) {
 			switch (channel.getType()) {
 			case TEXT:
-				this.textChannels.put(channel.id, (TextChannel) channel);
+				this.textChannels.put(channel.getID(), (TextChannel) channel);
 				break;
 			case DM:
-				this.privateChannels.put(channel.id, (PrivateChannel) channel);
+				this.privateChannels.put(channel.getID(), (PrivateChannel) channel);
 				break;
 			case VOICE:
-				this.voiceChannels.put(channel.id, (VoiceChannel) channel);
+				this.voiceChannels.put(channel.getID(), (VoiceChannel) channel);
 				break;
 			default:
-				this.channels.put(channel.id, channel);
+				this.channels.put(channel.getID(), channel);
 			}
-			this.channels.put(channel.id, channel);
+			this.channels.put(channel.getID(), channel);
 			if (!exists && this.ready) {
 				this.emit(DLUtil.Events.CHANNEL_CREATE, channel);
 			}
@@ -389,12 +375,14 @@ public class DiscLoader {
 	}
 
 	public Guild addGuild(GuildJSON guild) {
-		boolean exists = this.guilds.containsKey(guild.id);
+		boolean exists = guilds.containsKey(guild.id);
 
 		Guild newGuild = new Guild(this, guild);
-		this.guilds.put(newGuild.id, newGuild);
-		if (!exists && this.socket.status == DLUtil.Status.READY) {
-			this.emit(DLUtil.Events.GUILD_CREATE, newGuild);
+		guilds.put(newGuild.id, newGuild);
+		if (!exists && socket.status == DLUtil.Status.READY) {
+			GuildCreateEvent event = new GuildCreateEvent(newGuild);
+			emit(event);
+			emit(DLUtil.Events.GUILD_CREATE, event);
 		}
 		return newGuild;
 	}
@@ -407,17 +395,16 @@ public class DiscLoader {
 	}
 
 	public void checkReady() {
-		if (this.socket.status != DLUtil.Status.READY && this.socket.status != DLUtil.Status.NEARLY) {
+		if (socket.status != DLUtil.Status.READY && socket.status != DLUtil.Status.NEARLY) {
 			int unavailable = 0;
-			for (Guild guild : this.guilds.values()) {
+			for (Guild guild : guilds.values()) {
 				unavailable += guild.available ? 0 : 1;
 			}
-			ProgressLogger.progress(this.guilds.size() - unavailable, this.guilds.size(), "Guilds Cached");
+			ProgressLogger.progress(guilds.size() - unavailable, this.guilds.size(), "Guilds Cached");
 			if (unavailable == 0) {
-
-				this.socket.status = Status.NEARLY;
+				socket.status = Status.NEARLY;
 				try {
-					this.emitReady();
+					emitReady();
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
@@ -477,6 +464,9 @@ public class DiscLoader {
 				handler.GuildRoleDelete((GuildRoleDeleteEvent) event);
 			} else if (event instanceof GuildRoleUpdateEvent) {
 				handler.GuildRoleUpdate((GuildRoleUpdateEvent) event);
+			} else if (event instanceof GuildSyncEvent) {
+				syncingGuilds.remove(((GuildSyncEvent) event).getGuild());
+				handler.GuildSync((GuildSyncEvent) event);
 			} else if (event instanceof GuildMessageCreateEvent) {
 				handler.GuildMessageCreate((GuildMessageCreateEvent) event);
 			} else if (event instanceof GuildMessageDeleteEvent) {
@@ -517,13 +507,11 @@ public class DiscLoader {
 
 	public void emitReady() {
 		socket.setReady();
-		this.ready = true;
+		ready = true;
 		CommandHandler.handleCommands = true;
 		ReadyEvent event = new ReadyEvent(this);
-		this.emit(DLUtil.Events.READY, event);
-		for (IEventListener e : handlers) {
-			e.Ready(event);
-		}
+		emit(DLUtil.Events.READY, event);
+		emit(event);
 	}
 
 	/**
@@ -597,6 +585,10 @@ public class DiscLoader {
 		Command.defaultCommands = options.defaultCommands;
 		CommandHandler.prefix = options.prefix;
 		return this;
+	}
+
+	public boolean isGuildSyncing(Guild guild) {
+		return syncingGuilds.containsKey(guild.id);
 	}
 
 	/**

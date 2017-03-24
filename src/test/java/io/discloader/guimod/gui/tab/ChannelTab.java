@@ -3,7 +3,7 @@ package io.discloader.guimod.gui.tab;
 import javax.swing.event.ListSelectionEvent;
 
 import io.discloader.discloader.common.DiscLoader;
-import io.discloader.discloader.entity.channels.Channel;
+import io.discloader.discloader.entity.channels.impl.Channel;
 import io.discloader.guimod.gui.info.ChannelInfo;
 import io.discloader.guimod.gui.list.ChannelList;
 

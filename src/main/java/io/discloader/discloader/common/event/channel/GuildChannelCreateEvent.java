@@ -1,6 +1,6 @@
 package io.discloader.discloader.common.event.channel;
 
-import io.discloader.discloader.entity.channels.GuildChannel;
+import io.discloader.discloader.entity.channels.impl.GuildChannel;
 import io.discloader.discloader.entity.guild.Guild;
 
 public class GuildChannelCreateEvent extends ChannelCreateEvent {

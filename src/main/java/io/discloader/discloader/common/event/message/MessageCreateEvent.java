@@ -5,7 +5,7 @@ package io.discloader.discloader.common.event.message;
 
 import io.discloader.discloader.common.DiscLoader;
 import io.discloader.discloader.common.event.DLEvent;
-import io.discloader.discloader.entity.impl.ITextChannel;
+import io.discloader.discloader.entity.channels.ITextChannel;
 import io.discloader.discloader.entity.message.Message;
 
 /**

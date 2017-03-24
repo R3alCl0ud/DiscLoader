@@ -1,6 +1,6 @@
 package io.discloader.discloader.common.event.message;
 
-import io.discloader.discloader.entity.channels.TextChannel;
+import io.discloader.discloader.entity.channels.impl.TextChannel;
 import io.discloader.discloader.entity.guild.Guild;
 import io.discloader.discloader.entity.message.Message;
 

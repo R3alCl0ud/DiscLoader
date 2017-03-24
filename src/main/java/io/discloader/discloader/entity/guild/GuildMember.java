@@ -9,7 +9,7 @@ import java.util.concurrent.CompletableFuture;
 import io.discloader.discloader.common.DiscLoader;
 import io.discloader.discloader.entity.Permission;
 import io.discloader.discloader.entity.Presence;
-import io.discloader.discloader.entity.channels.VoiceChannel;
+import io.discloader.discloader.entity.channels.impl.VoiceChannel;
 import io.discloader.discloader.entity.user.User;
 import io.discloader.discloader.entity.voice.VoiceState;
 import io.discloader.discloader.network.json.MemberJSON;

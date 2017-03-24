@@ -1,7 +1,7 @@
 package io.discloader.discloader.entity;
 
-import io.discloader.discloader.entity.channels.Channel;
-import io.discloader.discloader.entity.channels.GuildChannel;
+import io.discloader.discloader.entity.channels.impl.Channel;
+import io.discloader.discloader.entity.channels.impl.GuildChannel;
 import io.discloader.discloader.entity.guild.GuildMember;
 import io.discloader.discloader.entity.guild.Role;
 import io.discloader.discloader.util.DLUtil;

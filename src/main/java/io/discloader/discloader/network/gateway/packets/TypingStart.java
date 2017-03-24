@@ -3,7 +3,7 @@
  */
 package io.discloader.discloader.network.gateway.packets;
 
-import io.discloader.discloader.entity.impl.ITextChannel;
+import io.discloader.discloader.entity.channels.ITextChannel;
 import io.discloader.discloader.entity.user.User;
 import io.discloader.discloader.network.gateway.DiscSocket;
 import io.discloader.discloader.network.json.TypingStartJSON;

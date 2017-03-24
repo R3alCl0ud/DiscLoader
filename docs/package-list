@@ -23,9 +23,9 @@ io.discloader.discloader.common.registry
 io.discloader.discloader.common.start
 io.discloader.discloader.entity
 io.discloader.discloader.entity.channels
+io.discloader.discloader.entity.channels.impl
 io.discloader.discloader.entity.embed
 io.discloader.discloader.entity.guild
-io.discloader.discloader.entity.impl
 io.discloader.discloader.entity.invite
 io.discloader.discloader.entity.message
 io.discloader.discloader.entity.message.embed

@@ -20,9 +20,9 @@ import io.discloader.discloader.common.event.guild.member.GuildMemberAddEvent;
 import io.discloader.discloader.common.exceptions.UnauthorizedException;
 import io.discloader.discloader.entity.Permission;
 import io.discloader.discloader.entity.Presence;
-import io.discloader.discloader.entity.channels.Channel;
-import io.discloader.discloader.entity.channels.TextChannel;
-import io.discloader.discloader.entity.channels.VoiceChannel;
+import io.discloader.discloader.entity.channels.impl.Channel;
+import io.discloader.discloader.entity.channels.impl.TextChannel;
+import io.discloader.discloader.entity.channels.impl.VoiceChannel;
 import io.discloader.discloader.entity.invite.Invite;
 import io.discloader.discloader.entity.user.User;
 import io.discloader.discloader.entity.voice.VoiceState;
@@ -173,8 +173,6 @@ public class Guild {
 	 */
 	public VoiceRegion voiceRegion;
 
-	private boolean syncing = false;
-
 	/**
 	 * Creates a new guild
 	 * 
@@ -203,10 +201,26 @@ public class Guild {
 		}
 	}
 
+	/**
+	 * Method used internally by DiscLoader to make a new {@link GuildMember}
+	 * object when a member's data is recieved
+	 * 
+	 * @param data The member's data
+	 * @return The {@link GuildMember} that was instantiated.
+	 */
 	public GuildMember addMember(MemberJSON data) {
 		return this.addMember(data, false);
 	}
 
+	/**
+	 * Method used internally by DiscLoader to make a new {@link GuildMember}
+	 * object when a member's data is recieved
+	 * 
+	 * @param data The member's data
+	 * @param shouldEmit if a {@code GuildMemberAddEvent} should be fired by the
+	 *            client
+	 * @return The {@link GuildMember} that was instantiated.
+	 */
 	public GuildMember addMember(MemberJSON data, boolean shouldEmit) {
 		boolean exists = this.members.containsKey(data.user.id);
 		GuildMember member = new GuildMember(this, data);
@@ -222,6 +236,19 @@ public class Guild {
 		return member;
 	}
 
+	/**
+	 * Method used internally by DiscLoader to make a new {@link GuildMember}
+	 * object when a member's data is recieved
+	 * 
+	 * @param user the member's {@link User} object.
+	 * @param roles the member's role's ids.
+	 * @param deaf is the member deafened.
+	 * @param mute is the member muted.
+	 * @param nick The member's nickname.
+	 * @param emitEvent if a {@code GuildMemberAddEvent} should be fired by the
+	 *            client.
+	 * @return The {@link GuildMember} that was instantiated.
+	 */
 	public GuildMember addMember(User user, String[] roles, boolean deaf, boolean mute, String nick, boolean emitEvent) {
 		boolean exists = this.members.containsKey(user.id);
 		GuildMember member = new GuildMember(this, user, roles, deaf, mute, nick);
@@ -486,8 +513,7 @@ public class Guild {
 
 	/**
 	 * Returns the number of members that would be removed in a prune operation.
-	 * Requires the {@link PermissionsNums#KICK_MEMBERS Kick Members}
-	 * permission.
+	 * Requires the KICK_MEMBERS permission.
 	 * 
 	 * @param days The number of days to count prune for (1 or more)
 	 * @return A Future that completes with the number of member that would be
@@ -497,12 +523,23 @@ public class Guild {
 		return this.loader.rest.pruneCount(this, days);
 	}
 
+	/**
+	 * returns a HashMap of the guild's members' voice states. Indexed by
+	 * {@link GuildMember#id}
+	 * 
+	 * @return A HashMap of {@link VoiceState VoiceStates}
+	 */
 	public HashMap<String, VoiceState> getVoiceStates() {
 		return rawStates;
 	}
 
+	/**
+	 * Checks if the guild is currently being synced with discord
+	 * 
+	 * @return {@code true} if syncing, false otherwise.
+	 */
 	public boolean isSyncing() {
-		return syncing;
+		return loader.isGuildSyncing(this);
 	}
 
 	/**
@@ -562,7 +599,6 @@ public class Guild {
 		Presence presence = new Presence(guildPresence);
 		if (guildPresence.user.id.equals(this.loader.user.id)) loader.user.presence.update(guildPresence);
 		presences.put(guildPresence.user.id, presence);
-//		this.e
 	}
 
 	/**
