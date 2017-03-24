@@ -15,7 +15,7 @@ import io.discloader.discloader.util.DLUtil;
  * @author Perry Berman
  *
  */
-public class RoleUpdate extends DLPacket {
+public class RoleUpdate extends AbstractHandler {
 
 	public RoleUpdate(DiscSocket socket) {
 		super(socket);

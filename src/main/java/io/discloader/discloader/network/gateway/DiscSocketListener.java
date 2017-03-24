@@ -23,7 +23,7 @@ import io.discloader.discloader.entity.sendable.Packet;
 import io.discloader.discloader.network.gateway.packets.ChannelCreate;
 import io.discloader.discloader.network.gateway.packets.ChannelDelete;
 import io.discloader.discloader.network.gateway.packets.ChannelUpdate;
-import io.discloader.discloader.network.gateway.packets.DLPacket;
+import io.discloader.discloader.network.gateway.packets.AbstractHandler;
 import io.discloader.discloader.network.gateway.packets.EmojiUpdate;
 import io.discloader.discloader.network.gateway.packets.GuildBanAdd;
 import io.discloader.discloader.network.gateway.packets.GuildBanRemove;
@@ -34,12 +34,12 @@ import io.discloader.discloader.network.gateway.packets.GuildMemberRemove;
 import io.discloader.discloader.network.gateway.packets.GuildMemberUpdate;
 import io.discloader.discloader.network.gateway.packets.GuildMembersChunk;
 import io.discloader.discloader.network.gateway.packets.GuildUpdate;
-import io.discloader.discloader.network.gateway.packets.HelloPacket;
+import io.discloader.discloader.network.gateway.packets.Hello;
 import io.discloader.discloader.network.gateway.packets.MessageCreate;
 import io.discloader.discloader.network.gateway.packets.MessageDelete;
 import io.discloader.discloader.network.gateway.packets.MessageUpdate;
 import io.discloader.discloader.network.gateway.packets.PresenceUpdate;
-import io.discloader.discloader.network.gateway.packets.ReadyPacket;
+import io.discloader.discloader.network.gateway.packets.Ready;
 import io.discloader.discloader.network.gateway.packets.Resumed;
 import io.discloader.discloader.network.gateway.packets.RoleCreate;
 import io.discloader.discloader.network.gateway.packets.RoleDelete;
@@ -68,7 +68,7 @@ public class DiscSocketListener extends WebSocketAdapter {
 
 	private final Logger logger = new DLLogger("Gateway Listener").getLogger();
 
-	public HashMap<String, DLPacket> handlers;
+	public HashMap<String, AbstractHandler> handlers;
 
 	public List<SocketPacket> queue;
 
@@ -79,11 +79,11 @@ public class DiscSocketListener extends WebSocketAdapter {
 	public DiscSocketListener(DiscSocket socket) {
 		this.socket = socket;
 		this.loader = this.socket.loader;
-		this.handlers = new HashMap<String, DLPacket>();
+		this.handlers = new HashMap<String, AbstractHandler>();
 		this.queue = new ArrayList<SocketPacket>();
 
-		this.register(WSEvents.HELLO, new HelloPacket(this.socket));
-		this.register(WSEvents.READY, new ReadyPacket(this.socket));
+		this.register(WSEvents.HELLO, new Hello(this.socket));
+		this.register(WSEvents.READY, new Ready(this.socket));
 		this.register(WSEvents.RESUMED, new Resumed(this.socket));
 		this.register(WSEvents.GUILD_CREATE, new GuildCreate(this.socket));
 		this.register(WSEvents.GUILD_BAN_ADD, new GuildBanAdd(this.socket));
@@ -198,7 +198,7 @@ public class DiscSocketListener extends WebSocketAdapter {
 		this.handle(packet);
 	}
 
-	public void register(String event, DLPacket handler) {
+	public void register(String event, AbstractHandler handler) {
 		this.handlers.put(event, handler);
 	}
 

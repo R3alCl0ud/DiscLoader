@@ -11,7 +11,7 @@ import io.discloader.discloader.network.json.MemberJSON;
  * @author Perry Berman
  *
  */
-public class GuildMemberAdd extends DLPacket {
+public class GuildMemberAdd extends AbstractHandler {
 
 	public GuildMemberAdd(DiscSocket socket) {
 		super(socket);

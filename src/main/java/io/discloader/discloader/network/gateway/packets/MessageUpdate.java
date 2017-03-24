@@ -15,7 +15,7 @@ import io.discloader.discloader.util.DLUtil;
  * @author Perry Berman
  *
  */
-public class MessageUpdate extends DLPacket {
+public class MessageUpdate extends AbstractHandler {
 
 	public MessageUpdate(DiscSocket socket) {
 		super(socket);

@@ -17,7 +17,7 @@ import io.discloader.discloader.util.DLUtil.Events;
  * @author Perry Berman
  *
  */
-public class ChannelUpdate extends DLPacket {
+public class ChannelUpdate extends AbstractHandler {
 
 	public ChannelUpdate(DiscSocket socket) {
 		super(socket);

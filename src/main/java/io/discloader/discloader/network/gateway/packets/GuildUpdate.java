@@ -11,7 +11,7 @@ import io.discloader.discloader.util.DLUtil;
  * @author Perry Berman
  *
  */
-public class GuildUpdate extends DLPacket {
+public class GuildUpdate extends AbstractHandler {
 
 	public GuildUpdate(DiscSocket socket) {
 		super(socket);

@@ -12,7 +12,7 @@ import io.discloader.discloader.util.DLUtil;
 /**
  * @author Perry Berman
  */
-public class PresenceUpdate extends DLPacket {
+public class PresenceUpdate extends AbstractHandler {
 
 	public PresenceUpdate(DiscSocket socket) {
 		super(socket);

@@ -15,7 +15,7 @@ import io.discloader.discloader.util.DLUtil;
  * @author Perry Berman
  *
  */
-public class ChannelCreate extends DLPacket {
+public class ChannelCreate extends AbstractHandler {
 
 	public ChannelCreate(DiscSocket socket) {
 		super(socket);

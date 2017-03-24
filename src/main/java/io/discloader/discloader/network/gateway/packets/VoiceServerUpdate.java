@@ -11,7 +11,7 @@ import io.discloader.discloader.network.json.VoiceServerUpdateJSON;
  * @author Perry Berman
  *
  */
-public class VoiceServerUpdate extends DLPacket {
+public class VoiceServerUpdate extends AbstractHandler {
 
 
     public VoiceServerUpdate(DiscSocket socket) {

@@ -12,7 +12,7 @@ import io.discloader.discloader.util.DLUtil;
  * @author Perry Berman
  *
  */
-public class RoleDelete extends DLPacket {
+public class RoleDelete extends AbstractHandler {
 
 	public RoleDelete(DiscSocket socket) {
 		super(socket);

@@ -15,7 +15,7 @@ import io.discloader.discloader.util.DLUtil;
  * @author Perry Berman
  *
  */
-public class GuildBanRemove extends DLPacket {
+public class GuildBanRemove extends AbstractHandler {
 
 	public GuildBanRemove(DiscSocket socket) {
 		super(socket);

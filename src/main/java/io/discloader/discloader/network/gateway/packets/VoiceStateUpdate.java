@@ -15,7 +15,7 @@ import io.discloader.discloader.util.DLUtil.Status;
 /**
  * @author Perry Berman
  */
-public class VoiceStateUpdate extends DLPacket {
+public class VoiceStateUpdate extends AbstractHandler {
 
 	public VoiceStateUpdate(DiscSocket socket) {
 		super(socket);

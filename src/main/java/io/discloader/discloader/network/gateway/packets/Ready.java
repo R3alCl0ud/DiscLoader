@@ -6,10 +6,10 @@ import io.discloader.discloader.entity.user.DLUser;
 import io.discloader.discloader.network.gateway.DiscSocket;
 import io.discloader.discloader.network.json.ChannelJSON;
 import io.discloader.discloader.network.json.GuildJSON;
-import io.discloader.discloader.network.json.Ready;
+import io.discloader.discloader.network.json.ReadyJSON;
 
-public class ReadyPacket extends DLPacket {
-    public ReadyPacket(DiscSocket socket) {
+public class Ready extends AbstractHandler {
+    public Ready(DiscSocket socket) {
         super(socket);
     }
 
@@ -17,25 +17,25 @@ public class ReadyPacket extends DLPacket {
     public void handle(SocketPacket packet) {
         Gson gson = new Gson();
         String d = gson.toJson(packet.d);
-        Ready ready = gson.fromJson(d, Ready.class);
+        ReadyJSON readyJSON = gson.fromJson(d, ReadyJSON.class);
 
         // set session id first just incase some screws up
-        this.socket.sessionID = ready.session_id;
+        this.socket.sessionID = readyJSON.session_id;
 
         // setup the Loaders user object
         try {
-            loader.user = new DLUser(this.loader.addUser(ready.user));
+            loader.user = new DLUser(this.loader.addUser(readyJSON.user));
             if (loader.user.bot == true) {
                 this.socket.loader.token = "Bot " + this.socket.loader.token;
             }
 
             // load the guilds
-            for (GuildJSON guild : ready.guilds) {
+            for (GuildJSON guild : readyJSON.guilds) {
                 this.socket.loader.addGuild(guild);
             }
 
             // load the private channels
-            for (ChannelJSON data : ready.private_channels) {
+            for (ChannelJSON data : readyJSON.private_channels) {
                 this.socket.loader.addChannel(data);
             }
         } catch (Exception e) {

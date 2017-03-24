@@ -15,7 +15,7 @@ import io.discloader.discloader.util.DLUtil;
  * @author Perry Berman
  *
  */
-public class GuildMembersChunk extends DLPacket {
+public class GuildMembersChunk extends AbstractHandler {
 
     public GuildMembersChunk(DiscSocket socket) {
         super(socket);

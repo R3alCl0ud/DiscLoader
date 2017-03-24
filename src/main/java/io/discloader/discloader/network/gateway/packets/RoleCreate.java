@@ -17,7 +17,7 @@ import io.discloader.discloader.util.DLUtil;
  * @see EventHandler
  * @see IEventListener
  */
-public class RoleCreate extends DLPacket{
+public class RoleCreate extends AbstractHandler{
 
 	public RoleCreate(DiscSocket socket) {
 		super(socket);

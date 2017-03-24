@@ -10,12 +10,12 @@ import io.discloader.discloader.util.DLUtil.Status;
  * @author Perry Berman
  *
  */
-public abstract class DLPacket {
+public abstract class AbstractHandler {
 	public DiscSocket socket;
 	public DiscLoader loader;
 	public Gson gson;
 
-	public DLPacket(DiscSocket socket) {
+	public AbstractHandler(DiscSocket socket) {
 		this.socket = socket;
 		this.loader = this.socket.loader;
 		this.gson = new Gson();

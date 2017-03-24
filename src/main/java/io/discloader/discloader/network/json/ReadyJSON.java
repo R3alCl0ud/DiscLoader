@@ -4,7 +4,7 @@ package io.discloader.discloader.network.json;
  * @author perryberman
  *
  */
-public class Ready {
+public class ReadyJSON {
 	public int v;
 	public UserJSON user;
 	public String session_id;

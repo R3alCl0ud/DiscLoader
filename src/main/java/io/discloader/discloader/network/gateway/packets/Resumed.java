@@ -6,7 +6,7 @@ import io.discloader.discloader.network.gateway.DiscSocket;
  * @author Perry Berman
  *
  */
-public class Resumed extends DLPacket {
+public class Resumed extends AbstractHandler {
 
     public Resumed(DiscSocket socket) {
         super(socket);

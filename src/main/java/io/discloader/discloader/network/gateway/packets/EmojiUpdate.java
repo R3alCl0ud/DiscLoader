@@ -13,7 +13,7 @@ import io.discloader.discloader.network.json.EmojiJSON;
 import io.discloader.discloader.network.json.EmojiUpdateJSON;
 import io.discloader.discloader.util.DLUtil.Events;
 
-public class EmojiUpdate extends DLPacket {
+public class EmojiUpdate extends AbstractHandler {
 
 	public EmojiUpdate(DiscSocket socket) {
 		super(socket);
@@ -37,23 +37,23 @@ public class EmojiUpdate extends DLPacket {
 					oldEmoji = guild.emojis.get(emoji.id);
 					if (emoji.id.equals(oldEmoji.id) && !emoji.equals(oldEmoji)) {
 						GuildEmojiUpdateEvent event = new GuildEmojiUpdateEvent(emoji, oldEmoji);
-						loader.emit(Events.GUILD_EMOJI_UPDATE,  event);
+						loader.emit(Events.GUILD_EMOJI_UPDATE, event);
 						loader.emit(event);
 					}
 				}
 			} else if (data.emojis.length < guild.emojis.size()) {
-				for (Emoji emoji : guild.emojis.values()){
+				for (Emoji emoji : guild.emojis.values()) {
 					if (!emojis.containsKey(emoji.id)) {
 						GuildEmojiDeleteEvent event = new GuildEmojiDeleteEvent(emoji);
-						loader.emit("GuildEmojiDelete",  event);
+						loader.emit("GuildEmojiDelete", event);
 						loader.emit(event);
 					}
 				}
 			} else if (data.emojis.length > guild.emojis.size()) {
-				for (Emoji emoji : emojis.values()){
+				for (Emoji emoji : emojis.values()) {
 					if (!guild.emojis.containsKey(emoji.id)) {
 						GuildEmojiCreateEvent event = new GuildEmojiCreateEvent(emoji);
-						loader.emit("GuildEmojiCreate",  event);
+						loader.emit("GuildEmojiCreate", event);
 						loader.emit(event);
 					}
 				}

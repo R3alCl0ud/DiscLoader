@@ -6,7 +6,7 @@ import io.discloader.discloader.network.json.GuildSyncJSON;
 import io.discloader.discloader.network.json.MemberJSON;
 import io.discloader.discloader.network.json.PresenceJSON;
 
-public class GuildSync extends DLPacket {
+public class GuildSync extends AbstractHandler {
 
 	public GuildSync(DiscSocket socket) {
 		super(socket);

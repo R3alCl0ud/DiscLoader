@@ -12,7 +12,7 @@ import io.discloader.discloader.util.DLUtil.Status;
  * @author Perry Berman
  *
  */
-public class GuildMemberUpdate extends DLPacket {
+public class GuildMemberUpdate extends AbstractHandler {
 
 	public GuildMemberUpdate(DiscSocket socket) {
 		super(socket);

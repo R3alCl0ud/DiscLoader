@@ -12,7 +12,7 @@ import io.discloader.discloader.util.DLUtil;
  * @author Perry Berman
  *
  */
-public class MessageDelete extends DLPacket {
+public class MessageDelete extends AbstractHandler {
 
 	public MessageDelete(DiscSocket socket) {
 		super(socket);

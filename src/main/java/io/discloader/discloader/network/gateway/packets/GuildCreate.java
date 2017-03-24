@@ -8,7 +8,7 @@ import io.discloader.discloader.network.gateway.DiscSocket;
 import io.discloader.discloader.network.json.GuildJSON;
 import io.discloader.discloader.util.DLUtil;
 
-public class GuildCreate extends DLPacket {
+public class GuildCreate extends AbstractHandler {
 
     public GuildCreate(DiscSocket socket) {
         super(socket);

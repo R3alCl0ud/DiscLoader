@@ -2,7 +2,7 @@
 Simple Discord API abstractions for Java.
 Created to replace the method daisy chaining confusion of other Java libraries for the Discord API.
 
-[Documentation](https://r3alcl0ud.github.io/DiscLoader/)
+[Documentation](http://docs.discloader.io)
 
 [Example](https://github.com/R3alCl0ud/DiscLoader/blob/master/example/com/example/Example.java)
 

@@ -12,7 +12,7 @@ import io.discloader.discloader.network.json.TypingStartJSON;
  * @author Perry Berman
  *
  */
-public class TypingStart extends DLPacket {
+public class TypingStart extends AbstractHandler {
 
 	public TypingStart(DiscSocket socket) {
 		super(socket);
