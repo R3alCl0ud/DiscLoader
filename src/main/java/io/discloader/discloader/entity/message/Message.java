@@ -15,8 +15,8 @@ import io.discloader.discloader.entity.guild.GuildMember;
 import io.discloader.discloader.entity.message.embed.MessageEmbed;
 import io.discloader.discloader.entity.user.User;
 import io.discloader.discloader.network.json.MessageJSON;
-import io.discloader.discloader.network.rest.actions.PinMessage;
-import io.discloader.discloader.network.rest.actions.UnpinMessage;
+import io.discloader.discloader.network.rest.actions.channel.pin.PinMessage;
+import io.discloader.discloader.network.rest.actions.channel.pin.UnpinMessage;
 import io.discloader.discloader.util.DLUtil;
 import io.discloader.discloader.util.ISnowflake;
 

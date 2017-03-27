@@ -1,9 +1,11 @@
 package io.discloader.discloader.entity.channels.impl;
 
 import io.discloader.discloader.common.DiscLoader;
+import io.discloader.discloader.entity.Snowflake;
 import io.discloader.discloader.entity.channels.IChannel;
 import io.discloader.discloader.network.json.ChannelJSON;
 import io.discloader.discloader.util.DLUtil.ChannelType;
+import io.discloader.discloader.util.ISnowflake;
 
 /**
  * Represents any channel on discord
@@ -16,6 +18,8 @@ public class Channel implements IChannel {
 	 * The channel's Snowflake ID.
 	 */
 	private String id;
+
+	private Snowflake snowflake;
 
 	protected ChannelType type;
 
@@ -34,7 +38,17 @@ public class Channel implements IChannel {
 
 	@Override
 	public String getID() {
-		return id;
+		return snowflake.toString();
+	}
+
+	@Override
+	public DiscLoader getLoader() {
+		return loader;
+	}
+
+	@Override
+	public ISnowflake getSnowflake() {
+		return snowflake;
 	}
 
 	@Override
@@ -44,19 +58,16 @@ public class Channel implements IChannel {
 
 	@Override
 	public boolean isPrivate() {
-		return this.type != ChannelType.TEXT && this.type != ChannelType.VOICE;
+		return type != ChannelType.TEXT && type != ChannelType.VOICE && type != ChannelType.CHANNEL;
 	}
 
 	public void setup(ChannelJSON data) {
 		id = data.id;
+
+		snowflake = new Snowflake(id);
 	}
 
 	public String toMention() {
 		return String.format("<#%s>", id);
-	}
-
-	@Override
-	public DiscLoader getLoader() {
-		return loader;
 	}
 }

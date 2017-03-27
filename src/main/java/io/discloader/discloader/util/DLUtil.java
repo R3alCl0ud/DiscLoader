@@ -29,7 +29,13 @@ import io.discloader.discloader.network.gateway.DiscSocketListener;
 public final class DLUtil {
 
 	public static enum ChannelType {
-		TEXT, VOICE, DM, GROUPDM, CHANNEL
+		TEXT("text"), VOICE("voice"), DM("DM"), GROUPDM("GroupDM"), CHANNEL("channel");
+
+		private String name;
+
+		private ChannelType(String name) {
+			this.name = name;
+		}
 	}
 
 	/**
@@ -87,6 +93,14 @@ public final class DLUtil {
 
 		public static final String channel(String channelID) {
 			return String.format("%s/channels/%s", API, channelID);
+		}
+
+		public static final String channelOverwrites(String channelID) {
+			return String.format("%s/permissions", channel(channelID));
+		}
+
+		public static final String channelOverwrite(String channelID, String overwriteID) {
+			return String.format("%s/%s", channelOverwrites(channelID), overwriteID);
 		}
 
 		public static final String channelPinnedMessage(String channelID, String messageID) {

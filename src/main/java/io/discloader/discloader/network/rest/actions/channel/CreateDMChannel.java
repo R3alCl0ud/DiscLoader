@@ -1,10 +1,11 @@
-package io.discloader.discloader.network.rest.actions;
+package io.discloader.discloader.network.rest.actions.channel;
 
 import java.util.concurrent.CompletableFuture;
 
 import io.discloader.discloader.entity.channels.impl.PrivateChannel;
 import io.discloader.discloader.entity.user.User;
 import io.discloader.discloader.network.json.ChannelJSON;
+import io.discloader.discloader.network.rest.actions.RESTAction;
 import io.discloader.discloader.util.DLUtil.Endpoints;
 import io.discloader.discloader.util.DLUtil.Methods;
 

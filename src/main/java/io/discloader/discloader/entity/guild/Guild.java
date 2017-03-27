@@ -21,6 +21,7 @@ import io.discloader.discloader.common.exceptions.UnauthorizedException;
 import io.discloader.discloader.entity.Permission;
 import io.discloader.discloader.entity.Presence;
 import io.discloader.discloader.entity.channels.impl.Channel;
+import io.discloader.discloader.entity.channels.impl.GuildChannel;
 import io.discloader.discloader.entity.channels.impl.TextChannel;
 import io.discloader.discloader.entity.channels.impl.VoiceChannel;
 import io.discloader.discloader.entity.invite.Invite;
@@ -386,6 +387,10 @@ public class Guild {
 	 */
 	public CompletableFuture<TextChannel> createTextChannel(String name) {
 		return this.loader.rest.createTextChannel(this, new JSONObject().put("name", name));
+	}
+
+	public CompletableFuture<GuildChannel> createChannel(String name, String type) {
+		return null;
 	}
 
 	/**

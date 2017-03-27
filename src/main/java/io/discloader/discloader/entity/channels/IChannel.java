@@ -5,6 +5,7 @@ import io.discloader.discloader.entity.channels.impl.Channel;
 import io.discloader.discloader.entity.message.Message;
 import io.discloader.discloader.network.json.ChannelJSON;
 import io.discloader.discloader.util.DLUtil.ChannelType;
+import io.discloader.discloader.util.ISnowflake;
 
 public interface IChannel {
 
@@ -17,6 +18,9 @@ public interface IChannel {
 	 * @return The type of the channel
 	 */
 	ChannelType getType();
+	
+	ISnowflake getSnowflake();
+	
 
 	/**
 	 * Whether or not the channel is a dm channel. Is always {@literal true} if

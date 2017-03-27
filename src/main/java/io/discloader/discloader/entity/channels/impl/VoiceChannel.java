@@ -13,7 +13,6 @@ import io.discloader.discloader.util.DLUtil.ChannelType;
  * Represents a voice channel in a guild
  * 
  * @author Perry Berman
- *
  */
 public class VoiceChannel extends GuildChannel implements IGuildChannel, IVoiceChannel {
 
@@ -97,15 +96,6 @@ public class VoiceChannel extends GuildChannel implements IGuildChannel, IVoiceC
 	@Override
 	public CompletableFuture<VoiceChannel> setName(String name) {
 		return edit(name, position, bitrate, userLimit);
-	}
-
-	@Override
-	public CompletableFuture<VoiceChannel> setPermissions(int allow, int deny, String type) {
-		CompletableFuture<VoiceChannel> future = new CompletableFuture<>();
-		super.setPermissions(allow, deny, type).thenAcceptAsync(channel -> {
-			future.complete((VoiceChannel) channel);
-		});
-		return future;
 	}
 
 	@Override

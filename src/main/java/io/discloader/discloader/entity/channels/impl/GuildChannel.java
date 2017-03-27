@@ -10,6 +10,9 @@ import io.discloader.discloader.entity.guild.Guild;
 import io.discloader.discloader.entity.guild.GuildMember;
 import io.discloader.discloader.entity.guild.Role;
 import io.discloader.discloader.network.json.ChannelJSON;
+import io.discloader.discloader.network.json.OverwriteJSON;
+import io.discloader.discloader.network.rest.actions.channel.SetOverwrite;
+import io.discloader.discloader.network.rest.actions.channel.close.CloseGuildChannel;
 import io.discloader.discloader.util.DLUtil;
 
 /**
@@ -46,25 +49,23 @@ public class GuildChannel extends Channel implements IGuildChannel {
 	 * @author Perry Berman
 	 * @since 0.0.1
 	 */
-	public HashMap<String, Overwrite> overwrites;
-
-	/**
-	 * A {@link HashMap} of the channel's {@link GuildMember members}. Indexed
-	 * by {@link GuildMember #id member.id}. <br>
-	 * Is {@code null} if {@link #guild} is {@code null}, and if {@link #type}
-	 * is {@code "dm"}, or {@code "groupDM"}.
-	 * 
-	 * @author Perry Berman
-	 * @since 0.0.1
-	 */
-	HashMap<String, GuildMember> members = new HashMap<String, GuildMember>();
+	private HashMap<String, Overwrite> overwrites;
 
 	public GuildChannel(Guild guild, ChannelJSON channel) {
 		super(guild.loader, channel);
 
 		this.guild = guild;
 
-		this.overwrites = new HashMap<String, Overwrite>();
+		overwrites = new HashMap<>();
+	}
+
+	public CompletableFuture<? extends GuildChannel> clone() {
+		return guild.createChannel(name, type.name());
+	}
+
+	@Override
+	public CompletableFuture<? extends GuildChannel> delete() {
+		return new CloseGuildChannel(this).execute();
 	}
 
 	/**
@@ -77,8 +78,7 @@ public class GuildChannel extends Channel implements IGuildChannel {
 	 * @param userLimit The new userLimit
 	 * @return A Future that completes with an IGuildChannel if successful
 	 */
-	public CompletableFuture<? extends GuildChannel> edit(String name, String topic, int position, int bitrate,
-			int userLimit) {
+	public CompletableFuture<? extends GuildChannel> edit(String name, String topic, int position, int bitrate, int userLimit) {
 		CompletableFuture<VoiceChannel> future = new CompletableFuture<>();
 		loader.rest.modifyGuildChannel(this, name, topic, position, bitrate, userLimit).thenAcceptAsync(channel -> {
 			future.complete((VoiceChannel) channel);
@@ -89,31 +89,36 @@ public class GuildChannel extends Channel implements IGuildChannel {
 	public HashMap<String, GuildMember> getMembers() {
 		HashMap<String, GuildMember> members = new HashMap<String, GuildMember>();
 		for (GuildMember member : this.guild.members.values()) {
-			if (this.permissionsFor(member).hasPermission(DLUtil.PermissionFlags.READ_MESSAGES, false))
-				members.put(member.id, member);
+			if (this.permissionsFor(member).hasPermission(DLUtil.PermissionFlags.READ_MESSAGES, false)) members.put(member.id, member);
 		}
 		return members;
+	}
+
+	public HashMap<String, Overwrite> getOverwrites() {
+		return overwrites;
 	}
 
 	public boolean isPrivate() {
 		return false;
 	}
 
+	@Override
+	public Overwrite overwriteFor(Role role) {
+		return overwrites.get(role.id);
+	}
+
 	public HashMap<String, Overwrite> overwritesOf(GuildMember member) {
 		HashMap<String, Overwrite> Overwrites = new HashMap<String, Overwrite>();
 		for (Role role : member.getRoles().values()) {
-			if (this.overwrites.get(role.id) != null)
-				Overwrites.put(role.id, this.overwrites.get(role.id));
+			if (this.overwrites.get(role.id) != null) Overwrites.put(role.id, this.overwrites.get(role.id));
 		}
-		if (this.overwrites.get(member.id) != null)
-			Overwrites.put(member.id, this.overwrites.get(member.id));
+		if (this.overwrites.get(member.id) != null) Overwrites.put(member.id, this.overwrites.get(member.id));
 		return Overwrites;
 	}
 
 	public Permission permissionsFor(GuildMember member) {
 		int raw = 0;
-		if (member.id == this.guild.ownerID)
-			return new Permission(member, this, 2146958463);
+		if (member.id == this.guild.ownerID) return new Permission(member, this, 2146958463);
 		for (Role role : member.getRoles().values())
 			raw |= role.getPermissions().asInteger();
 		for (Overwrite overwrite : this.overwritesOf(member).values()) {
@@ -129,8 +134,13 @@ public class GuildChannel extends Channel implements IGuildChannel {
 	}
 
 	@Override
-	public CompletableFuture<? extends GuildChannel> setPermissions(int allow, int deny, String type) {
-		return null;
+	public CompletableFuture<Overwrite> setPermissions(int allow, int deny, GuildMember member) {
+		return new SetOverwrite(this, new Overwrite(allow, deny, member)).execute();
+	}
+
+	@Override
+	public CompletableFuture<Overwrite> setPermissions(int allow, int deny, Role role) {
+		return new SetOverwrite(this, new Overwrite(allow, deny, role)).execute();
 	}
 
 	@Override
@@ -140,10 +150,12 @@ public class GuildChannel extends Channel implements IGuildChannel {
 
 	public void setup(ChannelJSON data) {
 		super.setup(data);
+		name = data.name;
+		position = data.position;
 
-		this.name = data.name;
-
-		this.position = data.position;
+		for (OverwriteJSON ow : data.permission_overwrites) {
+			overwrites.put(ow.id, new Overwrite(ow));
+		}
 	}
 
 }

@@ -12,13 +12,14 @@ import io.discloader.discloader.entity.message.MessageFetchOptions;
 import io.discloader.discloader.entity.sendable.Attachment;
 import io.discloader.discloader.entity.user.User;
 import io.discloader.discloader.network.json.ChannelJSON;
-import io.discloader.discloader.network.rest.actions.BulkDelete;
-import io.discloader.discloader.network.rest.actions.FetchMessage;
-import io.discloader.discloader.network.rest.actions.FetchMessages;
-import io.discloader.discloader.network.rest.actions.PinMessage;
-import io.discloader.discloader.network.rest.actions.PinnedMessages;
-import io.discloader.discloader.network.rest.actions.StartTyping;
-import io.discloader.discloader.network.rest.actions.UnpinMessage;
+import io.discloader.discloader.network.rest.actions.channel.BulkDelete;
+import io.discloader.discloader.network.rest.actions.channel.FetchMessage;
+import io.discloader.discloader.network.rest.actions.channel.FetchMessages;
+import io.discloader.discloader.network.rest.actions.channel.StartTyping;
+import io.discloader.discloader.network.rest.actions.channel.close.ClosePrivateChannel;
+import io.discloader.discloader.network.rest.actions.channel.pin.PinMessage;
+import io.discloader.discloader.network.rest.actions.channel.pin.PinnedMessages;
+import io.discloader.discloader.network.rest.actions.channel.pin.UnpinMessage;
 import io.discloader.discloader.util.DLUtil.ChannelType;
 
 /**
@@ -47,7 +48,7 @@ public class PrivateChannel extends Channel implements ITextChannel {
 	}
 	
 	public CompletableFuture<PrivateChannel> close() {
-		return null;
+		return new ClosePrivateChannel(this).execute();
 	}
 
 	@Override
