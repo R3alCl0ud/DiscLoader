@@ -25,6 +25,7 @@ import io.discloader.discloader.common.logger.DLPrintStream;
  * @see DiscLoader
  */
 public class Main {
+
 	public static final Gson gson = new Gson();
 
 	public static WindowFrame window;
@@ -66,6 +67,7 @@ public class Main {
 		parseArgs(args);
 		loader = new DiscLoader(shards, shard);
 		loader.addEventHandler(new EventListenerAdapter() {
+
 			public void RawPacket(RawEvent data) {
 				if (data.isGateway()) {
 					WebSocketFrame frame = data.getFrame();
@@ -75,7 +77,7 @@ public class Main {
 
 			public void Ready(ReadyEvent event) {
 				System.out.printf("Ready as user: %s", loader.user);
-				loader.textChannels.get("203931969871020033").fetchMessage("293782287189803008").join().pin();
+				// loader.textChannels.get("203931969871020033").fetchMessage("293782287189803008").join().pin();
 			}
 		});
 		loader.login(token);

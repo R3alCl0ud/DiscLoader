@@ -10,31 +10,29 @@ import io.discloader.discloader.util.DLUtil;
 
 public class GuildCreate extends AbstractHandler {
 
-    public GuildCreate(DiscSocket socket) {
-        super(socket);
-    }
+	public GuildCreate(DiscSocket socket) {
+		super(socket);
+	}
 
-    @Override
-    public void handle(SocketPacket packet) {
-        Gson gson = new Gson();
-        String d = gson.toJson(packet.d);
-        GuildJSON data = gson.fromJson(d, GuildJSON.class);
-        Guild guild = null;
-        if (this.socket.loader.guilds.containsKey(data.id))
-            guild = this.socket.loader.guilds.get(data.id);
-        if (guild != null) {
-            if (!guild.available && !data.unavailable) {
-                guild.setup(data);
-                this.socket.loader.checkReady();
-                if (this.socket.status == DLUtil.Status.READY && this.socket.loader.ready) {
-                    this.socket.loader.emit(DLUtil.Events.GUILD_CREATE, new GuildCreateEvent(guild));
-                }
-            }
-        } else {
-            // a brand new guild
-            guild = this.socket.loader.addGuild(data);
-            
-        }
-    }
+	@Override
+	public void handle(SocketPacket packet) {
+		Gson gson = new Gson();
+		String d = gson.toJson(packet.d);
+		GuildJSON data = gson.fromJson(d, GuildJSON.class);
+		Guild guild = null;
+		if (loader.guilds.containsKey(data.id)) guild = this.socket.loader.guilds.get(data.id);
+		if (guild != null) {
+			if (!guild.available && !data.unavailable) {
+				guild.setup(data);
+				loader.checkReady();
+				if (socket.status == DLUtil.Status.READY && loader.ready) {
+					socket.loader.emit(DLUtil.Events.GUILD_CREATE, new GuildCreateEvent(guild));
+				}
+			}
+		} else {
+			// a brand new guild
+			guild = loader.addGuild(data);
+		}
+	}
 
 }

@@ -15,6 +15,7 @@ import io.discloader.discloader.network.json.ChannelJSON;
 import io.discloader.discloader.network.rest.actions.channel.BulkDelete;
 import io.discloader.discloader.network.rest.actions.channel.FetchMessage;
 import io.discloader.discloader.network.rest.actions.channel.FetchMessages;
+import io.discloader.discloader.network.rest.actions.channel.SendMessage;
 import io.discloader.discloader.network.rest.actions.channel.StartTyping;
 import io.discloader.discloader.network.rest.actions.channel.close.ClosePrivateChannel;
 import io.discloader.discloader.network.rest.actions.channel.pin.PinMessage;
@@ -46,7 +47,7 @@ public class PrivateChannel extends Channel implements ITextChannel {
 		this.messages = new HashMap<>();
 		typing = new HashMap<>();
 	}
-	
+
 	public CompletableFuture<PrivateChannel> close() {
 		return new ClosePrivateChannel(this).execute();
 	}
@@ -120,18 +121,11 @@ public class PrivateChannel extends Channel implements ITextChannel {
 	}
 
 	public CompletableFuture<Message> sendEmbed(RichEmbed embed) {
-		File file = null;
-		Attachment attachment = null;
-		if (embed.thumbnail != null && embed.thumbnail.file != null) {
-			file = embed.thumbnail.file;
-			embed.thumbnail.file = null;
-			attachment = new Attachment(file.getName());
-		}
-		return this.loader.rest.sendMessage(this, null, embed, attachment, file);
+		return sendMessage(null, embed);
 	}
 
 	public CompletableFuture<Message> sendMessage(String content) {
-		return this.loader.rest.sendMessage(this, content, null, null, null);
+		return sendMessage(content, null);
 	}
 
 	public CompletableFuture<Message> sendMessage(String content, RichEmbed embed) {
@@ -142,7 +136,7 @@ public class PrivateChannel extends Channel implements ITextChannel {
 			embed.thumbnail.file = null;
 			attachment = new Attachment(file.getName());
 		}
-		return this.loader.rest.sendMessage(this, content, embed, attachment, file);
+		return new SendMessage(this, content, embed, attachment, file).execute();
 	}
 
 	public void setup(ChannelJSON data) {

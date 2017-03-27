@@ -13,6 +13,7 @@ import io.discloader.discloader.entity.sendable.SendableMessage;
 import io.discloader.discloader.util.DLUtil;
 
 public class APIRequest {
+
 	public String url;
 
 	public String route;
@@ -29,6 +30,7 @@ public class APIRequest {
 
 	/**
 	 * Creates a new APIRequest
+	 * 
 	 * @param url The endpoint's url
 	 * @param method The request method to use
 	 * @param auth Does the endpoint require authorization
@@ -77,18 +79,15 @@ public class APIRequest {
 		case DLUtil.Methods.POST:
 			request = Unirest.post(this.route);
 			if (this.multi) {
-
-				SendableMessage data = (SendableMessage) this.data,
-						message = new SendableMessage(data.content, data.embed, data.attachment, null);
+				SendableMessage data = (SendableMessage) this.data;
 				File file = data.file;
 				try {
 					byte[] bytes = DLUtil.readAllBytes(file);
 					MultipartBody body = ((HttpRequestWithBody) request).fields(null);
-					body.field("file", bytes, file.getName()).field("payload_json", DLUtil.gson.toJson(message));
+					body.field("file", bytes, file.getName()).field("payload_json", DLUtil.gson.toJson(data));
 				} catch (IOException e) {
 					e.printStackTrace();
 				}
-
 			} else {
 				((HttpRequestWithBody) request).body(DLUtil.gson.toJson(this.data));
 			}

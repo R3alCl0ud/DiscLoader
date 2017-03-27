@@ -10,13 +10,9 @@ public class CommandInvite extends Command {
 	}
 
 	public void execute(MessageCreateEvent e, String[] args) {
-		try {
-			e.getMessage().channel.startTyping().get();
-		} catch (Exception ex) {
-			ex.printStackTrace();
-		}
+		// e.getChannel().startTyping().join();
 		e.loader.user.getOAuth2Application().thenAcceptAsync(App -> {
-			e.getMessage().channel.sendMessage(App.getOAuthURL());
+			e.getChannel().sendMessage(App.getOAuthURL());
 		});
 	}
 }

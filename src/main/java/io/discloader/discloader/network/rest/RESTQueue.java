@@ -21,6 +21,7 @@ import com.mashape.unirest.request.body.MultipartBody;
 
 import io.discloader.discloader.common.DiscLoader;
 import io.discloader.discloader.common.event.RawEvent;
+import io.discloader.discloader.common.exceptions.AccountTypeException;
 import io.discloader.discloader.common.exceptions.UnauthorizedException;
 import io.discloader.discloader.common.exceptions.UnknownException;
 import io.discloader.discloader.network.json.ExceptionJSON;
@@ -30,6 +31,7 @@ import io.discloader.discloader.util.DLUtil;
  * @author Perry Berman
  */
 public class RESTQueue {
+
 	public List<APIRequest> queue;
 
 	public RESTManager rest;
@@ -72,6 +74,7 @@ public class RESTQueue {
 		request = addHeaders(request, apiRequest.auth, apiRequest.multi);
 
 		request.asStringAsync(new Callback<String>() {
+
 			public void cancelled() {
 				apiRequest.future.completeExceptionally(new Throwable());
 			}
@@ -104,6 +107,7 @@ public class RESTQueue {
 				int code = response.getStatus();
 				if (code == 429) {
 					TimerTask wait = new TimerTask() {
+
 						@Override
 						public void run() {
 							waiting = false;
@@ -122,6 +126,13 @@ public class RESTQueue {
 					case 401:
 						apiRequest.future.completeExceptionally(new UnauthorizedException(response.getBody()));
 						break;
+					case 403:
+						switch (data.code) {
+						case 20002:
+							apiRequest.future.completeExceptionally(new AccountTypeException(data));
+							break;
+						}
+						break;
 					default:
 						apiRequest.future.completeExceptionally(new UnknownException(data));
 						break;
@@ -135,6 +146,7 @@ public class RESTQueue {
 				globalLimit = false;
 				if (remaining == 0) {
 					TimerTask wait = new TimerTask() {
+
 						@Override
 						public void run() {
 							waiting = false;

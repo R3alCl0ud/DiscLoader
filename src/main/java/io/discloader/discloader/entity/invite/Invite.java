@@ -14,14 +14,17 @@ import io.discloader.discloader.util.DLUtil.ChannelTypes;
  * @since 0.1.0
  */
 public class Invite {
+
 	/**
 	 * The invite code (unique ID)
 	 */
 	public final String code;
+
 	/**
 	 * The guild this invite is for
 	 */
 	public final Guild guild;
+
 	/**
 	 * The channel this invite is for.
 	 */

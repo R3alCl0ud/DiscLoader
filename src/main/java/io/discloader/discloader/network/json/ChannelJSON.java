@@ -1,6 +1,7 @@
 package io.discloader.discloader.network.json;
 
 public class ChannelJSON {
+
 	public String id;
 	public String name;
 	public String topic;

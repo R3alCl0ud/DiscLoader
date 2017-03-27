@@ -31,6 +31,10 @@ public class Channel implements IChannel {
 	public Channel(DiscLoader loader, ChannelJSON data) {
 		this.loader = loader;
 
+		id = data.id;
+
+		snowflake = new Snowflake(id);
+
 		type = ChannelType.CHANNEL;
 
 		if (data != null) setup(data);
@@ -62,9 +66,7 @@ public class Channel implements IChannel {
 	}
 
 	public void setup(ChannelJSON data) {
-		id = data.id;
 
-		snowflake = new Snowflake(id);
 	}
 
 	public String toMention() {

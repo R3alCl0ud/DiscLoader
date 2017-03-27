@@ -2,7 +2,6 @@ package io.discloader.guimod;
 
 import io.discloader.discloader.common.DiscLoader;
 import io.discloader.discloader.common.discovery.Mod;
-import io.discloader.discloader.common.discovery.Mod.EventHandler;
 import io.discloader.discloader.common.discovery.Mod.Instance;
 import io.discloader.guimod.gui.event.GUIEvents;
 
@@ -21,10 +20,4 @@ public class GUIMod {
 	public GUIMod() {
 		DiscLoader.getDiscLoader().addEventHandler(new GUIEvents());
 	}
-
-	@EventHandler
-	public void PreInit() {
-
-	}
-
 }

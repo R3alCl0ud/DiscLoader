@@ -400,8 +400,9 @@ public class DiscLoader {
 			for (Guild guild : guilds.values()) {
 				unavailable += guild.available ? 0 : 1;
 			}
-			ProgressLogger.progress(guilds.size() - unavailable, this.guilds.size(), "Guilds Cached");
+			ProgressLogger.progress(guilds.size() - unavailable, guilds.size(), "Guilds Cached");
 			if (unavailable == 0) {
+
 				socket.status = Status.NEARLY;
 				try {
 					emitReady();

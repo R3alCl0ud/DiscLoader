@@ -637,8 +637,6 @@ public class Guild {
 		}
 		ProgressLogger.step(3, 7, "Caching Channels");
 		if (data.channels != null && data.channels.length > 0) {
-			this.textChannels.clear();
-			this.voiceChannels.clear();
 			for (ChannelJSON channel : data.channels) {
 				this.loader.addChannel(channel, this);
 			}

@@ -1,6 +1,6 @@
 package io.discloader.discloader.entity;
 
-import io.discloader.discloader.entity.channels.impl.Channel;
+import io.discloader.discloader.entity.channels.impl.GuildChannel;
 import io.discloader.discloader.entity.guild.GuildMember;
 import io.discloader.discloader.entity.guild.Role;
 import io.discloader.discloader.network.json.OverwriteJSON;
@@ -37,62 +37,89 @@ public class Overwrite {
 	 * The {@link Role} the overwrite applies to. null if type is
 	 * {@literal "member"}
 	 */
-	public transient final Role role;
+	public transient Role role;
 
 	/**
 	 * The {@link GuildMember} the overwrite applies to. null if type is
 	 * {@literal "role"}
 	 * 
-	 * @author cloud
+	 * @author Perry Berman
 	 */
-	public transient final GuildMember member;
+	public transient GuildMember member;
 
-	/**
-	 * The {@link Channel} the overwrite belongs to
-	 */
-	public transient Channel channel;
+	private transient GuildChannel channel;
 
-	public Overwrite(Overwrite data, GuildMember member) {
-		this.allow = data.allow;
-		this.deny = data.deny;
-		this.type = data.type;
-		this.member = member;
-		this.role = null;
-	}
-
-	public Overwrite(Overwrite data, Role role) {
-		this.allow = data.allow;
-		this.deny = data.deny;
-		this.type = data.type;
-		this.role = role;
-		this.member = null;
-	}
-
-	public Overwrite(OverwriteJSON data) {
-		this.allow = data.allow;
-		this.deny = data.deny;
-		if (data.id != null) this.id = data.id;
-		if (data.type != null) this.type = data.type;
-		this.role = null;
-		this.member = null;
-	}
-
-	public Overwrite(int allow, int deny, Role role) {
+	public Overwrite(int allow, int deny) {
 		this.allow = allow;
 		this.deny = deny;
-		type = "role";
-		this.role = role;
-		member = null;
-		id = role.id;
 	}
 
 	public Overwrite(int allow, int deny, GuildMember member) {
-		this.allow = allow;
-		this.deny = deny;
+		this(allow, deny);
 		type = "member";
-		this.member = member;
-		role = null;
 		id = member.id;
+	}
+
+	public Overwrite(int allow, int deny, Role role) {
+		this(allow, deny);
+		type = "role";
+		id = role.id;
+	}
+
+	public Overwrite(Overwrite data, GuildMember member) {
+		this(data.getAllowed(), data.getDenied());
+		this.type = "member";
+		id = member.id;
+	}
+
+	public Overwrite(Overwrite data, Role role) {
+		this(data.getAllowed(), data.getDenied());
+		type = "role";
+		id = role.id;
+	}
+
+	public Overwrite(OverwriteJSON data) {
+		this(data.allow, data.deny);
+		if (data.id != null) this.id = data.id;
+		if (data.type != null) this.type = data.type;
+	}
+
+	public int getAllowed() {
+		return allow;
+	}
+
+	public GuildChannel getChannel() {
+		return channel;
+	}
+
+	public int getDenied() {
+		return deny;
+	}
+
+	public String getID() {
+		return id;
+	}
+
+	public GuildMember getMember() {
+		return channel.guild.members.get(id);
+	}
+
+	public Role getRole() {
+		return channel.guild.roles.get(id);
+	}
+
+	public int setAllowedPermissions(Permissions... permissions) {
+		for (Permissions p : permissions) {
+			allow |= p.getValue();
+		}
+		return allow;
+	}
+
+	public int setDeniedPermissions(Permissions... permissions) {
+		for (Permissions p : permissions) {
+			deny |= p.getValue();
+		}
+		return allow;
 	}
 
 }

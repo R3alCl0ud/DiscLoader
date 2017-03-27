@@ -6,18 +6,17 @@ import io.discloader.discloader.entity.RichEmbed;
 
 /**
  * @author Perry Berman
- *
  */
 public class SendableMessage {
 
 	public final String content;
-	
+
 	public final RichEmbed embed;
-	
+
 	public final Attachment attachment;
-	
-	public File file;
-	
+
+	public transient File file;
+
 	public SendableMessage(String content, RichEmbed embed, Attachment attachment, File file) {
 		this.content = content;
 		this.embed = embed;
@@ -28,5 +27,5 @@ public class SendableMessage {
 	public void setFile(File file) {
 		this.file = file;
 	}
-	
+
 }

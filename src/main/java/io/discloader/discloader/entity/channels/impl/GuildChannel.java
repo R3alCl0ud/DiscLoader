@@ -10,7 +10,6 @@ import io.discloader.discloader.entity.guild.Guild;
 import io.discloader.discloader.entity.guild.GuildMember;
 import io.discloader.discloader.entity.guild.Role;
 import io.discloader.discloader.network.json.ChannelJSON;
-import io.discloader.discloader.network.json.OverwriteJSON;
 import io.discloader.discloader.network.rest.actions.channel.SetOverwrite;
 import io.discloader.discloader.network.rest.actions.channel.close.CloseGuildChannel;
 import io.discloader.discloader.util.DLUtil;
@@ -122,8 +121,8 @@ public class GuildChannel extends Channel implements IGuildChannel {
 		for (Role role : member.getRoles().values())
 			raw |= role.getPermissions().asInteger();
 		for (Overwrite overwrite : this.overwritesOf(member).values()) {
-			raw |= overwrite.allow;
-			raw &= ~overwrite.deny;
+			raw |= overwrite.getAllowed();
+			raw &= ~overwrite.getDenied();
 		}
 		return new Permission(member, this, raw);
 	}
@@ -152,10 +151,6 @@ public class GuildChannel extends Channel implements IGuildChannel {
 		super.setup(data);
 		name = data.name;
 		position = data.position;
-
-		for (OverwriteJSON ow : data.permission_overwrites) {
-			overwrites.put(ow.id, new Overwrite(ow));
-		}
 	}
 
 }

@@ -15,6 +15,7 @@ import io.discloader.discloader.network.json.ChannelJSON;
 import io.discloader.discloader.network.rest.actions.channel.BulkDelete;
 import io.discloader.discloader.network.rest.actions.channel.FetchMessage;
 import io.discloader.discloader.network.rest.actions.channel.FetchMessages;
+import io.discloader.discloader.network.rest.actions.channel.SendMessage;
 import io.discloader.discloader.network.rest.actions.channel.StartTyping;
 import io.discloader.discloader.network.rest.actions.channel.pin.PinMessage;
 import io.discloader.discloader.network.rest.actions.channel.pin.PinnedMessages;
@@ -129,18 +130,11 @@ public class GroupChannel extends Channel implements ITextChannel {
 	}
 
 	public CompletableFuture<Message> sendEmbed(RichEmbed embed) {
-		File file = null;
-		Attachment attachment = null;
-		if (embed.thumbnail != null && embed.thumbnail.file != null) {
-			file = embed.thumbnail.file;
-			embed.thumbnail.file = null;
-			attachment = new Attachment(file.getName());
-		}
-		return this.loader.rest.sendMessage(this, " ", embed, attachment, file);
+		return sendMessage(null, embed);
 	}
 
 	public CompletableFuture<Message> sendMessage(String content) {
-		return this.loader.rest.sendMessage(this, content, null, null, null);
+		return sendMessage(content, null);
 	}
 
 	public CompletableFuture<Message> sendMessage(String content, RichEmbed embed) {
@@ -151,7 +145,7 @@ public class GroupChannel extends Channel implements ITextChannel {
 			embed.thumbnail.file = null;
 			attachment = new Attachment(file.getName());
 		}
-		return this.loader.rest.sendMessage(this, content, embed, attachment, file);
+		return new SendMessage(this, content, embed, attachment, file).execute();
 	}
 
 	@Override
