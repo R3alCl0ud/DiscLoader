@@ -19,6 +19,8 @@ public class ChannelInfo<T extends Channel> extends AbstractInfo<T> {
 	public void update(Channel channel) {
 		removeAll();
 		revalidate();
+		repaint();
+		add(new JLabel(String.format("ID: %s", channel.getID())));
 		if (channel instanceof GuildChannel) {
 			GuildChannel gc = (GuildChannel) channel;
 			add(new JLabel(String.format("Name: %s", gc.name)));
@@ -32,8 +34,9 @@ public class ChannelInfo<T extends Channel> extends AbstractInfo<T> {
 		} else if (channel instanceof PrivateChannel) {
 
 		}
-		add(new JLabel(String.format("ID: %s", channel.getID())));
 		add(new JLabel(String.format("Type: %s", channel.getType())));
+		revalidate();
+		repaint();
 	}
 
 }

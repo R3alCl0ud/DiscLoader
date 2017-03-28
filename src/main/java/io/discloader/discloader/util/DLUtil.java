@@ -36,6 +36,13 @@ public final class DLUtil {
 		private ChannelType(String name) {
 			this.name = name;
 		}
+
+		/**
+		 * @return the name
+		 */
+		public String getName() {
+			return name;
+		}
 	}
 
 	/**
@@ -571,7 +578,7 @@ public final class DLUtil {
 
 	public static final String API = String.format("%s/api/v6", HOST);
 
-	public static final String LoaderVersion = "0.0.3";
+	public static final String LoaderVersion = "0.1.1";
 
 	public static final Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
 
