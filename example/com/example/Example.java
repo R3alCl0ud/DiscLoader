@@ -2,23 +2,23 @@ package com.example;
 
 import io.discloader.discloader.common.DiscLoader;
 import io.discloader.discloader.common.event.EventListenerAdapter;
-import io.discloader.discloader.common.event.MessageCreateEvent;
+import io.discloader.discloader.common.event.message.MessageCreateEvent;
 
 public class Example extends EventListenerAdapter {
-
+	
 	public static void main(String... args) {
 		DiscLoader client = new DiscLoader();
-		DiscLoader.addEventHandler(new Example());
+		client.addEventHandler(new Example());
 		client.login("TOKEN");
 	}
-
+	
 	public void MessageCreate(MessageCreateEvent e) {
-		if (!e.message.content.startsWith("/"))
+		if (!e.getMessage().content.startsWith("/"))
 			return;
-
-		if (e.message.content.equals("/hello")) {
+		
+		if (e.getMessage().content.equals("/hello")) {
 			// message.author.toString() returns their mention string
-			e.message.channel.sendMessage(String.format("Hello %s", e.message.author));
+			e.getChannel().sendMessage(String.format("Hello %s", e.getMessage().author));
 		}
 	}
 }

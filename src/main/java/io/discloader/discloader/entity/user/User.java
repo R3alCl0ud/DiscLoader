@@ -15,116 +15,125 @@ import io.discloader.discloader.network.rest.actions.FetchUserProfile;
  */
 public class User {
 
-	/**
-	 * The loader instance that cached the user.
-	 */
-	public final DiscLoader loader;
-	/**
-	 * The user's unique Snowflake ID.
-	 */
-	public final String id;
+    /**
+     * The loader instance that cached the user.
+     */
+    public final DiscLoader loader;
 
-	/**
-	 * The user's username
-	 */
-	public String username;
-	/**
-	 * The hash of the user's avatar
-	 */
-	protected IIcon avatar;
+    /**
+     * The user's unique Snowflake ID.
+     */
+    public final String id;
 
-	/**
-	 * The user's four digit discriminator
-	 */
-	public String discriminator;
-	/**
-	 * Whether or not the user is a bot account
-	 */
-	public boolean bot;
-	/**
-	 * Whether or not the user has verified their email address
-	 */
-	public boolean verified;
-	/**
-	 * Whethor or not the user has 2FA enabled
-	 */
-	public boolean mfa;
+    /**
+     * The user's username
+     */
+    public String username;
 
-	public User(DiscLoader loader, UserJSON user) {
-		this.loader = loader;
+    /**
+     * The hash of the user's avatar
+     */
+    protected IIcon avatar;
 
-		this.id = user.id;
+    /**
+     * The user's four digit discriminator
+     */
+    public String discriminator;
 
-		if (user.username != null) {
-			this.setup(user);
-		}
-	}
+    /**
+     * Whether or not the user is a bot account
+     */
+    public boolean bot;
 
-	public User(User user) {
-		this.loader = user.loader;
+    /**
+     * Whether or not the user has verified their email address
+     */
+    public boolean verified;
 
-		this.id = user.id;
+    /**
+     * Whether or not the user has 2FA enabled
+     */
+    public boolean mfa;
 
-		this.username = user.username;
+    public User(DiscLoader loader, UserJSON user) {
+        this.loader = loader;
 
-		this.discriminator = user.discriminator;
+        this.id = user.id;
 
-		this.avatar = new UserIcon(this, user.avatar.getIconName());
+        if (user.username != null) {
+            this.setup(user);
+        }
+    }
 
-		this.bot = user.bot;
-	}
+    public User(User user) {
+        this.loader = user.loader;
 
-	/**
-	 * toStrings the user in mention format
-	 * 
-	 * @return {@literal <@}{@link #id this.id}{@literal>}
-	 */
-	public String asMention() {
-		return String.format("<@%s>", id);
-	}
+        this.id = user.id;
 
-	/**
-	 * @return A Future that completes with the user's profile if successful.
-	 */
-	public CompletableFuture<UserProfile> getProfile() {
-		return new FetchUserProfile(this).execute();
-	}
+        this.username = user.username;
 
-	/**
-	 * Updates a user's information
-	 * 
-	 * @param data The user's new data
-	 * @return this
-	 */
-	public User patch(UserJSON data) {
-		setup(data);
-		return this;
-	}
+        this.discriminator = user.discriminator;
 
-	public void setup(UserJSON data) {
-		if (data.username != null) this.username = data.username;
+        this.avatar = new UserIcon(this, user.avatar.getIconName());
 
-		if (data.discriminator != null) this.discriminator = data.discriminator;
+        this.bot = user.bot;
+    }
 
-		if (data.avatar != null) this.avatar = new UserIcon(this, data.avatar);
+    /**
+     * toStrings the user in mention format
+     * 
+     * @return {@literal <@}{@link #id this.id}{@literal>}
+     */
+    public String asMention() {
+        return String.format("<@%s>", id);
+    }
 
-		if (data.bot == true || data.bot == false) this.bot = data.bot;
-	}
+    /**
+     * @return A Future that completes with the user's profile if successful.
+     */
+    public CompletableFuture<UserProfile> getProfile() {
+        return new FetchUserProfile(this).execute();
+    }
 
-	public UserIcon getAvatar() {
-		return (UserIcon) avatar;
-	}
+    /**
+     * Updates a user's information
+     * 
+     * @param data The user's new data
+     * @return this
+     */
+    public User patch(UserJSON data) {
+        setup(data);
+        return this;
+    }
 
-	/**
-	 * returns a String in the format of
-	 * 
-	 * <pre>
-	 * username + "#" + discriminator
-	 * </pre>
-	 * 
-	 * @return {@link #username}{@literal #}{@link #discriminator}
-	 */
-	public String toString() {
-		return String.format("%s#%s", username, discriminator);
-	}
+    public void setup(UserJSON data) {
+        if (data.username != null)
+            this.username = data.username;
+
+        if (data.discriminator != null)
+            this.discriminator = data.discriminator;
+
+        if (data.avatar != null)
+            this.avatar = new UserIcon(this, data.avatar);
+
+        if (data.bot == true || data.bot == false)
+            this.bot = data.bot;
+    }
+
+    public UserIcon getAvatar() {
+        return (UserIcon) avatar;
+    }
+
+    /**
+     * returns a String in the format of
+     * 
+     * <pre>
+     * username + "#" + discriminator
+     * </pre>
+     * 
+     * @return {@link #username}{@literal #}{@link #discriminator}
+     */
+    public String toString() {
+        return String.format("%s#%s", username, discriminator);
+    }
 }

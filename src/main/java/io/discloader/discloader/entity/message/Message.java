@@ -118,8 +118,6 @@ public class Message {
 	 */
 	public ArrayList<MessageEmbed> embeds;
 
-	// public ArrayList<>
-
 	/**
 	 * Creates a new message object
 	 * 

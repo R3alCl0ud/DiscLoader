@@ -24,36 +24,36 @@ import io.discloader.discloader.util.DLUtil;
  * @see Guild
  */
 public class GuildMember {
-
+	
 	/**
 	 * The loader instance that cached the member.
 	 */
 	public final DiscLoader loader;
-
+	
 	/**
 	 * The member's nickname, or null if the user has no nickname
 	 */
 	private String nick;
-
+	
 	/**
 	 * The member's Snowflake ID.
 	 * 
 	 * @see User
 	 */
 	public final String id;
-
+	
 	/**
 	 * The member's user object
 	 */
 	public final User user;
-
+	
 	/**
 	 * The guild the member is in
 	 */
 	public final Guild guild;
-
+	
 	private String[] roleIDs;
-
+	
 	/**
 	 * Whether or not the member's mic is muted
 	 */
@@ -62,18 +62,17 @@ public class GuildMember {
 	 * Whether or not the member
 	 */
 	private boolean deaf;
-
+	
 	/**
 	 * Member's old presence. Has a value of {@code null} unless
 	 */
 	private Presence presence;
-
+	
 	/**
-	 * A {@link Date} object representing when the member joined the
-	 * {@link Guild}.
+	 * A {@link Date} object representing when the member joined the {@link Guild}.
 	 */
 	public final Date joinedAt;
-
+	
 	public GuildMember(Guild guild, MemberJSON data) {
 		this.loader = guild.loader;
 		this.user = this.loader.addUser(data.user);
@@ -82,24 +81,24 @@ public class GuildMember {
 		this.nick = data.nick != null ? data.nick : this.user.username;
 		this.joinedAt = DLUtil.parseISO8601(data.joined_at);
 		this.roleIDs = data.roles;
-
+		
 		this.deaf = data.deaf;
 		this.mute = this.deaf ? true : data.mute;
-
+		
 	}
-
+	
 	public GuildMember(Guild guild, User user) {
 		this.id = user.id;
-
+		
 		this.user = user;
-
+		
 		this.guild = guild;
-
+		
 		this.loader = guild.loader;
-
+		
 		this.joinedAt = null;
 	}
-
+	
 	public GuildMember(Guild guild, User user, String[] roles, boolean deaf, boolean mute, String nick) {
 		this.id = user.id;
 		this.user = user;
@@ -111,7 +110,7 @@ public class GuildMember {
 		this.deaf = deaf;
 		this.mute = this.deaf == true ? true : mute;
 	}
-
+	
 	public GuildMember(GuildMember data) {
 		this.id = data.id;
 		this.loader = data.loader;
@@ -123,22 +122,19 @@ public class GuildMember {
 		this.deaf = data.deaf;
 		this.mute = this.deaf ? true : data.mute;
 	}
-
+	
 	/**
-	 * Bans the member from the {@link Guild} if the {@link DiscLoader loader}
-	 * has sufficient permissions
+	 * Bans the member from the {@link Guild} if the {@link DiscLoader loader} has sufficient permissions
 	 * 
 	 * @see Permission
-	 * @return A CompletableFuture that completes with {@code this} if
-	 *         successful
+	 * @return A CompletableFuture that completes with {@code this} if successful
 	 */
 	public CompletableFuture<GuildMember> ban() {
 		return this.guild.ban(this);
 	}
-
+	
 	/**
-	 * Server deafens a {@link GuildMember} if they are not already server
-	 * deafened
+	 * Server deafens a {@link GuildMember} if they are not already server deafened
 	 * 
 	 * @return A Future that completes with the deafed member if successful.
 	 */
@@ -146,19 +142,22 @@ public class GuildMember {
 		ModifyMember future = new ModifyMember(this, nick, getRoles(), mute, true, getVoiceChannel());
 		return future.execute();
 	}
-
+	
 	@Override
 	public boolean equals(Object obj) {
-		if (!(obj instanceof GuildMember)) return false;
+		if (!(obj instanceof GuildMember))
+			return false;
 		GuildMember member = (GuildMember) obj;
-		if (!guild.id.equals(member.guild.id)) return false;
+		if (!guild.id.equals(member.guild.id))
+			return false;
 		for (Role role : member.getRoles().values()) {
-			if (!getRoles().containsKey(role.id)) return false;
+			if (!getRoles().containsKey(role.id))
+				return false;
 		}
-
+		
 		return id.equals(member.id) && nick.equals(member.nick);
 	}
-
+	
 	/**
 	 * Determines the member's highest role in the {@link #guild}'s role hiarchy
 	 * 
@@ -174,33 +173,40 @@ public class GuildMember {
 		}
 		return highest;
 	}
-
+	
 	/**
-	 * @return the member's nickname if they have one, {@link #user}
-	 *         {@link User#username .username}
-	 *         otherwise.
+	 * @return the member's nickname if they have one, {@link #user} {@link User#username .username} otherwise.
 	 */
 	public String getName() {
 		return nick != null ? nick : user.username;
 	}
-
+	
 	/**
 	 * @return the member's nickname if they have one, null otherwise.
 	 */
 	public String getNickname() {
 		return nick;
 	}
-
+	
 	/**
 	 * Gets the member's presence from their {@link #guild}
 	 * 
 	 * @return The members current presence.
 	 */
 	public Presence getPresence() {
-		if (presence == null) presence = guild.presences.get(id);
+		if (presence == null)
+			presence = guild.presences.get(id);
 		return presence;
 	}
-
+	
+	public Permission getPermissions() {
+		int r = 0;
+		for (Role role : getRoles().values()) {
+			r |= role.getPermissions().asInteger();
+		}
+		return new Permission(this, r);
+	}
+	
 	/**
 	 * returns a HashMap of roles that the member belongs to.
 	 * 
@@ -213,9 +219,9 @@ public class GuildMember {
 		}
 		return roles;
 	}
-
+	
 	/**
-	 * Gets the {@link VoiceChannel} that the member is connected to, if they're in a voice channel. 
+	 * Gets the {@link VoiceChannel} that the member is connected to, if they're in a voice channel.
 	 * 
 	 * @return a {@link VoiceChannel} object if {@link #hasVoiceConnection()} returns true, null otherwise.
 	 */
@@ -226,17 +232,16 @@ public class GuildMember {
 		}
 		return null;
 	}
-
+	
 	public VoiceState getVoiceState() {
 		return guild.getVoiceStates().get(id);
 	}
-
+	
 	/**
 	 * Gives a member a new role
 	 * 
 	 * @param roles The roles to give to the member
-	 * @return A CompletableFuture that completes with {@code this} if
-	 *         successful
+	 * @return A CompletableFuture that completes with {@code this} if successful
 	 */
 	public CompletableFuture<GuildMember> giveRole(Role... roles) {
 		ArrayList<CompletableFuture<GuildMember>> futures = new ArrayList<>();
@@ -249,7 +254,7 @@ public class GuildMember {
 		});
 		return future;
 	}
-
+	
 	/**
 	 * Determines if the member is connected to a voice channel in their {@link #guild}
 	 * 
@@ -258,31 +263,31 @@ public class GuildMember {
 	public boolean hasVoiceConnection() {
 		return getVoiceState() != null;
 	}
-
+	
 	public boolean isDeaf() {
-		if (!hasVoiceConnection()) return false;
-
+		if (!hasVoiceConnection())
+			return false;
+		
 		return getVoiceState().deaf;
 	}
-
+	
 	public boolean isMuted() {
-		if (!hasVoiceConnection()) return false;
-
+		if (!hasVoiceConnection())
+			return false;
+		
 		return getVoiceState().mute;
 	}
-
+	
 	/**
-	 * Kicks the member from the {@link Guild} if the {@link DiscLoader client}
-	 * has sufficient permissions
+	 * Kicks the member from the {@link Guild} if the {@link DiscLoader client} has sufficient permissions
 	 * 
 	 * @see Permission
-	 * @return A CompletableFuture that completes with {@code this} if
-	 *         successful
+	 * @return A CompletableFuture that completes with {@code this} if successful
 	 */
 	public CompletableFuture<GuildMember> kick() {
 		return this.guild.kickMember(this);
 	}
-
+	
 	/**
 	 * 
 	 * 
@@ -293,34 +298,30 @@ public class GuildMember {
 		ModifyMember future = new ModifyMember(this, channel);
 		return future.execute();
 	}
-
+	
 	/**
-	 * Server deafens a {@link GuildMember} if they are not already server
-	 * deafened
+	 * Server deafens a {@link GuildMember} if they are not already server deafened
 	 * 
-	 * @return A CompletableFuture that completes with {@code this} if
-	 *         successful
+	 * @return A CompletableFuture that completes with {@code this} if successful
 	 */
 	public CompletableFuture<GuildMember> mute() {
 		ModifyMember future = new ModifyMember(this, nick, getRoles(), true, deaf, getVoiceChannel());
 		return future.execute();
 	}
-
+	
 	/**
-	 * Sets the member's nickname if the {@link DiscLoader loader} has
-	 * sufficient permissions
+	 * Sets the member's nickname if the {@link DiscLoader loader} has sufficient permissions
 	 * 
 	 * @param nick The member's new nickname
 	 * @see Permission
-	 * @return A CompletableFuture that completes with {@code this} if
-	 *         successful
+	 * @return A CompletableFuture that completes with {@code this} if successful
 	 */
 	public CompletableFuture<GuildMember> setNick(String nick) {
 		CompletableFuture<GuildMember> future = loader.rest.setNick(this, nick);
 		future.thenAcceptAsync(action -> this.nick = nick);
 		return future;
 	}
-
+	
 	/**
 	 * Takes a role away from a member
 	 * 
@@ -328,9 +329,9 @@ public class GuildMember {
 	 * @return A Future that completes with the member if successful.
 	 */
 	public CompletableFuture<GuildMember> takeRole(Role role) {
-		return this.loader.rest.takeRole(this, role);
+		return loader.rest.takeRole(this, role);
 	}
-
+	
 	/**
 	 * Same as {@link User#toString()}
 	 * 
@@ -339,15 +340,15 @@ public class GuildMember {
 	public String toMention() {
 		return String.format("<@!%s>", id);
 	}
-
+	
 	public CompletableFuture<GuildMember> unDeafen() {
 		ModifyMember future = new ModifyMember(this, nick, getRoles(), mute, false, getVoiceChannel());
 		return future.execute();
 	}
-
+	
 	public CompletableFuture<GuildMember> unMute() {
 		ModifyMember future = new ModifyMember(this, nick, getRoles(), false, deaf, getVoiceChannel());
 		return future.execute();
 	}
-
+	
 }
