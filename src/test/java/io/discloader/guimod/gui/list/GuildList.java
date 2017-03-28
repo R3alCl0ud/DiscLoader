@@ -18,7 +18,7 @@ public class GuildList<T extends Guild> extends AbstractList<T> {
 	public DefaultListModel<Object> createListModel() {
 		DefaultListModel<Object> listModel = new DefaultListModel<Object>();
 		for (Guild guild : this.loader.guilds.values()) {
-			listModel.addElement(String.format("<html>%s<br>%s<br>%s</html>", guild.name, guild.id, guild.voiceRegion.id));
+			listModel.addElement(String.format("<html>%s<br>%s<br>%s</html>", guild.name, guild.id, guild.getVoiceRegion().id));
 			this.items.add((T) guild);
 		}
 		return listModel;

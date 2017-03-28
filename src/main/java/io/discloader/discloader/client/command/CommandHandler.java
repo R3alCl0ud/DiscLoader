@@ -84,7 +84,7 @@ public class CommandHandler {
 	}
 
 	public static String getGuildRegion(Guild guild) {
-		return guild.voiceRegion.id;
+		return guild.getVoiceRegion().id;
 	}
 
 }

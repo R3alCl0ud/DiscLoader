@@ -20,11 +20,14 @@ public class GUIEvents extends EventListenerAdapter {
 
 	@Override
 	public void Ready(ReadyEvent e) {
-		window.remove(WindowFrame.loading);
-		window.revalidate();
-		window.add(this.setTabs(new TabbedPanel(e.loader)));
-		window.revalidate();
-		window.repaint();
+		window = Main.window;
+		if (window != null) {
+			window.remove(WindowFrame.loading);
+			window.revalidate();
+			window.add(this.setTabs(new TabbedPanel(e.loader)));
+			window.revalidate();
+			window.repaint();
+		}
 	}
 
 	/**

@@ -5,7 +5,6 @@ import java.util.Locale;
 
 /**
  * @author Perry Berman
- *
  */
 public class LanguageRegistry {
 
@@ -32,20 +31,17 @@ public class LanguageRegistry {
 	}
 
 	public static HashMap<String, HashMap<String, HashMap<String, String>>> getLocale(Locale locale) {
-		if (getLocales().localizedNames.containsKey(locale))
-			return getLocales().localizedNames.get(locale);
+		if (getLocales().localizedNames.containsKey(locale)) return getLocales().localizedNames.get(locale);
 		return null;
 	}
 
 	public static HashMap<String, HashMap<String, String>> getLocalized(Locale locale, String type) {
-		if (getLocale(locale) != null)
-			return getLocale(locale).get(type);
+		if (getLocale(locale) != null) return getLocale(locale).get(type);
 		return null;
 	}
 
 	public static HashMap<String, String> getLocalized(Locale locale, String type, String field) {
-		if (getLocalized(locale, type) != null)
-			return getLocalized(locale, type).get(field);
+		if (getLocalized(locale, type) != null) return getLocalized(locale, type).get(field);
 		return null;
 	}
 
@@ -57,17 +53,15 @@ public class LanguageRegistry {
 	 * @return The localized string
 	 */
 	public static String getLocalized(Locale locale, String type, String field, String prop) {
-		if (getLocalized(locale, type, field) != null)
-			return getLocalized(locale, type, field).get(prop);
+		if (getLocalized(locale, type, field) != null) return getLocalized(locale, type, field).get(prop);
 		return null;
 	}
 
 	public static String getLocalized(String TypeFieldProp) {
 		String[] l = TypeFieldProp.split("[.]");
-		if (l.length < 1 || l.length > 3)
-			return null;
+		if (l.length < 1 || l.length > 3) return null;
 		String t = l[0], f = l[1], p = l[2];
-		return langs.localizedNames.get(Locale.US).get(t).get(f).get(p);
+		return getLocalized(Locale.US, t, f, p);
 	}
 
 	/**

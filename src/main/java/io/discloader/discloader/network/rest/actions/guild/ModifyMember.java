@@ -1,4 +1,4 @@
-package io.discloader.discloader.network.rest.actions;
+package io.discloader.discloader.network.rest.actions.guild;
 
 import java.util.HashMap;
 import java.util.concurrent.CompletableFuture;
