@@ -4,7 +4,7 @@ package io.discloader.discloader.common.exceptions;
  * @author Perry Berman
  *
  */
-public class GuildSyncException extends Exception {
+public class GuildSyncException extends RuntimeException {
 
     /**
      * 

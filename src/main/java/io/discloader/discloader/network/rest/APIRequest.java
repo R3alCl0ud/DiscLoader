@@ -13,21 +13,21 @@ import io.discloader.discloader.entity.sendable.SendableMessage;
 import io.discloader.discloader.util.DLUtil;
 
 public class APIRequest {
-
+	
 	public String url;
-
+	
 	public String route;
-
+	
 	public int method;
-
+	
 	public boolean auth;
-
+	
 	public final boolean multi;
-
+	
 	public Object data;
-
+	
 	public CompletableFuture<String> future;
-
+	
 	/**
 	 * Creates a new APIRequest
 	 * 
@@ -48,7 +48,7 @@ public class APIRequest {
 			this.multi = false;
 		}
 	}
-
+	
 	/**
 	 * Converts the {@link APIRequest} URL to the corresponding API Endpoint
 	 * 
@@ -64,50 +64,53 @@ public class APIRequest {
 		}
 		return route;
 	}
-
+	
 	public CompletableFuture<?> setFuture(CompletableFuture<String> future) {
 		this.future = future;
 		return future;
 	}
-
+	
 	public BaseRequest createRequest() {
 		BaseRequest request = null;
 		switch (this.method) {
-		case DLUtil.Methods.GET:
-			request = Unirest.get(this.route);
-			break;
-		case DLUtil.Methods.POST:
-			request = Unirest.post(this.route);
-			if (this.multi) {
-				SendableMessage data = (SendableMessage) this.data;
-				File file = data.file;
-				try {
-					byte[] bytes = DLUtil.readAllBytes(file);
-					MultipartBody body = ((HttpRequestWithBody) request).fields(null);
-					body.field("file", bytes, file.getName()).field("payload_json", DLUtil.gson.toJson(data));
-				} catch (IOException e) {
-					e.printStackTrace();
+			case DLUtil.Methods.GET:
+				request = Unirest.get(this.route);
+				break;
+			case DLUtil.Methods.POST:
+				request = Unirest.post(this.route);
+				if (this.multi) {
+					SendableMessage data = (SendableMessage) this.data;
+					File file = data.file;
+					try {
+						byte[] bytes = DLUtil.readAllBytes(file);
+						MultipartBody body = ((HttpRequestWithBody) request).fields(null);
+						body.field("file", bytes, file.getName()).field("payload_json", DLUtil.gson.toJson(data));
+					} catch (IOException e) {
+						e.printStackTrace();
+					}
+				} else {
+					((HttpRequestWithBody) request).body(DLUtil.gson.toJson(this.data));
 				}
-			} else {
+				break;
+			case DLUtil.Methods.PATCH:
+				request = Unirest.patch(this.route);
 				((HttpRequestWithBody) request).body(DLUtil.gson.toJson(this.data));
-			}
-			break;
-		case DLUtil.Methods.PATCH:
-			request = Unirest.patch(this.route);
-			((HttpRequestWithBody) request).body(DLUtil.gson.toJson(this.data));
-			break;
-		case DLUtil.Methods.DELETE:
-			request = Unirest.delete(this.route);
-			break;
-		case DLUtil.Methods.PUT:
-			request = Unirest.put(this.route);
-			((HttpRequestWithBody) request).body(DLUtil.gson.toJson(this.data));
-			break;
-		default:
-			request = Unirest.get(this.route);
+				break;
+			case DLUtil.Methods.DELETE:
+				request = Unirest.delete(this.route);
+				break;
+			case DLUtil.Methods.PUT:
+				request = Unirest.put(this.route);
+				((HttpRequestWithBody) request).body(DLUtil.gson.toJson(this.data));
+				break;
+			default:
+				request = Unirest.get(this.route);
+				break;
 		}
+		
 
+			
 		return request;
 	}
-
+	
 }

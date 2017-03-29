@@ -2,7 +2,7 @@ package io.discloader.discloader.common.exceptions;
 
 import io.discloader.discloader.network.json.ExceptionJSON;
 
-public class AccountTypeException extends Exception {
+public class AccountTypeException extends RuntimeException {
 
     private static final long serialVersionUID = -834830576849056357L;
 

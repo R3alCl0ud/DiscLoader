@@ -3,7 +3,7 @@ package io.discloader.discloader.common.exceptions;
 /**
  * @author Perry Berman
  */
-public class MissmatchException extends Exception {
+public class MissmatchException extends RuntimeException {
 
 	private static final long serialVersionUID = -3357290583469017656L;
 

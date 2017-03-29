@@ -21,13 +21,13 @@ public abstract class RESTAction<T> {
 
 	public CompletableFuture<T> execute(CompletableFuture<String> r) {
 		request = r;
-		request.whenCompleteAsync((s, ex) -> complete(s, ex));
+		request.whenCompleteAsync(this::complete);
 		return future;
 	}
 
 	public void complete(String data, Throwable ex) {
 		if (ex != null) {
-			future.completeExceptionally(ex);
+			future.completeExceptionally(ex.getCause());
 			return;
 		}
 	}

@@ -51,62 +51,60 @@ import io.discloader.discloader.util.DLUtil.Endpoints;
  * @since 0.0.1
  */
 public class Guild {
-
+	
 	/**
 	 * The guild's Snowflake ID.
 	 */
 	public final String id;
-
+	
 	/**
 	 * The guild's name
 	 */
 	public String name;
-
+	
 	/**
 	 * The guild's owner's Snowflake ID.
 	 */
 	public String ownerID;
-
+	
 	/**
 	 * The hash code of the guild's icon
 	 */
 	public String icon;
-
+	
 	/**
 	 * The url to where the {@link #icon} is located
 	 */
 	public String iconURL;
-
+	
 	/**
 	 * The guild's splash screen
 	 */
 	public GuildSplash splash;
-
+	
 	/**
 	 * The hash of the guild splash.
 	 */
 	public String splashHash;
-
+	
 	/**
-	 * The amount of members in the guild, {@link #members members.size()} maybe
-	 * not be equal to {@link #memberCount} if this is a {@link #isLarge()
-	 * large} {@link Guild guild}, as {@link #members} is a map of the currently
-	 * cached {@link GuildMember guild members}.
+	 * The amount of members in the guild, {@link #members members.size()} maybe not be equal to {@link #memberCount} if this is a
+	 * {@link #isLarge() large} {@link Guild guild}, as {@link #members} is a map of the currently cached {@link GuildMember guild members}.
 	 */
 	private int memberCount;
-
+	
 	/**
 	 * Whether or not the guild is currently available
 	 */
 	public boolean available;
-
+	
 	private String afk_channel_id;
-
+	
 	/**
 	 * The instance of the {@link DiscLoader loader} the cached the guild
 	 */
 	public final DiscLoader loader;
-
+	
 	/**
 	 * A HashMap of the guild's cached members. Indexed by member ID.
 	 * 
@@ -115,7 +113,7 @@ public class Guild {
 	 * @author Perry Berman
 	 */
 	public HashMap<String, GuildMember> members;
-
+	
 	/**
 	 * A HashMap of the guild's TextChannels. Indexed by channel ID.
 	 * 
@@ -124,7 +122,7 @@ public class Guild {
 	 * @author Perry Berman
 	 */
 	public HashMap<String, TextChannel> textChannels;
-
+	
 	/**
 	 * A HashMap of the guild's VoiceChannels. Indexed by channel ID.
 	 * 
@@ -133,7 +131,7 @@ public class Guild {
 	 * @author Perry Berman
 	 */
 	public HashMap<String, VoiceChannel> voiceChannels;
-
+	
 	/**
 	 * A HashMap of the guild's roles. Indexed by role ID.
 	 * 
@@ -142,7 +140,7 @@ public class Guild {
 	 * @author Perry Berman
 	 */
 	public HashMap<String, Role> roles;
-
+	
 	/**
 	 * A HashMap of the presences of the guild's members
 	 * 
@@ -152,27 +150,26 @@ public class Guild {
 	 * @author Perry Berman
 	 */
 	public HashMap<String, Presence> presences;
-
+	
 	/**
 	 * A HashMap of the guild's custom emojis. Indexed by {@link Emoji#id}
 	 * 
 	 * @author Perry Berman
 	 */
 	public HashMap<String, Emoji> emojis;
-
+	
 	/**
-	 * A Private HashMap of the guild's raw voice states. Indexed by
-	 * {@link GuildMember#id}
+	 * A Private HashMap of the guild's raw voice states. Indexed by {@link GuildMember#id}
 	 * 
 	 * @author Perry Berman
 	 */
 	private HashMap<String, VoiceState> rawStates;
-
+	
 	/**
 	 * The guild's current voice region
 	 */
 	private VoiceRegion voiceRegion;
-
+	
 	/**
 	 * Creates a new guild
 	 * 
@@ -181,7 +178,7 @@ public class Guild {
 	 */
 	public Guild(DiscLoader loader, GuildJSON data) {
 		this.loader = loader;
-
+		
 		this.members = new HashMap<>();
 		this.textChannels = new HashMap<>();
 		this.voiceChannels = new HashMap<>();
@@ -190,7 +187,7 @@ public class Guild {
 		this.emojis = new HashMap<>();
 		this.rawStates = new HashMap<>();
 		this.voiceRegion = new VoiceRegion("us-central");
-
+		
 		if (data.unavailable == true) {
 			this.available = false;
 			this.id = data.id;
@@ -200,10 +197,9 @@ public class Guild {
 			this.setup(data);
 		}
 	}
-
+	
 	/**
-	 * Method used internally by DiscLoader to make a new {@link GuildMember}
-	 * object when a member's data is recieved
+	 * Method used internally by DiscLoader to make a new {@link GuildMember} object when a member's data is recieved
 	 * 
 	 * @param data The member's data
 	 * @return The {@link GuildMember} that was instantiated.
@@ -211,42 +207,36 @@ public class Guild {
 	public GuildMember addMember(MemberJSON data) {
 		return this.addMember(data, false);
 	}
-
+	
 	/**
-	 * Method used internally by DiscLoader to make a new {@link GuildMember}
-	 * object when a member's data is recieved
+	 * Method used internally by DiscLoader to make a new {@link GuildMember} object when a member's data is recieved
 	 * 
 	 * @param data The member's data
-	 * @param shouldEmit if a {@code GuildMemberAddEvent} should be fired by the
-	 *            client
+	 * @param shouldEmit if a {@code GuildMemberAddEvent} should be fired by the client
 	 * @return The {@link GuildMember} that was instantiated.
 	 */
 	public GuildMember addMember(MemberJSON data, boolean shouldEmit) {
-		boolean exists = this.members.containsKey(data.user.id);
+		boolean exists = members.containsKey(data.user.id);
 		GuildMember member = new GuildMember(this, data);
-		this.members.put(member.id, member);
-
-		if (!exists && this.loader.ready && shouldEmit) {
+		members.put(member.id, member);
+		
+		if (!exists && loader.ready && shouldEmit) {
 			GuildMemberAddEvent event = new GuildMemberAddEvent(member);
-			this.loader.emit(DLUtil.Events.GUILD_MEMBER_ADD, event);
-			for (IEventListener e : loader.handlers) {
-				e.GuildMemberAdd(event);
-			}
+			loader.emit(DLUtil.Events.GUILD_MEMBER_ADD, event);
+			loader.emit(event);
 		}
 		return member;
 	}
-
+	
 	/**
-	 * Method used internally by DiscLoader to make a new {@link GuildMember}
-	 * object when a member's data is recieved
+	 * Method used internally by DiscLoader to make a new {@link GuildMember} object when a member's data is recieved
 	 * 
 	 * @param user the member's {@link User} object.
 	 * @param roles the member's role's ids.
 	 * @param deaf is the member deafened.
 	 * @param mute is the member muted.
 	 * @param nick The member's nickname.
-	 * @param emitEvent if a {@code GuildMemberAddEvent} should be fired by the
-	 *            client.
+	 * @param emitEvent if a {@code GuildMemberAddEvent} should be fired by the client.
 	 * @return The {@link GuildMember} that was instantiated.
 	 */
 	public GuildMember addMember(User user, String[] roles, boolean deaf, boolean mute, String nick, boolean emitEvent) {
@@ -260,10 +250,10 @@ public class Guild {
 				e.GuildMemberAdd(event);
 			}
 		}
-
+		
 		return member;
 	}
-
+	
 	public Role addRole(RoleJSON guildRole) {
 		boolean exists = this.roles.containsKey(guildRole.id);
 		Role role = new Role(this, guildRole);
@@ -273,45 +263,41 @@ public class Guild {
 		}
 		return role;
 	}
-
+	
 	/**
-	 * Bans the member from the {@link Guild} if the {@link DiscLoader loader}
-	 * has sufficient permissions
+	 * Bans the member from the {@link Guild} if the {@link DiscLoader loader} has sufficient permissions
 	 *
 	 * @param member The member to ban from the guild
 	 * @see Permission
-	 * @return A CompletableFuture that completes with {@code this} if
-	 *         successful
+	 * @return A CompletableFuture that completes with {@code this} if successful
 	 */
 	public CompletableFuture<GuildMember> ban(GuildMember member) {
 		return this.loader.rest.banMember(this, member);
 	}
-
+	
 	/**
 	 * Begin a prune operation. Requires the 'KICK_MEMBERS' permission.
 	 * 
-	 * @return A Future that completes with the number of member kicked during
-	 *         the prune operation if successful.
+	 * @return A Future that completes with the number of member kicked during the prune operation if successful.
 	 */
 	public CompletableFuture<Integer> beginPrune() {
 		return beginPrune(1);
 	}
-
+	
 	/**
 	 * Begin a prune operation. Requires the 'KICK_MEMBERS' permission.
 	 * 
 	 * @param days The number of days to prune (1 or more)
-	 * @return A Future that completes with the number of member kicked during
-	 *         the prune operation if successful.
+	 * @return A Future that completes with the number of member kicked during the prune operation if successful.
 	 */
 	public CompletableFuture<Integer> beginPrune(int days) {
 		return this.loader.rest.beginPrune(this, days);
 	}
-
+	
 	public CompletableFuture<GuildChannel> createChannel(String name, String type) {
 		return null;
 	}
-
+	
 	/**
 	 * Creates a new custom emoji
 	 * 
@@ -328,7 +314,7 @@ public class Guild {
 		}
 		return this.createEmoji(name, base64);
 	}
-
+	
 	/**
 	 * Creates a new custom emoji
 	 * 
@@ -339,32 +325,30 @@ public class Guild {
 	public CompletableFuture<Emoji> createEmoji(String name, String image) {
 		return this.loader.rest.createEmoji(this, name, image);
 	}
-
+	
 	/**
 	 * Creates a new {@link Role}.
 	 * 
-	 * @return A future that completes with a new {@link Role} Object if
-	 *         successful.
+	 * @return A future that completes with a new {@link Role} Object if successful.
 	 * @since 0.0.3
 	 */
 	public CompletableFuture<Role> createRole() {
 		return this.createRole(null, 0, 0, false, false);
 	}
-
+	
 	/**
 	 * Creates a new {@link Role}.
 	 * 
 	 * @param name The name of the role
 	 * @param permissions The 53bit Permissions integer to assign to the role
 	 * @param color The color of the role
-	 * @return A future that completes with a new {@link Role} Object if
-	 *         successful.
+	 * @return A future that completes with a new {@link Role} Object if successful.
 	 * @since 0.0.3
 	 */
 	public CompletableFuture<Role> createRole(String name, int permissions, int color) {
 		return this.createRole(name, permissions, color, false, false);
 	}
-
+	
 	/**
 	 * Creates a new {@link Role}.
 	 * 
@@ -373,14 +357,13 @@ public class Guild {
 	 * @param color The color of the role
 	 * @param hoist Display role members separately from online members
 	 * @param mentionable Allow anyone to @mention this role
-	 * @return A future that completes with a new {@link Role} Object if
-	 *         successful.
+	 * @return A future that completes with a new {@link Role} Object if successful.
 	 * @since 0.0.3
 	 */
 	public CompletableFuture<Role> createRole(String name, int permissions, int color, boolean hoist, boolean mentionable) {
 		return loader.rest.createRole(this, name, permissions, color, hoist, mentionable);
 	}
-
+	
 	/**
 	 * Creates a new {@link TextChannel}.
 	 * 
@@ -390,87 +373,85 @@ public class Guild {
 	public CompletableFuture<TextChannel> createTextChannel(String name) {
 		return this.loader.rest.createTextChannel(this, new JSONObject().put("name", name));
 	}
-
+	
 	/**
 	 * Creates a new {@link VoiceChannel}
 	 * 
 	 * @param name The channel's name
-	 * @return A future that completes with a new {@link VoiceChannel} Object if
-	 *         successful.
+	 * @return A future that completes with a new {@link VoiceChannel} Object if successful.
 	 */
 	public CompletableFuture<VoiceChannel> createVoiceChannel(String name) {
 		return this.loader.rest.createVoiceChannel(this, new JSONObject().put("name", name));
 	}
-
+	
 	/**
 	 * Creates a new {@link VoiceChannel}
 	 * 
 	 * @param name The name of the channel
 	 * @param bitrate The channel's bitrate
-	 * @return A future that completes with a new {@link VoiceChannel} Object if
-	 *         successful.
+	 * @return A future that completes with a new {@link VoiceChannel} Object if successful.
 	 */
 	public CompletableFuture<VoiceChannel> createVoiceChannel(String name, int bitrate) {
 		return this.loader.rest.createVoiceChannel(this, new JSONObject().put("name", name).put("bitrate", bitrate));
 	}
-
+	
 	/**
 	 * Creates a new {@link VoiceChannel}
 	 * 
 	 * @param name The name of the channel
 	 * @param bitrate The channel's bitrate
 	 * @param userLimit the channel's userlimit
-	 * @return A future that completes with a new {@link VoiceChannel} Object if
-	 *         successful.
+	 * @return A future that completes with a new {@link VoiceChannel} Object if successful.
 	 */
 	public CompletableFuture<VoiceChannel> createVoiceChannel(String name, int bitrate, int userLimit) {
 		return this.loader.rest.createVoiceChannel(this, new JSONObject().put("name", name).put("bitrate", bitrate).put("user_limit", userLimit));
 	}
-
+	
 	/**
-	 * Deletes the Guild if the user you have logged in as is the owner of the
-	 * guild
+	 * Deletes the Guild if the user you have logged in as is the owner of the guild
 	 * 
-	 * @return A Future that completes with {@code this} if successful, and
-	 *         fails with a {@link UnauthorizedException}
-	 * @throws UnauthorizedException Thrown if you are not the owner of the
-	 *             guild.
+	 * @return A Future that completes with {@code this} if successful, and fails with a {@link UnauthorizedException}
+	 * @throws UnauthorizedException Thrown if you are not the owner of the guild.
 	 */
-	public CompletableFuture<Guild> delete() throws UnauthorizedException {
-		if (!isOwner()) throw new UnauthorizedException("Only the guild's owner can delete a guild");
+	public CompletableFuture<Guild> delete() {
+		if (!isOwner())
+			throw new UnauthorizedException("Only the guild's owner can delete a guild");
 		CompletableFuture<Guild> future = new CompletableFuture<Guild>();
 		loader.rest.makeRequest(DLUtil.Endpoints.guild(id), DLUtil.Methods.DELETE, true).thenAcceptAsync(data -> {
 			future.complete(this);
 		});
 		return future;
 	}
-
+	
 	/**
 	 * @return A Future that completes with {@code this} if successful.
-	 * @throws PermissionsException Thrown if the current user doesn't have the
-	 *             {@link Permissions#MANAGE_GUILD} permission.
+	 * @throws PermissionsException Thrown if the current user doesn't have the {@link Permissions#MANAGE_GUILD} permission.
 	 */
-	public CompletableFuture<Guild> edit() throws PermissionsException {
-		if (!isOwner() && getCurrentMember().getPermissions().hasPermission(Permissions.MANAGE_GUILD.getValue())) throw new PermissionsException();
+	public CompletableFuture<Guild> edit() {
+		if (!isOwner() && getCurrentMember().getPermissions().hasPermission(Permissions.MANAGE_GUILD.getValue()))
+			throw new PermissionsException();
 		return null;
 	}
-
+	
 	/**
-	 * @return {@code true} if all fields are equivalent, {@code false}
-	 *         otherwise.
+	 * @return {@code true} if all fields are equivalent, {@code false} otherwise.
 	 */
 	@Override
 	public boolean equals(Object object) {
-		if (!(object instanceof Guild)) return false;
+		if (!(object instanceof Guild))
+			return false;
 		Guild guild = (Guild) object;
-		if (!guild.id.equals(id)) return false;
+		if (!guild.id.equals(id))
+			return false;
 		for (Role role : roles.values())
-			if (!guild.roles.containsKey(role.id)) return false;
+			if (!guild.roles.containsKey(role.id))
+				return false;
 		for (GuildMember member : members.values())
-			if (!guild.members.containsKey(member.id)) return false;
+			if (!guild.members.containsKey(member.id))
+				return false;
 		return guild.name.equals(name) && guild.ownerID.equals(ownerID) && guild.icon.equals(icon) && (isSyncing() == guild.isSyncing());
 	}
-
+	
 	/**
 	 * Fetches a GuildMember from the REST API
 	 * 
@@ -480,63 +461,57 @@ public class Guild {
 	public CompletableFuture<GuildMember> fetchMember(String memberID) {
 		return loader.rest.loadGuildMember(this, memberID);
 	}
-
+	
 	/**
 	 * Gets a HashMap of GuildMembers that are in the guild.
 	 * 
 	 * @param limit max number of members to return (1-1000) default 50
 	 * @param after The highest user id in the previous page
-	 * @return A CompletableFuture that completes with a HashMap of GuildMembers
-	 *         if successful, null otherwise.
+	 * @return A CompletableFuture that completes with a HashMap of GuildMembers if successful, null otherwise.
 	 */
 	public CompletableFuture<HashMap<String, GuildMember>> fetchMembers(int limit, String after) {
 		return loader.rest.loadGuildMembers(this, limit, after);
 	}
-
+	
 	/**
-	 * Gets a HashMap of GuildMembers that are in the guild. <u>Only retrieves
-	 * 50 members</u>
+	 * Gets a HashMap of GuildMembers that are in the guild. <u>Only retrieves 50 members</u>
 	 * 
 	 * @param after The highest user id in the previous page
-	 * @return A CompletableFuture that completes with a HashMap of GuildMembers
-	 *         if successful, null otherwise.
+	 * @return A CompletableFuture that completes with a HashMap of GuildMembers if successful, null otherwise.
 	 */
 	public CompletableFuture<HashMap<String, GuildMember>> fetchMembers(String after) {
 		return loader.rest.loadGuildMembers(this, 50, after);
 	}
-
+	
 	/**
 	 * @return the afk_channel_id
 	 */
 	public VoiceChannel getAfkChannel() {
 		return voiceChannels.get(afk_channel_id);
 	}
-
+	
 	/**
-	 * Returns the {@link GuildMember} object for the {@link User} you are
-	 * logged in as.
+	 * Returns the {@link GuildMember} object for the {@link User} you are logged in as.
 	 * 
 	 * @return A GuildMember object
 	 */
 	public GuildMember getCurrentMember() {
 		return members.get(loader.user.id);
 	}
-
+	
 	/**
-	 * Gets the guild's default text channel. the {@link Channel#id id} of the
-	 * channel should be the same as the guild's {@link #id}
+	 * Gets the guild's default text channel. the {@link Channel#id id} of the channel should be the same as the guild's {@link #id}
 	 * 
 	 * @return the default TextChannel
 	 */
 	public TextChannel getDefaultChannel() {
 		return textChannels.get(id);
 	}
-
+	
 	/**
 	 * Retrieves the guild's invites from Discord's API
 	 * 
-	 * @return A Future that completes with a HashMap of Invite objects, indexed
-	 *         by {@link Invite#code}, if successful.
+	 * @return A Future that completes with a HashMap of Invite objects, indexed by {@link Invite#code}, if successful.
 	 */
 	public CompletableFuture<HashMap<String, Invite>> getInvites() {
 		CompletableFuture<HashMap<String, Invite>> future = new CompletableFuture<>();
@@ -549,11 +524,11 @@ public class Guild {
 		});
 		return future;
 	}
-
+	
 	public int getMemberCount() {
 		return memberCount;
 	}
-
+	
 	/**
 	 * Returns a {@link GuildMember} object repersenting the guild's owner
 	 * 
@@ -562,79 +537,71 @@ public class Guild {
 	public GuildMember getOwner() {
 		return members.get(ownerID);
 	}
-
+	
 	/**
 	 * same as {@link #getPruneCount(int days)} but only grabs one days worth
 	 * 
-	 * @return A Future that completes with the number of member that would be
-	 *         kicked in a prune operation
+	 * @return A Future that completes with the number of member that would be kicked in a prune operation
 	 */
 	public CompletableFuture<Integer> getPruneCount() {
 		return getPruneCount(1);
 	}
-
+	
 	/**
-	 * Returns the number of members that would be removed in a prune operation.
-	 * Requires the KICK_MEMBERS permission.
+	 * Returns the number of members that would be removed in a prune operation. Requires the KICK_MEMBERS permission.
 	 * 
 	 * @param days The number of days to count prune for (1 or more)
-	 * @return A Future that completes with the number of member that would be
-	 *         kicked in a prune operation
+	 * @return A Future that completes with the number of member that would be kicked in a prune operation
 	 */
 	public CompletableFuture<Integer> getPruneCount(int days) {
 		return loader.rest.pruneCount(this, days);
 	}
-
+	
 	/**
 	 * @return the voiceRegion
 	 */
 	public VoiceRegion getVoiceRegion() {
 		return voiceRegion;
 	}
-
+	
 	/**
-	 * returns a HashMap of the guild's members' voice states. Indexed by
-	 * {@link GuildMember#id}
+	 * returns a HashMap of the guild's members' voice states. Indexed by {@link GuildMember#id}
 	 * 
 	 * @return A HashMap of {@link VoiceState VoiceStates}
 	 */
 	public HashMap<String, VoiceState> getVoiceStates() {
 		return rawStates;
 	}
-
+	
 	@Override
 	public int hashCode() {
 		return id.hashCode();
 	}
-
+	
 	/**
 	 * Whether or not the guild has at least 250 members.
 	 * 
-	 * @return {@code if} {@link #memberCount} is greater than or equal to 250,
-	 *         {@code false} otherwise.
+	 * @return {@code if} {@link #memberCount} is greater than or equal to 250, {@code false} otherwise.
 	 */
 	public boolean isLarge() {
 		return memberCount >= 250;
 	}
-
+	
 	/**
-	 * @return {@code true} if {@link #getCurrentMember()}{@link GuildMember#id
-	 *         .id} is equal to {@link #ownerID}, false otherwise.
+	 * @return {@code true} if {@link #getCurrentMember()}{@link GuildMember#id .id} is equal to {@link #ownerID}, false otherwise.
 	 */
 	public boolean isOwner() {
 		return isOwner(getCurrentMember());
 	}
-
+	
 	/**
-	 * @param member The member to check if their the {@link Guild guild's}
-	 *            owner
-	 * @return {@code true} if {@link GuildMember#id} is equal to
-	 *         {@link #ownerID}, false otherwise.
+	 * @param member The member to check if their the {@link Guild guild's} owner
+	 * @return {@code true} if {@link GuildMember#id} is equal to {@link #ownerID}, false otherwise.
 	 */
 	public boolean isOwner(GuildMember member) {
 		return getOwner().id.equals(member.id);
 	}
-
+	
 	/**
 	 * Checks if the guild is currently being synced with discord
 	 * 
@@ -643,24 +610,22 @@ public class Guild {
 	public boolean isSyncing() {
 		return loader.isGuildSyncing(this);
 	}
-
+	
 	/**
-	 * Kicks the member from the {@link Guild} if the {@link DiscLoader client}
-	 * has sufficient permissions
+	 * Kicks the member from the {@link Guild} if the {@link DiscLoader client} has sufficient permissions
 	 * 
 	 * @param member The member to kick from the guild
 	 * @see Permissions
-	 * @return A CompletableFuture that completes with {@code this} if
-	 *         successful
-	 * @throws PermissionsException Thrown if the current user doesn't have the
-	 *             {@link Permissions#KICK_MEMBERS} permission.
+	 * @return A CompletableFuture that completes with {@code this} if successful
+	 * @throws PermissionsException Thrown if the current user doesn't have the {@link Permissions#KICK_MEMBERS} permission.
 	 */
-	public CompletableFuture<GuildMember> kickMember(GuildMember member) throws PermissionsException {
-		if (!isOwner() && getCurrentMember().getPermissions().hasPermission(Permissions.KICK_MEMBERS.getValue())) throw new PermissionsException();
-
+	public CompletableFuture<GuildMember> kickMember(GuildMember member) {
+		if (!isOwner() && getCurrentMember().getPermissions().hasPermission(Permissions.KICK_MEMBERS.getValue()))
+			throw new PermissionsException();
+		
 		return loader.rest.removeMember(this, member);
 	}
-
+	
 	/**
 	 * Makes the client leave the guild
 	 * 
@@ -668,42 +633,41 @@ public class Guild {
 	 */
 	public CompletableFuture<Guild> leave() {
 		CompletableFuture<Guild> future = new CompletableFuture<>();
-		try {
-			this.kickMember(getCurrentMember()).thenAcceptAsync(action -> {
-				future.complete(this);
-			});
-		} catch (PermissionsException ignored) {
-			// this should never happen. sooo... ignoring the error.
-		}
+		this.kickMember(getCurrentMember()).thenAcceptAsync(action -> {
+			future.complete(this);
+		});
+		
 		return future;
 	}
-
+	
 	/**
 	 * @param channel The {@link VoiceChannel} to set as the afk channel.
 	 * @throws PermissionsException
 	 * @throws MissmatchException
 	 */
-	public CompletableFuture<Guild> setAfkChannel(VoiceChannel channel) throws PermissionsException, MissmatchException {
-		if (!isOwner() && !getCurrentMember().getPermissions().hasPermission(Permissions.MANAGE_GUILD.getValue())) throw new PermissionsException("Insuficient Permissions");
-		if (!id.equals(channel.guild.id)) throw new MissmatchException("Afk Channel cannot be set to a voice channel from another guild");
+	public CompletableFuture<Guild> setAfkChannel(VoiceChannel channel) {
+		if (!isOwner() && !getCurrentMember().getPermissions().hasPermission(Permissions.MANAGE_GUILD.getValue()))
+			throw new PermissionsException("Insuficient Permissions");
+		if (!id.equals(channel.guild.id))
+			throw new MissmatchException("Afk Channel cannot be set to a voice channel from another guild");
 		return new ModifyGuild(this, new JSONObject().put("afk_channel_id", channel.getID())).execute();
 	}
-
+	
 	/**
 	 * Sets the guild's icon if the loader has sufficient permissions
 	 * 
 	 * @param icon location of icon file on disk
 	 * @return A Future that completes with {@code this} if successful.
-	 * @throws IOException Exception thrown if there is an error reading icon
-	 *             file
+	 * @throws IOException Exception thrown if there is an error reading icon file
 	 * @throws PermissionsException
 	 */
-	public CompletableFuture<Guild> setIcon(String icon) throws IOException, PermissionsException {
-		if (!isOwner() && !getCurrentMember().getPermissions().hasPermission(Permissions.MANAGE_GUILD.getValue())) throw new PermissionsException("Insuficient Permissions");
+	public CompletableFuture<Guild> setIcon(String icon) throws IOException {
+		if (!isOwner() && !getCurrentMember().getPermissions().hasPermission(Permissions.MANAGE_GUILD.getValue()))
+			throw new PermissionsException("Insuficient Permissions");
 		String base64 = new String("data:image/jpg;base64," + Base64.encodeBase64String(Files.readAllBytes(Paths.get(icon))));
 		return new ModifyGuild(this, new JSONObject().put("icon", base64)).execute();
 	}
-
+	
 	/**
 	 * Sets the guild's name if the loader has sufficient permissions
 	 * 
@@ -711,39 +675,41 @@ public class Guild {
 	 * @return A Future that completes with {@code this} if successful.
 	 * @throws PermissionsException
 	 */
-	public CompletableFuture<Guild> setName(String name) throws PermissionsException {
-		if (!isOwner() && !getCurrentMember().getPermissions().hasPermission(Permissions.MANAGE_GUILD.getValue())) throw new PermissionsException("Insuficient Permissions");
+	public CompletableFuture<Guild> setName(String name) {
+		if (!isOwner() && !getCurrentMember().getPermissions().hasPermission(Permissions.MANAGE_GUILD.getValue()))
+			throw new PermissionsException("Insuficient Permissions");
 		return new ModifyGuild(this, new JSONObject().put("name", name)).execute();
 	}
-
+	
 	/**
 	 * @param owner
 	 * @return A Future that completes with {@code this} if successful.
-	 * @throws UnauthorizedException Thrown if you are not the owner of theS
-	 *             guild.
+	 * @throws UnauthorizedException Thrown if you are not the owner of theS guild.
 	 */
-	public CompletableFuture<Guild> setOwner(GuildMember owner) throws UnauthorizedException {
-		if (!isOwner()) throw new UnauthorizedException("Only the guild's owner can delete a guild");
+	public CompletableFuture<Guild> setOwner(GuildMember owner) {
+		if (!isOwner())
+			throw new UnauthorizedException("Only the guild's owner can delete a guild");
 		return new ModifyGuild(this, new JSONObject().put("owner_id", owner.id)).execute();
 	}
-
+	
 	public void setPresence(PresenceJSON guildPresence) {
 		setPresence(guildPresence, false);
 	}
-
+	
 	public void setPresence(PresenceJSON guildPresence, boolean shouldEmit) {
 		Presence presence = new Presence(guildPresence);
-		if (guildPresence.user.id.equals(this.loader.user.id)) loader.user.presence.update(guildPresence);
+		if (guildPresence.user.id.equals(this.loader.user.id))
+			loader.user.presence.update(guildPresence);
 		presences.put(guildPresence.user.id, presence);
 	}
-
+	
 	/**
 	 * Sets up a guild with data from the gateway
 	 * 
 	 * @param data The guild's data
 	 */
 	public void setup(GuildJSON data) {
-
+		
 		name = data.name;
 		icon = data.icon != null ? data.icon : null;
 		iconURL = icon != null ? Endpoints.guildIcon(id, icon) : null;
@@ -792,7 +758,7 @@ public class Guild {
 				this.rawStates.put(v.user_id, new VoiceState(v, this));
 			}
 		}
-
+		
 		ProgressLogger.step(7, 7, "Registering Icon");
 		try {
 			TextureRegistry.registerGuildIcon(new GuildIcon(this));
@@ -801,7 +767,7 @@ public class Guild {
 		}
 		this.available = true != data.unavailable;
 	}
-
+	
 	/**
 	 * Sets the Guild's voice region to the specified region
 	 * 
@@ -809,24 +775,24 @@ public class Guild {
 	 * @return A Future that completes with {@code this} if successful.
 	 * @throws PermissionsException
 	 */
-	public CompletableFuture<Guild> setVoiceRegion(String region) throws PermissionsException {
-		if (!isOwner() && !getCurrentMember().getPermissions().hasPermission(Permissions.MANAGE_GUILD.getValue())) throw new PermissionsException("Insuficient Permissions");
+	public CompletableFuture<Guild> setVoiceRegion(String region) {
+		if (!isOwner() && !getCurrentMember().getPermissions().hasPermission(Permissions.MANAGE_GUILD.getValue()))
+			throw new PermissionsException("Insuficient Permissions");
 		return new ModifyGuild(this, new JSONObject().put("region", region)).execute();
 	}
-
+	
 	/**
 	 * Syncs the guild to the client if the logged in user is not a bot.
 	 * 
 	 * @throws GuildSyncException Thrown if {@link #isSyncing()} returns true.
-	 * @throws AccountTypeException Thrown if client is logged in as a bot
-	 *             account
+	 * @throws AccountTypeException Thrown if client is logged in as a bot account
 	 */
 	public void sync() throws GuildSyncException, AccountTypeException {
 		loader.syncGuilds(this.id);
 	}
-
+	
 	public void updateVoiceState(VoiceState state) {
 		rawStates.put(state.member.id, state);
 	}
-
+	
 }

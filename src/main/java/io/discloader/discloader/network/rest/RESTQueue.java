@@ -31,27 +31,27 @@ import io.discloader.discloader.util.DLUtil;
  * @author Perry Berman
  */
 public class RESTQueue {
-
+	
 	public List<APIRequest> queue;
-
+	
 	public RESTManager rest;
-
+	
 	public DiscLoader loader;
-
+	
 	public Timer timer;
-
+	
 	private boolean waiting;
-
+	
 	private boolean globalLimit;
-
+	
 	public long timeDifference;
-
+	
 	public long resetTime;
-
+	
 	public int rateLimit;
-
+	
 	public int remaining;
-
+	
 	public RESTQueue(RESTManager restManager) {
 		rest = restManager;
 		loader = rest.loader;
@@ -59,47 +59,46 @@ public class RESTQueue {
 		timeDifference = 0;
 		queue = new ArrayList<>();
 	}
-
+	
 	public void handle() {
 		try {
 			if (waiting || queue.size() == 0 || globalLimit) {
 				return;
 			}
-
+			
 			waiting = true;
-
+			
 			final APIRequest apiRequest = queue.get(0);
-
+			
 			BaseRequest request = apiRequest.createRequest();
-
+			
 			request = addHeaders(request, apiRequest.auth, apiRequest.multi);
-
+			
 			request.asStringAsync(new Callback<String>() {
-
+				
+				@Override
 				public void cancelled() {
 					apiRequest.future.completeExceptionally(new Throwable());
 				}
-
+				
+				@Override
 				public void completed(HttpResponse<String> response) {
 					Map<String, List<String>> headers = response.getHeaders();
 					headers.forEach((name, value) -> {
-						// if (name.equalsIgnoreCase("x-ratelimit-reset"))
-						// resetTime = (Long.parseLong(value.get(0), 10) *
-						// 1000L);
 						switch (name) {
-						case "X-RateLimit-Limit":
-							rateLimit = Integer.parseInt(value.get(0), 10);
-							break;
-						case "X-RateLimit-Remaining":
-							remaining = Integer.parseInt(value.get(0), 10);
-							break;
-						case "x-ratelimit-reset":
-						case "X-RateLimit-Reset":
-							resetTime = (Long.parseLong(value.get(0), 10) * 1000L);
-							break;
-						case "X-RateLimit-Global":
-							globalLimit = Boolean.parseBoolean(value.get(0));
-							break;
+							case "X-RateLimit-Limit":
+								rateLimit = Integer.parseInt(value.get(0), 10);
+								break;
+							case "X-RateLimit-Remaining":
+								remaining = Integer.parseInt(value.get(0), 10);
+								break;
+							case "x-ratelimit-reset":
+							case "X-RateLimit-Reset":
+								resetTime = (Long.parseLong(value.get(0), 10) * 1000L);
+								break;
+							case "X-RateLimit-Global":
+								globalLimit = Boolean.parseBoolean(value.get(0));
+								break;
 						}
 					});
 					DateFormat df = new SimpleDateFormat("E, dd MMM yyyy HH:mm:ss z");
@@ -112,7 +111,7 @@ public class RESTQueue {
 					int code = response.getStatus();
 					if (code == 429) {
 						TimerTask wait = new TimerTask() {
-
+							
 							@Override
 							public void run() {
 								waiting = false;
@@ -128,19 +127,19 @@ public class RESTQueue {
 						loader.emit("RawPacket", event);
 						ExceptionJSON data = DLUtil.gson.fromJson(response.getBody(), ExceptionJSON.class);
 						switch (code) {
-						case 401:
-							apiRequest.future.completeExceptionally(new UnauthorizedException(response.getBody()));
-							break;
-						case 403:
-							switch (data.code) {
-							case 20002:
-								apiRequest.future.completeExceptionally(new AccountTypeException(data));
+							case 401:
+								apiRequest.future.completeExceptionally(new UnauthorizedException(response.getBody()));
 								break;
-							}
-							break;
-						default:
-							apiRequest.future.completeExceptionally(new UnknownException(data));
-							break;
+							case 403:
+								switch (data.code) {
+									case 20002:
+										apiRequest.future.completeExceptionally(new AccountTypeException(data));
+										break;
+								}
+								break;
+							default:
+								apiRequest.future.completeExceptionally(new UnknownException(data));
+								break;
 						}
 					} else {
 						queue.remove(apiRequest);
@@ -152,7 +151,7 @@ public class RESTQueue {
 					long waitTime = ((resetTime - System.currentTimeMillis()) + timeDifference + 500);
 					if (remaining == 0 && waitTime > 0) {
 						TimerTask wait = new TimerTask() {
-
+							
 							@Override
 							public void run() {
 								waiting = false;
@@ -165,7 +164,8 @@ public class RESTQueue {
 						handle();
 					}
 				}
-
+				
+				@Override
 				public void failed(UnirestException e) {
 					apiRequest.future.completeExceptionally(e);
 				}
@@ -174,21 +174,23 @@ public class RESTQueue {
 			e.printStackTrace();
 		}
 	}
-
+	
 	public void addToQueue(APIRequest request) {
 		this.queue.add(request);
 		this.handle();
 	}
-
+	
 	public <T extends BaseRequest> T addHeaders(T baseRequest, boolean auth, boolean multi) {
 		HttpRequest request = baseRequest.getHttpRequest();
-		if (auth && loader.token != null) request.header("authorization", loader.token);
+		
+		if (auth && loader.token != null)
+			request.header("authorization", loader.token);
 		if (!(request instanceof GetRequest) && !(baseRequest instanceof MultipartBody) && !multi) {
 			request.header("Content-Type", "application/json");
 		}
-		request.header("user-agent", "DiscordBot (https://gitlab.com/R3alCl0ud/DiscLoader, v0.0.1)");
+		request.header("user-agent", "DiscordBot (http://discloader.io, v0.1.1)");
 		request.header("Accept-Encoding", "gzip");
 		return baseRequest;
 	}
-
+	
 }
