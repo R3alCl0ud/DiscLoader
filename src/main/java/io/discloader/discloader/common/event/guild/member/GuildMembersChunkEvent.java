@@ -13,7 +13,7 @@ public class GuildMembersChunkEvent extends DLEvent {
 	public final HashMap<String, GuildMember> members;
 
 	public GuildMembersChunkEvent(Guild guild, HashMap<String, GuildMember> members) {
-		super(guild.loader);
+		super(guild.getLoader());
 
 		this.guild = guild;
 

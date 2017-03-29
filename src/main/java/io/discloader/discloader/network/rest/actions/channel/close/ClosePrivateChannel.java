@@ -1,6 +1,6 @@
 package io.discloader.discloader.network.rest.actions.channel.close;
 
-import io.discloader.discloader.entity.channels.impl.PrivateChannel;
+import io.discloader.discloader.common.entity.channel.PrivateChannel;
 
 public class ClosePrivateChannel extends CloseChannel<PrivateChannel> {
 

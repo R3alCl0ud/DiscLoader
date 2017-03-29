@@ -22,7 +22,7 @@ public class GuildIcon extends AbstractTexture {
 		this.guild = guild;
 		this.setIconHeight(128);
 		this.setIconWidth(128);
-		this.setIconName(guild.icon != null ? guild.icon : guild.id);
+		this.setIconName(guild.icon != null ? guild.icon : guild.getID());
 
 	}
 

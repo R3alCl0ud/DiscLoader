@@ -32,7 +32,7 @@ public class GuildDelete extends AbstractHandler {
 			guild = this.socket.loader.addGuild(data);
 		}
 		if (!guild.available) {
-			this.socket.loader.guilds.remove(guild.id);
+			this.socket.loader.guilds.remove(guild.getID());
 			if (this.socket.status == DLUtil.Status.READY && this.socket.loader.ready) {
 				GuildDeleteEvent event =  new GuildDeleteEvent(guild);
 				this.socket.loader.emit(DLUtil.Events.GUILD_DELETE, event);

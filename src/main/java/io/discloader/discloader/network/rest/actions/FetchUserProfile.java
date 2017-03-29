@@ -20,7 +20,7 @@ public class FetchUserProfile {
 
     public CompletableFuture<UserProfile> execute() {
         CompletableFuture<UserProfile> future = new CompletableFuture<>();
-        user.loader.rest.makeRequest(Endpoints.userProfile(user.id), Methods.GET, true).whenCompleteAsync((s, ex) -> {
+        user.loader.rest.makeRequest(Endpoints.userProfile(user.getID()), Methods.GET, true).whenCompleteAsync((s, ex) -> {
             if (s != null)
                 System.out.println(s);
         });

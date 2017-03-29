@@ -8,7 +8,7 @@ public class GuildRoleDeleteEvent extends DLEvent {
 	public final Role role;
 	
 	public GuildRoleDeleteEvent(Role role) {
-		super(role.loader);
+		super(role.getLoader());
 		
 		this.role = role;
 	}

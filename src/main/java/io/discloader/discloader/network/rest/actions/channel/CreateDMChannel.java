@@ -2,7 +2,7 @@ package io.discloader.discloader.network.rest.actions.channel;
 
 import java.util.concurrent.CompletableFuture;
 
-import io.discloader.discloader.entity.channels.impl.PrivateChannel;
+import io.discloader.discloader.common.entity.channel.PrivateChannel;
 import io.discloader.discloader.entity.user.User;
 import io.discloader.discloader.network.json.ChannelJSON;
 import io.discloader.discloader.network.rest.actions.RESTAction;
@@ -27,7 +27,7 @@ public class CreateDMChannel extends RESTAction<PrivateChannel> {
 	}
 
 	public CompletableFuture<PrivateChannel> execute() {
-		return super.execute(loader.rest.makeRequest(Endpoints.currentUserChannels, Methods.POST, true, new dm(user.id)));
+		return super.execute(loader.rest.makeRequest(Endpoints.currentUserChannels, Methods.POST, true, new dm(user.getID())));
 	}
 
 	public void complete(String packet, Throwable ex) {

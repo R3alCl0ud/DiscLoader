@@ -15,7 +15,7 @@ public class GuildDeleteEvent extends DLEvent {
 	public final Guild guild;
 	
 	public GuildDeleteEvent(Guild guild) {
-		super(guild.loader);
+		super(guild.getLoader());
 		this.guild = guild;
 	}
 

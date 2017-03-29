@@ -15,7 +15,7 @@ public class GuildUpdateEvent extends DLEvent {
 	public final Guild guild;
 	
 	public GuildUpdateEvent(Guild guild) {
-		super(guild.loader);
+		super(guild.getLoader());
 		this.guild = guild;
 	}
 

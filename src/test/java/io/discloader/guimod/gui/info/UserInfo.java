@@ -38,7 +38,7 @@ public class UserInfo<T extends User> extends AbstractInfo<T> {
 	@Override
 	public void update(User user) {
 		this.username.setText(String.format("Username: %s#%s", user.username, user.discriminator));
-		this.id.setText(String.format("ID: %s", user.id));
+		this.id.setText(String.format("ID: %s", user.getID()));
 		this.avatar.setIcon((user.getAvatar()).getImageIcon(128, 128));
 		this.avatarHash.setText(String.format("Avatar: %s", user.getAvatar().getIconName()));
 		this.avatarURL.setText(String.format("AvatarURL: %s", user.getAvatar().toString()));

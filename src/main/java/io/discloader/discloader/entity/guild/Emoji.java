@@ -28,22 +28,22 @@ public class Emoji {
 	/**
 	 * The current instance of DiscLoader
 	 */
-	public final DiscLoader loader;
+	private final DiscLoader loader;
 
 	/**
 	 * Whether or not the emoji was created by an integration.
 	 */
-	public final boolean managed;
+	private final boolean managed;
 
 	/**
 	 * The name of the emoji
 	 */
-	public String name;
+	private String name;
 
 	/**
 	 * whether this emoji must be wrapped in colons
 	 */
-	public boolean requiresColons;
+	private boolean requiresColons;
 
 	/**
 	 * The roles this emoji is active for
@@ -51,17 +51,17 @@ public class Emoji {
 	private String[] roleIDs;
 
 	public Emoji(EmojiJSON data, Guild guild) {
-		this.id = data.id;
+		id = data.id;
 
-		this.name = data.name;
+		name = data.name;
 
-		this.managed = data.managed;
+		managed = data.managed;
 
-		this.requiresColons = data.requires_colons;
+		requiresColons = data.requires_colons;
 
 		this.guild = guild;
 
-		this.loader = guild.loader;
+		loader = guild.getLoader();
 
 		roleIDs = data.roles;
 	}
@@ -86,7 +86,7 @@ public class Emoji {
 			// no need to continue if roles don't match up
 			if (!getRoles().containsKey(role.id)) return false;
 		}
-		return id.equals(emoji.id) && guild.id.equals(emoji.guild.id) && name.equals(emoji.name) && managed == emoji.managed;
+		return id.equals(emoji.id) && guild.getID().equals(emoji.guild.getID()) && name.equals(emoji.name) && managed == emoji.managed;
 	}
 
 	public HashMap<String, Role> getRoles() {
@@ -97,11 +97,29 @@ public class Emoji {
 		return roles;
 	}
 
+	public String getName() {
+		return name;
+	}
+
 	/**
 	 * Returns a string in the correct markdown format for discord emojis
 	 */
 	public String toString() {
 		return String.format("<:%s:%s>", this.name, this.id);
+	}
+
+	/**
+	 * @return the requiresColons
+	 */
+	public boolean requiresColons() {
+		return requiresColons;
+	}
+
+	/**
+	 * @return the loader
+	 */
+	public DiscLoader getLoader() {
+		return loader;
 	}
 
 }

@@ -13,6 +13,7 @@ import io.discloader.discloader.network.json.RoleJSON;
  * @author Perry Berman
  */
 public class Role {
+
 	/**
 	 * The role's Snowflake ID.
 	 */
@@ -60,7 +61,7 @@ public class Role {
 	/**
 	 * The current instance of DiscLoader
 	 */
-	public final DiscLoader loader;
+	private final DiscLoader loader;
 
 	/**
 	 * Creates a new role object
@@ -70,15 +71,15 @@ public class Role {
 	 */
 	public Role(Guild guild, RoleJSON role) {
 		this.guild = guild;
-		this.loader = this.guild.loader;
-		this.id = role.id;
-		this.name = role.name;
-		this.color = new BigDecimal(role.color).intValue();
-		this.permissions = new BigDecimal(role.permissions).intValue();
-		this.position = new BigDecimal(role.position).intValue();
-		this.hoist = role.hoist;
-		this.mentionable = role.mentionable;
-		this.managed = role.managed;
+		loader = guild.getLoader();
+		id = role.id;
+		name = role.name;
+		color = new BigDecimal(role.color).intValue();
+		permissions = new BigDecimal(role.permissions).intValue();
+		position = new BigDecimal(role.position).intValue();
+		hoist = role.hoist;
+		mentionable = role.mentionable;
+		managed = role.managed;
 	}
 
 	/**
@@ -86,6 +87,17 @@ public class Role {
 	 */
 	public int getColor() {
 		return color;
+	}
+
+	/**
+	 * Returns the current instance of {@link DiscLoader}.
+	 * 
+	 * @return the current instance of {@link DiscLoader}, most likely the
+	 *         instance of {@link DiscLoader} that instantiated this
+	 *         {@link Role}.
+	 */
+	public DiscLoader getLoader() {
+		return loader;
 	}
 
 	/**
@@ -180,16 +192,16 @@ public class Role {
 		this.position = position;
 	}
 
-	public String toString() {
-		return name;
-	}
-
 	/**
 	 * @return A string that is in the correct format for mentioning this role
 	 *         in a {@link Message}
 	 */
 	public String toMention() {
 		return String.format("<@&%s>", id);
+	}
+
+	public String toString() {
+		return name;
 	}
 
 }

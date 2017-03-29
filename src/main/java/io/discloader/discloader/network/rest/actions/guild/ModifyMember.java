@@ -4,7 +4,7 @@ import java.util.HashMap;
 import java.util.concurrent.CompletableFuture;
 
 import io.discloader.discloader.common.DiscLoader;
-import io.discloader.discloader.entity.channels.impl.VoiceChannel;
+import io.discloader.discloader.common.entity.channel.VoiceChannel;
 import io.discloader.discloader.entity.guild.GuildMember;
 import io.discloader.discloader.entity.guild.Role;
 import io.discloader.discloader.util.DLUtil.Endpoints;
@@ -42,7 +42,7 @@ public class ModifyMember {
 		this.nick = nick;
 		this.mute = mute;
 		this.deaf = deaf;
-		this.loader = channel.loader;
+		loader = channel.getLoader();
 		this.member = member;
 		this.roles = new String[roles.size()];
 		int i = 0;
@@ -54,7 +54,7 @@ public class ModifyMember {
 
 	public CompletableFuture<GuildMember> execute() {
 		CompletableFuture<GuildMember> future = new CompletableFuture<>();
-		loader.rest.makeRequest(Endpoints.guildMember(member.guild.id, member.id), Methods.PATCH, true, this).thenAcceptAsync(action -> {
+		loader.rest.makeRequest(Endpoints.guildMember(member.guild.getID(), member.getID()), Methods.PATCH, true, this).thenAcceptAsync(action -> {
 			future.complete(member);
 		});
 		return future;

@@ -12,7 +12,7 @@ public class GuildEmojiUpdateEvent extends DLEvent {
 	private final Emoji oldEmoji;
 
 	public GuildEmojiUpdateEvent(Emoji emoji, Emoji oldEmoji) {
-		super(emoji.loader);
+		super(emoji.getLoader());
 		this.emoji = emoji;
 		this.oldEmoji = oldEmoji;
 		guild = emoji.guild;

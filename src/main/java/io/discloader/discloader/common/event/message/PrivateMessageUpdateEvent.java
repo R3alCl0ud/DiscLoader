@@ -1,6 +1,6 @@
 package io.discloader.discloader.common.event.message;
 
-import io.discloader.discloader.entity.channels.impl.PrivateChannel;
+import io.discloader.discloader.common.entity.channel.PrivateChannel;
 import io.discloader.discloader.entity.message.Message;
 
 public class PrivateMessageUpdateEvent extends MessageUpdateEvent {

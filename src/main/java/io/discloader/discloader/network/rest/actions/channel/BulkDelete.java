@@ -3,7 +3,7 @@ package io.discloader.discloader.network.rest.actions.channel;
 import java.util.HashMap;
 import java.util.concurrent.CompletableFuture;
 
-import io.discloader.discloader.entity.channels.ITextChannel;
+import io.discloader.discloader.entity.channel.ITextChannel;
 import io.discloader.discloader.entity.message.Message;
 import io.discloader.discloader.network.rest.actions.RESTAction;
 import io.discloader.discloader.util.DLUtil.Endpoints;

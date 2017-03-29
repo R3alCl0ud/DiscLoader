@@ -2,6 +2,7 @@ package io.discloader.discloader.network.gateway;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.logging.Logger;
 
 import org.json.JSONObject;
 
@@ -10,8 +11,10 @@ import com.neovisionaries.ws.client.WebSocket;
 import com.neovisionaries.ws.client.WebSocketException;
 import com.neovisionaries.ws.client.WebSocketFactory;
 
+import io.discloader.discloader.client.logger.DLLogger;
 import io.discloader.discloader.common.DiscLoader;
 import io.discloader.discloader.util.DLUtil;
+import io.discloader.discloader.util.DLUtil.OPCodes;
 import io.discloader.discloader.util.DLUtil.Status;
 
 /**
@@ -52,22 +55,25 @@ public class DiscSocket {
 
 	private ArrayList<Object> queue;
 
+	private final Logger logger = new DLLogger("Gateway").getLogger();
+
 	public DiscSocket(DiscLoader loader) {
 		this.loader = loader;
 
-		this.socketListener = new DiscSocketListener(this);
+		socketListener = new DiscSocketListener(this);
 
-		this.status = Status.IDLE;
+		status = Status.IDLE;
 
-		this.queue = new ArrayList<>();
+		queue = new ArrayList<>();
 	}
 
 	public void connectSocket(String gateway) throws WebSocketException, IOException {
-		System.out.printf("Connecting use gateway: %s", gateway);
-		this.ws = new WebSocketFactory().setConnectionTimeout(15000).createSocket(gateway).addHeader("Accept-Encoding", "gzip");
-		this.ws.addListener(this.socketListener);
-		this.ws.connect();
+		logger.info(String.format("Connecting use gateway: %s", gateway));
+		ws = new WebSocketFactory().setConnectionTimeout(15000).createSocket(gateway).addHeader("Accept-Encoding", "gzip");
+		ws.addListener(socketListener);
+		ws.connect();
 		resetRemaining = new Thread("RemaingResetter") {
+
 			public void run() {
 				while (ws.isOpen() && !resetRemaining.isInterrupted()) {
 					remaining = 120;
@@ -102,6 +108,7 @@ public class DiscSocket {
 
 	public void keepAlive(final int interval) {
 		heartbeatThread = new Thread("HeartbeatThread") {
+
 			@Override
 			public void run() {
 
@@ -144,10 +151,10 @@ public class DiscSocket {
 
 	public void send(Object payload, boolean force) {
 		if (force) {
-			this.ws.sendText(DLUtil.gson.toJson(payload));
+			ws.sendText(DLUtil.gson.toJson(payload));
 			return;
 		}
-		this.queue.add(payload);
+		queue.add(payload);
 		handleQueue();
 	}
 
@@ -157,23 +164,24 @@ public class DiscSocket {
 
 	public void send(JSONObject payload, boolean force) {
 		if (force) {
-			this.ws.sendText(payload.toString());
+			ws.sendText(payload.toString());
 			return;
 		}
-		this.queue.add(payload);
+		queue.add(payload);
 		handleQueue();
 	}
 
 	public void sendHeartbeat(boolean normal) {
-		if (normal && !this.lastHeartbeatAck) {
-			this.ws.disconnect(1007);
+		if (normal && !lastHeartbeatAck) {
+			ws.disconnect(1007);
 			return;
 		}
-		this.loader.emit("debug", "Attempting heartbeat");
+		loader.emit("debug", "Attempting to Heartbeat");
+		logger.info("Attempting to Heartbeat");
 		JSONObject payload = new JSONObject();
-		payload.put("op", DLUtil.OPCodes.HEARTBEAT).put("d", this.s);
-		this.send(payload, true);
-		this.lastHeartbeatAck = false;
+		payload.put("op", OPCodes.HEARTBEAT).put("d", s);
+		send(payload, true);
+		lastHeartbeatAck = false;
 	}
 
 	public void startGuildSync() {

@@ -7,12 +7,12 @@ import java.util.HashMap;
 import java.util.concurrent.CompletableFuture;
 
 import io.discloader.discloader.common.DiscLoader;
+import io.discloader.discloader.common.entity.channel.VoiceChannel;
 import io.discloader.discloader.common.exceptions.PermissionsException;
 import io.discloader.discloader.common.exceptions.VoiceConnectionException;
 import io.discloader.discloader.entity.Permission;
 import io.discloader.discloader.entity.Permissions;
 import io.discloader.discloader.entity.Presence;
-import io.discloader.discloader.entity.channels.impl.VoiceChannel;
 import io.discloader.discloader.entity.user.User;
 import io.discloader.discloader.entity.voice.VoiceState;
 import io.discloader.discloader.network.json.MemberJSON;
@@ -43,7 +43,7 @@ public class GuildMember {
 	 * 
 	 * @see User
 	 */
-	public final String id;
+	private final String id;
 
 	/**
 	 * The member's user object
@@ -79,53 +79,54 @@ public class GuildMember {
 	public final Date joinedAt;
 
 	public GuildMember(Guild guild, MemberJSON data) {
-		this.loader = guild.loader;
-		this.user = this.loader.addUser(data.user);
-		this.id = this.user.id;
+		loader = guild.getLoader();
+		user = loader.addUser(data.user);
+		id = user.getID();
 		this.guild = guild;
-		this.nick = data.nick != null ? data.nick : this.user.username;
-		this.joinedAt = DLUtil.parseISO8601(data.joined_at);
-		this.roleIDs = data.roles;
+		nick = data.nick != null ? data.nick : user.username;
+		joinedAt = DLUtil.parseISO8601(data.joined_at);
+		roleIDs = data.roles != null ? data.roles : new String[] {};
 
-		this.deaf = data.deaf;
-		this.mute = this.deaf ? true : data.mute;
+		deaf = data.deaf;
+		mute = deaf || data.mute;
 
 	}
 
 	public GuildMember(Guild guild, User user) {
-		this.id = user.id;
+		id = user.getID();
 
 		this.user = user;
 
 		this.guild = guild;
 
-		this.loader = guild.loader;
+		loader = guild.getLoader();
+		roleIDs = new String[] {};
 
-		this.joinedAt = null;
+		joinedAt = Date.from(Instant.now());
 	}
 
 	public GuildMember(Guild guild, User user, String[] roles, boolean deaf, boolean mute, String nick) {
-		this.id = user.id;
+		id = user.getID();
 		this.user = user;
 		this.guild = guild;
-		this.loader = guild.loader;
-		this.nick = nick != null ? nick : this.user.username;
-		this.roleIDs = roles;
-		this.joinedAt = Date.from(Instant.now());
+		loader = guild.getLoader();
+		this.nick = nick != null ? nick : user.username;
+		roleIDs = roles != null ? roles : new String[] {};
+		joinedAt = Date.from(Instant.now());
 		this.deaf = deaf;
-		this.mute = this.deaf == true ? true : mute;
+		this.mute = deaf || mute;
 	}
 
 	public GuildMember(GuildMember data) {
-		this.id = data.id;
-		this.loader = data.loader;
-		this.user = data.user;
-		this.guild = data.guild;
-		this.nick = data.nick;
-		this.roleIDs = data.roleIDs;
-		this.joinedAt = data.joinedAt;
-		this.deaf = data.deaf;
-		this.mute = this.deaf ? true : data.mute;
+		id = data.id;
+		loader = data.loader;
+		user = data.user;
+		guild = data.guild;
+		nick = data.nick;
+		roleIDs = data.roleIDs;
+		joinedAt = data.joinedAt;
+		deaf = data.deaf;
+		mute = deaf || data.mute;
 	}
 
 	/**
@@ -137,7 +138,7 @@ public class GuildMember {
 	 *         successful
 	 */
 	public CompletableFuture<GuildMember> ban() {
-		return this.guild.ban(this);
+		return guild.ban(this);
 	}
 
 	/**
@@ -155,7 +156,7 @@ public class GuildMember {
 	public boolean equals(Object obj) {
 		if (!(obj instanceof GuildMember)) return false;
 		GuildMember member = (GuildMember) obj;
-		if (!guild.id.equals(member.guild.id)) return false;
+		if (!guild.getID().equals(member.guild.getID())) return false;
 		for (Role role : member.getRoles().values()) {
 			if (!getRoles().containsKey(role.id)) return false;
 		}
@@ -182,6 +183,10 @@ public class GuildMember {
 			}
 		}
 		return highest;
+	}
+
+	public String getID() {
+		return id;
 	}
 
 	/**

@@ -16,13 +16,13 @@ public class ModifyGuild extends RESTAction<Guild> {
 	private JSONObject payload;
 
 	public ModifyGuild(Guild guild, JSONObject data) {
-		super(guild.loader);
+		super(guild.getLoader());
 		this.guild = guild;
 		payload = data;
 	}
 
 	public CompletableFuture<Guild> execute() {
-		return super.execute(loader.rest.makeRequest(Endpoints.guild(guild.id), Methods.PATCH, true, payload));
+		return super.execute(loader.rest.makeRequest(Endpoints.guild(guild.getID()), Methods.PATCH, true, payload));
 	}
 
 	public void complete(String r, Throwable ex) {

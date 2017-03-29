@@ -17,7 +17,7 @@ public class UserList<T> extends AbstractList<T> {
 	public DefaultListModel<Object> createListModel() {
 		DefaultListModel<Object> listModel = new DefaultListModel<Object>();
 		for (User user : this.loader.users.values()) {
-			listModel.addElement(String.format("<html>%s#%s<br>%s</html>", user.username, user.discriminator, user.id));
+			listModel.addElement(String.format("<html>%s#%s<br>%s</html>", user.username, user.discriminator, user.getID()));
 			this.items.add((T)user);
 		}
 		return listModel;

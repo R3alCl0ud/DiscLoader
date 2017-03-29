@@ -35,7 +35,7 @@ public class GuildMemberUpdateEvent extends DLEvent {
     public final GuildMember oldMember;
 
     public GuildMemberUpdateEvent(GuildMember member, GuildMember oldMember, Guild guild) {
-        super(guild.loader);
+        super(guild.getLoader());
         this.guild = guild;
         this.member = member;
         this.oldMember = oldMember;

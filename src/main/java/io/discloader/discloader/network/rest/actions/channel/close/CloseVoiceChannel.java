@@ -1,6 +1,6 @@
 package io.discloader.discloader.network.rest.actions.channel.close;
 
-import io.discloader.discloader.entity.channels.impl.VoiceChannel;
+import io.discloader.discloader.common.entity.channel.VoiceChannel;
 
 public class CloseVoiceChannel extends CloseChannel<VoiceChannel> {
 

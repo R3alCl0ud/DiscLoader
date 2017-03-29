@@ -25,7 +25,7 @@ public class VoiceStateUpdate extends AbstractHandler {
 		String d = this.gson.toJson(packet.d);
 		VoiceStateJSON data = this.gson.fromJson(d, VoiceStateJSON.class);
 		Guild guild = loader.guilds.get(data.guild_id);
-		VoiceConnection connection = this.loader.voiceConnections.get(guild.id);
+		VoiceConnection connection = this.loader.voiceConnections.get(guild.getID());
 		if (connection != null && connection.getUserID().equals(data.user_id)) {
 			connection.setSessionID(data.session_id);
 			connection.setStateUpdated(true);

@@ -2,8 +2,8 @@ package io.discloader.discloader.network.rest.actions.channel;
 
 import java.util.concurrent.CompletableFuture;
 
+import io.discloader.discloader.common.entity.channel.GuildChannel;
 import io.discloader.discloader.entity.Overwrite;
-import io.discloader.discloader.entity.channels.impl.GuildChannel;
 import io.discloader.discloader.network.rest.actions.RESTAction;
 import io.discloader.discloader.util.DLUtil.Endpoints;
 import io.discloader.discloader.util.DLUtil.Methods;

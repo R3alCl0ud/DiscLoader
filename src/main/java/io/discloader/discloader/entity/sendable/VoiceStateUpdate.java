@@ -1,6 +1,6 @@
 package io.discloader.discloader.entity.sendable;
 
-import io.discloader.discloader.entity.channels.IVoiceChannel;
+import io.discloader.discloader.entity.channel.IVoiceChannel;
 import io.discloader.discloader.entity.guild.Guild;
 
 /**
@@ -15,7 +15,7 @@ public class VoiceStateUpdate {
 	public boolean self_deaf;
 
 	public VoiceStateUpdate(Guild guild, IVoiceChannel channel, boolean mute, boolean deaf) {
-		this.guild_id = guild.id;
+		this.guild_id = guild.getID();
 		this.channel_id = channel != null ? channel.getID() : null;
 	}
 

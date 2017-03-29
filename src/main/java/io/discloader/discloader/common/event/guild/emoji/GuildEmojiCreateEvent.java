@@ -11,7 +11,7 @@ public class GuildEmojiCreateEvent extends DLEvent {
 	private Emoji emoji;
 
 	public GuildEmojiCreateEvent(Emoji emoji) {
-		super(emoji.loader);
+		super(emoji.getLoader());
 		setEmoji(emoji);
 		guild = emoji.guild;
 	}

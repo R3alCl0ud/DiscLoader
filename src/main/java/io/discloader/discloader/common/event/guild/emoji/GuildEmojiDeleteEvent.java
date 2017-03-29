@@ -11,7 +11,7 @@ public class GuildEmojiDeleteEvent extends DLEvent {
 	private Emoji emoji;
 
 	public GuildEmojiDeleteEvent(Emoji emoji) {
-		super(emoji.loader);
+		super(emoji.getLoader());
 		setEmoji(emoji);
 		guild = emoji.guild;
 	}

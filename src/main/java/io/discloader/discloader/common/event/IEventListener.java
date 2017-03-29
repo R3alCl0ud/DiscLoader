@@ -36,7 +36,7 @@ import io.discloader.discloader.common.event.message.PrivateMessageDeleteEvent;
 import io.discloader.discloader.common.event.message.PrivateMessageUpdateEvent;
 import io.discloader.discloader.common.event.voice.VoiceStateUpdateEvent;
 import io.discloader.discloader.common.registry.ModRegistry;
-import io.discloader.discloader.entity.channels.ITextChannel;
+import io.discloader.discloader.entity.channel.ITextChannel;
 import io.discloader.discloader.entity.guild.Emoji;
 import io.discloader.discloader.entity.guild.Guild;
 import io.discloader.discloader.entity.guild.GuildMember;

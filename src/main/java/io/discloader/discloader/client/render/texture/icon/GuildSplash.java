@@ -33,7 +33,7 @@ public class GuildSplash extends AbstractTexture {
 		if ((guild != null && guild.splashHash == null) || (partGuild != null && partGuild.splashHash == null)) {
 			return null;
 		} else if (guild != null) {
-			return Endpoints.guildSlash(guild.id, guild.splashHash);
+			return Endpoints.guildSlash(guild.getID(), guild.splashHash);
 		} else {
 			return Endpoints.guildSlash(partGuild.id, partGuild.splashHash);
 		}

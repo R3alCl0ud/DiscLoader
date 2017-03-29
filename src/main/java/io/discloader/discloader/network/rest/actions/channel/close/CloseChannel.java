@@ -2,7 +2,7 @@ package io.discloader.discloader.network.rest.actions.channel.close;
 
 import java.util.concurrent.CompletableFuture;
 
-import io.discloader.discloader.entity.channels.IChannel;
+import io.discloader.discloader.entity.channel.IChannel;
 import io.discloader.discloader.network.rest.actions.RESTAction;
 import io.discloader.discloader.util.DLUtil.Endpoints;
 import io.discloader.discloader.util.DLUtil.Methods;

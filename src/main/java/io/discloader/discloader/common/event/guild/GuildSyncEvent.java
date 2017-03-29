@@ -8,7 +8,7 @@ public class GuildSyncEvent extends DLEvent {
 	private Guild guild;
 
 	public GuildSyncEvent(Guild guild) {
-		super(guild.loader);
+		super(guild.getLoader());
 		setGuild(guild);
 	}
 

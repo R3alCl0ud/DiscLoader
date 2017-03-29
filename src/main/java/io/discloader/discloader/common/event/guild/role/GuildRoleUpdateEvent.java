@@ -10,7 +10,7 @@ public class GuildRoleUpdateEvent extends DLEvent {
 	public final Role oldRole;
 	
 	public GuildRoleUpdateEvent(Role role, Role oldRole) {
-		super(role.loader);
+		super(role.getLoader());
 		
 		this.role = role;
 		this.oldRole = oldRole;

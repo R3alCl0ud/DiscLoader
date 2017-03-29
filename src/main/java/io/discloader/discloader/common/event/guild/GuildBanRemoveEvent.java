@@ -23,7 +23,7 @@ public class GuildBanRemoveEvent extends DLEvent {
 	 * @param user The use that has been unbanned
 	 */
 	public GuildBanRemoveEvent(Guild guild, User user) {
-		super(guild.loader);
+		super(guild.getLoader());
 		this.guild = guild;
 		this.user = user;
 	}

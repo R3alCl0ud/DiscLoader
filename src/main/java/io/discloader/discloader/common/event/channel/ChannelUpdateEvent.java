@@ -3,8 +3,8 @@
  */
 package io.discloader.discloader.common.event.channel;
 
+import io.discloader.discloader.common.entity.channel.Channel;
 import io.discloader.discloader.common.event.DLEvent;
-import io.discloader.discloader.entity.channels.impl.Channel;
 
 /**
  * @author Perry Berman
@@ -15,7 +15,7 @@ public class ChannelUpdateEvent extends DLEvent {
 	protected final Channel oldChannel;
 
 	public ChannelUpdateEvent(Channel channel, Channel oldChannel) {
-		super(channel.loader);
+		super(channel.getLoader());
 		this.channel = channel;
 		this.oldChannel = oldChannel;
 	}

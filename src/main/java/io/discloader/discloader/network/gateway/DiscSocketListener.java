@@ -20,10 +20,10 @@ import io.discloader.discloader.client.logger.ProgressLogger;
 import io.discloader.discloader.common.DiscLoader;
 import io.discloader.discloader.common.event.RawEvent;
 import io.discloader.discloader.entity.sendable.Packet;
+import io.discloader.discloader.network.gateway.packets.AbstractHandler;
 import io.discloader.discloader.network.gateway.packets.ChannelCreate;
 import io.discloader.discloader.network.gateway.packets.ChannelDelete;
 import io.discloader.discloader.network.gateway.packets.ChannelUpdate;
-import io.discloader.discloader.network.gateway.packets.AbstractHandler;
 import io.discloader.discloader.network.gateway.packets.EmojiUpdate;
 import io.discloader.discloader.network.gateway.packets.GuildBanAdd;
 import io.discloader.discloader.network.gateway.packets.GuildBanRemove;
@@ -50,12 +50,14 @@ import io.discloader.discloader.network.gateway.packets.VoiceServerUpdate;
 import io.discloader.discloader.network.gateway.packets.VoiceStateUpdate;
 import io.discloader.discloader.network.gateway.packets.request.GatewayIdentify;
 import io.discloader.discloader.network.gateway.packets.request.GatewayResume;
+import io.discloader.discloader.network.gateway.packets.request.Properties;
 import io.discloader.discloader.util.DLUtil;
 import io.discloader.discloader.util.DLUtil.OPCodes;
 import io.discloader.discloader.util.DLUtil.Status;
 import io.discloader.discloader.util.DLUtil.WSEvents;
 
 public class DiscSocketListener extends WebSocketAdapter {
+
 	public Gson gson = new Gson();
 
 	public DiscLoader loader;
@@ -66,7 +68,7 @@ public class DiscSocketListener extends WebSocketAdapter {
 
 	private long timeout = 5000;
 
-	private final Logger logger = new DLLogger("Gateway Listener").getLogger();
+	private final Logger logger = new DLLogger("GatewayListener").getLogger();
 
 	public HashMap<String, AbstractHandler> handlers;
 
@@ -126,26 +128,28 @@ public class DiscSocketListener extends WebSocketAdapter {
 		}
 
 		if (packet.op == DLUtil.OPCodes.HEARTBEAT_ACK) {
-			this.socket.lastHeartbeatAck = true;
-			this.loader.emit("debug", "Heartbeat Acknowledged");
+			socket.lastHeartbeatAck = true;
+			loader.emit("debug", "Heartbeat Acknowledged");
+			logger.info("Heartbeat Acknowledged");
 		} else if (packet.op == OPCodes.HEARTBEAT) {
-			JSONObject payload = new JSONObject().put("op", OPCodes.HEARTBEAT).put("d", this.socket.s);
-			this.socket.send(payload, true);
-			this.loader.emit("debug", "Recieved gateway heartbeat");
+			logger.info("Recieved Heartbeat request from Gateway.");
+			JSONObject payload = new JSONObject().put("op", OPCodes.HEARTBEAT).put("d", socket.s);
+			socket.send(payload, true);
+
 		}
 
-		this.setSequence(packet.s);
+		setSequence(packet.s);
 
-		if (this.socket.status != Status.READY && socket.status != Status.RECONNECTING) {
+		if (socket.status != Status.READY && socket.status != Status.RECONNECTING) {
 			if (DLUtil.EventWhitelist.indexOf(packet.t) == -1) {
-				this.queue.add(packet);
+				queue.add(packet);
 				return;
 			}
 		}
 
 		if (packet.op == OPCodes.DISPATCH) {
-			if (!this.handlers.containsKey(packet.t)) return;
-			this.handlers.get(packet.t).handle(packet);
+			if (!handlers.containsKey(packet.t)) return;
+			handlers.get(packet.t).handle(packet);
 		}
 	}
 
@@ -207,8 +211,7 @@ public class DiscSocketListener extends WebSocketAdapter {
 			token = loader.token;
 		}
 
-		JSONObject properties = new JSONObject().put("$os", "DiscLoader").put("$browser", "DiscLoader").put("$device", "DiscLoader");
-		GatewayIdentify payload = new GatewayIdentify(token, 250, properties);
+		GatewayIdentify payload = new GatewayIdentify(token, 250, new Properties("DiscLoader", "DiscLoader", "DiscLoader"));
 
 		try {
 			if (this.loader.shards > 1) {
@@ -237,6 +240,7 @@ public class DiscSocketListener extends WebSocketAdapter {
 		Packet d = new Packet(OPCodes.RESUME, new GatewayResume(socket.sessionID, token, socket.s));
 		System.out.println(gson.toJson(d));
 		socket.send(d, true);
+		retries++;
 	}
 
 	public void tryReconnecting() {
@@ -244,13 +248,13 @@ public class DiscSocketListener extends WebSocketAdapter {
 		logger.info("Attempting to reconnect to the gateway");
 		if (reconnection == null) {
 			reconnection = new Thread("GatewayReconnector") {
+
 				public void run() {
 					if (socket.status == Status.RECONNECTING && !interrupted()) {
-						retries++;
 						try {
 							Thread.sleep(timeout * retries);
-						} catch (InterruptedException e1) {
-							// e1.printStackTrace();
+						} catch (InterruptedException ignored) {
+
 						}
 
 						try {

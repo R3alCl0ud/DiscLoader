@@ -1,6 +1,6 @@
 package io.discloader.discloader.network.rest.actions.channel.close;
 
-import io.discloader.discloader.entity.channels.impl.GroupChannel;
+import io.discloader.discloader.common.entity.channel.GroupChannel;
 
 public class CloseGroupChannel extends CloseChannel<GroupChannel> {
 

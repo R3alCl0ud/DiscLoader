@@ -24,8 +24,8 @@ public class UserIcon extends AbstractTexture {
         this.user = user;
         this.setIconHeight(128);
         this.setIconWidth(128);
-        this.setIconName(avatar != null ? avatar : user.id);
-        this.avatarURL = avatar != null ? Endpoints.avatar(user.id, avatar) : null;
+        this.setIconName(avatar != null ? avatar : user.getID());
+        this.avatarURL = avatar != null ? Endpoints.avatar(user.getID(), avatar) : null;
 
     }
 

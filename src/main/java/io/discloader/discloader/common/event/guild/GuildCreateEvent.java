@@ -15,7 +15,7 @@ public class GuildCreateEvent extends DLEvent {
 	public final Guild guild;
 	
 	public GuildCreateEvent(Guild guild) {
-		super(guild.loader);
+		super(guild.getLoader());
 		this.guild = guild;
 	}
 

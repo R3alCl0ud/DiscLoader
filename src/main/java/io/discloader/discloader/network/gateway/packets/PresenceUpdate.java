@@ -40,7 +40,7 @@ public class PresenceUpdate extends AbstractHandler {
 
 		Guild guild = data.guild_id != null ? this.socket.loader.guilds.get(data.guild_id) : null;
 		if (guild != null) {
-			GuildMember oldMember = guild.members.get(user.id), member;
+			GuildMember oldMember = guild.members.get(user.getID()), member;
 			member = guild.addMember(user, data.roles, false, false, data.nick, false);
 			if (oldMember == null && !data.status.equalsIgnoreCase("offline")) {
 				loader.emit(DLUtil.Events.GUILD_MEMBER_AVAILABLE, member);

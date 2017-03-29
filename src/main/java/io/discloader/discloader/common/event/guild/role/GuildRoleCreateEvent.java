@@ -8,7 +8,7 @@ public class GuildRoleCreateEvent extends DLEvent {
 	public final Role role;
 	
 	public GuildRoleCreateEvent(Role role) {
-		super(role.loader);
+		super(role.getLoader());
 		
 		this.role = role;
 	}

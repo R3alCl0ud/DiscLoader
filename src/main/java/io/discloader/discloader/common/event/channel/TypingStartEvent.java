@@ -2,7 +2,7 @@ package io.discloader.discloader.common.event.channel;
 
 import io.discloader.discloader.common.event.DLEvent;
 import io.discloader.discloader.common.event.IEventListener;
-import io.discloader.discloader.entity.channels.ITextChannel;
+import io.discloader.discloader.entity.channel.ITextChannel;
 import io.discloader.discloader.entity.user.User;
 
 /**

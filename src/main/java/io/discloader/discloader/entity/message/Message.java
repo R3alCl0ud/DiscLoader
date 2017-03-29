@@ -5,11 +5,12 @@ import java.util.Date;
 import java.util.concurrent.CompletableFuture;
 
 import io.discloader.discloader.common.DiscLoader;
+import io.discloader.discloader.common.entity.channel.Channel;
+import io.discloader.discloader.common.entity.channel.PrivateChannel;
+import io.discloader.discloader.common.entity.channel.TextChannel;
+import io.discloader.discloader.entity.ISnowflake;
 import io.discloader.discloader.entity.RichEmbed;
-import io.discloader.discloader.entity.channels.ITextChannel;
-import io.discloader.discloader.entity.channels.impl.Channel;
-import io.discloader.discloader.entity.channels.impl.PrivateChannel;
-import io.discloader.discloader.entity.channels.impl.TextChannel;
+import io.discloader.discloader.entity.channel.ITextChannel;
 import io.discloader.discloader.entity.guild.Guild;
 import io.discloader.discloader.entity.guild.GuildMember;
 import io.discloader.discloader.entity.message.embed.MessageEmbed;
@@ -18,7 +19,6 @@ import io.discloader.discloader.network.json.MessageJSON;
 import io.discloader.discloader.network.rest.actions.channel.pin.PinMessage;
 import io.discloader.discloader.network.rest.actions.channel.pin.UnpinMessage;
 import io.discloader.discloader.util.DLUtil;
-import io.discloader.discloader.util.ISnowflake;
 
 /**
  * Represents a message object on the api <br>
@@ -131,10 +131,10 @@ public class Message {
 
 		if (this.channel.isPrivate()) {
 			PrivateChannel privateChannel = (PrivateChannel) channel;
-			this.loader = privateChannel.loader;
+			this.loader = privateChannel.getLoader();
 		} else {
 			TextChannel textChannel = (TextChannel) channel;
-			this.loader = textChannel.loader;
+			this.loader = textChannel.getLoader();
 			this.guild = textChannel.guild;
 		}
 
@@ -150,7 +150,7 @@ public class Message {
 
 		this.editedAt = data.edited_timestamp != null ? DLUtil.parseISO8601(data.edited_timestamp) : null;
 
-		this.member = this.guild != null ? this.guild.members.get(this.author.id) : null;
+		this.member = this.guild != null ? this.guild.members.get(this.author.getID()) : null;
 
 		this.tts = data.tts;
 
@@ -228,7 +228,7 @@ public class Message {
 	 * @since 0.1.0
 	 */
 	public boolean isEditable() {
-		return loader.user.id.equals(author.id);
+		return loader.user.getID().equals(author.getID());
 	}
 
 	/**

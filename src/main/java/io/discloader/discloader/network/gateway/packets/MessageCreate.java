@@ -7,7 +7,7 @@ import io.discloader.discloader.client.command.CommandHandler;
 import io.discloader.discloader.common.event.message.GuildMessageCreateEvent;
 import io.discloader.discloader.common.event.message.MessageCreateEvent;
 import io.discloader.discloader.common.event.message.PrivateMessageCreateEvent;
-import io.discloader.discloader.entity.channels.ITextChannel;
+import io.discloader.discloader.entity.channel.ITextChannel;
 import io.discloader.discloader.entity.message.Message;
 import io.discloader.discloader.network.gateway.DiscSocket;
 import io.discloader.discloader.network.json.MessageJSON;
@@ -33,7 +33,7 @@ public class MessageCreate extends AbstractHandler {
             Message message = new Message(channel, data);
             channel.getMessages().put(message.id, message);
             if (channel.isTyping(message.author)) {
-                channel.getTyping().remove(message.author.id);
+                channel.getTyping().remove(message.author.getID());
             }
             MessageCreateEvent event = new MessageCreateEvent(message);
             loader.emit(DLUtil.Events.MESSAGE_CREATE, event);
