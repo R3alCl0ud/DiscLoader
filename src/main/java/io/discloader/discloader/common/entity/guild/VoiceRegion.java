@@ -1,4 +1,4 @@
-package io.discloader.discloader.entity.guild;
+package io.discloader.discloader.common.entity.guild;
 
 public class VoiceRegion {
 

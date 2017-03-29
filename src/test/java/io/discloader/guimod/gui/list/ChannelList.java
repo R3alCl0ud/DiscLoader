@@ -32,7 +32,7 @@ public class ChannelList<T extends Channel> extends AbstractList<T> {
 				break;
 			case DM:
 				PrivateChannel pc = (PrivateChannel) c;
-				listModel.addElement(String.format("<html>%s<br>%s#%s<br>DM</html>", pc.getID(), pc.recipient.username, pc.recipient.discriminator));
+				listModel.addElement(String.format("<html>%s<br>%s#%s<br>DM</html>", pc.getID(), pc.recipient.getUsername(), pc.recipient.discriminator));
 				items.add((T) c);
 				break;
 			case GROUPDM:

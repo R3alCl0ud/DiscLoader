@@ -1,6 +1,6 @@
 package io.discloader.discloader.entity.message;
 
-import io.discloader.discloader.entity.guild.Emoji;
+import io.discloader.discloader.common.entity.guild.Emoji;
 import io.discloader.discloader.network.json.ReactionJSON;
 
 public class Reaction {

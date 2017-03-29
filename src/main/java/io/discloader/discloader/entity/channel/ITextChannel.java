@@ -3,10 +3,10 @@ package io.discloader.discloader.entity.channel;
 import java.util.HashMap;
 import java.util.concurrent.CompletableFuture;
 
-import io.discloader.discloader.entity.RichEmbed;
+import io.discloader.discloader.common.entity.RichEmbed;
+import io.discloader.discloader.common.entity.user.User;
 import io.discloader.discloader.entity.message.Message;
 import io.discloader.discloader.entity.message.MessageFetchOptions;
-import io.discloader.discloader.entity.user.User;
 
 /**
  * @author perryberman

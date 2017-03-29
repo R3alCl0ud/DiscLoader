@@ -16,8 +16,8 @@ import com.sedmelluq.discord.lavaplayer.track.AudioTrack;
 
 import io.discloader.discloader.common.DiscLoader;
 import io.discloader.discloader.common.entity.channel.VoiceChannel;
+import io.discloader.discloader.common.entity.guild.Guild;
 import io.discloader.discloader.entity.channel.IVoiceChannel;
-import io.discloader.discloader.entity.guild.Guild;
 import io.discloader.discloader.entity.sendable.Packet;
 import io.discloader.discloader.entity.sendable.VoiceStateUpdate;
 import io.discloader.discloader.network.voice.StreamProvider;

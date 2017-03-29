@@ -5,8 +5,8 @@ import java.util.concurrent.CompletableFuture;
 
 import io.discloader.discloader.common.DiscLoader;
 import io.discloader.discloader.common.entity.channel.VoiceChannel;
-import io.discloader.discloader.entity.guild.GuildMember;
-import io.discloader.discloader.entity.guild.Role;
+import io.discloader.discloader.common.entity.guild.GuildMember;
+import io.discloader.discloader.common.entity.guild.Role;
 import io.discloader.discloader.util.DLUtil.Endpoints;
 import io.discloader.discloader.util.DLUtil.Methods;
 

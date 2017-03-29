@@ -3,9 +3,9 @@
  */
 package io.discloader.discloader.common.event.guild;
 
+import io.discloader.discloader.common.entity.guild.Guild;
+import io.discloader.discloader.common.entity.guild.GuildMember;
 import io.discloader.discloader.common.event.DLEvent;
-import io.discloader.discloader.entity.guild.Guild;
-import io.discloader.discloader.entity.guild.GuildMember;
 
 /**
  * @author Perry Berman

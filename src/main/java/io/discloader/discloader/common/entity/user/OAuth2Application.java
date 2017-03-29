@@ -1,4 +1,4 @@
-package io.discloader.discloader.entity.user;
+package io.discloader.discloader.common.entity.user;
 
 import io.discloader.discloader.network.json.OAuthApplicationJSON;
 import io.discloader.discloader.util.DLUtil;

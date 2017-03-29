@@ -1,9 +1,9 @@
-package io.discloader.discloader.entity.guild;
+package io.discloader.discloader.common.entity.guild;
 
 import java.math.BigDecimal;
 
 import io.discloader.discloader.common.DiscLoader;
-import io.discloader.discloader.entity.Permission;
+import io.discloader.discloader.common.entity.Permission;
 import io.discloader.discloader.entity.message.Message;
 import io.discloader.discloader.network.json.RoleJSON;
 

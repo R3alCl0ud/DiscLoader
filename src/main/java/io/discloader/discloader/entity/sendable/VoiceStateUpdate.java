@@ -1,7 +1,7 @@
 package io.discloader.discloader.entity.sendable;
 
+import io.discloader.discloader.common.entity.guild.Guild;
 import io.discloader.discloader.entity.channel.IVoiceChannel;
-import io.discloader.discloader.entity.guild.Guild;
 
 /**
  * @author Perry Berman

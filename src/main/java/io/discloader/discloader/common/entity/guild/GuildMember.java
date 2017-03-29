@@ -1,4 +1,4 @@
-package io.discloader.discloader.entity.guild;
+package io.discloader.discloader.common.entity.guild;
 
 import java.time.Instant;
 import java.util.ArrayList;
@@ -7,13 +7,13 @@ import java.util.HashMap;
 import java.util.concurrent.CompletableFuture;
 
 import io.discloader.discloader.common.DiscLoader;
+import io.discloader.discloader.common.entity.Permission;
+import io.discloader.discloader.common.entity.Presence;
 import io.discloader.discloader.common.entity.channel.VoiceChannel;
+import io.discloader.discloader.common.entity.user.User;
 import io.discloader.discloader.common.exceptions.PermissionsException;
 import io.discloader.discloader.common.exceptions.VoiceConnectionException;
-import io.discloader.discloader.entity.Permission;
 import io.discloader.discloader.entity.Permissions;
-import io.discloader.discloader.entity.Presence;
-import io.discloader.discloader.entity.user.User;
 import io.discloader.discloader.entity.voice.VoiceState;
 import io.discloader.discloader.network.json.MemberJSON;
 import io.discloader.discloader.network.rest.actions.guild.ModifyMember;
@@ -83,7 +83,7 @@ public class GuildMember {
 		user = loader.addUser(data.user);
 		id = user.getID();
 		this.guild = guild;
-		nick = data.nick != null ? data.nick : user.username;
+		nick = data.nick != null ? data.nick : user.getUsername();
 		joinedAt = DLUtil.parseISO8601(data.joined_at);
 		roleIDs = data.roles != null ? data.roles : new String[] {};
 
@@ -110,7 +110,7 @@ public class GuildMember {
 		this.user = user;
 		this.guild = guild;
 		loader = guild.getLoader();
-		this.nick = nick != null ? nick : user.username;
+		this.nick = nick != null ? nick : user.getUsername();
 		roleIDs = roles != null ? roles : new String[] {};
 		joinedAt = Date.from(Instant.now());
 		this.deaf = deaf;
@@ -194,7 +194,7 @@ public class GuildMember {
 	 *         {@link User#username .username} otherwise.
 	 */
 	public String getName() {
-		return nick != null ? nick : user.username;
+		return nick != null ? nick : user.getUsername();
 	}
 
 	/**
@@ -265,7 +265,7 @@ public class GuildMember {
 	 *             the member. Also thrown if the current user doesn't have the
 	 *             MANAGE_ROLE permission.
 	 */
-	public CompletableFuture<GuildMember> giveRole(Role... roles) throws PermissionsException {
+	public CompletableFuture<GuildMember> giveRole(Role... roles) {
 		if (!guild.isOwner() && !guild.getCurrentMember().getPermissions().hasPermission(Permissions.MANAGE_ROLES.getValue())) throw new PermissionsException("");
 		for (Role role : roles)
 			if (!guild.isOwner() && role.getPosition() >= guild.getCurrentMember().getHighestRole().getPosition()) throw new PermissionsException("");
@@ -313,7 +313,7 @@ public class GuildMember {
 	 * @throws PermissionsException Thrown if the current user doesn't have the
 	 *             {@link Permissions#KICK_MEMBERS} permission.
 	 */
-	public CompletableFuture<GuildMember> kick() throws PermissionsException {
+	public CompletableFuture<GuildMember> kick() {
 		return guild.kickMember(this);
 	}
 
@@ -328,7 +328,7 @@ public class GuildMember {
 	 * @throws VoiceConnectionException Thrown if the member is not in a voice
 	 *             channel.
 	 */
-	public CompletableFuture<GuildMember> move(VoiceChannel channel) throws PermissionsException, VoiceConnectionException {
+	public CompletableFuture<GuildMember> move(VoiceChannel channel) {
 		if (!guild.isOwner() && !channel.permissionsFor(guild.getCurrentMember()).hasPermission(Permissions.MOVE_MEMBERS.getValue())) throw new PermissionsException("Insuccficient Permissions");
 		if (getVoiceChannel() == null) throw new VoiceConnectionException();
 		ModifyMember future = new ModifyMember(this, channel);
@@ -344,7 +344,7 @@ public class GuildMember {
 	 * @throws PermissionsException thrown if the current user doesn't have the
 	 *             {@link Permissions#MUTE_MEMBERS} permission.
 	 */
-	public CompletableFuture<GuildMember> mute() throws PermissionsException {
+	public CompletableFuture<GuildMember> mute() {
 		if (!guild.isOwner() && !guild.getCurrentMember().getPermissions().hasPermission(Permissions.MUTE_MEMBERS.getValue())) throw new PermissionsException("Insuccficient Permissions");
 		ModifyMember future = new ModifyMember(this, nick, getRoles(), true, deaf, getVoiceChannel());
 		return future.execute();
@@ -362,7 +362,7 @@ public class GuildMember {
 	 * @throws PermissionsException thrown if the current user doesn't have the
 	 *             {@link Permissions#MANAGE_NICKNAMES} permission.
 	 */
-	public CompletableFuture<GuildMember> setNick(String nick) throws PermissionsException {
+	public CompletableFuture<GuildMember> setNick(String nick) {
 		if (!guild.isOwner() && !guild.getCurrentMember().getPermissions().hasPermission(Permissions.MANAGE_NICKNAMES.getValue())) throw new PermissionsException("Insuccficient Permissions");
 
 		CompletableFuture<GuildMember> future = loader.rest.setNick(this, nick);
@@ -380,7 +380,7 @@ public class GuildMember {
 	 *             the member. Also thrown if the current user doesn't have the
 	 *             MANAGE_ROLE permission.
 	 */
-	public CompletableFuture<GuildMember> takeRole(Role role) throws PermissionsException {
+	public CompletableFuture<GuildMember> takeRole(Role role) {
 		if (!guild.isOwner() && !guild.getCurrentMember().getPermissions().hasPermission(Permissions.MANAGE_ROLES.getValue())) throw new PermissionsException("Insuccficient Permissions");
 		if (!guild.isOwner() && role.getPosition() >= guild.getCurrentMember().getHighestRole().getPosition()) throw new PermissionsException("Cannot take away roles higher than your's");
 

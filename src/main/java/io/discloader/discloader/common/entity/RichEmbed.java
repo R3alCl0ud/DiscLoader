@@ -1,4 +1,4 @@
-package io.discloader.discloader.entity;
+package io.discloader.discloader.common.entity;
 
 import java.io.File;
 import java.util.ArrayList;

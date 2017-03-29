@@ -3,10 +3,10 @@ package io.discloader.discloader.client.command;
 import java.util.Locale;
 import java.util.regex.Matcher;
 
+import io.discloader.discloader.common.entity.guild.Guild;
 import io.discloader.discloader.common.event.message.MessageCreateEvent;
 import io.discloader.discloader.common.language.LanguageRegistry;
 import io.discloader.discloader.common.registry.CommandRegistry;
-import io.discloader.discloader.entity.guild.Guild;
 import io.discloader.discloader.entity.message.Message;
 
 /**

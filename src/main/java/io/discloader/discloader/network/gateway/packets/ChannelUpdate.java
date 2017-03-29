@@ -4,10 +4,10 @@
 package io.discloader.discloader.network.gateway.packets;
 
 import io.discloader.discloader.common.entity.channel.Channel;
+import io.discloader.discloader.common.entity.guild.Guild;
 import io.discloader.discloader.common.event.IEventListener;
 import io.discloader.discloader.common.event.channel.ChannelUpdateEvent;
 import io.discloader.discloader.entity.channel.ITextChannel;
-import io.discloader.discloader.entity.guild.Guild;
 import io.discloader.discloader.entity.message.Message;
 import io.discloader.discloader.network.gateway.DiscSocket;
 import io.discloader.discloader.network.json.ChannelJSON;

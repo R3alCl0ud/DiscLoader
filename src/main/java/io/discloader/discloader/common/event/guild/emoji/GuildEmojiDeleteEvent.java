@@ -1,8 +1,8 @@
 package io.discloader.discloader.common.event.guild.emoji;
 
+import io.discloader.discloader.common.entity.guild.Emoji;
+import io.discloader.discloader.common.entity.guild.Guild;
 import io.discloader.discloader.common.event.DLEvent;
-import io.discloader.discloader.entity.guild.Emoji;
-import io.discloader.discloader.entity.guild.Guild;
 
 public class GuildEmojiDeleteEvent extends DLEvent {
 

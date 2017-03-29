@@ -1,6 +1,6 @@
 package io.discloader.discloader.entity.sendable;
 
-import io.discloader.discloader.entity.Game;
+import io.discloader.discloader.common.entity.Game;
 
 public class SendablePresenceUpdate {
 	public Game game;

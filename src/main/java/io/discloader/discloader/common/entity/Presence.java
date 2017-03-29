@@ -1,7 +1,7 @@
-package io.discloader.discloader.entity;
+package io.discloader.discloader.common.entity;
 
-import io.discloader.discloader.entity.guild.GuildMember;
-import io.discloader.discloader.entity.user.User;
+import io.discloader.discloader.common.entity.guild.GuildMember;
+import io.discloader.discloader.common.entity.user.User;
 import io.discloader.discloader.network.json.GameJSON;
 import io.discloader.discloader.network.json.PresenceJSON;
 

@@ -1,9 +1,9 @@
-package io.discloader.discloader.entity.user;
+package io.discloader.discloader.common.entity.user;
 
 import java.util.concurrent.CompletableFuture;
 
-import io.discloader.discloader.entity.Game;
-import io.discloader.discloader.entity.Presence;
+import io.discloader.discloader.common.entity.Game;
+import io.discloader.discloader.common.entity.Presence;
 import io.discloader.discloader.entity.sendable.Packet;
 import io.discloader.discloader.entity.sendable.SendablePresenceUpdate;
 

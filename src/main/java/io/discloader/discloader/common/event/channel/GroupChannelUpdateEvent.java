@@ -3,7 +3,7 @@ package io.discloader.discloader.common.event.channel;
 import java.util.HashMap;
 
 import io.discloader.discloader.common.entity.channel.GroupChannel;
-import io.discloader.discloader.entity.user.User;
+import io.discloader.discloader.common.entity.user.User;
 
 public class GroupChannelUpdateEvent extends ChannelUpdateEvent {
 

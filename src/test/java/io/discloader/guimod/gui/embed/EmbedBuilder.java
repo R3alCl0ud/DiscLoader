@@ -10,7 +10,7 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 
 import io.discloader.discloader.client.render.panel.CenterPanel;
-import io.discloader.discloader.entity.RichEmbed;
+import io.discloader.discloader.common.entity.RichEmbed;
 
 /**
  * @author Perry Berman

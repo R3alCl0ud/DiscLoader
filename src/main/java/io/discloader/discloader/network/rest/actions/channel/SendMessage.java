@@ -3,7 +3,7 @@ package io.discloader.discloader.network.rest.actions.channel;
 import java.io.File;
 import java.util.concurrent.CompletableFuture;
 
-import io.discloader.discloader.entity.RichEmbed;
+import io.discloader.discloader.common.entity.RichEmbed;
 import io.discloader.discloader.entity.channel.ITextChannel;
 import io.discloader.discloader.entity.message.Message;
 import io.discloader.discloader.entity.sendable.Attachment;

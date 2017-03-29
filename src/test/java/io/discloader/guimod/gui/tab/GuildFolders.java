@@ -6,7 +6,7 @@ package io.discloader.guimod.gui.tab;
 import javax.swing.event.ListSelectionEvent;
 
 import io.discloader.discloader.common.DiscLoader;
-import io.discloader.discloader.entity.guild.Guild;
+import io.discloader.discloader.common.entity.guild.Guild;
 import io.discloader.guimod.gui.info.GuildInfo;
 import io.discloader.guimod.gui.list.GuildList;
 

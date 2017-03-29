@@ -4,7 +4,7 @@ import java.util.concurrent.CompletableFuture;
 
 import org.json.JSONObject;
 
-import io.discloader.discloader.entity.guild.Guild;
+import io.discloader.discloader.common.entity.guild.Guild;
 import io.discloader.discloader.network.json.GuildJSON;
 import io.discloader.discloader.network.rest.actions.RESTAction;
 import io.discloader.discloader.util.DLUtil.Endpoints;

@@ -1,11 +1,12 @@
-package io.discloader.discloader.entity.user;
+package io.discloader.discloader.common.entity.user;
 
 import java.util.concurrent.CompletableFuture;
 
 import io.discloader.discloader.client.render.texture.icon.UserIcon;
 import io.discloader.discloader.client.render.util.IIcon;
 import io.discloader.discloader.common.DiscLoader;
-import io.discloader.discloader.entity.ISnowflake;
+import io.discloader.discloader.entity.user.IUser;
+import io.discloader.discloader.entity.user.IUserProfile;
 import io.discloader.discloader.network.json.UserJSON;
 import io.discloader.discloader.network.rest.actions.FetchUserProfile;
 
@@ -14,7 +15,7 @@ import io.discloader.discloader.network.rest.actions.FetchUserProfile;
  * 
  * @author Perry Berman
  */
-public class User implements ISnowflake {
+public class User implements IUser {
 
 	/**
 	 * The loader instance that cached the user.
@@ -29,7 +30,7 @@ public class User implements ISnowflake {
 	/**
 	 * The user's username
 	 */
-	public String username;
+	private String username;
 
 	/**
 	 * The hash of the user's avatar
@@ -92,7 +93,7 @@ public class User implements ISnowflake {
 	/**
 	 * @return A Future that completes with the user's profile if successful.
 	 */
-	public CompletableFuture<UserProfile> getProfile() {
+	public CompletableFuture<IUserProfile> getProfile() {
 		return new FetchUserProfile(this).execute();
 	}
 
@@ -140,4 +141,39 @@ public class User implements ISnowflake {
 	public String getID() {
 		return id;
 	}
+
+	/**
+	 * @return the username
+	 */
+	public String getUsername() {
+		return username;
+	}
+
+	@Override
+	public String getDiscriminator() {
+		return null;
+	}
+
+	@Override
+	public DiscLoader getLoader() {
+		return null;
+	}
+
+
+
+	@Override
+	public boolean isBot() {
+		return false;
+	}
+
+	@Override
+	public boolean isVerified() {
+		return false;
+	}
+
+	@Override
+	public boolean MFAEnabled() {
+		return false;
+	}
+
 }

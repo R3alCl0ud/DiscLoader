@@ -1,7 +1,7 @@
 package io.discloader.discloader.common.event.channel;
 
 import io.discloader.discloader.common.entity.channel.PrivateChannel;
-import io.discloader.discloader.entity.user.User;
+import io.discloader.discloader.common.entity.user.User;
 
 public class PrivateChannelUpdateEvent extends ChannelUpdateEvent {
 

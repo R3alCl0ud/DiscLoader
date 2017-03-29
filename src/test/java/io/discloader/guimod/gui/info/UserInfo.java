@@ -6,7 +6,7 @@ import java.awt.Dimension;
 import javax.swing.Box;
 import javax.swing.JLabel;
 
-import io.discloader.discloader.entity.user.User;
+import io.discloader.discloader.common.entity.user.User;
 import io.discloader.discloader.util.DLUtil;
 
 public class UserInfo<T extends User> extends AbstractInfo<T> {
@@ -37,7 +37,7 @@ public class UserInfo<T extends User> extends AbstractInfo<T> {
 
 	@Override
 	public void update(User user) {
-		this.username.setText(String.format("Username: %s#%s", user.username, user.discriminator));
+		this.username.setText(String.format("Username: %s#%s", user.getUsername(), user.discriminator));
 		this.id.setText(String.format("ID: %s", user.getID()));
 		this.avatar.setIcon((user.getAvatar()).getImageIcon(128, 128));
 		this.avatarHash.setText(String.format("Avatar: %s", user.getAvatar().getIconName()));

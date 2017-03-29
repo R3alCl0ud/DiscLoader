@@ -1,13 +1,14 @@
-package io.discloader.discloader.entity;
+package io.discloader.discloader.common.entity;
 
+import io.discloader.discloader.entity.IGame;
 import io.discloader.discloader.network.json.GameJSON;
 
-public class Game {
+public class Game implements IGame {
 
 	/**
 	 * The name of the game being played or streamed
 	 */
-	public String name;
+	private String name;
 
 	/**
 	 * The type of activity
@@ -45,6 +46,11 @@ public class Game {
 	 * @return true {@code if }{@link #type} {@code == 1}
 	 */
 	public boolean isStream() {
-		return this.type != 0 && this.type == 1 ? true : false;
+		return type != 0 && type == 1;
+	}
+
+	@Override
+	public String getName() {
+		return name;
 	}
 }

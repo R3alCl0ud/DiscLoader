@@ -5,12 +5,12 @@ import java.util.HashMap;
 import java.util.concurrent.CompletableFuture;
 
 import io.discloader.discloader.common.DiscLoader;
-import io.discloader.discloader.entity.RichEmbed;
+import io.discloader.discloader.common.entity.RichEmbed;
+import io.discloader.discloader.common.entity.user.User;
 import io.discloader.discloader.entity.channel.ITextChannel;
 import io.discloader.discloader.entity.message.Message;
 import io.discloader.discloader.entity.message.MessageFetchOptions;
 import io.discloader.discloader.entity.sendable.Attachment;
-import io.discloader.discloader.entity.user.User;
 import io.discloader.discloader.network.json.ChannelJSON;
 import io.discloader.discloader.network.rest.actions.channel.BulkDelete;
 import io.discloader.discloader.network.rest.actions.channel.FetchMessage;

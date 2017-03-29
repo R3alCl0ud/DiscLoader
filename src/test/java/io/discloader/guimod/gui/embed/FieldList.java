@@ -8,7 +8,7 @@ import java.util.ArrayList;
 import javax.swing.BoxLayout;
 import javax.swing.JPanel;
 
-import io.discloader.discloader.entity.RichEmbed;
+import io.discloader.discloader.common.entity.RichEmbed;
 import io.discloader.discloader.entity.embed.EmbedField;
 
 public class FieldList extends JPanel implements ActionListener {

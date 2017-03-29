@@ -2,12 +2,12 @@ package io.discloader.discloader.network.gateway.packets;
 
 import java.util.HashMap;
 
+import io.discloader.discloader.common.entity.guild.Emoji;
+import io.discloader.discloader.common.entity.guild.Guild;
 import io.discloader.discloader.common.event.IEventListener;
 import io.discloader.discloader.common.event.guild.emoji.GuildEmojiCreateEvent;
 import io.discloader.discloader.common.event.guild.emoji.GuildEmojiDeleteEvent;
 import io.discloader.discloader.common.event.guild.emoji.GuildEmojiUpdateEvent;
-import io.discloader.discloader.entity.guild.Emoji;
-import io.discloader.discloader.entity.guild.Guild;
 import io.discloader.discloader.network.gateway.DiscSocket;
 import io.discloader.discloader.network.json.EmojiJSON;
 import io.discloader.discloader.network.json.EmojiUpdateJSON;

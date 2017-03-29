@@ -2,8 +2,8 @@ package io.discloader.discloader.entity.invite;
 
 import io.discloader.discloader.common.DiscLoader;
 import io.discloader.discloader.common.entity.channel.GuildChannel;
-import io.discloader.discloader.entity.guild.Guild;
-import io.discloader.discloader.entity.user.User;
+import io.discloader.discloader.common.entity.guild.Guild;
+import io.discloader.discloader.common.entity.user.User;
 import io.discloader.discloader.network.json.InviteJSON;
 import io.discloader.discloader.util.DLUtil.ChannelTypes;
 

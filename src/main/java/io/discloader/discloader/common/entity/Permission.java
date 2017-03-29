@@ -1,9 +1,9 @@
-package io.discloader.discloader.entity;
+package io.discloader.discloader.common.entity;
 
-import io.discloader.discloader.common.entity.channel.Channel;
 import io.discloader.discloader.common.entity.channel.GuildChannel;
-import io.discloader.discloader.entity.guild.GuildMember;
-import io.discloader.discloader.entity.guild.Role;
+import io.discloader.discloader.common.entity.guild.GuildMember;
+import io.discloader.discloader.common.entity.guild.Role;
+import io.discloader.discloader.entity.Permissions;
 import io.discloader.discloader.util.DLUtil;
 
 /**
@@ -84,7 +84,7 @@ public class Permission {
 	/**
 	 * @return the channel
 	 */
-	public Channel getChannel() {
+	public GuildChannel getChannel() {
 		return channel;
 	}
 

@@ -3,10 +3,10 @@
  */
 package io.discloader.discloader.network.gateway.packets;
 
+import io.discloader.discloader.common.entity.guild.Guild;
+import io.discloader.discloader.common.entity.guild.GuildMember;
 import io.discloader.discloader.common.event.IEventListener;
 import io.discloader.discloader.common.event.guild.member.GuildMemberRemoveEvent;
-import io.discloader.discloader.entity.guild.Guild;
-import io.discloader.discloader.entity.guild.GuildMember;
 import io.discloader.discloader.network.gateway.DiscSocket;
 import io.discloader.discloader.network.json.GuildMemberRemoveJSON;
 import io.discloader.discloader.util.DLUtil.Status;

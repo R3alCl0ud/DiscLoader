@@ -1,4 +1,4 @@
-package io.discloader.discloader.entity.guild;
+package io.discloader.discloader.common.entity.guild;
 
 import java.util.HashMap;
 import java.util.concurrent.CompletableFuture;

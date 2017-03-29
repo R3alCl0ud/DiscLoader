@@ -5,10 +5,10 @@ import java.util.Locale;
 
 import io.discloader.discloader.client.render.texture.icon.CommandIcon;
 import io.discloader.discloader.client.render.util.IIcon;
+import io.discloader.discloader.common.entity.RichEmbed;
 import io.discloader.discloader.common.event.message.MessageCreateEvent;
 import io.discloader.discloader.common.language.LanguageRegistry;
 import io.discloader.discloader.common.registry.CommandRegistry;
-import io.discloader.discloader.entity.RichEmbed;
 import io.discloader.discloader.entity.message.Message;
 import io.discloader.discloader.util.DLUtil;
 
@@ -30,7 +30,7 @@ public class CommandHelp extends Command {
 		RichEmbed embed = new RichEmbed()
 				.setFooter(String.format("type `%shelp <page>` to tab threw the pages", CommandHandler.prefix),
 						e.loader.user.getAvatar().toString())
-				.setAuthor(e.loader.user.username, "http://discloader.io", e.loader.user.getAvatar().toString())
+				.setAuthor(e.loader.user.getUsername(), "http://discloader.io", e.loader.user.getAvatar().toString())
 				.setColor(0x08a2ff);
 		Command command;
 		embed.setThumbnail(this.getIcon().getFile());
