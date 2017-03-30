@@ -367,7 +367,7 @@ public class GuildMember implements IGuildMember {
         }
 	
         return new ModifyMember(this, nick, getRoles(), true, deaf, getVoiceChannel()).execute();
-	}
+    }
 	
 	/**
 	 * Sets the member's nickname if the {@link DiscLoader loader} has sufficient permissions. Requires the
@@ -387,7 +387,7 @@ public class GuildMember implements IGuildMember {
         CompletableFuture<IGuildMember> future = getLoader().rest.setNick(this, nick);
         future.thenAcceptAsync(action -> this.nick = nick);
         return future;
-	}
+    }
 	
 	/**
 	 * Takes a role away from a member
