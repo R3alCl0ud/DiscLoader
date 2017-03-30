@@ -11,7 +11,7 @@ public class GuildMemberAddEvent extends DLEvent {
 	public final Guild guild;
 	
 	public GuildMemberAddEvent(GuildMember member) {
-		super(member.loader);
+		super(member.getLoader());
 		
 		this.member = member;
 		this.guild = member.guild;
