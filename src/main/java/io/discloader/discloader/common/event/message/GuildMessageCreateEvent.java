@@ -1,16 +1,16 @@
 package io.discloader.discloader.common.event.message;
 
-import io.discloader.discloader.core.entity.channel.TextChannel;
-import io.discloader.discloader.core.entity.message.Message;
+import io.discloader.discloader.entity.channel.IGuildTextChannel;
 import io.discloader.discloader.entity.guild.IGuild;
+import io.discloader.discloader.entity.message.IMessage;
 
 public class GuildMessageCreateEvent extends MessageCreateEvent {
 
 	private IGuild guild;
 
-	public GuildMessageCreateEvent(Message message) {
+	public GuildMessageCreateEvent(IMessage message) {
 		super(message);
-		guild = message.guild;
+		guild = message.getGuild();
 	}
 
 	/**
@@ -21,8 +21,8 @@ public class GuildMessageCreateEvent extends MessageCreateEvent {
 	}
 
 	@Override
-	public TextChannel getChannel() {
-		return (TextChannel) super.getChannel();
+	public IGuildTextChannel getChannel() {
+		return (IGuildTextChannel) super.getChannel();
 	}
 
 }

@@ -1,20 +1,20 @@
 package io.discloader.discloader.common.event.message;
 
 import io.discloader.discloader.common.event.DLEvent;
-import io.discloader.discloader.core.entity.message.Message;
 import io.discloader.discloader.entity.channel.ITextChannel;
+import io.discloader.discloader.entity.message.IMessage;
 
 /**
  * @author Perry Berman
  */
 public class MessageUpdateEvent extends DLEvent {
 
-	private final Message message;
+	private final IMessage message;
 
-	private final Message oldMessage;
+	private final IMessage oldMessage;
 
-	public MessageUpdateEvent(Message message, Message oldMessage) {
-		super(message.loader);
+	public MessageUpdateEvent(IMessage message, IMessage oldMessage) {
+		super(message.getLoader());
 
 		this.message = message;
 
@@ -24,14 +24,14 @@ public class MessageUpdateEvent extends DLEvent {
 	/**
 	 * @return the oldMessage
 	 */
-	public Message getOldMessage() {
+	public IMessage getOldMessage() {
 		return oldMessage;
 	}
 
 	/**
 	 * @return the message
 	 */
-	public Message getMessage() {
+	public IMessage getMessage() {
 		return message;
 	}
 
@@ -41,7 +41,7 @@ public class MessageUpdateEvent extends DLEvent {
 	 * @return the {@link #getMessage() message}'s {@link ITextChannel}
 	 */
 	public ITextChannel getChannel() {
-		return message.channel;
+		return message.getChannel();
 	}
 
 }

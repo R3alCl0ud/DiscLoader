@@ -7,7 +7,9 @@ import io.discloader.discloader.common.event.message.MessageCreateEvent;
 import io.discloader.discloader.common.language.LanguageRegistry;
 import io.discloader.discloader.common.registry.CommandRegistry;
 import io.discloader.discloader.core.entity.message.Message;
+import io.discloader.discloader.entity.channel.ITextChannel;
 import io.discloader.discloader.entity.guild.IGuild;
+import io.discloader.discloader.entity.message.IMessage;
 
 /**
  * @author Perry Berman
@@ -22,14 +24,14 @@ public class CommandHandler {
 	public static boolean selfBot = true;
 
 	public static void handleMessageCreate(MessageCreateEvent e) {
-		Message message = e.getMessage();
-		if (!handleCommands || message.author.isBot() || ((!e.loader.user.bot && selfBot) && !message.author.getID().equals(e.loader.user.getID())) || message.content.length() < prefix.length()) {
+		IMessage<ITextChannel<?>> message = e.getMessage();
+		if (!handleCommands || message.getAuthor().isBot() || ((!e.loader.user.bot && selfBot) && !message.getAuthor().getID().equals(e.loader.user.getID())) || message.getContent().length() < prefix.length()) {
 			return;
 		}
 		String[] Args = e.args;
 		String label = Args[0];
 		String rest = "";
-		if (label.length() < message.content.length()) rest = message.content.substring(label.length() + 1);
+		if (label.length() < message.getContent().length()) rest = message.getContent().substring(label.length() + 1);
 		int argc = Args.length > 1 ? Args.length - 1 : 1;
 
 		if (label.length() < prefix.length() || !label.substring(0, prefix.length()).equals(prefix)) {
@@ -65,8 +67,8 @@ public class CommandHandler {
 	 * @return A Command if a command was found, {@code null} if no command was
 	 *         found
 	 */
-	public static Command getCommand(String label, Message message) {
-		String region = message.guild != null ? getGuildRegion(message.guild) : "us-central";
+	public static Command getCommand(String label, IMessage<ITextChannel<?>> message) {
+		String region = message.getGuild() != null ? getGuildRegion(message.getGuild()) : "us-central";
 		Locale locale = Locale.US;
 		if (region.startsWith("us")) {
 			locale = Locale.US;

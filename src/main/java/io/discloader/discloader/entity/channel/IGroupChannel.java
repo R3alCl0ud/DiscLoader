@@ -2,10 +2,10 @@ package io.discloader.discloader.entity.channel;
 
 import java.util.Map;
 
-import io.discloader.discloader.core.entity.user.User;
+import io.discloader.discloader.entity.user.IUser;
 
-public interface IGroupChannel extends ITextChannel, IVoiceChannel {
+public interface IGroupChannel extends ITextChannel<IGroupChannel>, IVoiceChannel {
 
-	Map<String, User> getRecipients();
+	Map<String, IUser> getRecipients();
 
 }

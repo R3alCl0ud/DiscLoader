@@ -1,9 +1,9 @@
 package io.discloader.discloader.common.event.channel;
 
-import java.util.HashMap;
+import java.util.Map;
 
 import io.discloader.discloader.core.entity.channel.GroupChannel;
-import io.discloader.discloader.core.entity.user.User;
+import io.discloader.discloader.entity.user.IUser;
 
 public class GroupChannelDeleteEvent extends ChannelDeleteEvent {
 
@@ -16,7 +16,7 @@ public class GroupChannelDeleteEvent extends ChannelDeleteEvent {
 		return (GroupChannel) super.getChannel();
 	}
 
-	public HashMap<String, User> getRecipients() {
+	public Map<String, IUser> getRecipients() {
 		return getChannel().getRecipients();
 	}
 

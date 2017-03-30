@@ -5,17 +5,16 @@ package io.discloader.discloader.network.gateway.packets;
 
 import io.discloader.discloader.common.event.IEventListener;
 import io.discloader.discloader.common.event.channel.ChannelUpdateEvent;
-import io.discloader.discloader.core.entity.message.Message;
 import io.discloader.discloader.entity.channel.IChannel;
 import io.discloader.discloader.entity.channel.ITextChannel;
 import io.discloader.discloader.entity.guild.IGuild;
+import io.discloader.discloader.entity.message.IMessage;
 import io.discloader.discloader.network.gateway.DiscSocket;
 import io.discloader.discloader.network.json.ChannelJSON;
 import io.discloader.discloader.util.DLUtil.Events;
 
 /**
  * @author Perry Berman
- *
  */
 public class ChannelUpdate extends AbstractHandler {
 
@@ -24,6 +23,7 @@ public class ChannelUpdate extends AbstractHandler {
 	}
 
 	@Override
+	@SuppressWarnings({ "unchecked", "rawtypes" })
 	public void handle(SocketPacket packet) {
 		String d = gson.toJson(packet.d);
 		ChannelJSON data = gson.fromJson(d, ChannelJSON.class);
@@ -37,9 +37,9 @@ public class ChannelUpdate extends AbstractHandler {
 			channel = loader.addChannel(data);
 		}
 		if (oldChannel instanceof ITextChannel) {
-			ITextChannel oitc = (ITextChannel) oldChannel, itc = (ITextChannel) channel;
-			for (Message message : oitc.getMessages().values()) {
-				itc.getMessages().put(message.id, message);
+			ITextChannel<?> oitc = (ITextChannel<?>) oldChannel, itc = (ITextChannel<?>) channel;
+			for (IMessage<?> message : oitc.getMessages().values()) {
+				itc.getMessages().put(message.getID(), (IMessage) message);
 			}
 		}
 		ChannelUpdateEvent event = new ChannelUpdateEvent(channel, oldChannel);

@@ -1,25 +1,28 @@
 package io.discloader.discloader.network.rest.actions.channel.pin;
 
 import java.util.HashMap;
+import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 
 import io.discloader.discloader.core.entity.message.Message;
 import io.discloader.discloader.entity.channel.ITextChannel;
+import io.discloader.discloader.entity.message.IMessage;
 import io.discloader.discloader.network.json.MessageJSON;
 import io.discloader.discloader.network.rest.actions.RESTAction;
 import io.discloader.discloader.util.DLUtil;
 import io.discloader.discloader.util.DLUtil.Endpoints;
 import io.discloader.discloader.util.DLUtil.Methods;
 
-public class PinnedMessages extends RESTAction<HashMap<String, Message>> {
-	private ITextChannel channel;
+public class PinnedMessages<T extends ITextChannel<T>> extends RESTAction<Map<String, IMessage<T>>> {
 
-	public PinnedMessages(ITextChannel channel) {
+	private T channel;
+
+	public PinnedMessages(T channel) {
 		super(channel.getLoader());
 		this.channel = channel;
 	}
 
-	public CompletableFuture<HashMap<String, Message>> execute() {
+	public CompletableFuture<Map<String, IMessage<T>>> execute() {
 		return super.execute(loader.rest.makeRequest(Endpoints.channelPins(channel.getID()), Methods.GET, true));
 	}
 
@@ -29,11 +32,11 @@ public class PinnedMessages extends RESTAction<HashMap<String, Message>> {
 			return;
 		} else {
 			MessageJSON[] data = DLUtil.gson.fromJson(s, MessageJSON[].class);
-			HashMap<String, Message> messages = new HashMap<>();
+			HashMap<String, IMessage<T>> messages = new HashMap<>();
 			for (MessageJSON m : data) {
-				Message message = new Message(channel, m);
-				channel.getMessages().put(message.id, message);
-				messages.put(message.id, message);
+				IMessage<T> message = new Message<T>(channel, m);
+				channel.getMessages().put(message.getID(), message);
+				messages.put(message.getID(), message);
 			}
 			future.complete(messages);
 		}

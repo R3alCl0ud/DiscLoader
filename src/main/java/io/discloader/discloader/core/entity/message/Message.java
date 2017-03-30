@@ -14,10 +14,13 @@ import io.discloader.discloader.entity.ISnowflake;
 import io.discloader.discloader.entity.channel.ITextChannel;
 import io.discloader.discloader.entity.guild.IGuild;
 import io.discloader.discloader.entity.guild.IGuildMember;
+import io.discloader.discloader.entity.message.IMessage;
 import io.discloader.discloader.entity.user.IUser;
 import io.discloader.discloader.network.json.MessageJSON;
 import io.discloader.discloader.network.rest.actions.channel.pin.PinMessage;
 import io.discloader.discloader.network.rest.actions.channel.pin.UnpinMessage;
+import io.discloader.discloader.network.rest.actions.message.DeleteMessage;
+import io.discloader.discloader.network.rest.actions.message.EditMessage;
 import io.discloader.discloader.util.DLUtil;
 
 /**
@@ -25,6 +28,7 @@ import io.discloader.discloader.util.DLUtil;
  * <b>How to send messages</b>
  * 
  * <pre>
+ * 
  * Message message = ITextChannel.sendMessage(content).join();
  * </pre>
  * 
@@ -33,17 +37,17 @@ import io.discloader.discloader.util.DLUtil;
  * @see ITextChannel#sendMessage(String, RichEmbed)
  * @see ISnowflake
  */
-public class Message {
+public class Message<T extends ITextChannel<T>> implements IMessage<T> {
 
 	/**
 	 * The message's {@link ISnowflake Snowflake} ID.
 	 */
-	public final String id;
+	private final String id;
 
 	/**
 	 * The message's content
 	 */
-	public String content;
+	private String content;
 
 	/**
 	 * The time at which the message has been edited. is null if the message has
@@ -72,12 +76,12 @@ public class Message {
 	/**
 	 * The time at which the message was sent
 	 */
-	public final Date timestamp;
+	private Date timestamp;
 
 	/**
 	 * The time at which the message was lasted edited at
 	 */
-	public Date editedAt;
+	private Date editedAt;
 
 	/**
 	 * An object containing the information about who was mentioned in the
@@ -93,7 +97,7 @@ public class Message {
 	/**
 	 * The channel the message was sent in
 	 */
-	public final ITextChannel channel;
+	public final T channel;
 
 	/**
 	 * The user who authored the message
@@ -111,7 +115,7 @@ public class Message {
 	 */
 	public IGuildMember member;
 
-	private final int type;
+	private int type;
 
 	/**
 	 * 
@@ -124,7 +128,7 @@ public class Message {
 	 * @param channel The channel the message was sent in
 	 * @param data The message's data
 	 */
-	public Message(ITextChannel channel, MessageJSON data) {
+	public Message(T channel, MessageJSON data) {
 		this.id = data.id;
 
 		this.channel = channel;
@@ -144,23 +148,17 @@ public class Message {
 			this.author = this.loader.users.get(data.author.id);
 		}
 
-		this.mentions = new Mentions(this, data.mentions, data.mention_roles, data.mention_everyone);
+		embeds = new ArrayList<>();
+	}
 
-		this.timestamp = DLUtil.parseISO8601(data.timestamp);
+	@Override
+	public boolean canDelete() {
+		return canEdit();
+	}
 
-		this.editedAt = data.edited_timestamp != null ? DLUtil.parseISO8601(data.edited_timestamp) : null;
-
-		this.member = this.guild != null ? guild.getMembers().get(author.getID()) : null;
-
-		this.tts = data.tts;
-
-		this.content = data.content;
-
-		this.nonce = data.nonce;
-
-		this.type = data.type;
-
-		this.embeds = new ArrayList<>();
+	@Override
+	public boolean canEdit() {
+		return loader.user.getID().equals(author.getID());
 	}
 
 	/**
@@ -169,8 +167,8 @@ public class Message {
 	 * @see DLUtil.PermissionFlags
 	 * @return A Future that completes with {@literal this} when sucessfull
 	 */
-	public CompletableFuture<Message> delete() {
-		return this.loader.rest.deleteMessage(this.channel, this);
+	public CompletableFuture<IMessage<T>> delete() {
+		return new DeleteMessage<T>(this.channel, this).execute();
 	}
 
 	/**
@@ -180,7 +178,7 @@ public class Message {
 	 * @param embed The new embed for the message
 	 * @return A Future that completes with {@literal this} when sucessfull
 	 */
-	public CompletableFuture<Message> edit(RichEmbed embed) {
+	public CompletableFuture<IMessage<T>> edit(RichEmbed embed) {
 		return this.edit(null, embed);
 	}
 
@@ -191,7 +189,7 @@ public class Message {
 	 * @param content The new content of the message
 	 * @return A Future that completes with {@literal this} when sucessfull
 	 */
-	public CompletableFuture<Message> edit(String content) {
+	public CompletableFuture<IMessage<T>> edit(String content) {
 		return this.edit(content, null);
 	}
 
@@ -203,8 +201,43 @@ public class Message {
 	 * @param embed The new embed for the message
 	 * @return A Future that completes with {@literal this} when sucessfull
 	 */
-	public CompletableFuture<Message> edit(String content, RichEmbed embed) {
-		return this.loader.rest.editMessage(this.channel, this, content, embed, null, null);
+	public CompletableFuture<IMessage<T>> edit(String content, RichEmbed embed) {
+		return new EditMessage<T>(this, content, embed, null, null).execute();
+	}
+
+	@Override
+	public T getChannel() {
+		return channel;
+	}
+
+	@Override
+	public String getContent() {
+		return content;
+	}
+
+	@Override
+	public java.util.Date getEditedTimestamp() {
+		return editedAt;
+	}
+
+	@Override
+	public IGuild getGuild() {
+		return guild;
+	}
+
+	@Override
+	public String getID() {
+		return id;
+	}
+
+	@Override
+	public DiscLoader getLoader() {
+		return loader;
+	}
+
+	@Override
+	public Date getTimestamp() {
+		return timestamp;
 	}
 
 	/**
@@ -241,23 +274,10 @@ public class Message {
 	}
 
 	/**
-	 * 
 	 * @return true if {@code this} was sent using /tts
 	 */
 	public boolean isTTS() {
 		return tts;
-	}
-
-	public Message patch(MessageJSON data) {
-		this.content = data.content;
-
-		this.mentions.patch(data.mentions, data.mention_roles, data.mention_everyone);
-
-		this.editedAt = DLUtil.parseISO8601(data.edited_timestamp);
-
-		pinned = data.pinned;
-
-		return this;
 	}
 
 	/**
@@ -265,10 +285,28 @@ public class Message {
 	 * 
 	 * @return A Future that completes with {@code this} if successful.
 	 */
-	public CompletableFuture<Message> pin() {
-		CompletableFuture<Message> future = new PinMessage(this).execute();
+	public CompletableFuture<IMessage<T>> pin() {
+		CompletableFuture<IMessage<T>> future = new PinMessage<T>(this).execute();
 		future.thenAcceptAsync(action -> this.pinned = true);
 		return future;
+	}
+
+	@Override
+	public void setup(MessageJSON data) {
+		mentions = new Mentions(this, data.mentions, data.mention_roles, data.mention_everyone);
+
+		timestamp = DLUtil.parseISO8601(data.timestamp);
+
+		editedAt = data.edited_timestamp != null ? DLUtil.parseISO8601(data.edited_timestamp) : null;
+
+		member = guild == null ? null : guild.getMember(author.getID());
+		tts = data.tts;
+
+		content = data.content;
+
+		nonce = data.nonce;
+
+		type = data.type;
 	}
 
 	/**
@@ -276,10 +314,19 @@ public class Message {
 	 * 
 	 * @return A Future that completes with {@code this} if successful.
 	 */
-	public CompletableFuture<Message> unpin() {
-		CompletableFuture<Message> future = new UnpinMessage(this).execute();
+	public CompletableFuture<IMessage<T>> unpin() {
+		CompletableFuture<IMessage<T>> future = new UnpinMessage<T>(this).execute();
 		future.thenAcceptAsync(action -> this.pinned = false);
 		return future;
 	}
 
+	@Override
+	public String getNonce() {
+		return nonce;
+	}
+
+	@Override
+	public IUser getAuthor() {
+		return author;
+	}
 }

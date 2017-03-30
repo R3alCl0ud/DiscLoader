@@ -2,27 +2,29 @@ package io.discloader.discloader.network.rest.actions.channel.pin;
 
 import java.util.concurrent.CompletableFuture;
 
-import io.discloader.discloader.core.entity.message.Message;
+import io.discloader.discloader.entity.channel.ITextChannel;
+import io.discloader.discloader.entity.message.IMessage;
 import io.discloader.discloader.network.rest.actions.RESTAction;
 import io.discloader.discloader.util.DLUtil.Endpoints;
 import io.discloader.discloader.util.DLUtil.Methods;
 
-public class PinMessage extends RESTAction<Message> {
-	private Message message;
+public class PinMessage<T extends ITextChannel> extends RESTAction<IMessage<T>> {
 
-	public PinMessage(Message toPin) {
-		super(toPin.loader);
+	private IMessage<T> message;
+
+	public PinMessage(IMessage<T> toPin) {
+		super(toPin.getLoader());
 		message = toPin;
 	}
 
-	public CompletableFuture<Message> execute() {
-		String endpoint = Endpoints.channelPinnedMessage(message.channel.getID(), message.id);
+	public CompletableFuture<IMessage<T>> execute() {
+		String endpoint = Endpoints.channelPinnedMessage(message.getChannel().getID(), message.getID());
 		return super.execute(loader.rest.makeRequest(endpoint, Methods.PUT, true));
 	}
 
 	public void complete(String d, Throwable ex) {
 		if (ex != null) {
-			future.completeExceptionally(ex);
+			future.completeExceptionally(ex.getCause());
 			return;
 		}
 		future.complete(message);

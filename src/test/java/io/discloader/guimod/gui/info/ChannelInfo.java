@@ -26,7 +26,7 @@ public class ChannelInfo<T extends Channel> extends AbstractInfo<T> {
 			add(new JLabel(String.format("Name: %s", gc.name)));
 			if (channel instanceof TextChannel) {
 				TextChannel tc = (TextChannel) channel;
-				add(new JLabel(String.format("Topic: %s", tc.topic)));
+				add(new JLabel(String.format("Topic: %s", tc.getTopic())));
 			} else if (channel instanceof VoiceChannel) {
 				VoiceChannel vc = (VoiceChannel) channel;
 				add(new JLabel(String.format("Bitrate: %d", vc.bitrate)));

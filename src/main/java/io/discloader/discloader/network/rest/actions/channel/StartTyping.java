@@ -1,6 +1,6 @@
 package io.discloader.discloader.network.rest.actions.channel;
 
-import java.util.HashMap;
+import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 
 import io.discloader.discloader.entity.channel.ITextChannel;
@@ -9,7 +9,7 @@ import io.discloader.discloader.network.rest.actions.RESTAction;
 import io.discloader.discloader.util.DLUtil.Endpoints;
 import io.discloader.discloader.util.DLUtil.Methods;
 
-public class StartTyping extends RESTAction<HashMap<String, IUser>> {
+public class StartTyping extends RESTAction<Map<String, IUser>> {
 	private ITextChannel channel;
 	
 	public StartTyping(ITextChannel channel) {
@@ -17,7 +17,7 @@ public class StartTyping extends RESTAction<HashMap<String, IUser>> {
 		this.channel = channel;
 	}
 	
-	public CompletableFuture<HashMap<String, IUser>> execute() {
+	public CompletableFuture<Map<String, IUser>> execute() {
 		return super.execute(loader.rest.makeRequest(Endpoints.channelTyping(channel.getID()), Methods.POST, true));
 	}
 	

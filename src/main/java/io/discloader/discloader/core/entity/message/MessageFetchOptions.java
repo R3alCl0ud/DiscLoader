@@ -1,6 +1,7 @@
 package io.discloader.discloader.core.entity.message;
 
 import io.discloader.discloader.entity.channel.ITextChannel;
+import io.discloader.discloader.entity.message.IMessage;
 
 /**
  * Options for fetching messages from {@link ITextChannel ITextChannels}
@@ -20,8 +21,8 @@ public class MessageFetchOptions {
 		before = "";
 	}
 
-	public MessageFetchOptions setAfter(Message after) {
-		this.after = after.id;
+	public MessageFetchOptions setAfter(IMessage<?> after) {
+		this.after = after.getID();
 		return this;
 	}
 
@@ -30,8 +31,8 @@ public class MessageFetchOptions {
 		return this;
 	}
 
-	public MessageFetchOptions setAround(Message around) {
-		this.around = around.id;
+	public MessageFetchOptions setAround(IMessage<?> around) {
+		this.around = around.getID();
 		return this;
 	}
 
@@ -40,8 +41,8 @@ public class MessageFetchOptions {
 		return this;
 	}
 
-	public MessageFetchOptions setBefore(Message before) {
-		this.before = before.id;
+	public MessageFetchOptions setBefore(IMessage<?> before) {
+		this.before = before.getID();
 		return this;
 	}
 

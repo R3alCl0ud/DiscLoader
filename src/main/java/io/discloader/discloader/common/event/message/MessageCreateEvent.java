@@ -7,6 +7,7 @@ import io.discloader.discloader.common.DiscLoader;
 import io.discloader.discloader.common.event.DLEvent;
 import io.discloader.discloader.core.entity.message.Message;
 import io.discloader.discloader.entity.channel.ITextChannel;
+import io.discloader.discloader.entity.message.IMessage;
 
 /**
  * The object passed to the {@literal "MessageCreate"} eventHandler
@@ -21,25 +22,25 @@ public class MessageCreateEvent extends DLEvent {
 	/**
 	 * The new message received from the gateway.
 	 */
-	private final Message message;
+	private final IMessage message;
 
 	/**
 	 * The messages arguments.
 	 */
 	public final String[] args;
 
-	public MessageCreateEvent(Message message) {
-		super(message.loader);
+	public MessageCreateEvent(IMessage message) {
+		super(message.getLoader());
 		this.message = message;
-		this.args = this.message.content.split(" ");
+		this.args = this.message.getContent().split(" ");
 	}
 
-	public Message getMessage() {
+	public IMessage getMessage() {
 		return message;
 	}
-	
+
 	public ITextChannel getChannel() {
-		return message.channel;
+		return message.getChannel();
 	}
 
 }
