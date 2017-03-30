@@ -19,6 +19,7 @@ public class CloseChannel<T extends IChannel> extends RESTAction<T> {
 		return super.execute(loader.rest.makeRequest(Endpoints.channel(channel.getID()), Methods.DELETE, true));
 	}
 
+	@Override
 	public void complete(String r, Throwable ex) {
 		if (ex != null) {
 			future.completeExceptionally(ex);

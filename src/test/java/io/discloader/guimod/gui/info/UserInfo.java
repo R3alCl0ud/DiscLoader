@@ -6,7 +6,7 @@ import java.awt.Dimension;
 import javax.swing.Box;
 import javax.swing.JLabel;
 
-import io.discloader.discloader.common.entity.user.User;
+import io.discloader.discloader.core.entity.user.User;
 import io.discloader.discloader.util.DLUtil;
 
 public class UserInfo<T extends User> extends AbstractInfo<T> {

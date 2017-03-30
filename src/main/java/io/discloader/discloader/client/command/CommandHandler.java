@@ -3,11 +3,11 @@ package io.discloader.discloader.client.command;
 import java.util.Locale;
 import java.util.regex.Matcher;
 
-import io.discloader.discloader.common.entity.guild.Guild;
 import io.discloader.discloader.common.event.message.MessageCreateEvent;
 import io.discloader.discloader.common.language.LanguageRegistry;
 import io.discloader.discloader.common.registry.CommandRegistry;
-import io.discloader.discloader.entity.message.Message;
+import io.discloader.discloader.core.entity.message.Message;
+import io.discloader.discloader.entity.guild.IGuild;
 
 /**
  * @author Perry Berman
@@ -23,7 +23,7 @@ public class CommandHandler {
 
 	public static void handleMessageCreate(MessageCreateEvent e) {
 		Message message = e.getMessage();
-		if (!handleCommands || message.author.bot || ((!e.loader.user.bot && selfBot) && !message.author.getID().equals(e.loader.user.getID())) || message.content.length() < prefix.length()) {
+		if (!handleCommands || message.author.isBot() || ((!e.loader.user.bot && selfBot) && !message.author.getID().equals(e.loader.user.getID())) || message.content.length() < prefix.length()) {
 			return;
 		}
 		String[] Args = e.args;
@@ -83,7 +83,7 @@ public class CommandHandler {
 		return null;
 	}
 
-	public static String getGuildRegion(Guild guild) {
+	public static String getGuildRegion(IGuild guild) {
 		return guild.getVoiceRegion().id;
 	}
 

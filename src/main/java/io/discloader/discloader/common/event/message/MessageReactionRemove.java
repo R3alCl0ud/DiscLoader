@@ -1,9 +1,9 @@
 package io.discloader.discloader.common.event.message;
 
-import io.discloader.discloader.common.entity.user.User;
 import io.discloader.discloader.common.event.DLEvent;
-import io.discloader.discloader.entity.message.Message;
-import io.discloader.discloader.entity.message.Reaction;
+import io.discloader.discloader.core.entity.message.Message;
+import io.discloader.discloader.core.entity.message.Reaction;
+import io.discloader.discloader.core.entity.user.User;
 
 public class MessageReactionRemove extends DLEvent {
 

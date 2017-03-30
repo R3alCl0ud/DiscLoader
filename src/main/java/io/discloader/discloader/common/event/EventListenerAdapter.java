@@ -1,9 +1,7 @@
 package io.discloader.discloader.common.event;
 
-import java.util.HashMap;
+import java.util.Map;
 
-import io.discloader.discloader.common.entity.guild.Emoji;
-import io.discloader.discloader.common.entity.guild.GuildMember;
 import io.discloader.discloader.common.event.channel.ChannelCreateEvent;
 import io.discloader.discloader.common.event.channel.ChannelDeleteEvent;
 import io.discloader.discloader.common.event.channel.ChannelUpdateEvent;
@@ -37,6 +35,8 @@ import io.discloader.discloader.common.event.message.PrivateMessageCreateEvent;
 import io.discloader.discloader.common.event.message.PrivateMessageDeleteEvent;
 import io.discloader.discloader.common.event.message.PrivateMessageUpdateEvent;
 import io.discloader.discloader.common.event.voice.VoiceStateUpdateEvent;
+import io.discloader.discloader.core.entity.guild.GuildMember;
+import io.discloader.discloader.entity.guild.IGuildEmoji;
 
 /**
  * Default Implementation of the {@link IEventListener}
@@ -99,7 +99,7 @@ public abstract class EventListenerAdapter implements IEventListener {
 	}
 
 	@Override
-	public void GuildEmojisUpdate(HashMap<String, Emoji> emojis) {
+	public void GuildEmojisUpdate(Map<String, IGuildEmoji> emojis) {
 	}
 
 	@Override

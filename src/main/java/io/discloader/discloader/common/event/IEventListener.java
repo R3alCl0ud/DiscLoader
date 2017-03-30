@@ -1,12 +1,7 @@
 package io.discloader.discloader.common.event;
 
-import java.util.HashMap;
+import java.util.Map;
 
-import io.discloader.discloader.common.entity.guild.Emoji;
-import io.discloader.discloader.common.entity.guild.Guild;
-import io.discloader.discloader.common.entity.guild.GuildMember;
-import io.discloader.discloader.common.entity.guild.Role;
-import io.discloader.discloader.common.entity.user.User;
 import io.discloader.discloader.common.event.channel.ChannelCreateEvent;
 import io.discloader.discloader.common.event.channel.ChannelDeleteEvent;
 import io.discloader.discloader.common.event.channel.ChannelUpdateEvent;
@@ -41,7 +36,12 @@ import io.discloader.discloader.common.event.message.PrivateMessageDeleteEvent;
 import io.discloader.discloader.common.event.message.PrivateMessageUpdateEvent;
 import io.discloader.discloader.common.event.voice.VoiceStateUpdateEvent;
 import io.discloader.discloader.common.registry.ModRegistry;
+import io.discloader.discloader.core.entity.guild.Guild;
+import io.discloader.discloader.core.entity.guild.GuildMember;
+import io.discloader.discloader.core.entity.guild.Role;
+import io.discloader.discloader.core.entity.user.User;
 import io.discloader.discloader.entity.channel.ITextChannel;
+import io.discloader.discloader.entity.guild.IGuildEmoji;
 import io.discloader.discloader.entity.voice.VoiceConnection;
 
 /**
@@ -112,7 +112,7 @@ public interface IEventListener {
 
 	void GuildEmojiDelete(GuildEmojiDeleteEvent event);
 
-	void GuildEmojisUpdate(HashMap<String, Emoji> emojis);
+	void GuildEmojisUpdate(Map<String, IGuildEmoji> map);
 
 	void GuildEmojiUpdate(GuildEmojiUpdateEvent event);
 

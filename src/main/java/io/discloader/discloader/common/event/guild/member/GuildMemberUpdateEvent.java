@@ -4,9 +4,9 @@
 package io.discloader.discloader.common.event.guild.member;
 
 import io.discloader.discloader.common.DiscLoader;
-import io.discloader.discloader.common.entity.guild.Guild;
-import io.discloader.discloader.common.entity.guild.GuildMember;
 import io.discloader.discloader.common.event.DLEvent;
+import io.discloader.discloader.core.entity.guild.Guild;
+import io.discloader.discloader.core.entity.guild.GuildMember;
 
 /**
  * The object passed to the {@literal "PresenceUpdate"} event

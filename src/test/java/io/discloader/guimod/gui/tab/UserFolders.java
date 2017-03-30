@@ -3,7 +3,7 @@ package io.discloader.guimod.gui.tab;
 import javax.swing.event.ListSelectionEvent;
 
 import io.discloader.discloader.common.DiscLoader;
-import io.discloader.discloader.common.entity.user.User;
+import io.discloader.discloader.core.entity.user.User;
 import io.discloader.guimod.gui.info.UserInfo;
 import io.discloader.guimod.gui.list.UserList;
 

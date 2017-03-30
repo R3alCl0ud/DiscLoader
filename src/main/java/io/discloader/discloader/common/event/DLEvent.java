@@ -17,4 +17,7 @@ public class DLEvent {
 		this.loader = loader;
 	}
 
+	public DiscLoader getLoader() {
+		return loader;
+	}
 }

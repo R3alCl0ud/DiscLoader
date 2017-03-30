@@ -4,8 +4,8 @@
 package io.discloader.discloader.common.event.message;
 
 import io.discloader.discloader.common.event.DLEvent;
+import io.discloader.discloader.core.entity.message.Message;
 import io.discloader.discloader.entity.channel.ITextChannel;
-import io.discloader.discloader.entity.message.Message;
 
 /**
  * @author Perry Berman

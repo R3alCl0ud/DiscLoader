@@ -3,9 +3,9 @@
  */
 package io.discloader.discloader.common.event.guild;
 
-import io.discloader.discloader.common.entity.guild.Guild;
-import io.discloader.discloader.common.entity.guild.GuildMember;
 import io.discloader.discloader.common.event.DLEvent;
+import io.discloader.discloader.entity.guild.IGuild;
+import io.discloader.discloader.entity.guild.IGuildMember;
 
 /**
  * @author Perry Berman
@@ -13,16 +13,16 @@ import io.discloader.discloader.common.event.DLEvent;
  */
 public class GuildBanAddEvent extends DLEvent {
 
-	public final GuildMember member;
+	public final IGuildMember member;
 	
-	public final Guild guild;
+	public final IGuild guild;
 	
-	public GuildBanAddEvent(GuildMember member) {
-		super(member.loader);
+	public GuildBanAddEvent(IGuildMember member) {
+		super(member.getLoader());
 		
 		this.member = member;
 		
-		this.guild = this.member.guild;
+		this.guild = member.getGuild();
 	}
 
 }

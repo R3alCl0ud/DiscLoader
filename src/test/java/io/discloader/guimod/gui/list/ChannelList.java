@@ -3,9 +3,9 @@ package io.discloader.guimod.gui.list;
 import javax.swing.DefaultListModel;
 
 import io.discloader.discloader.common.DiscLoader;
-import io.discloader.discloader.common.entity.channel.Channel;
-import io.discloader.discloader.common.entity.channel.GuildChannel;
-import io.discloader.discloader.common.entity.channel.PrivateChannel;
+import io.discloader.discloader.core.entity.channel.Channel;
+import io.discloader.discloader.core.entity.channel.GuildChannel;
+import io.discloader.discloader.core.entity.channel.PrivateChannel;
 
 public class ChannelList<T extends Channel> extends AbstractList<T> {
 
@@ -15,6 +15,7 @@ public class ChannelList<T extends Channel> extends AbstractList<T> {
 		super(loader);
 	}
 
+	@Override
 	@SuppressWarnings("unchecked")
 	public DefaultListModel<Object> createListModel() {
 		DefaultListModel<Object> listModel = new DefaultListModel<>();
@@ -22,17 +23,17 @@ public class ChannelList<T extends Channel> extends AbstractList<T> {
 			switch (c.getType()) {
 			case TEXT:
 				GuildChannel gc = (GuildChannel) c;
-				listModel.addElement(String.format("<html>%s<br>%s<br>Guild: %s</html>", gc.getID(), gc.name, gc.guild.getID()));
+					listModel.addElement(String.format("<html>%s<br>%s<br>Guild: %s</html>", gc.getID(), gc.name, gc.getGuild().getID()));
 				items.add((T) c);
 				break;
 			case VOICE:
 				GuildChannel ggc = (GuildChannel) c;
-				listModel.addElement(String.format("<html>%s<br>%s<br>Guild: %s</html>", ggc.getID(), ggc.name, ggc.guild.getID()));
+					listModel.addElement(String.format("<html>%s<br>%s<br>Guild: %s</html>", ggc.getID(), ggc.name, ggc.getGuild().getID()));
 				items.add((T) c);
 				break;
 			case DM:
 				PrivateChannel pc = (PrivateChannel) c;
-				listModel.addElement(String.format("<html>%s<br>%s#%s<br>DM</html>", pc.getID(), pc.recipient.getUsername(), pc.recipient.discriminator));
+					listModel.addElement(String.format("<html>%s<br>%s#%s<br>DM</html>", pc.getID(), pc.recipient.getUsername(), pc.recipient.getDiscriminator()));
 				items.add((T) c);
 				break;
 			case GROUPDM:

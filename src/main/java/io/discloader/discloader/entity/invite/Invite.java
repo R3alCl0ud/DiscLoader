@@ -1,9 +1,9 @@
 package io.discloader.discloader.entity.invite;
 
 import io.discloader.discloader.common.DiscLoader;
-import io.discloader.discloader.common.entity.channel.GuildChannel;
-import io.discloader.discloader.common.entity.guild.Guild;
-import io.discloader.discloader.common.entity.user.User;
+import io.discloader.discloader.entity.channel.IGuildChannel;
+import io.discloader.discloader.entity.guild.IGuild;
+import io.discloader.discloader.entity.user.IUser;
 import io.discloader.discloader.network.json.InviteJSON;
 import io.discloader.discloader.util.DLUtil.ChannelTypes;
 
@@ -23,17 +23,17 @@ public class Invite {
 	/**
 	 * The guild this invite is for
 	 */
-	public final Guild guild;
+	public final IGuild guild;
 
 	/**
 	 * The channel this invite is for.
 	 */
-	public final GuildChannel channel;
+	public final IGuildChannel channel;
 
 	/**
 	 * The user who created the invite
 	 */
-	public final User inviter;
+	public final IUser inviter;
 
 	/**
 	 * The number of times this invite has been used.
@@ -63,9 +63,9 @@ public class Invite {
 		this.code = data.code;
 		this.guild = loader.guilds.get(data.guild.id);
 		if (data.channel.type == ChannelTypes.voice) {
-			this.channel = guild.voiceChannels.get(data.channel.id);
+			this.channel = guild.getVoiceChannels().get(data.channel.id);
 		} else {
-			this.channel = guild.textChannels.get(data.channel.id);
+			this.channel = guild.getTextChannels().get(data.channel.id);
 		}
 		if (!loader.users.containsKey(data.inviter.id)) {
 			this.inviter = loader.addUser(data.inviter);

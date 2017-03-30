@@ -1,9 +1,9 @@
 package io.discloader.discloader.entity.channel;
 
 import io.discloader.discloader.common.DiscLoader;
-import io.discloader.discloader.common.entity.channel.Channel;
+import io.discloader.discloader.core.entity.channel.Channel;
+import io.discloader.discloader.core.entity.message.Message;
 import io.discloader.discloader.entity.ISnowflake;
-import io.discloader.discloader.entity.message.Message;
 import io.discloader.discloader.network.json.ChannelJSON;
 import io.discloader.discloader.util.DLUtil.ChannelType;
 

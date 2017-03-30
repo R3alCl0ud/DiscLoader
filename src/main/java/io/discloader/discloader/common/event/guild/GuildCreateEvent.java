@@ -3,8 +3,8 @@
  */
 package io.discloader.discloader.common.event.guild;
 
-import io.discloader.discloader.common.entity.guild.Guild;
 import io.discloader.discloader.common.event.DLEvent;
+import io.discloader.discloader.entity.guild.IGuild;
 
 /**
  * @author Perry Berman
@@ -12,11 +12,11 @@ import io.discloader.discloader.common.event.DLEvent;
  */
 public class GuildCreateEvent extends DLEvent {
 
-	public final Guild guild;
+	public final IGuild guild;
 	
-	public GuildCreateEvent(Guild guild) {
-		super(guild.getLoader());
-		this.guild = guild;
+	public GuildCreateEvent(IGuild newGuild) {
+		super(newGuild.getLoader());
+		this.guild = newGuild;
 	}
 
 }

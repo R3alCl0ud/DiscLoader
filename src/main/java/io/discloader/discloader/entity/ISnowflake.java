@@ -4,4 +4,7 @@ public interface ISnowflake {
 
 	String getID();
 
+	@Override
+	int hashCode();
+	
 }

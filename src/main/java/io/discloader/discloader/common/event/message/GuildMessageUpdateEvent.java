@@ -1,12 +1,12 @@
 package io.discloader.discloader.common.event.message;
 
-import io.discloader.discloader.common.entity.channel.TextChannel;
-import io.discloader.discloader.common.entity.guild.Guild;
-import io.discloader.discloader.entity.message.Message;
+import io.discloader.discloader.core.entity.channel.TextChannel;
+import io.discloader.discloader.core.entity.message.Message;
+import io.discloader.discloader.entity.guild.IGuild;
 
 public class GuildMessageUpdateEvent extends MessageUpdateEvent {
 
-	private Guild guild;
+	private IGuild guild;
 
 	public GuildMessageUpdateEvent(Message message, Message oldMessage) {
 		super(message, oldMessage);
@@ -16,7 +16,7 @@ public class GuildMessageUpdateEvent extends MessageUpdateEvent {
 	/**
 	 * @return the guild
 	 */
-	public Guild getGuild() {
+	public IGuild getGuild() {
 		return guild;
 	}
 

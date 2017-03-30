@@ -4,10 +4,10 @@ import java.util.ArrayList;
 import java.util.Arrays;
 
 import io.discloader.discloader.common.discovery.ModContainer;
-import io.discloader.discloader.common.entity.RichEmbed;
 import io.discloader.discloader.common.event.message.MessageCreateEvent;
 import io.discloader.discloader.common.registry.ModRegistry;
-import io.discloader.discloader.entity.message.Message;
+import io.discloader.discloader.core.entity.RichEmbed;
+import io.discloader.discloader.core.entity.message.Message;
 import io.discloader.discloader.util.DLUtil;
 
 /**

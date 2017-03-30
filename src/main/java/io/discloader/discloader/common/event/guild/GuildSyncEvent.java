@@ -1,7 +1,7 @@
 package io.discloader.discloader.common.event.guild;
 
-import io.discloader.discloader.common.entity.guild.Guild;
 import io.discloader.discloader.common.event.DLEvent;
+import io.discloader.discloader.core.entity.guild.Guild;
 
 public class GuildSyncEvent extends DLEvent {
 

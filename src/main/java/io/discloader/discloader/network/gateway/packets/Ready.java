@@ -1,6 +1,6 @@
 package io.discloader.discloader.network.gateway.packets;
 
-import io.discloader.discloader.common.entity.user.DLUser;
+import io.discloader.discloader.core.entity.user.DLUser;
 import io.discloader.discloader.network.gateway.DiscSocket;
 import io.discloader.discloader.network.json.ChannelJSON;
 import io.discloader.discloader.network.json.GuildJSON;

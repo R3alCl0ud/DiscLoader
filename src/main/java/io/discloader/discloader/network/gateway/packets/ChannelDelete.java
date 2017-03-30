@@ -1,8 +1,8 @@
 package io.discloader.discloader.network.gateway.packets;
 
-import io.discloader.discloader.common.entity.channel.Channel;
-import io.discloader.discloader.common.entity.guild.Guild;
 import io.discloader.discloader.common.event.channel.ChannelDeleteEvent;
+import io.discloader.discloader.core.entity.channel.Channel;
+import io.discloader.discloader.core.entity.guild.Guild;
 import io.discloader.discloader.network.gateway.DiscSocket;
 import io.discloader.discloader.network.json.ChannelJSON;
 import io.discloader.discloader.util.DLUtil.Events;
@@ -29,10 +29,10 @@ public class ChannelDelete extends AbstractHandler {
 		}
 		switch (channel.getType()) {
 		case TEXT:
-			guild.textChannels.remove(channel.getID());
+			guild.entityTextChannels.remove(channel.getID());
 			break;
 		case VOICE:
-			guild.voiceChannels.remove(channel.getID());
+			guild.entityVoiceChannels.remove(channel.getID());
 			break;
 		default:
 			loader.channels.remove(channel.getID());

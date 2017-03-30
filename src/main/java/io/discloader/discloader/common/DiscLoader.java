@@ -17,15 +17,6 @@ import io.discloader.discloader.client.render.WindowFrame;
 import io.discloader.discloader.common.discovery.ModCandidate;
 import io.discloader.discloader.common.discovery.ModContainer;
 import io.discloader.discloader.common.discovery.ModDiscoverer;
-import io.discloader.discloader.common.entity.channel.Channel;
-import io.discloader.discloader.common.entity.channel.GroupChannel;
-import io.discloader.discloader.common.entity.channel.GuildChannel;
-import io.discloader.discloader.common.entity.channel.PrivateChannel;
-import io.discloader.discloader.common.entity.channel.TextChannel;
-import io.discloader.discloader.common.entity.channel.VoiceChannel;
-import io.discloader.discloader.common.entity.guild.Guild;
-import io.discloader.discloader.common.entity.user.DLUser;
-import io.discloader.discloader.common.entity.user.User;
 import io.discloader.discloader.common.event.DLEvent;
 import io.discloader.discloader.common.event.DLPreInitEvent;
 import io.discloader.discloader.common.event.IEventListener;
@@ -71,8 +62,19 @@ import io.discloader.discloader.common.logger.DLErrorStream;
 import io.discloader.discloader.common.logger.DLPrintStream;
 import io.discloader.discloader.common.registry.ModRegistry;
 import io.discloader.discloader.common.start.Main;
+import io.discloader.discloader.core.entity.channel.Channel;
+import io.discloader.discloader.core.entity.channel.GroupChannel;
+import io.discloader.discloader.core.entity.channel.GuildChannel;
+import io.discloader.discloader.core.entity.channel.PrivateChannel;
+import io.discloader.discloader.core.entity.channel.TextChannel;
+import io.discloader.discloader.core.entity.channel.VoiceChannel;
+import io.discloader.discloader.core.entity.guild.Guild;
+import io.discloader.discloader.core.entity.user.DLUser;
+import io.discloader.discloader.core.entity.user.User;
 import io.discloader.discloader.entity.channel.ITextChannel;
+import io.discloader.discloader.entity.guild.IGuild;
 import io.discloader.discloader.entity.sendable.Packet;
+import io.discloader.discloader.entity.user.IUser;
 import io.discloader.discloader.entity.voice.VoiceConnection;
 import io.discloader.discloader.network.gateway.DiscSocket;
 import io.discloader.discloader.network.json.ChannelJSON;
@@ -211,9 +213,9 @@ public class DiscLoader {
 	 * @see HashMap
 	 * @author Perry Berman
 	 */
-	public HashMap<String, Guild> guilds;
+	public HashMap<String, IGuild> guilds;
 
-	private HashMap<String, Guild> syncingGuilds;
+	private HashMap<String, IGuild> syncingGuilds;
 
 	/**
 	 * The User we are currently logged in as.
@@ -334,7 +336,7 @@ public class DiscLoader {
 		return this.addChannel(data, null);
 	}
 
-	public Channel addChannel(ChannelJSON data, Guild guild) {
+	public Channel addChannel(ChannelJSON data, IGuild guild) {
 		boolean exists = this.channels.containsKey(data.id);
 		Channel channel = null;
 		if (data.type == DLUtil.ChannelTypes.DM) {
@@ -345,10 +347,10 @@ public class DiscLoader {
 			if (guild != null) {
 				if (data.type == DLUtil.ChannelTypes.text) {
 					channel = new TextChannel(guild, data);
-					guild.textChannels.put(channel.getID(), (TextChannel) channel);
+					guild.getTextChannels().put(channel.getID(), (TextChannel) channel);
 				} else if (data.type == DLUtil.ChannelTypes.voice) {
 					channel = new VoiceChannel(guild, data);
-					guild.voiceChannels.put(channel.getID(), (VoiceChannel) channel);
+					guild.getVoiceChannels().put(channel.getID(), (VoiceChannel) channel);
 				}
 			}
 		}
@@ -381,10 +383,10 @@ public class DiscLoader {
 		handlers.add(e);
 	}
 
-	public Guild addGuild(GuildJSON guild) {
+	public IGuild addGuild(GuildJSON guild) {
 		boolean exists = guilds.containsKey(guild.id);
 
-		Guild newGuild = new Guild(this, guild);
+		IGuild newGuild = new Guild(this, guild);
 		guilds.put(newGuild.getID(), newGuild);
 		if (!exists && socket.status == DLUtil.Status.READY) {
 			GuildCreateEvent event = new GuildCreateEvent(newGuild);
@@ -394,7 +396,7 @@ public class DiscLoader {
 		return newGuild;
 	}
 
-	public User addUser(UserJSON data) {
+	public IUser addUser(UserJSON data) {
 		if (this.users.containsKey(data.id)) return this.users.get(data.id);
 		User user = new User(this, data);
 		this.users.put(user.getID(), user);
@@ -404,8 +406,8 @@ public class DiscLoader {
 	public void checkReady() {
 		if (socket.status != DLUtil.Status.READY && socket.status != DLUtil.Status.NEARLY) {
 			int unavailable = 0;
-			for (Guild guild : guilds.values()) {
-				unavailable += guild.available ? 0 : 1;
+			for (IGuild guild : guilds.values()) {
+				unavailable += guild.isAvailable() ? 0 : 1;
 			}
 			ProgressLogger.progress(guilds.size() - unavailable, guilds.size(), "Guilds Cached");
 			if (unavailable == 0) {

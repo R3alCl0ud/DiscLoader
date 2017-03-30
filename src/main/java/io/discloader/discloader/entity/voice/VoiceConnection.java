@@ -15,9 +15,9 @@ import com.sedmelluq.discord.lavaplayer.source.AudioSourceManagers;
 import com.sedmelluq.discord.lavaplayer.track.AudioTrack;
 
 import io.discloader.discloader.common.DiscLoader;
-import io.discloader.discloader.common.entity.channel.VoiceChannel;
-import io.discloader.discloader.common.entity.guild.Guild;
+import io.discloader.discloader.core.entity.channel.VoiceChannel;
 import io.discloader.discloader.entity.channel.IVoiceChannel;
+import io.discloader.discloader.entity.guild.IGuild;
 import io.discloader.discloader.entity.sendable.Packet;
 import io.discloader.discloader.entity.sendable.VoiceStateUpdate;
 import io.discloader.discloader.network.voice.StreamProvider;
@@ -45,8 +45,8 @@ public class VoiceConnection {
 	 */
 	public AudioPlayer player;
 
-	public final Guild guild;
-	public final VoiceChannel channel;
+	public final IGuild guild;
+	public final IVoiceChannel channel;
 	public final DiscLoader loader;
 	public final StreamProvider provider;
 	private final CompletableFuture<VoiceConnection> future;
@@ -83,7 +83,7 @@ public class VoiceConnection {
 
 	public VoiceConnection(VoiceChannel channel, CompletableFuture<VoiceConnection> future) {
 		this.channel = channel;
-		this.guild = channel.guild;
+		this.guild = channel.getGuild();
 		this.loader = channel.getLoader();
 		this.future = future;
 		this.udpClient = new UDPVoiceClient(this);

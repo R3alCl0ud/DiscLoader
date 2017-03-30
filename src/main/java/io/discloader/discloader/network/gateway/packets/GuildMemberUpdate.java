@@ -1,9 +1,9 @@
 package io.discloader.discloader.network.gateway.packets;
 
-import io.discloader.discloader.common.entity.guild.Guild;
-import io.discloader.discloader.common.entity.guild.GuildMember;
 import io.discloader.discloader.common.event.IEventListener;
 import io.discloader.discloader.common.event.guild.member.GuildMemberUpdateEvent;
+import io.discloader.discloader.core.entity.guild.Guild;
+import io.discloader.discloader.core.entity.guild.GuildMember;
 import io.discloader.discloader.network.gateway.DiscSocket;
 import io.discloader.discloader.network.json.MemberJSON;
 import io.discloader.discloader.util.DLUtil.Status;

@@ -15,8 +15,8 @@ import java.util.Locale;
 import com.google.gson.Gson;
 
 import io.discloader.discloader.common.DiscLoader;
-import io.discloader.discloader.common.entity.Permission;
 import io.discloader.discloader.common.language.Language;
+import io.discloader.discloader.core.entity.Permission;
 import io.discloader.discloader.network.gateway.DiscSocketListener;
 
 /**

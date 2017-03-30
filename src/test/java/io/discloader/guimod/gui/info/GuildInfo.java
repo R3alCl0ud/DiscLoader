@@ -6,7 +6,7 @@ import java.awt.Dimension;
 import javax.swing.Box;
 import javax.swing.JLabel;
 
-import io.discloader.discloader.common.entity.guild.Guild;
+import io.discloader.discloader.core.entity.guild.Guild;
 import io.discloader.discloader.util.DLUtil;
 
 public class GuildInfo<T> extends AbstractInfo<T> {

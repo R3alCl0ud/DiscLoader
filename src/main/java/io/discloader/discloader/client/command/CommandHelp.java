@@ -5,11 +5,11 @@ import java.util.Locale;
 
 import io.discloader.discloader.client.render.texture.icon.CommandIcon;
 import io.discloader.discloader.client.render.util.IIcon;
-import io.discloader.discloader.common.entity.RichEmbed;
 import io.discloader.discloader.common.event.message.MessageCreateEvent;
 import io.discloader.discloader.common.language.LanguageRegistry;
 import io.discloader.discloader.common.registry.CommandRegistry;
-import io.discloader.discloader.entity.message.Message;
+import io.discloader.discloader.core.entity.RichEmbed;
+import io.discloader.discloader.core.entity.message.Message;
 import io.discloader.discloader.util.DLUtil;
 
 /**

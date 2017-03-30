@@ -2,11 +2,11 @@ package io.discloader.guimod.gui.info;
 
 import javax.swing.JLabel;
 
-import io.discloader.discloader.common.entity.channel.Channel;
-import io.discloader.discloader.common.entity.channel.GuildChannel;
-import io.discloader.discloader.common.entity.channel.PrivateChannel;
-import io.discloader.discloader.common.entity.channel.TextChannel;
-import io.discloader.discloader.common.entity.channel.VoiceChannel;
+import io.discloader.discloader.core.entity.channel.Channel;
+import io.discloader.discloader.core.entity.channel.GuildChannel;
+import io.discloader.discloader.core.entity.channel.PrivateChannel;
+import io.discloader.discloader.core.entity.channel.TextChannel;
+import io.discloader.discloader.core.entity.channel.VoiceChannel;
 
 public class ChannelInfo<T extends Channel> extends AbstractInfo<T> {
 

@@ -1,13 +1,15 @@
 package io.discloader.discloader.entity.channel;
 
-import java.util.HashMap;
+import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 
-import io.discloader.discloader.common.entity.Overwrite;
-import io.discloader.discloader.common.entity.Permission;
-import io.discloader.discloader.common.entity.guild.Guild;
-import io.discloader.discloader.common.entity.guild.GuildMember;
-import io.discloader.discloader.common.entity.guild.Role;
+import io.discloader.discloader.core.entity.guild.Guild;
+import io.discloader.discloader.core.entity.guild.GuildMember;
+import io.discloader.discloader.core.entity.guild.Role;
+import io.discloader.discloader.entity.IOverwrite;
+import io.discloader.discloader.entity.IPermission;
+import io.discloader.discloader.entity.guild.IGuild;
+import io.discloader.discloader.entity.guild.IGuildMember;
 
 public interface IGuildChannel extends IChannel {
 
@@ -16,33 +18,29 @@ public interface IGuildChannel extends IChannel {
 	 * 
 	 * @return A HashMap of GuildMember with access to view the channel
 	 */
-	HashMap<String, GuildMember> getMembers();
+	Map<String, IGuildMember> getMembers();
 
 	/**
-	 * Gets all of the channel's {@link Overwrite overwrites} that applies to a
-	 * {@link GuildMember}
+	 * Gets all of the channel's {@link IOverwrite overwrites} that applies to a {@link GuildMember}
 	 * 
-	 * @param member The member of whom we are looking for overwrites that
-	 *            apply.
+	 * @param member The member of whom we are looking for overwrites that apply.
 	 * @author Perry Berman
-	 * @return A {@link HashMap} of overwrite objects, indexed by
-	 *         {@link Overwrite#id}
+	 * @return A {@link Map} of overwrite objects, indexed by {@link IOverwrite#getID()}
 	 * @since 0.0.1
 	 */
-	HashMap<String, Overwrite> overwritesOf(GuildMember member);
+	Map<String, IOverwrite> overwritesOf(IGuildMember member);
 
-	Overwrite overwriteFor(Role role);
+	IOverwrite overwriteFor(Role role);
 
 	/**
 	 * Evaluates the permissions for a member in the channel's {@link Guild}
 	 * 
-	 * @param member The member whose permissions we are evaluating.
-	 * @return A new Permissions object that contains {@literal this}, the
-	 *         {@literal member}, and their evaluated permissions
+	 * @param iGuildMember The member whose permissions we are evaluating.
+	 * @return A new Permissions object that contains {@literal this}, the {@literal member}, and their evaluated permissions
 	 *         {@link Integer}. <br>
 	 *         null if the channel doesn't belong to a {@link Guild}
 	 */
-	Permission permissionsFor(GuildMember member);
+	IPermission permissionsFor(IGuildMember iGuildMember);
 
 	/**
 	 * Changes the channels settings
@@ -91,7 +89,7 @@ public interface IGuildChannel extends IChannel {
 	 * @return A Future that completes with the role's new permission overwrite
 	 *         if successful.
 	 */
-	CompletableFuture<Overwrite> setPermissions(int allow, int deny, Role role);
+	CompletableFuture<IOverwrite> setPermissions(int allow, int deny, Role role);
 
 	/**
 	 * Permission setting for a member in the channel's {@link Guild}
@@ -107,7 +105,7 @@ public interface IGuildChannel extends IChannel {
 	 *         overwrite,
 	 *         if successful.
 	 */
-	CompletableFuture<Overwrite> setPermissions(int allow, int deny, GuildMember member);
+	CompletableFuture<IOverwrite> setPermissions(int allow, int deny, GuildMember member);
 
 	/**
 	 * Sets position in a channel's {@link Guild}
@@ -116,5 +114,9 @@ public interface IGuildChannel extends IChannel {
 	 * @return A completed future with the position set.
 	 */
 	CompletableFuture<? extends IGuildChannel> setPosition(int position);
-
+	
+	/**
+	 * @return
+	 */
+	IGuild getGuild();
 }

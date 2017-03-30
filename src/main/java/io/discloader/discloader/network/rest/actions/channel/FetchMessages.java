@@ -3,9 +3,9 @@ package io.discloader.discloader.network.rest.actions.channel;
 import java.util.HashMap;
 import java.util.concurrent.CompletableFuture;
 
+import io.discloader.discloader.core.entity.message.Message;
+import io.discloader.discloader.core.entity.message.MessageFetchOptions;
 import io.discloader.discloader.entity.channel.ITextChannel;
-import io.discloader.discloader.entity.message.Message;
-import io.discloader.discloader.entity.message.MessageFetchOptions;
 import io.discloader.discloader.network.json.MessageJSON;
 import io.discloader.discloader.network.rest.actions.RESTAction;
 import io.discloader.discloader.util.DLUtil;

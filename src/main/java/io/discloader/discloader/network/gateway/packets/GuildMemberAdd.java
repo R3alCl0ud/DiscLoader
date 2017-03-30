@@ -3,7 +3,7 @@
  */
 package io.discloader.discloader.network.gateway.packets;
 
-import io.discloader.discloader.common.entity.guild.Guild;
+import io.discloader.discloader.entity.guild.IGuild;
 import io.discloader.discloader.network.gateway.DiscSocket;
 import io.discloader.discloader.network.json.MemberJSON;
 
@@ -17,10 +17,11 @@ public class GuildMemberAdd extends AbstractHandler {
 		super(socket);
 	}
 
+	@Override
 	public void handle(SocketPacket packet) {
 		String d = this.gson.toJson(packet);
 		MemberJSON data = this.gson.fromJson(d, MemberJSON.class);
-		Guild guild = this.loader.guilds.get(data.guild_id);
+		IGuild guild = this.loader.guilds.get(data.guild_id);
 		guild.addMember(data);
 	}
 

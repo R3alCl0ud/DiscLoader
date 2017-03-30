@@ -7,7 +7,7 @@ import java.net.URL;
 import javax.swing.ImageIcon;
 
 import io.discloader.discloader.client.render.texture.AbstractTexture;
-import io.discloader.discloader.common.entity.guild.Guild;
+import io.discloader.discloader.core.entity.guild.Guild;
 import io.discloader.discloader.entity.invite.InviteGuild;
 
 /**

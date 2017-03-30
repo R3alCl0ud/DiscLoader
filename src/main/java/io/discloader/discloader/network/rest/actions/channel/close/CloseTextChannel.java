@@ -1,6 +1,6 @@
 package io.discloader.discloader.network.rest.actions.channel.close;
 
-import io.discloader.discloader.common.entity.channel.TextChannel;
+import io.discloader.discloader.core.entity.channel.TextChannel;
 
 public class CloseTextChannel extends CloseChannel<TextChannel> {
 

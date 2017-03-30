@@ -3,7 +3,7 @@ package io.discloader.guimod.gui.list;
 import javax.swing.DefaultListModel;
 
 import io.discloader.discloader.common.DiscLoader;
-import io.discloader.discloader.common.entity.user.User;
+import io.discloader.discloader.core.entity.user.User;
 
 public class UserList<T> extends AbstractList<T> {
 	private static final long serialVersionUID = -1589736360078814907L;
