@@ -18,7 +18,7 @@ public class GuildBanAddEvent extends DLEvent {
 	public final Guild guild;
 	
 	public GuildBanAddEvent(GuildMember member) {
-		super(member.loader);
+		super(member.getLoader());
 		
 		this.member = member;
 		
