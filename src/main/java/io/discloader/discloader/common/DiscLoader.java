@@ -63,15 +63,18 @@ import io.discloader.discloader.common.logger.DLPrintStream;
 import io.discloader.discloader.common.registry.ModRegistry;
 import io.discloader.discloader.common.start.Main;
 import io.discloader.discloader.core.entity.channel.Channel;
-import io.discloader.discloader.core.entity.channel.GroupChannel;
-import io.discloader.discloader.core.entity.channel.GuildChannel;
 import io.discloader.discloader.core.entity.channel.PrivateChannel;
 import io.discloader.discloader.core.entity.channel.TextChannel;
 import io.discloader.discloader.core.entity.channel.VoiceChannel;
 import io.discloader.discloader.core.entity.guild.Guild;
 import io.discloader.discloader.core.entity.user.DLUser;
 import io.discloader.discloader.core.entity.user.User;
+import io.discloader.discloader.entity.channel.IChannel;
+import io.discloader.discloader.entity.channel.IGroupChannel;
+import io.discloader.discloader.entity.channel.IGuildChannel;
+import io.discloader.discloader.entity.channel.IPrivateChannel;
 import io.discloader.discloader.entity.channel.ITextChannel;
+import io.discloader.discloader.entity.channel.IVoiceChannel;
 import io.discloader.discloader.entity.guild.IGuild;
 import io.discloader.discloader.entity.sendable.Packet;
 import io.discloader.discloader.entity.user.IUser;
@@ -94,10 +97,10 @@ import io.discloader.discloader.util.DLUtil.Status;
  * public static void main(String... args) {
  * 	// create a new instance of DiscLoader
  * 	DiscLoader loader = new DiscLoader();
- * 
+ * 	
  * 	// make it do it's startup stuff
  * 	loader.startup();
- * 
+ * 	
  * 	// since it's probably done, time to login
  * 	loader.login(TOKEN);
  *
@@ -107,36 +110,36 @@ import io.discloader.discloader.util.DLUtil.Status;
  * @author Perry Berman, Zach Waldron
  */
 public class DiscLoader {
-
+	
 	private class Gateway {
-
+		
 		public String url;
 	}
-
+	
 	public static final Logger LOG = new DLLogger("DiscLoader").getLogger();
-
+	
 	public static DiscLoader getDiscLoader() {
 		return ModRegistry.loader;
 	}
-
+	
 	public final ArrayList<IEventListener> handlers = new ArrayList<>();
-
+	
 	public final DiscSocket socket;
-
+	
 	public String token;
-
+	
 	public boolean ready;
-
+	
 	public final ClientRegistry clientRegistry;
-
+	
 	public RESTManager rest;
-
+	
 	public int shards;
-
+	
 	public int shard;
-
+	
 	private CompletableFuture<String> future;
-
+	
 	/**
 	 * A HashMap of the client's cached users. Indexed by {@link User#id}.
 	 * 
@@ -144,8 +147,8 @@ public class DiscLoader {
 	 * @see User
 	 * @see HashMap
 	 */
-	public HashMap<String, User> users;
-
+	public HashMap<String, IUser> users;
+	
 	/**
 	 * A HashMap of the client's cached channels. Indexed by {@link Channel#id}.
 	 * 
@@ -153,32 +156,29 @@ public class DiscLoader {
 	 * @see Channel
 	 * @see HashMap
 	 */
-	public HashMap<String, Channel> channels;
-
+	public HashMap<String, IChannel> channels;
+	
 	/**
-	 * A HashMap of the client's cached groupDM channels. Indexed by
-	 * {@link Channel#id}
+	 * A HashMap of the client's cached groupDM channels. Indexed by {@link Channel#id}
 	 * 
 	 * @author Perry Berman
 	 */
-	public HashMap<String, GroupChannel> groupChannels;
-
-	public HashMap<String, GuildChannel> guildChannels;
-
+	public HashMap<String, IGroupChannel> groupChannels;
+	
+	public HashMap<String, IGuildChannel> guildChannels;
+	
 	/**
-	 * A HashMap of the client's cached PrivateChannels. Indexed by
-	 * {@link Channel#id}.
+	 * A HashMap of the client's cached PrivateChannels. Indexed by {@link Channel#id}.
 	 * 
 	 * @see Channel
 	 * @see PrivateChannel
 	 * @see HashMap
 	 * @author Perry Berman
 	 */
-	public HashMap<String, PrivateChannel> privateChannels;
-
+	public HashMap<String, IPrivateChannel> privateChannels;
+	
 	/**
-	 * A HashMap of the client's cached TextChannels. Indexed by
-	 * {@link Channel#id}.
+	 * A HashMap of the client's cached TextChannels. Indexed by {@link Channel#id}.
 	 * 
 	 * @see Channel
 	 * @see TextChannel
@@ -186,18 +186,17 @@ public class DiscLoader {
 	 * @author Perry Berman
 	 */
 	public HashMap<String, ITextChannel> textChannels;
-
+	
 	/**
-	 * A HashMap of the client's cached VoiceChannels. Indexed by
-	 * {@link Channel#id}.
+	 * A HashMap of the client's cached VoiceChannels. Indexed by {@link Channel#id}.
 	 * 
 	 * @see Channel
 	 * @see VoiceChannel
 	 * @see HashMap
 	 * @author Perry Berman
 	 */
-	public HashMap<String, VoiceChannel> voiceChannels;
-
+	public HashMap<String, IVoiceChannel> voiceChannels;
+	
 	/**
 	 * A HashMap of the client's voice connections. Indexed by {@link Guild#id}.
 	 * 
@@ -205,7 +204,7 @@ public class DiscLoader {
 	 * @since 0.0.3
 	 */
 	public HashMap<String, VoiceConnection> voiceConnections;
-
+	
 	/**
 	 * A HashMap of the client's cached Guilds. Indexed by {@link Guild#id}
 	 * 
@@ -214,20 +213,20 @@ public class DiscLoader {
 	 * @author Perry Berman
 	 */
 	public HashMap<String, IGuild> guilds;
-
+	
 	private HashMap<String, IGuild> syncingGuilds;
-
+	
 	/**
 	 * The User we are currently logged in as.
 	 * 
 	 * @author Perry Berman
 	 */
 	public DLUser user;
-
+	
 	public Timer timer;
-
+	
 	private boolean started = false;
-
+	
 	/**
 	 * The DiscLoader client object <br>
 	 * <H1>How To Use</H1>
@@ -237,7 +236,7 @@ public class DiscLoader {
 	 * public static void main(String... args) {
 	 * 	// create a new instance of DiscLoader
 	 * 	DiscLoader loader = new DiscLoader();
-	 * 
+	 * 	
 	 * 	// time to login
 	 * 	loader.login(TOKEN);
 	 *
@@ -247,16 +246,16 @@ public class DiscLoader {
 	public DiscLoader() {
 		this(1, 0);
 	}
-
+	
 	/**
 	 * <pre>
 	 * 
 	 * public static void main(String... args) {
 	 * 	DLOptions options = new DLOptions("TOKEN", "PREFIX");
-	 * 
+	 * 	
 	 * 	// create a new instance of DiscLoader
 	 * 	DiscLoader loader = new DiscLoader(options);
-	 * 
+	 * 	
 	 * 	// time to login
 	 * 	loader.login();
 	 *
@@ -269,7 +268,7 @@ public class DiscLoader {
 		this(options.shard, options.shards);
 		setOptions(options);
 	}
-
+	
 	/**
 	 * The DiscLoader client object <br>
 	 * <H1>How To Use</H1>
@@ -279,7 +278,7 @@ public class DiscLoader {
 	 * 
 	 * public static void main(String... args) {
 	 * 	int shards = 10;
-	 * 
+	 * 	
 	 * 	ShardManager manager = new ShardManager(shards);
 	 * 	manager.start();
 	 * 
@@ -295,10 +294,10 @@ public class DiscLoader {
 	 * public static void main(String... args) {
 	 * 	// create a new instance of DiscLoader shard
 	 * 	DiscLoader loader = new DiscLoader(System.getenv("shards"), System.getenv("shard"));
-	 * 
+	 * 	
 	 * 	// make it do it's startup stuff
 	 * 	loader.startup();
-	 * 
+	 * 	
 	 * 	// since it's probably done, time to login
 	 * 	loader.login(TOKEN);
 	 *
@@ -316,8 +315,8 @@ public class DiscLoader {
 		socket = new DiscSocket(this);
 		rest = new RESTManager(this);
 		clientRegistry = new ClientRegistry();
-		users = new HashMap<String, User>();
-		channels = new HashMap<String, Channel>();
+		users = new HashMap<>();
+		channels = new HashMap<>();
 		groupChannels = new HashMap<>();
 		privateChannels = new HashMap<>();
 		textChannels = new HashMap<>();
@@ -327,18 +326,18 @@ public class DiscLoader {
 		syncingGuilds = new HashMap<>();
 		timer = new Timer();
 		ready = false;
-
+		
 		ModRegistry.loader = this;
-
+		
 	}
-
-	public Channel addChannel(ChannelJSON data) {
+	
+	public IChannel addChannel(ChannelJSON data) {
 		return this.addChannel(data, null);
 	}
-
-	public Channel addChannel(ChannelJSON data, IGuild guild) {
+	
+	public IChannel addChannel(ChannelJSON data, IGuild guild) {
 		boolean exists = this.channels.containsKey(data.id);
-		Channel channel = null;
+		IChannel channel = null;
 		if (data.type == DLUtil.ChannelTypes.DM) {
 			channel = new PrivateChannel(this, data);
 		} else if (data.type == DLUtil.ChannelTypes.groupDM) {
@@ -354,20 +353,20 @@ public class DiscLoader {
 				}
 			}
 		}
-
+		
 		if (channel != null) {
 			switch (channel.getType()) {
-			case TEXT:
-				this.textChannels.put(channel.getID(), (TextChannel) channel);
-				break;
-			case DM:
-				this.privateChannels.put(channel.getID(), (PrivateChannel) channel);
-				break;
-			case VOICE:
-				this.voiceChannels.put(channel.getID(), (VoiceChannel) channel);
-				break;
-			default:
-				this.channels.put(channel.getID(), channel);
+				case TEXT:
+					this.textChannels.put(channel.getID(), (TextChannel) channel);
+					break;
+				case DM:
+					this.privateChannels.put(channel.getID(), (PrivateChannel) channel);
+					break;
+				case VOICE:
+					this.voiceChannels.put(channel.getID(), (VoiceChannel) channel);
+					break;
+				default:
+					this.channels.put(channel.getID(), channel);
 			}
 			this.channels.put(channel.getID(), channel);
 			if (!exists && this.ready) {
@@ -375,17 +374,17 @@ public class DiscLoader {
 			}
 			return channel;
 		}
-
+		
 		return null;
 	}
-
+	
 	public void addEventHandler(IEventListener e) {
 		handlers.add(e);
 	}
-
+	
 	public IGuild addGuild(GuildJSON guild) {
 		boolean exists = guilds.containsKey(guild.id);
-
+		
 		IGuild newGuild = new Guild(this, guild);
 		guilds.put(newGuild.getID(), newGuild);
 		if (!exists && socket.status == DLUtil.Status.READY) {
@@ -395,14 +394,15 @@ public class DiscLoader {
 		}
 		return newGuild;
 	}
-
+	
 	public IUser addUser(UserJSON data) {
-		if (this.users.containsKey(data.id)) return this.users.get(data.id);
+		if (this.users.containsKey(data.id))
+			return this.users.get(data.id);
 		User user = new User(this, data);
 		this.users.put(user.getID(), user);
 		return user;
 	}
-
+	
 	public void checkReady() {
 		if (socket.status != DLUtil.Status.READY && socket.status != DLUtil.Status.NEARLY) {
 			int unavailable = 0;
@@ -411,7 +411,7 @@ public class DiscLoader {
 			}
 			ProgressLogger.progress(guilds.size() - unavailable, guilds.size(), "Guilds Cached");
 			if (unavailable == 0) {
-
+				
 				socket.status = Status.NEARLY;
 				try {
 					emitReady();
@@ -421,11 +421,11 @@ public class DiscLoader {
 			}
 		}
 	}
-
+	
 	public void doneLoading() {
 		future.complete("ready");
 	}
-
+	
 	public void emit(DLEvent event) {
 		for (IEventListener handler : handlers) {
 			if (event instanceof DLPreInitEvent) {
@@ -506,17 +506,17 @@ public class DiscLoader {
 			}
 		}
 	}
-
+	
 	public void emit(String event) {
 		this.emit(event, null);
 	}
-
+	
 	public void emit(String event, Object data) {
 		for (ModContainer mod : ModRegistry.mods.values()) {
 			mod.emit(event, data);
 		}
 	}
-
+	
 	public void emitReady() {
 		socket.setReady();
 		ready = true;
@@ -525,21 +525,19 @@ public class DiscLoader {
 		emit(DLUtil.Events.READY, event);
 		emit(event);
 	}
-
+	
 	/**
 	 * Makes the client log into the gateway. using a predefined token.<br>
-	 * You can use {@link DLOptions} to set the token when you create a new
-	 * DiscLoader object.
+	 * You can use {@link DLOptions} to set the token when you create a new DiscLoader object.
 	 * 
 	 * @return {@literal CompletableFuture<String>}
 	 */
 	public CompletableFuture<DiscLoader> login() {
 		return login(token);
 	}
-
+	
 	/**
-	 * Connects the current instance of the {@link DiscLoader loader} into
-	 * Discord's gateway servers
+	 * Connects the current instance of the {@link DiscLoader loader} into Discord's gateway servers
 	 * 
 	 * @param token your API token
 	 * @return A Future that completes with {@code this} if successful.
@@ -549,7 +547,7 @@ public class DiscLoader {
 		startup();
 		future.join();
 		this.token = token;
-
+		
 		CompletableFuture<DiscLoader> future2 = new CompletableFuture<>();
 		try {
 			rest.makeRequest(Endpoints.gateway, DLUtil.Methods.GET, true).thenAcceptAsync(text -> {
@@ -576,11 +574,11 @@ public class DiscLoader {
 		}
 		return future2;
 	}
-
+	
 	public void removeEventHandler(IEventListener e) {
 		handlers.remove(e);
 	}
-
+	
 	/**
 	 * Sets the clients options;
 	 * 
@@ -596,23 +594,20 @@ public class DiscLoader {
 		CommandHandler.prefix = options.prefix;
 		return this;
 	}
-
+	
 	public boolean isGuildSyncing(Guild guild) {
 		return syncingGuilds.containsKey(guild.getID());
 	}
-
+	
 	public boolean isGuildSyncing(String guildID) {
 		return syncingGuilds.containsKey(guildID);
 	}
-
+	
 	/**
-	 * This method gets called in {@link #login(String)} before attempting to
-	 * login now.<br>
+	 * This method gets called in {@link #login(String)} before attempting to login now.<br>
 	 * <br>
-	 * <strike>This method <u><b>must</b></u> be called to start DiscLoader.
-	 * <br>
-	 * As it begins the setup process for DiscLoader to be able to function
-	 * correctly.<br>
+	 * <strike>This method <u><b>must</b></u> be called to start DiscLoader. <br>
+	 * As it begins the setup process for DiscLoader to be able to function correctly.<br>
 	 * It <u><b>will</b></u> crash otherwise</strike>
 	 * 
 	 * @author Perry Berman
@@ -638,7 +633,7 @@ public class DiscLoader {
 		started = true;
 		return "ready";
 	}
-
+	
 	/**
 	 * Syncs guilds to client if the logged in user is not a bot
 	 * 
@@ -647,16 +642,18 @@ public class DiscLoader {
 	 * @throws GuildSyncException
 	 */
 	public void syncGuilds(String... guildIDs) throws AccountTypeException, GuildSyncException {
-		if (user.bot) throw new AccountTypeException("Only user accounts are allowed to sync guilds");
-
+		if (user.bot)
+			throw new AccountTypeException("Only user accounts are allowed to sync guilds");
+		
 		for (String id : guildIDs) {
-			if (isGuildSyncing(id)) throw new GuildSyncException("Cannot syncing a guild that is currently syncing");
+			if (isGuildSyncing(id))
+				throw new GuildSyncException("Cannot syncing a guild that is currently syncing");
 		}
-
+		
 		Packet packet = new Packet(12, guildIDs);
 		socket.send(packet, true);
 	}
-
+	
 	/**
 	 * Syncs guilds to client if the logged in user is not a bot
 	 * 
@@ -665,16 +662,18 @@ public class DiscLoader {
 	 * @throws AccountTypeException
 	 */
 	public void syncGuilds(Guild... guilds) throws GuildSyncException, AccountTypeException {
-		if (user.bot) throw new AccountTypeException("Only user accounts are allowed to sync guilds");
-
+		if (user.bot)
+			throw new AccountTypeException("Only user accounts are allowed to sync guilds");
+		
 		String[] ids = new String[guilds.length];
 		for (int i = 0; i < guilds.length; i++) {
-			if (isGuildSyncing(guilds[i])) throw new GuildSyncException("Cannot syncing a guild that is currently syncing");
+			if (isGuildSyncing(guilds[i]))
+				throw new GuildSyncException("Cannot syncing a guild that is currently syncing");
 			ids[i] = guilds[i].getID();
 		}
-
+		
 		Packet packet = new Packet(12, ids);
 		socket.send(packet, true);
 	}
-
+	
 }

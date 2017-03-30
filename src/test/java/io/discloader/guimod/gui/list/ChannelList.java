@@ -6,6 +6,7 @@ import io.discloader.discloader.common.DiscLoader;
 import io.discloader.discloader.core.entity.channel.Channel;
 import io.discloader.discloader.core.entity.channel.GuildChannel;
 import io.discloader.discloader.core.entity.channel.PrivateChannel;
+import io.discloader.discloader.entity.channel.IChannel;
 
 public class ChannelList<T extends Channel> extends AbstractList<T> {
 
@@ -19,7 +20,7 @@ public class ChannelList<T extends Channel> extends AbstractList<T> {
 	@SuppressWarnings("unchecked")
 	public DefaultListModel<Object> createListModel() {
 		DefaultListModel<Object> listModel = new DefaultListModel<>();
-		for (Channel c : loader.channels.values()) {
+		for (IChannel c : loader.channels.values()) {
 			switch (c.getType()) {
 			case TEXT:
 				GuildChannel gc = (GuildChannel) c;

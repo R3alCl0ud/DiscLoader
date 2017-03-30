@@ -31,18 +31,17 @@ import io.discloader.discloader.util.DLUtil.ChannelType;
  * @version 3
  */
 public class TextChannel extends GuildChannel implements IGuildTextChannel {
-
+	
 	/**
-	 * A {@link HashMap} of the channel's cached messages. Indexed by
-	 * {@link Message#id}.
+	 * A {@link HashMap} of the channel's cached messages. Indexed by {@link Message#id}.
 	 * 
 	 * @author Perry Berman
 	 * @since 0.0.1
 	 */
 	private final HashMap<String, Message> messages;
-
+	
 	private HashMap<String, IUser> typing;
-
+	
 	/**
 	 * The channel's topic
 	 * 
@@ -50,19 +49,19 @@ public class TextChannel extends GuildChannel implements IGuildTextChannel {
 	 * @since 0.0.3
 	 */
 	public String topic;
-
+	
 	public TextChannel(IGuild guild, ChannelJSON data) {
 		super(guild, data);
-
+		
 		messages = new HashMap<>();
 		typing = new HashMap<>();
 	}
-
+	
 	@Override
 	public CompletableFuture<HashMap<String, Message>> deleteMessages(HashMap<String, Message> messages) {
 		return new BulkDelete(this, messages).execute();
 	}
-
+	
 	@Override
 	public CompletableFuture<HashMap<String, Message>> deleteMessages(Message... messages) {
 		HashMap<String, Message> msgs = new HashMap<>();
@@ -71,54 +70,54 @@ public class TextChannel extends GuildChannel implements IGuildTextChannel {
 		}
 		return deleteMessages(msgs);
 	}
-
+	
 	@Override
 	public CompletableFuture<Message> fetchMessage(String id) {
 		return new FetchMessage(this, id).execute();
 	}
-
+	
 	@Override
 	public CompletableFuture<HashMap<String, Message>> fetchMessages() {
 		return fetchMessages(new MessageFetchOptions());
 	}
-
+	
 	@Override
 	public CompletableFuture<HashMap<String, Message>> fetchMessages(MessageFetchOptions options) {
 		return new FetchMessages(this, options).execute();
 	}
-
+	
 	@Override
 	public Message getMessage(String id) {
 		return this.messages.get(id);
 	}
-
+	
 	@Override
 	public HashMap<String, Message> getMessages() {
 		return this.messages;
 	}
-
+	
 	@Override
 	public CompletableFuture<HashMap<String, Message>> fetchPinnedMessages() {
 		return new PinnedMessages(this).execute();
 	}
-
+	
 	@Override
 	public HashMap<String, Message> getPinnedMessages() {
 		HashMap<String, Message> pins = new HashMap<>();
 		for (Message message : messages.values()) {
-			if (message.isPinned()) pins.put(message.id, message);
+			if (message.isPinned())
+				pins.put(message.id, message);
 		}
 		return pins;
 	}
-
+	
 	@Override
 	public HashMap<String, IUser> getTyping() {
 		return typing;
 	}
-
+	
 	/**
-	 * Checks if a certain {@link GuildMember guild member} is typing in this
-	 * channel
+	 * Checks if a certain {@link GuildMember guild member} is typing in this channel
 	 * 
 	 * @param member The member to check.
 	 * @return {@code true} if the member is typing, false otherwise.
@@ -126,27 +125,27 @@ public class TextChannel extends GuildChannel implements IGuildTextChannel {
 	public boolean isTyping(GuildMember member) {
 		return typing.containsKey(member.getID());
 	}
-
+	
 	@Override
 	public boolean isTyping(IUser user) {
 		return typing.containsKey(user.getID());
 	}
-
+	
 	@Override
 	public CompletableFuture<Message> pinMessage(Message message) {
 		return new PinMessage(message).execute();
 	}
-
+	
 	@Override
 	public CompletableFuture<Message> sendEmbed(RichEmbed embed) {
 		return sendMessage(null, embed);
 	}
-
+	
 	@Override
 	public CompletableFuture<Message> sendMessage(String content) {
 		return sendMessage(content, null);
 	}
-
+	
 	@Override
 	public CompletableFuture<Message> sendMessage(String content, RichEmbed embed) {
 		File file = null;
@@ -158,24 +157,24 @@ public class TextChannel extends GuildChannel implements IGuildTextChannel {
 		}
 		return new SendMessage(this, content, embed, attachment, file).execute();
 	}
-
+	
 	@Override
 	public void setup(ChannelJSON data) {
 		super.setup(data);
-
+		
 		this.type = ChannelType.TEXT;
-
+		
 		this.topic = data.topic;
 	}
-
+	
 	@Override
 	public CompletableFuture<HashMap<String, IUser>> startTyping() {
 		return new StartTyping(this).execute();
 	}
-
+	
 	@Override
 	public CompletableFuture<Message> unpinMessage(Message message) {
 		return new UnpinMessage(message).execute();
 	}
-
+	
 }

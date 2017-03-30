@@ -132,7 +132,7 @@ public class Guild implements IGuild {
 	 * @see HashMap
 	 * @author Perry Berman
 	 */
-	private HashMap<String, ITextChannel> textChannels;
+	private Map<String, IGuildTextChannel> textChannels;
 	
 	/**
 	 * A HashMap of the guild's VoiceChannels. Indexed by channel ID.
@@ -141,7 +141,7 @@ public class Guild implements IGuild {
 	 * @see HashMap
 	 * @author Perry Berman
 	 */
-	private HashMap<String, IVoiceChannel> voiceChannels;
+	private HashMap<String, IGuildVoiceChannel> voiceChannels;
 	
 	/**
 	 * A HashMap of the guild's roles. Indexed by role ID.
@@ -251,6 +251,7 @@ public class Guild implements IGuild {
 	 * @param emitEvent if a {@code GuildMemberAddEvent} should be fired by the client.
 	 * @return The {@link GuildMember} that was instantiated.
 	 */
+	@Override
 	public GuildMember addMember(IUser user, String[] roles, boolean deaf, boolean mute, String nick, boolean emitEvent) {
 		boolean exists = this.members.containsKey(user.getID());
 		GuildMember member = new GuildMember(this, user, roles, deaf, mute, nick);
@@ -629,7 +630,7 @@ public class Guild implements IGuild {
 	 */
 	@Override
 	public Map<String, IGuildTextChannel> getTextChannels() {
-		return null;
+		return textChannels;
 	}
 	
 	/*
@@ -638,7 +639,7 @@ public class Guild implements IGuild {
 	 */
 	@Override
 	public Map<String, IGuildVoiceChannel> getVoiceChannels() {
-		return null;
+		return voiceChannels;
 	}
 	
 	/**

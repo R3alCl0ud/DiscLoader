@@ -5,7 +5,7 @@ package io.discloader.discloader.network.gateway.packets;
 
 import io.discloader.discloader.common.event.IEventListener;
 import io.discloader.discloader.common.event.channel.ChannelCreateEvent;
-import io.discloader.discloader.core.entity.channel.Channel;
+import io.discloader.discloader.entity.channel.IChannel;
 import io.discloader.discloader.entity.guild.IGuild;
 import io.discloader.discloader.network.gateway.DiscSocket;
 import io.discloader.discloader.network.json.ChannelJSON;
@@ -26,7 +26,7 @@ public class ChannelCreate extends AbstractHandler {
 		String d = this.gson.toJson(packet.d);
 		ChannelJSON data = this.gson.fromJson(d, ChannelJSON.class);
 		IGuild guild = null;
-		Channel channel = null;
+		IChannel channel = null;
 		if (data.guild_id != null) {
 			guild = this.socket.loader.guilds.get(data.guild_id);
 			channel = this.socket.loader.addChannel(data, guild);
