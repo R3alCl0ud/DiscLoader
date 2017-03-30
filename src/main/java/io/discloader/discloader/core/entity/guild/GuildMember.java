@@ -63,11 +63,6 @@ public class GuildMember implements IGuildMember {
 	private boolean deaf;
 	
 	/**
-	 * Member's old presence. Has a value of {@code null} unless
-	 */
-	private IPresence presence;
-	
-	/**
 	 * A {@link Date} object representing when the member joined the {@link Guild}.
 	 */
 	public final Date joinedAt;
@@ -171,7 +166,7 @@ public class GuildMember implements IGuildMember {
 	 */
 	@Override
 	public IGuild getGuild() {
-		return null;
+		return guild;
 	}
 	
 	/**
@@ -236,9 +231,7 @@ public class GuildMember implements IGuildMember {
 	 */
 	@Override
 	public IPresence getPresence() {
-		if (presence == null)
-			presence = guild.getPresences().get(getID());
-		return presence;
+		return guild.getPresences().get(getID());
 	}
 	
 	/**
