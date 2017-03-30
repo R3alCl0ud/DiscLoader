@@ -22,20 +22,20 @@ public class MessageCreateEvent extends DLEvent {
 	/**
 	 * The new message received from the gateway.
 	 */
-	private final IMessage message;
+	private final IMessage<ITextChannel> message;
 
 	/**
 	 * The messages arguments.
 	 */
 	public final String[] args;
 
-	public MessageCreateEvent(IMessage message) {
+	public MessageCreateEvent(IMessage<ITextChannel> message) {
 		super(message.getLoader());
 		this.message = message;
 		this.args = this.message.getContent().split(" ");
 	}
 
-	public IMessage getMessage() {
+	public IMessage<ITextChannel> getMessage() {
 		return message;
 	}
 

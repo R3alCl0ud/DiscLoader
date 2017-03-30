@@ -6,7 +6,6 @@ import java.util.regex.Matcher;
 import io.discloader.discloader.common.event.message.MessageCreateEvent;
 import io.discloader.discloader.common.language.LanguageRegistry;
 import io.discloader.discloader.common.registry.CommandRegistry;
-import io.discloader.discloader.core.entity.message.Message;
 import io.discloader.discloader.entity.channel.ITextChannel;
 import io.discloader.discloader.entity.guild.IGuild;
 import io.discloader.discloader.entity.message.IMessage;
@@ -24,7 +23,7 @@ public class CommandHandler {
 	public static boolean selfBot = true;
 
 	public static void handleMessageCreate(MessageCreateEvent e) {
-		IMessage<ITextChannel<?>> message = e.getMessage();
+		IMessage<ITextChannel> message = e.getMessage();
 		if (!handleCommands || message.getAuthor().isBot() || ((!e.loader.user.bot && selfBot) && !message.getAuthor().getID().equals(e.loader.user.getID())) || message.getContent().length() < prefix.length()) {
 			return;
 		}
@@ -67,7 +66,7 @@ public class CommandHandler {
 	 * @return A Command if a command was found, {@code null} if no command was
 	 *         found
 	 */
-	public static Command getCommand(String label, IMessage<ITextChannel<?>> message) {
+	public static Command getCommand(String label, IMessage<ITextChannel> message) {
 		String region = message.getGuild() != null ? getGuildRegion(message.getGuild()) : "us-central";
 		Locale locale = Locale.US;
 		if (region.startsWith("us")) {

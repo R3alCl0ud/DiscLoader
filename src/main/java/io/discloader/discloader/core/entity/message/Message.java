@@ -37,7 +37,7 @@ import io.discloader.discloader.util.DLUtil;
  * @see ITextChannel#sendMessage(String, RichEmbed)
  * @see ISnowflake
  */
-public class Message<T extends ITextChannel<T>> implements IMessage<T> {
+public class Message<T extends ITextChannel> implements IMessage<T> {
 
 	/**
 	 * The message's {@link ISnowflake Snowflake} ID.

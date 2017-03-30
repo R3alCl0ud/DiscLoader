@@ -12,7 +12,7 @@ import io.discloader.discloader.util.DLUtil.Methods;
 /**
  * @author Perry Berman
  */
-public class BulkDelete<T extends ITextChannel<T>> extends RESTAction<Map<String, IMessage<T>>> {
+public class BulkDelete<T extends ITextChannel> extends RESTAction<Map<String, IMessage<T>>> {
 
 	public T channel;
 	public Map<String, IMessage<T>> messages;

@@ -10,6 +10,8 @@ import io.discloader.discloader.core.entity.RichEmbed;
 import io.discloader.discloader.core.entity.message.MessageFetchOptions;
 import io.discloader.discloader.core.entity.user.User;
 import io.discloader.discloader.entity.channel.IGroupChannel;
+import io.discloader.discloader.entity.channel.ITextChannel;
+import io.discloader.discloader.entity.channel.IVoiceChannel;
 import io.discloader.discloader.entity.message.IMessage;
 import io.discloader.discloader.entity.sendable.Attachment;
 import io.discloader.discloader.entity.user.IUser;
@@ -31,7 +33,7 @@ import io.discloader.discloader.util.DLUtil.ChannelType;
  * 
  * @author Perry Berman
  */
-public class GroupChannel extends Channel implements IGroupChannel {
+public class GroupChannel extends Channel implements IGroupChannel, IVoiceChannel {
 
 	/**
 	 * A {@link HashMap} of the channel's {@link User recipients}. Indexed by
@@ -58,17 +60,17 @@ public class GroupChannel extends Channel implements IGroupChannel {
 	}
 
 	@Override
-	public CompletableFuture<Map<String, IMessage<IGroupChannel>>> deleteMessages(@SuppressWarnings("unchecked") IMessage<IGroupChannel>... messages) {
-		HashMap<String, IMessage<IGroupChannel>> msgs = new HashMap<>();
-		for (IMessage<IGroupChannel> message : messages) {
+	public CompletableFuture<Map<String, IMessage<ITextChannel>>> deleteMessages(IMessage<ITextChannel>[] messages) {
+		HashMap<String, IMessage<ITextChannel>> msgs = new HashMap<>();
+		for (IMessage<ITextChannel> message : messages) {
 			msgs.put(message.getID(), message);
 		}
 		return deleteMessages(msgs);
 	}
 
 	@Override
-	public CompletableFuture<Map<String, IMessage<IGroupChannel>>> deleteMessages(Map<String, IMessage<IGroupChannel>> messages) {
-		return new BulkDelete<IGroupChannel>(this, messages).execute();
+	public CompletableFuture<Map<String, IMessage<ITextChannel>>> deleteMessages(Map<String, IMessage<ITextChannel>> messages) {
+		return new BulkDelete<ITextChannel>(this, (Map<String, IMessage<ITextChannel>>) messages).execute();
 	}
 
 	@Override
@@ -134,11 +136,11 @@ public class GroupChannel extends Channel implements IGroupChannel {
 	public CompletableFuture<VoiceConnection> leave() {
 		return null;
 	}
-
-	@Override
-	public CompletableFuture<IMessage<IGroupChannel>> pinMessage(IMessage<IGroupChannel> message) {
-		return new PinMessage<IGroupChannel>(message).execute();
-	}
+	//
+	// @Override
+	// public CompletableFuture<IMessage<T>> pinMessage(IMessage<T> message) {
+	// return new PinMessage<T>(message).execute();
+	// }
 
 	@Override
 	public CompletableFuture<IMessage<IGroupChannel>> sendEmbed(RichEmbed embed) {
@@ -170,5 +172,15 @@ public class GroupChannel extends Channel implements IGroupChannel {
 	@Override
 	public CompletableFuture<IMessage<IGroupChannel>> unpinMessage(IMessage<IGroupChannel> message) {
 		return new UnpinMessage<IGroupChannel>(message).execute();
+	}
+
+	@Override
+	public <T extends ITextChannel> CompletableFuture<IMessage<T>> unpinMessage(IMessage<T> message) {
+		return null;
+	}
+
+	@Override
+	public <T extends ITextChannel> CompletableFuture<IMessage<T>> pinMessage(IMessage<T> message) {
+		return null;
 	}
 }
