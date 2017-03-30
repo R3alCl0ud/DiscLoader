@@ -9,6 +9,7 @@ import io.discloader.discloader.core.entity.guild.GuildMember;
 import io.discloader.discloader.core.entity.guild.Role;
 import io.discloader.discloader.entity.IPresence;
 import io.discloader.discloader.entity.ISnowflake;
+import io.discloader.discloader.entity.Permissions;
 import io.discloader.discloader.entity.channel.IGuildChannel;
 import io.discloader.discloader.entity.channel.IGuildTextChannel;
 import io.discloader.discloader.entity.channel.IGuildVoiceChannel;
@@ -133,4 +134,6 @@ public interface IGuild extends ISnowflake {
 	 * @return
 	 */
 	IRole addRole(RoleJSON role);
+	
+	boolean hasPermission(Permissions permissions);
 }

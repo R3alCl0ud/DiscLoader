@@ -279,11 +279,16 @@ public class GuildMember implements IGuildMember {
 	 */
 	@Override
 	public CompletableFuture<IGuildMember> giveRole(IRole... roles) {
-		if (!guild.isOwner() && !guild.getCurrentMember().getPermissions().hasPermission(Permissions.MANAGE_ROLES))
+		if (!guild.hasPermission(Permissions.MANAGE_ROLES)) {
 			throw new PermissionsException("");
-		for (IRole role : roles)
-			if (!guild.isOwner() && role.getPosition() >= guild.getCurrentMember().getHighestRole().getPosition())
+		}
+			
+		for (IRole role : roles) {
+			if (!guild.isOwner() && role.getPosition() >= guild.getCurrentMember().getHighestRole().getPosition()) {
 				throw new PermissionsException("");
+			}
+		}
+	
 		ArrayList<CompletableFuture<GuildMember>> futures = new ArrayList<>();
 		CompletableFuture<IGuildMember> future = new CompletableFuture<>();
 		for (IRole role : roles) {
@@ -357,8 +362,10 @@ public class GuildMember implements IGuildMember {
 	 */
 	@Override
 	public CompletableFuture<IGuildMember> mute() {
-		if (!guild.isOwner() && !guild.getCurrentMember().getPermissions().hasPermission(Permissions.MUTE_MEMBERS))
+	    if (!guild.hasPermission(Permissions.MUTE_MEMBERS)) {
 			throw new PermissionsException("Insufficient Permissions");
+		}
+
 			
 		return new ModifyMember(this, nick, getRoles(), true, deaf, getVoiceChannel()).execute();
 	}
@@ -374,9 +381,10 @@ public class GuildMember implements IGuildMember {
 	 */
 	@Override
 	public CompletableFuture<IGuildMember> setNick(String nick) {
-		if (!guild.isOwner() && !guild.getCurrentMember().getPermissions().hasPermission(Permissions.MANAGE_NICKNAMES))
+	    if (!guild.hasPermission(Permissions.MANAGE_NICKNAMES)) {
 			throw new PermissionsException("Insuccficient Permissions");
-		
+		}
+
 		CompletableFuture<IGuildMember> future = getLoader().rest.setNick(this, nick);
 		future.thenAcceptAsync(action -> this.nick = nick);
 		return future;
@@ -392,8 +400,10 @@ public class GuildMember implements IGuildMember {
 	 */
 	@Override
 	public CompletableFuture<IGuildMember> takeRole(IRole role) {
-		if (!guild.isOwner() && !guild.getCurrentMember().getPermissions().hasPermission(Permissions.MANAGE_ROLES))
+		if (!guild.hasPermission(Permissions.MANAGE_ROLES)) {
 			throw new PermissionsException("Insuccficient Permissions");
+		}
+	
 		if (!guild.isOwner() && role.getPosition() >= guild.getCurrentMember().getHighestRole().getPosition())
 			throw new PermissionsException("Cannot take away roles higher than your's");
 		

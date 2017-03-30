@@ -928,4 +928,9 @@ public class Guild implements IGuild {
 		return name;
 	}
 	
+	@Override
+	public boolean hasPermission(Permissions permissions) {
+	    return isOwner() || getCurrentMember().getPermissions().hasPermission(permissions);	    
+	}
+	
 }
