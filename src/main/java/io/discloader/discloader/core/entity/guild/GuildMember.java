@@ -36,21 +36,9 @@ import io.discloader.discloader.util.DLUtil;
 public class GuildMember implements IGuildMember {
 	
 	/**
-	 * The loader instance that cached the member.
-	 */
-	public final DiscLoader loader;
-	
-	/**
 	 * The member's nickname, or null if the user has no nickname
 	 */
 	private String nick;
-	
-	/**
-	 * The member's Snowflake ID.
-	 * 
-	 * @see User
-	 */
-	private final String id;
 	
 	/**
 	 * The member's user object
@@ -84,10 +72,8 @@ public class GuildMember implements IGuildMember {
 	 */
 	public final Date joinedAt;
 	
-	public GuildMember(Guild guild, MemberJSON data) {
-		loader = guild.getLoader();
-		user = loader.addUser(data.user);
-		id = user.getID();
+	public GuildMember(IGuild guild, MemberJSON data) {
+		user = guild.getLoader().addUser(data.user);
 		this.guild = guild;
 		nick = data.nick != null ? data.nick : user.getUsername();
 		joinedAt = DLUtil.parseISO8601(data.joined_at);
@@ -99,23 +85,18 @@ public class GuildMember implements IGuildMember {
 	}
 	
 	public GuildMember(IGuild guild, IUser user) {
-		id = user.getID();
-		
 		this.user = user;
 		
 		this.guild = guild;
 		
-		loader = guild.getLoader();
 		roleIDs = new String[] {};
 		
 		joinedAt = Date.from(Instant.now());
 	}
 	
 	public GuildMember(Guild guild, IUser user2, String[] roles, boolean deaf, boolean mute, String nick) {
-		id = user2.getID();
 		this.user = user2;
 		this.guild = guild;
-		loader = guild.getLoader();
 		this.nick = nick != null ? nick : user2.getUsername();
 		roleIDs = roles != null ? roles : new String[] {};
 		joinedAt = Date.from(Instant.now());
@@ -124,8 +105,6 @@ public class GuildMember implements IGuildMember {
 	}
 	
 	public GuildMember(IGuildMember member) {
-		id = member.getID();
-		loader = member.getLoader();
 		user = member.getUser();
 		guild = member.getGuild();
 		nick = member.getNickname();
@@ -146,7 +125,7 @@ public class GuildMember implements IGuildMember {
 	 */
 	@Override
 	public String asMention() {
-		return String.format("<@!%s>", id);
+		return String.format("<@!%s>", getID());
 	}
 	
 	/**
@@ -183,7 +162,7 @@ public class GuildMember implements IGuildMember {
 				return false;
 		}
 		
-		return id.equals(member.id) && nick.equals(member.nick);
+		return getID().equals(member.getID()) && nick.equals(member.nick);
 	}
 	
 	/*
@@ -214,7 +193,7 @@ public class GuildMember implements IGuildMember {
 	
 	@Override
 	public String getID() {
-		return id;
+		return user.getID();
 	}
 	
 	/*
@@ -223,7 +202,7 @@ public class GuildMember implements IGuildMember {
 	 */
 	@Override
 	public DiscLoader getLoader() {
-		return null;
+		return guild.getLoader();
 	}
 	
 	/**
@@ -258,7 +237,7 @@ public class GuildMember implements IGuildMember {
 	@Override
 	public IPresence getPresence() {
 		if (presence == null)
-			presence = guild.getPresences().get(id);
+			presence = guild.getPresences().get(getID());
 		return presence;
 	}
 	
@@ -292,7 +271,7 @@ public class GuildMember implements IGuildMember {
 	 */
 	@Override
 	public IVoiceChannel getVoiceChannel() {
-		VoiceState vs = guild.getVoiceStates().get(id);
+		VoiceState vs = guild.getVoiceStates().get(getID());
 		if (vs != null) {
 			return vs.channel;
 		}
@@ -301,7 +280,7 @@ public class GuildMember implements IGuildMember {
 	
 	@Override
 	public VoiceState getVoiceState() {
-		return guild.getVoiceStates().get(id);
+		return guild.getVoiceStates().get(getID());
 	}
 	
 	/**
@@ -322,7 +301,7 @@ public class GuildMember implements IGuildMember {
 		ArrayList<CompletableFuture<GuildMember>> futures = new ArrayList<>();
 		CompletableFuture<IGuildMember> future = new CompletableFuture<>();
 		for (IRole role : roles) {
-			futures.add(loader.rest.giveRole(this, role));
+			futures.add(getLoader().rest.giveRole(this, role));
 		}
 		CompletableFuture.allOf((CompletableFuture<?>[]) futures.toArray()).thenAcceptAsync(action -> {
 			future.complete(this);
@@ -332,7 +311,7 @@ public class GuildMember implements IGuildMember {
 	
 	@Override
 	public int hashCode() {
-		return id.hashCode();
+		return getID().hashCode();
 	}
 	
 	/**
@@ -418,7 +397,7 @@ public class GuildMember implements IGuildMember {
 		if (!guild.isOwner() && !guild.getCurrentMember().getPermissions().hasPermission(Permissions.MANAGE_NICKNAMES))
 			throw new PermissionsException("Insuccficient Permissions");
 		
-		CompletableFuture<IGuildMember> future = loader.rest.setNick(this, nick);
+		CompletableFuture<IGuildMember> future = getLoader().rest.setNick(this, nick);
 		future.thenAcceptAsync(action -> this.nick = nick);
 		return future;
 	}
@@ -438,7 +417,7 @@ public class GuildMember implements IGuildMember {
 		if (!guild.isOwner() && role.getPosition() >= guild.getCurrentMember().getHighestRole().getPosition())
 			throw new PermissionsException("Cannot take away roles higher than your's");
 		
-		return loader.rest.takeRole(this, role);
+		return getLoader().rest.takeRole(this, role);
 	}
 	
 	@Override
