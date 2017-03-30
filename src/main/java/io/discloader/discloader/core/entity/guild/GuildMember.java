@@ -146,8 +146,7 @@ public class GuildMember implements IGuildMember {
 	 */
 	@Override
 	public CompletableFuture<IGuildMember> deafen() {
-		ModifyMember future = new ModifyMember(this, nick, getRoles(), mute, true, getVoiceChannel());
-		return future.execute();
+		return new ModifyMember(this, nick, getRoles(), mute, true, getVoiceChannel()).execute();
 	}
 	
 	@Override
@@ -272,10 +271,8 @@ public class GuildMember implements IGuildMember {
 	@Override
 	public IVoiceChannel getVoiceChannel() {
 		VoiceState vs = guild.getVoiceStates().get(getID());
-		if (vs != null) {
-			return vs.channel;
-		}
-		return null;
+		
+		return vs == null ? null : vs.channel;
 	}
 	
 	@Override
@@ -325,18 +322,12 @@ public class GuildMember implements IGuildMember {
 	
 	@Override
 	public boolean isDeaf() {
-		if (!hasVoiceConnection())
-			return deaf;
-		
-		return getVoiceState().deaf || deaf;
+	    return hasVoiceConnection() ? (getVoiceState().deaf || deaf) : deaf;
 	}
 	
 	@Override
 	public boolean isMuted() {
-		if (!hasVoiceConnection())
-			return mute;
-		
-		return getVoiceState().mute || mute;
+	    return hasVoiceConnection() ? (getVoiceState().mute || mute) : mute;
 	}
 	
 	/**
@@ -365,8 +356,8 @@ public class GuildMember implements IGuildMember {
 			throw new PermissionsException("Insufficient Permissions");
 		if (getVoiceChannel() == null)
 			throw new VoiceConnectionException();
-		ModifyMember future = new ModifyMember(this, channel);
-		return future.execute();
+		
+		return new ModifyMember(this, channel).execute();
 	}
 	
 	/**
@@ -379,8 +370,8 @@ public class GuildMember implements IGuildMember {
 	public CompletableFuture<IGuildMember> mute() {
 		if (!guild.isOwner() && !guild.getCurrentMember().getPermissions().hasPermission(Permissions.MUTE_MEMBERS))
 			throw new PermissionsException("Insufficient Permissions");
-		ModifyMember future = new ModifyMember(this, nick, getRoles(), true, deaf, getVoiceChannel());
-		return future.execute();
+			
+		return new ModifyMember(this, nick, getRoles(), true, deaf, getVoiceChannel()).execute();
 	}
 	
 	/**
@@ -422,14 +413,12 @@ public class GuildMember implements IGuildMember {
 	
 	@Override
 	public CompletableFuture<IGuildMember> unDeafen() {
-		ModifyMember future = new ModifyMember(this, nick, getRoles(), mute, false, getVoiceChannel());
-		return future.execute();
+		return new ModifyMember(this, nick, getRoles(), mute, false, getVoiceChannel()).execute();
 	}
 	
 	@Override
 	public CompletableFuture<IGuildMember> unMute() {
-		ModifyMember future = new ModifyMember(this, nick, getRoles(), false, deaf, getVoiceChannel());
-		return future.execute();
+		return new ModifyMember(this, nick, getRoles(), false, deaf, getVoiceChannel()).execute();
 	}
 	
 }
