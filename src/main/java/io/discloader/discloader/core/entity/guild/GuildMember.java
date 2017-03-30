@@ -362,12 +362,12 @@ public class GuildMember implements IGuildMember {
 	 */
 	@Override
 	public CompletableFuture<IGuildMember> mute() {
-        if (!guild.hasPermission(Permissions.MUTE_MEMBERS)) {
-            throw new PermissionsException("Insufficient Permissions");
-        }
-	
-        return new ModifyMember(this, nick, getRoles(), true, deaf, getVoiceChannel()).execute();
-    }
+		if (!guild.hasPermission(Permissions.MUTE_MEMBERS)) {
+			throw new PermissionsException("Insufficient Permissions");
+		}
+		
+		return new ModifyMember(this, nick, getRoles(), true, deaf, getVoiceChannel()).execute();
+	}
 	
 	/**
 	 * Sets the member's nickname if the {@link DiscLoader loader} has sufficient permissions. Requires the
@@ -380,14 +380,14 @@ public class GuildMember implements IGuildMember {
 	 */
 	@Override
 	public CompletableFuture<IGuildMember> setNick(String nick) {
-        if (!guild.hasPermission(Permissions.MANAGE_NICKNAMES)) {
-            throw new PermissionsException("Insuccficient Permissions");
-        }
+		if (!guild.hasPermission(Permissions.MANAGE_NICKNAMES)) {
+			throw new PermissionsException("Insuccficient Permissions");
+		}
 
-        CompletableFuture<IGuildMember> future = getLoader().rest.setNick(this, nick);
-        future.thenAcceptAsync(action -> this.nick = nick);
-        return future;
-    }
+		CompletableFuture<IGuildMember> future = getLoader().rest.setNick(this, nick);
+		future.thenAcceptAsync(action -> this.nick = nick);
+		return future;
+	}
 	
 	/**
 	 * Takes a role away from a member
