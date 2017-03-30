@@ -41,13 +41,6 @@ public class GuildMember implements IGuildMember {
 	private String nick;
 	
 	/**
-	 * The member's Snowflake ID.
-	 * 
-	 * @see User
-	 */
-	private final String id;
-	
-	/**
 	 * The member's user object
 	 */
 	public final IUser user;
@@ -81,7 +74,6 @@ public class GuildMember implements IGuildMember {
 	
 	public GuildMember(Guild guild, MemberJSON data) {
 		user = guild.getLoader().addUser(data.user);
-		id = user.getID();
 		this.guild = guild;
 		nick = data.nick != null ? data.nick : user.getUsername();
 		joinedAt = DLUtil.parseISO8601(data.joined_at);
@@ -93,8 +85,6 @@ public class GuildMember implements IGuildMember {
 	}
 	
 	public GuildMember(IGuild guild, IUser user) {
-		id = user.getID();
-		
 		this.user = user;
 		
 		this.guild = guild;
@@ -105,7 +95,6 @@ public class GuildMember implements IGuildMember {
 	}
 	
 	public GuildMember(Guild guild, IUser user2, String[] roles, boolean deaf, boolean mute, String nick) {
-		id = user2.getID();
 		this.user = user2;
 		this.guild = guild;
 		this.nick = nick != null ? nick : user2.getUsername();
@@ -116,7 +105,6 @@ public class GuildMember implements IGuildMember {
 	}
 	
 	public GuildMember(IGuildMember member) {
-		id = member.getID();
 		user = member.getUser();
 		guild = member.getGuild();
 		nick = member.getNickname();
@@ -137,7 +125,7 @@ public class GuildMember implements IGuildMember {
 	 */
 	@Override
 	public String asMention() {
-		return String.format("<@!%s>", id);
+		return String.format("<@!%s>", getID());
 	}
 	
 	/**
@@ -174,7 +162,7 @@ public class GuildMember implements IGuildMember {
 				return false;
 		}
 		
-		return id.equals(member.id) && nick.equals(member.nick);
+		return getID().equals(member.getID()) && nick.equals(member.nick);
 	}
 	
 	/*
@@ -205,7 +193,7 @@ public class GuildMember implements IGuildMember {
 	
 	@Override
 	public String getID() {
-		return id;
+		return user.getID();
 	}
 	
 	/*
@@ -249,7 +237,7 @@ public class GuildMember implements IGuildMember {
 	@Override
 	public IPresence getPresence() {
 		if (presence == null)
-			presence = guild.getPresences().get(id);
+			presence = guild.getPresences().get(getID());
 		return presence;
 	}
 	
@@ -283,7 +271,7 @@ public class GuildMember implements IGuildMember {
 	 */
 	@Override
 	public IVoiceChannel getVoiceChannel() {
-		VoiceState vs = guild.getVoiceStates().get(id);
+		VoiceState vs = guild.getVoiceStates().get(getID());
 		if (vs != null) {
 			return vs.channel;
 		}
@@ -292,7 +280,7 @@ public class GuildMember implements IGuildMember {
 	
 	@Override
 	public VoiceState getVoiceState() {
-		return guild.getVoiceStates().get(id);
+		return guild.getVoiceStates().get(getID());
 	}
 	
 	/**
@@ -323,7 +311,7 @@ public class GuildMember implements IGuildMember {
 	
 	@Override
 	public int hashCode() {
-		return id.hashCode();
+		return getID().hashCode();
 	}
 	
 	/**
