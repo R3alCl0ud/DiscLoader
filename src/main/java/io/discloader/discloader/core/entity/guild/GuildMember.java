@@ -72,7 +72,7 @@ public class GuildMember implements IGuildMember {
 	 */
 	public final Date joinedAt;
 	
-	public GuildMember(Guild guild, MemberJSON data) {
+	public GuildMember(IGuild guild, MemberJSON data) {
 		user = guild.getLoader().addUser(data.user);
 		this.guild = guild;
 		nick = data.nick != null ? data.nick : user.getUsername();
