@@ -41,6 +41,7 @@ import io.discloader.discloader.entity.guild.IGuildEmoji;
 import io.discloader.discloader.entity.guild.IGuildMember;
 import io.discloader.discloader.entity.guild.VoiceRegion;
 import io.discloader.discloader.entity.invite.Invite;
+import io.discloader.discloader.entity.user.IUser;
 import io.discloader.discloader.entity.voice.VoiceState;
 import io.discloader.discloader.network.json.ChannelJSON;
 import io.discloader.discloader.network.json.EmojiJSON;
@@ -250,7 +251,7 @@ public class Guild implements IGuild {
 	 * @param emitEvent if a {@code GuildMemberAddEvent} should be fired by the client.
 	 * @return The {@link GuildMember} that was instantiated.
 	 */
-	public GuildMember addMember(User user, String[] roles, boolean deaf, boolean mute, String nick, boolean emitEvent) {
+	public GuildMember addMember(IUser user, String[] roles, boolean deaf, boolean mute, String nick, boolean emitEvent) {
 		boolean exists = this.members.containsKey(user.getID());
 		GuildMember member = new GuildMember(this, user, roles, deaf, mute, nick);
 		this.members.put(member.getID(), member);
@@ -265,6 +266,7 @@ public class Guild implements IGuild {
 		return member;
 	}
 	
+	@Override
 	public Role addRole(RoleJSON guildRole) {
 		boolean exists = this.roles.containsKey(guildRole.id);
 		Role role = new Role(this, guildRole);
@@ -813,6 +815,7 @@ public class Guild implements IGuild {
 	 * 
 	 * @param data The guild's data
 	 */
+	@Override
 	public void setup(GuildJSON data) {
 		
 		name = data.name;

@@ -1,7 +1,8 @@
 package io.discloader.discloader.common.event.channel;
 
 import io.discloader.discloader.core.entity.channel.GuildChannel;
-import io.discloader.discloader.core.entity.guild.Guild;
+import io.discloader.discloader.entity.channel.IGuildChannel;
+import io.discloader.discloader.entity.guild.IGuild;
 
 public class GuildChannelDeleteEvent extends ChannelCreateEvent {
 
@@ -14,8 +15,8 @@ public class GuildChannelDeleteEvent extends ChannelCreateEvent {
 		return (GuildChannel) super.getChannel();
 	}
 
-	public Guild getGuild() {
-		return getChannel().guild;
+	public IGuild getGuild() {
+		return ((IGuildChannel) getChannel()).getGuild();
 	}
 
 }

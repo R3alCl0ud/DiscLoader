@@ -4,28 +4,28 @@
 package io.discloader.discloader.common.event.guild;
 
 import io.discloader.discloader.common.event.DLEvent;
-import io.discloader.discloader.core.entity.guild.Guild;
-import io.discloader.discloader.core.entity.user.User;
+import io.discloader.discloader.entity.guild.IGuild;
+import io.discloader.discloader.entity.user.IUser;
 
 /**
  * @author Perry Berman
  *
  */
 public class GuildBanRemoveEvent extends DLEvent {
-
-	public final Guild guild;
-	public final User user;
 	
-
+	public final IGuild guild;
+	public final IUser user;
+	
 	/**
 	 * Creates a new GuildBanRemoveEvent Object
-	 * @param guild The guild the user was unbanned from
-	 * @param user The use that has been unbanned
+	 * 
+	 * @param guild2 The guild the user was unbanned from
+	 * @param user2 The use that has been unbanned
 	 */
-	public GuildBanRemoveEvent(Guild guild, User user) {
+	public GuildBanRemoveEvent(IGuild guild, IUser user) {
 		super(guild.getLoader());
 		this.guild = guild;
 		this.user = user;
 	}
-
+	
 }

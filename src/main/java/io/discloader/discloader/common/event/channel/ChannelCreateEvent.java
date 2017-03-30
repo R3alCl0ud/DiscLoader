@@ -5,6 +5,7 @@ package io.discloader.discloader.common.event.channel;
 
 import io.discloader.discloader.common.event.DLEvent;
 import io.discloader.discloader.core.entity.channel.Channel;
+import io.discloader.discloader.entity.channel.IChannel;
 
 /**
  * @author Perry Berman
@@ -18,7 +19,7 @@ public class ChannelCreateEvent extends DLEvent {
 		this.channel = channel;
 	}
 
-	public Channel getChannel() {
+	public IChannel getChannel() {
 		return channel;
 	}
 

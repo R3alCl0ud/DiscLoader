@@ -8,10 +8,10 @@ import io.discloader.discloader.core.entity.RichEmbed;
 import io.discloader.discloader.core.entity.guild.GuildMember;
 import io.discloader.discloader.core.entity.message.Message;
 import io.discloader.discloader.core.entity.message.MessageFetchOptions;
-import io.discloader.discloader.core.entity.user.User;
 import io.discloader.discloader.entity.channel.IGuildTextChannel;
 import io.discloader.discloader.entity.guild.IGuild;
 import io.discloader.discloader.entity.sendable.Attachment;
+import io.discloader.discloader.entity.user.IUser;
 import io.discloader.discloader.network.json.ChannelJSON;
 import io.discloader.discloader.network.rest.actions.channel.BulkDelete;
 import io.discloader.discloader.network.rest.actions.channel.FetchMessage;
@@ -41,7 +41,7 @@ public class TextChannel extends GuildChannel implements IGuildTextChannel {
 	 */
 	private final HashMap<String, Message> messages;
 
-	private HashMap<String, User> typing;
+	private HashMap<String, IUser> typing;
 
 	/**
 	 * The channel's topic
@@ -112,7 +112,7 @@ public class TextChannel extends GuildChannel implements IGuildTextChannel {
 	}
 
 	@Override
-	public HashMap<String, User> getTyping() {
+	public HashMap<String, IUser> getTyping() {
 		return typing;
 	}
 
@@ -128,7 +128,7 @@ public class TextChannel extends GuildChannel implements IGuildTextChannel {
 	}
 
 	@Override
-	public boolean isTyping(User user) {
+	public boolean isTyping(IUser user) {
 		return typing.containsKey(user.getID());
 	}
 
@@ -169,7 +169,7 @@ public class TextChannel extends GuildChannel implements IGuildTextChannel {
 	}
 
 	@Override
-	public CompletableFuture<HashMap<String, User>> startTyping() {
+	public CompletableFuture<HashMap<String, IUser>> startTyping() {
 		return new StartTyping(this).execute();
 	}
 

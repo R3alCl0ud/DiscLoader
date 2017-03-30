@@ -4,28 +4,28 @@
 package io.discloader.discloader.common.event.channel;
 
 import io.discloader.discloader.common.event.DLEvent;
-import io.discloader.discloader.core.entity.channel.Channel;
+import io.discloader.discloader.entity.channel.IChannel;
 
 /**
  * @author Perry Berman
  */
 public class ChannelUpdateEvent extends DLEvent {
-
-	protected final Channel channel;
-	protected final Channel oldChannel;
-
-	public ChannelUpdateEvent(Channel channel, Channel oldChannel) {
+	
+	protected final IChannel channel;
+	protected final IChannel oldChannel;
+	
+	public ChannelUpdateEvent(IChannel channel, IChannel oldChannel) {
 		super(channel.getLoader());
 		this.channel = channel;
 		this.oldChannel = oldChannel;
 	}
-
-	public Channel getChannel() {
+	
+	public IChannel getChannel() {
 		return channel;
 	}
-
-	public Channel getOldChannel() {
+	
+	public IChannel getOldChannel() {
 		return oldChannel;
 	}
-
+	
 }

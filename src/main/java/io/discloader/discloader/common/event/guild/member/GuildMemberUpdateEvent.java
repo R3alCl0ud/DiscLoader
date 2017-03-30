@@ -7,6 +7,8 @@ import io.discloader.discloader.common.DiscLoader;
 import io.discloader.discloader.common.event.DLEvent;
 import io.discloader.discloader.core.entity.guild.Guild;
 import io.discloader.discloader.core.entity.guild.GuildMember;
+import io.discloader.discloader.entity.guild.IGuild;
+import io.discloader.discloader.entity.guild.IGuildMember;
 
 /**
  * The object passed to the {@literal "PresenceUpdate"} event
@@ -22,21 +24,21 @@ public class GuildMemberUpdateEvent extends DLEvent {
     /**
      * The guild the member belongs to.
      */
-    public final Guild guild;
+	public final IGuild guild;
 
     /**
      * The updated member object
      */
-    public final GuildMember member;
+	public final IGuildMember member;
 
     /**
      * A copy of the member object from before the member updated
      */
-    public final GuildMember oldMember;
+	public final IGuildMember oldMember;
 
-    public GuildMemberUpdateEvent(GuildMember member, GuildMember oldMember, Guild guild) {
-        super(guild.getLoader());
-        this.guild = guild;
+	public GuildMemberUpdateEvent(IGuildMember member, IGuildMember oldMember, IGuild guild) {
+		super(guild.getLoader());
+		this.guild = guild;
         this.member = member;
         this.oldMember = oldMember;
     }

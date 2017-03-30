@@ -2,8 +2,9 @@ package io.discloader.discloader.network.gateway.packets;
 
 import io.discloader.discloader.common.event.IEventListener;
 import io.discloader.discloader.common.event.guild.member.GuildMemberUpdateEvent;
-import io.discloader.discloader.core.entity.guild.Guild;
 import io.discloader.discloader.core.entity.guild.GuildMember;
+import io.discloader.discloader.entity.guild.IGuild;
+import io.discloader.discloader.entity.guild.IGuildMember;
 import io.discloader.discloader.network.gateway.DiscSocket;
 import io.discloader.discloader.network.json.MemberJSON;
 import io.discloader.discloader.util.DLUtil.Status;
@@ -13,16 +14,17 @@ import io.discloader.discloader.util.DLUtil.Status;
  *
  */
 public class GuildMemberUpdate extends AbstractHandler {
-
+	
 	public GuildMemberUpdate(DiscSocket socket) {
 		super(socket);
 	}
-
+	
+	@Override
 	public void handle(SocketPacket packet) {
 		String d = this.gson.toJson(packet);
 		MemberJSON data = this.gson.fromJson(d, MemberJSON.class);
-		Guild guild = this.loader.guilds.get(data.guild_id);
-		GuildMember member = guild.members.get(data.user.id);
+		IGuild guild = this.loader.guilds.get(data.guild_id);
+		IGuildMember member = guild.getMember(data.user.id);
 		if (member == null) {
 			member = guild.addMember(data);
 		}

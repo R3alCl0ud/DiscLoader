@@ -12,9 +12,12 @@ import io.discloader.discloader.entity.ISnowflake;
 import io.discloader.discloader.entity.channel.IGuildChannel;
 import io.discloader.discloader.entity.channel.IGuildTextChannel;
 import io.discloader.discloader.entity.channel.IGuildVoiceChannel;
+import io.discloader.discloader.entity.user.IUser;
 import io.discloader.discloader.entity.voice.VoiceState;
+import io.discloader.discloader.network.json.GuildJSON;
 import io.discloader.discloader.network.json.MemberJSON;
 import io.discloader.discloader.network.json.PresenceJSON;
+import io.discloader.discloader.network.json.RoleJSON;
 
 /**
  * 
@@ -108,4 +111,26 @@ public interface IGuild extends ISnowflake {
 	 * @return
 	 */
 	CompletableFuture<IGuildChannel> createChannel(String name, String name2);
+	
+	/**
+	 * @param data
+	 */
+	void setup(GuildJSON data);
+	
+	/**
+	 * @param user
+	 * @param roles
+	 * @param b
+	 * @param c
+	 * @param nick
+	 * @param d
+	 * @return
+	 */
+	IGuildMember addMember(IUser user, String[] roles, boolean b, boolean c, String nick, boolean d);
+	
+	/**
+	 * @param role
+	 * @return
+	 */
+	IRole addRole(RoleJSON role);
 }

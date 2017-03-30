@@ -1,16 +1,16 @@
 package io.discloader.discloader.common.event.guild.role;
 
 import io.discloader.discloader.common.event.DLEvent;
-import io.discloader.discloader.core.entity.guild.Role;
+import io.discloader.discloader.entity.guild.IRole;
 
 public class GuildRoleCreateEvent extends DLEvent {
 
-	public final Role role;
+	public final IRole role;
 	
-	public GuildRoleCreateEvent(Role role) {
-		super(role.getLoader());
+	public GuildRoleCreateEvent(IRole role2) {
+		super(role2.getLoader());
 		
-		this.role = role;
+		this.role = role2;
 	}
 
 }

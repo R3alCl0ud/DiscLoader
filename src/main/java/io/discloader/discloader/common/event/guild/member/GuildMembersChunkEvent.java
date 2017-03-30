@@ -1,23 +1,24 @@
 package io.discloader.discloader.common.event.guild.member;
 
 import java.util.HashMap;
+import java.util.Map;
 
 import io.discloader.discloader.common.event.DLEvent;
-import io.discloader.discloader.core.entity.guild.Guild;
-import io.discloader.discloader.core.entity.guild.GuildMember;
+import io.discloader.discloader.entity.guild.IGuild;
+import io.discloader.discloader.entity.guild.IGuildMember;
 
 public class GuildMembersChunkEvent extends DLEvent {
-
-	public final Guild guild;
-
-	public final HashMap<String, GuildMember> members;
-
-	public GuildMembersChunkEvent(Guild guild, HashMap<String, GuildMember> members) {
+	
+	public final IGuild guild;
+	
+	public final Map<String, IGuildMember> members;
+	
+	public GuildMembersChunkEvent(IGuild guild, HashMap<String, IGuildMember> members) {
 		super(guild.getLoader());
-
+		
 		this.guild = guild;
-
+		
 		this.members = members;
 	}
-
+	
 }

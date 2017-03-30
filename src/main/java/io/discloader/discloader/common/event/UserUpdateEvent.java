@@ -3,28 +3,28 @@
  */
 package io.discloader.discloader.common.event;
 
-import io.discloader.discloader.core.entity.user.User;
+import io.discloader.discloader.entity.user.IUser;
 
 /**
  * @author Perry Berman
  *
  */
 public class UserUpdateEvent extends DLEvent {
-
-    /**
-     * The current user
-     */
-    public User user;
-
-    /**
-     * The user before the update
-     */
-    public User oldUser;
-
-    public UserUpdateEvent(User user, User oldUser) {
-        super(user.loader);
-        this.user = user;
-        this.oldUser = oldUser;
-    }
-
+	
+	/**
+	 * The current user
+	 */
+	public IUser user;
+	
+	/**
+	 * The user before the update
+	 */
+	public IUser oldUser;
+	
+	public UserUpdateEvent(IUser user, IUser oldUser) {
+		super(user.getLoader());
+		this.user = user;
+		this.oldUser = oldUser;
+	}
+	
 }

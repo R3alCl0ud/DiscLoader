@@ -1,7 +1,8 @@
 package io.discloader.discloader.common.event.channel;
 
 import io.discloader.discloader.core.entity.channel.PrivateChannel;
-import io.discloader.discloader.core.entity.user.User;
+import io.discloader.discloader.entity.channel.IPrivateChannel;
+import io.discloader.discloader.entity.user.IUser;
 
 public class PrivateChannelUpdateEvent extends ChannelUpdateEvent {
 
@@ -9,18 +10,19 @@ public class PrivateChannelUpdateEvent extends ChannelUpdateEvent {
 		super(channel, oldChannel);
 	}
 
+
 	@Override
-	public PrivateChannel getChannel() {
-		return (PrivateChannel) channel;
+	public IPrivateChannel getOldChannel() {
+		return (IPrivateChannel) oldChannel;
 	}
 
 	@Override
-	public PrivateChannel getOldChannel() {
-		return (PrivateChannel) oldChannel;
+	public IPrivateChannel getChannel() {
+		return (IPrivateChannel) super.getChannel();
 	}
-
-	public User getRecipient() {
-		return getChannel().recipient;
+	
+	public IUser getRecipient() {
+		return getChannel().getRecipient();
 	}
 
 }

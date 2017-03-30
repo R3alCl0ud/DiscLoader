@@ -4,8 +4,8 @@ import java.util.HashMap;
 
 import io.discloader.discloader.common.event.IEventListener;
 import io.discloader.discloader.common.event.guild.member.GuildMembersChunkEvent;
-import io.discloader.discloader.core.entity.guild.Guild;
-import io.discloader.discloader.core.entity.guild.GuildMember;
+import io.discloader.discloader.entity.guild.IGuild;
+import io.discloader.discloader.entity.guild.IGuildMember;
 import io.discloader.discloader.network.gateway.DiscSocket;
 import io.discloader.discloader.network.json.GuildMembersChunkJSON;
 import io.discloader.discloader.network.json.MemberJSON;
@@ -21,11 +21,12 @@ public class GuildMembersChunk extends AbstractHandler {
         super(socket);
     }
 
-    public void handle(SocketPacket packet) {
+    @Override
+	public void handle(SocketPacket packet) {
         String d = this.gson.toJson(packet.d);
         GuildMembersChunkJSON data = this.gson.fromJson(d, GuildMembersChunkJSON.class);
-        Guild guild = this.loader.guilds.get(data.guild_id);
-        HashMap<String, GuildMember> members = new HashMap<String, GuildMember>();
+		IGuild guild = this.loader.guilds.get(data.guild_id);
+		HashMap<String, IGuildMember> members = new HashMap<>();
         for (MemberJSON m : data.members) {
             members.put(m.user.id, guild.addMember(m));
         }

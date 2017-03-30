@@ -6,9 +6,9 @@ package io.discloader.discloader.network.gateway.packets;
 import io.discloader.discloader.common.event.IEventListener;
 import io.discloader.discloader.common.event.channel.ChannelUpdateEvent;
 import io.discloader.discloader.core.entity.channel.Channel;
-import io.discloader.discloader.core.entity.guild.Guild;
 import io.discloader.discloader.core.entity.message.Message;
 import io.discloader.discloader.entity.channel.ITextChannel;
+import io.discloader.discloader.entity.guild.IGuild;
 import io.discloader.discloader.network.gateway.DiscSocket;
 import io.discloader.discloader.network.json.ChannelJSON;
 import io.discloader.discloader.util.DLUtil.Events;
@@ -23,10 +23,11 @@ public class ChannelUpdate extends AbstractHandler {
 		super(socket);
 	}
 
+	@Override
 	public void handle(SocketPacket packet) {
 		String d = gson.toJson(packet.d);
 		ChannelJSON data = gson.fromJson(d, ChannelJSON.class);
-		Guild guild = null;
+		IGuild guild = null;
 		Channel oldChannel = loader.channels.get(data.id);
 		Channel channel = null;
 		if (data.guild_id != null) {

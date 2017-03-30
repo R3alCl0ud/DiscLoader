@@ -4,7 +4,7 @@
 package io.discloader.discloader.common.event.guild;
 
 import io.discloader.discloader.common.event.DLEvent;
-import io.discloader.discloader.core.entity.guild.Guild;
+import io.discloader.discloader.entity.guild.IGuild;
 
 /**
  * @author Perry Berman
@@ -12,11 +12,11 @@ import io.discloader.discloader.core.entity.guild.Guild;
  */
 public class GuildUpdateEvent extends DLEvent {
 
-	public final Guild guild;
+	public final IGuild guild;
 	
-	public GuildUpdateEvent(Guild guild) {
-		super(guild.getLoader());
-		this.guild = guild;
+	public GuildUpdateEvent(IGuild guild2) {
+		super(guild2.getLoader());
+		this.guild = guild2;
 	}
 
 }
