@@ -40,7 +40,7 @@ public class User implements IUser {
 	/**
 	 * The user's four digit discriminator
 	 */
-	public String discriminator;
+	private String discriminator;
 	
 	/**
 	 * Whether or not the user is a bot account
@@ -50,12 +50,12 @@ public class User implements IUser {
 	/**
 	 * Whether or not the user has verified their email address
 	 */
-	public boolean verified;
+	private boolean verified;
 	
 	/**
 	 * Whether or not the user has 2FA enabled
 	 */
-	public boolean mfa;
+	private boolean mfa;
 	
 	public User(DiscLoader loader, UserJSON user) {
 		this.loader = loader;
@@ -151,27 +151,27 @@ public class User implements IUser {
 	
 	@Override
 	public String getDiscriminator() {
-		return null;
+		return discriminator;
 	}
 	
 	@Override
 	public DiscLoader getLoader() {
-		return null;
+		return loader;
 	}
 	
 	@Override
 	public boolean isBot() {
-		return false;
+		return bot;
 	}
 	
 	@Override
 	public boolean isVerified() {
-		return false;
+		return verified;
 	}
 	
 	@Override
 	public boolean MFAEnabled() {
-		return false;
+		return mfa;
 	}
 	
 }

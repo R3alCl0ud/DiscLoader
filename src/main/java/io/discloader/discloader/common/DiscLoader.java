@@ -346,8 +346,6 @@ public class DiscLoader {
 			if (guild != null) {
 				if (data.type == DLUtil.ChannelTypes.text) {
 					channel = new TextChannel(guild, data);
-					channel.getID();
-					System.out.println(guild.getTextChannels() != null);
 					guild.getTextChannels().put(channel.getID(), (TextChannel) channel);
 				} else if (data.type == DLUtil.ChannelTypes.voice) {
 					channel = new VoiceChannel(guild, data);
