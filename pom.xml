@@ -128,7 +128,7 @@
 	</distributionManagement>
 
 	<build>
-		<finalName>${artifactId}-${version}.${git.closest.tag.commit.count}</finalName>
+		<finalName>${project.artifactId}-${project.version}.${git.closest.tag.commit.count}</finalName>
 
 		<plugins>
 			<plugin>
@@ -150,6 +150,7 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-jar-plugin</artifactId>
+				<version>3.0.2</version>
 				<configuration>
 					<archive>
 						<manifest>
@@ -212,6 +213,7 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-shade-plugin</artifactId>
+				<version>3.0.0</version>
 				<executions>
 					<execution>
 						<phase>package</phase>
@@ -227,6 +229,7 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-javadoc-plugin</artifactId>
+				<version>2.10.4</version>
 				<configuration>
 					<reportOutputDirectory>${basedir}</reportOutputDirectory>
 					<destDir>docs/${project.version}_${git.commit.id.describe}</destDir>
