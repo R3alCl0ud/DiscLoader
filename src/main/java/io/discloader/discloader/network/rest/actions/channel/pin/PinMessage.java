@@ -8,20 +8,21 @@ import io.discloader.discloader.network.rest.actions.RESTAction;
 import io.discloader.discloader.util.DLUtil.Endpoints;
 import io.discloader.discloader.util.DLUtil.Methods;
 
-public class PinMessage<T extends ITextChannel> extends RESTAction<IMessage<T>> {
+public class PinMessage<T extends ITextChannel> extends RESTAction<IMessage> {
 
-	private IMessage<T> message;
+	private IMessage message;
 
-	public PinMessage(IMessage<T> toPin) {
+	public PinMessage(IMessage toPin) {
 		super(toPin.getLoader());
 		message = toPin;
 	}
 
-	public CompletableFuture<IMessage<T>> execute() {
+	public CompletableFuture<IMessage> execute() {
 		String endpoint = Endpoints.channelPinnedMessage(message.getChannel().getID(), message.getID());
 		return super.execute(loader.rest.makeRequest(endpoint, Methods.PUT, true));
 	}
 
+	@Override
 	public void complete(String d, Throwable ex) {
 		if (ex != null) {
 			future.completeExceptionally(ex.getCause());

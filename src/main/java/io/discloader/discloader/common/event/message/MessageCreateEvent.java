@@ -18,29 +18,29 @@ import io.discloader.discloader.entity.message.IMessage;
  * @see DiscLoader
  */
 public class MessageCreateEvent extends DLEvent {
-
+	
 	/**
 	 * The new message received from the gateway.
 	 */
-	private final IMessage<ITextChannel> message;
-
+	private final IMessage message;
+	
 	/**
 	 * The messages arguments.
 	 */
 	public final String[] args;
-
-	public MessageCreateEvent(IMessage<ITextChannel> message) {
+	
+	public MessageCreateEvent(IMessage message) {
 		super(message.getLoader());
 		this.message = message;
 		this.args = this.message.getContent().split(" ");
 	}
-
-	public IMessage<ITextChannel> getMessage() {
+	
+	public IMessage getMessage() {
 		return message;
 	}
-
+	
 	public ITextChannel getChannel() {
 		return message.getChannel();
 	}
-
+	
 }

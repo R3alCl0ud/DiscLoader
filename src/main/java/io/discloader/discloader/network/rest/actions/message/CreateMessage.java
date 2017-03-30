@@ -9,7 +9,7 @@ import io.discloader.discloader.network.rest.actions.RESTAction;
 import io.discloader.discloader.util.DLUtil.Endpoints;
 import io.discloader.discloader.util.DLUtil.Methods;
 
-public class CreateMessage<T extends ITextChannel> extends RESTAction<IMessage<T>> {
+public class CreateMessage<T extends ITextChannel> extends RESTAction<IMessage> {
 
 	private T channel;
 	private SendableMessage message;
@@ -20,7 +20,7 @@ public class CreateMessage<T extends ITextChannel> extends RESTAction<IMessage<T
 		message = data;
 	}
 
-	public CompletableFuture<IMessage<T>> execute() {
+	public CompletableFuture<IMessage> execute() {
 		return super.execute(loader.rest.makeRequest(Endpoints.messages(channel.getID()), Methods.POST, true, message));
 	}
 }

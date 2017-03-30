@@ -22,138 +22,136 @@ import io.discloader.discloader.network.rest.actions.channel.FetchMessage;
 import io.discloader.discloader.network.rest.actions.channel.FetchMessages;
 import io.discloader.discloader.network.rest.actions.channel.SendMessage;
 import io.discloader.discloader.network.rest.actions.channel.StartTyping;
-import io.discloader.discloader.network.rest.actions.channel.pin.PinMessage;
 import io.discloader.discloader.network.rest.actions.channel.pin.PinnedMessages;
 import io.discloader.discloader.network.rest.actions.channel.pin.UnpinMessage;
 import io.discloader.discloader.util.DLUtil.ChannelType;
 
 /**
- * Represents a GroupDMChannel on discord. GroupChannels are only available for
- * user accounts, not bot accounts.
+ * Represents a GroupDMChannel on discord. GroupChannels are only available for user accounts, not bot accounts.
  * 
  * @author Perry Berman
  */
 public class GroupChannel extends Channel implements IGroupChannel, IVoiceChannel {
-
+	
 	/**
-	 * A {@link HashMap} of the channel's {@link User recipients}. Indexed by
-	 * {@link User#id}. <br>
+	 * A {@link HashMap} of the channel's {@link User recipients}. Indexed by {@link User#id}. <br>
 	 * Is {@code null} if {@link #type} is {@code "text"} or {@code "voice"}.
 	 * 
 	 * @author Perry Berman
 	 * @since 0.0.1
 	 */
 	private final HashMap<String, IUser> recipients;
-
-	private final HashMap<String, IMessage<IGroupChannel>> messages;
-
+	
+	private final HashMap<String, IMessage> messages;
+	
 	private HashMap<String, IUser> typing;
-
+	
 	public GroupChannel(DiscLoader loader, ChannelJSON data) {
 		super(loader, data);
-
+		
 		type = ChannelType.GROUPDM;
-
+		
 		messages = new HashMap<>();
 		typing = new HashMap<>();
 		recipients = new HashMap<>();
 	}
-
+	
 	@Override
-	public CompletableFuture<Map<String, IMessage<ITextChannel>>> deleteMessages(IMessage<ITextChannel>[] messages) {
-		HashMap<String, IMessage<ITextChannel>> msgs = new HashMap<>();
-		for (IMessage<ITextChannel> message : messages) {
+	public CompletableFuture<Map<String, IMessage>> deleteMessages(IMessage... messages) {
+		HashMap<String, IMessage> msgs = new HashMap<>();
+		for (IMessage message : messages) {
 			msgs.put(message.getID(), message);
 		}
 		return deleteMessages(msgs);
 	}
-
+	
 	@Override
-	public CompletableFuture<Map<String, IMessage<ITextChannel>>> deleteMessages(Map<String, IMessage<ITextChannel>> messages) {
-		return new BulkDelete<ITextChannel>(this, (Map<String, IMessage<ITextChannel>>) messages).execute();
+	public CompletableFuture<Map<String, IMessage>> deleteMessages(Map<String, IMessage> messages) {
+		return new BulkDelete<ITextChannel>(this, messages).execute();
 	}
-
+	
 	@Override
-	public CompletableFuture<IMessage<IGroupChannel>> fetchMessage(String id) {
+	public CompletableFuture<IMessage> fetchMessage(String id) {
 		return new FetchMessage<IGroupChannel>(this, id).execute();
 	}
-
+	
 	@Override
-	public CompletableFuture<Map<String, IMessage<IGroupChannel>>> fetchMessages() {
+	public CompletableFuture<Map<String, IMessage>> fetchMessages() {
 		return fetchMessages(new MessageFetchOptions());
 	}
-
+	
 	@Override
-	public CompletableFuture<Map<String, IMessage<IGroupChannel>>> fetchMessages(MessageFetchOptions options) {
+	public CompletableFuture<Map<String, IMessage>> fetchMessages(MessageFetchOptions options) {
 		return new FetchMessages<IGroupChannel>(this, options).execute();
 	}
-
+	
 	@Override
-	public CompletableFuture<Map<String, IMessage<IGroupChannel>>> fetchPinnedMessages() {
+	public CompletableFuture<Map<String, IMessage>> fetchPinnedMessages() {
 		return new PinnedMessages<IGroupChannel>(this).execute();
 	}
-
+	
 	@Override
-	public IMessage<IGroupChannel> getMessage(String id) {
+	public IMessage getMessage(String id) {
 		return messages.get(id);
 	}
-
+	
 	@Override
-	public HashMap<String, IMessage<IGroupChannel>> getMessages() {
+	public HashMap<String, IMessage> getMessages() {
 		return messages;
 	}
-
+	
 	@Override
-	public Map<String, IMessage<IGroupChannel>> getPinnedMessages() {
-		HashMap<String, IMessage<IGroupChannel>> pins = new HashMap<>();
-		for (IMessage<IGroupChannel> message : messages.values()) {
-			if (message.isPinned()) pins.put(message.getID(), message);
+	public Map<String, IMessage> getPinnedMessages() {
+		HashMap<String, IMessage> pins = new HashMap<>();
+		for (IMessage message : messages.values()) {
+			if (message.isPinned())
+				pins.put(message.getID(), message);
 		}
 		return pins;
 	}
-
+	
 	@Override
 	public Map<String, IUser> getRecipients() {
 		return recipients;
 	}
-
+	
 	@Override
 	public HashMap<String, IUser> getTyping() {
 		return typing;
 	}
-
+	
 	@Override
 	public boolean isTyping(IUser user) {
 		return typing.containsKey(user.getID());
 	}
-
+	
 	@Override
 	public CompletableFuture<VoiceConnection> join() {
 		return null;
 	}
-
+	
 	@Override
 	public CompletableFuture<VoiceConnection> leave() {
 		return null;
 	}
 	//
 	// @Override
-	// public CompletableFuture<IMessage<T>> pinMessage(IMessage<T> message) {
+	// public CompletableFuture<IMessage> pinMessage(IMessage message) {
 	// return new PinMessage<T>(message).execute();
 	// }
-
+	
 	@Override
-	public CompletableFuture<IMessage<IGroupChannel>> sendEmbed(RichEmbed embed) {
+	public CompletableFuture<IMessage> sendEmbed(RichEmbed embed) {
 		return sendMessage(null, embed);
 	}
-
+	
 	@Override
-	public CompletableFuture<IMessage<IGroupChannel>> sendMessage(String content) {
+	public CompletableFuture<IMessage> sendMessage(String content) {
 		return sendMessage(content, null);
 	}
-
+	
 	@Override
-	public CompletableFuture<IMessage<IGroupChannel>> sendMessage(String content, RichEmbed embed) {
+	public CompletableFuture<IMessage> sendMessage(String content, RichEmbed embed) {
 		File file = null;
 		Attachment attachment = null;
 		if (embed.thumbnail != null && embed.thumbnail.file != null) {
@@ -163,24 +161,21 @@ public class GroupChannel extends Channel implements IGroupChannel, IVoiceChanne
 		}
 		return new SendMessage<IGroupChannel>(this, content, embed, attachment, file).execute();
 	}
-
+	
 	@Override
 	public CompletableFuture<Map<String, IUser>> startTyping() {
 		return new StartTyping(this).execute();
 	}
-
+	
 	@Override
-	public CompletableFuture<IMessage<IGroupChannel>> unpinMessage(IMessage<IGroupChannel> message) {
+	public CompletableFuture<IMessage> unpinMessage(IMessage message) {
 		return new UnpinMessage<IGroupChannel>(message).execute();
 	}
+	
 
+	
 	@Override
-	public <T extends ITextChannel> CompletableFuture<IMessage<T>> unpinMessage(IMessage<T> message) {
-		return null;
-	}
-
-	@Override
-	public <T extends ITextChannel> CompletableFuture<IMessage<T>> pinMessage(IMessage<T> message) {
+	public <T extends ITextChannel> CompletableFuture<IMessage> pinMessage(IMessage message) {
 		return null;
 	}
 }

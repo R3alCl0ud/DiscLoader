@@ -14,21 +14,22 @@ import io.discloader.discloader.network.rest.actions.RESTAction;
 import io.discloader.discloader.util.DLUtil.Endpoints;
 import io.discloader.discloader.util.DLUtil.Methods;
 
-public class SendMessage<T extends ITextChannel> extends RESTAction<IMessage<T>> {
-
+public class SendMessage<T extends ITextChannel> extends RESTAction<IMessage> {
+	
 	private SendableMessage sendable;
 	private T channel;
-
+	
 	public SendMessage(T channel, String content, RichEmbed embed, Attachment attachment, File file) {
 		super(channel.getLoader());
 		sendable = new SendableMessage(content, embed, attachment, file);
 		this.channel = channel;
 	}
-
-	public CompletableFuture<IMessage<T>> execute() {
+	
+	public CompletableFuture<IMessage> execute() {
 		return super.execute(loader.rest.makeRequest(Endpoints.messages(channel.getID()), Methods.POST, true, sendable));
 	}
-
+	
+	@Override
 	public void complete(String r, Throwable ex) {
 		if (ex != null) {
 			future.completeExceptionally(ex);
@@ -36,5 +37,5 @@ public class SendMessage<T extends ITextChannel> extends RESTAction<IMessage<T>>
 		}
 		future.complete(new Message<T>(channel, gson.fromJson(r, MessageJSON.class)));
 	}
-
+	
 }

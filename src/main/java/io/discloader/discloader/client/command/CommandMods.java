@@ -7,7 +7,7 @@ import io.discloader.discloader.common.discovery.ModContainer;
 import io.discloader.discloader.common.event.message.MessageCreateEvent;
 import io.discloader.discloader.common.registry.ModRegistry;
 import io.discloader.discloader.core.entity.RichEmbed;
-import io.discloader.discloader.core.entity.message.Message;
+import io.discloader.discloader.entity.message.IMessage;
 import io.discloader.discloader.util.DLUtil;
 
 /**
@@ -15,26 +15,25 @@ import io.discloader.discloader.util.DLUtil;
  *
  */
 public class CommandMods extends Command {
-
+	
 	private final String regex = "(.*)";
-
+	
 	public CommandMods() {
 		super();
 		setUnlocalizedName("mods").setTextureName("discloader:mods").setDescription("mods");
 		setUsage("mods [<mod>]").setArgsRegex(regex);
 	}
-
+	
+	@Override
 	public void execute(MessageCreateEvent e, String[] args) {
-		Message message = e.getMessage();
+		IMessage message = e.getMessage();
 		RichEmbed embed = new RichEmbed().setColor(0x55cdF2);
 		ModContainer mc;
 		try {
 			if (args.length == 1 && (mc = ModRegistry.mods.get(args[0])) != null) {
 				if (mc != null) {
 					embed.setThumbnail(DLUtil.MissingTexture);
-					embed.addField("Description", mc.modInfo.desc(), true)
-							.addField("Version", mc.modInfo.version(), true)
-							.addField("Author(s)", mc.modInfo.author(), true);
+					embed.addField("Description", mc.modInfo.desc(), true).addField("Version", mc.modInfo.version(), true).addField("Author(s)", mc.modInfo.author(), true);
 				}
 			} else {
 				ArrayList<String> modList = new ArrayList<String>();
@@ -49,6 +48,6 @@ public class CommandMods extends Command {
 		} catch (Exception ex) {
 			ex.printStackTrace();
 		}
-		message.channel.sendEmbed(embed);
+		message.getChannel().sendEmbed(embed);
 	}
 }

@@ -8,20 +8,21 @@ import io.discloader.discloader.network.rest.actions.RESTAction;
 import io.discloader.discloader.util.DLUtil.Endpoints;
 import io.discloader.discloader.util.DLUtil.Methods;
 
-public class UnpinMessage<T extends ITextChannel> extends RESTAction<IMessage<T>> {
-
-	private IMessage<T> message;
-
-	public UnpinMessage(IMessage<T> toUnpin) {
+public class UnpinMessage<T extends ITextChannel> extends RESTAction<IMessage> {
+	
+	private IMessage message;
+	
+	public UnpinMessage(IMessage toUnpin) {
 		super(toUnpin.getLoader());
 		message = toUnpin;
 	}
-
-	public CompletableFuture<IMessage<T>> execute() {
+	
+	public CompletableFuture<IMessage> execute() {
 		String endpoint = Endpoints.channelPinnedMessage(message.getChannel().getID(), message.getID());
 		return super.execute(loader.rest.makeRequest(endpoint, Methods.DELETE, true));
 	}
-
+	
+	@Override
 	public void complete(String d, Throwable ex) {
 		if (ex != null) {
 			future.completeExceptionally(ex.getCause());
@@ -29,5 +30,5 @@ public class UnpinMessage<T extends ITextChannel> extends RESTAction<IMessage<T>
 		}
 		future.complete(message);
 	}
-
+	
 }

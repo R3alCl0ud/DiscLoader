@@ -14,45 +14,45 @@ import io.discloader.discloader.network.json.MessageJSON;
 /**
  * @author Perry Berman
  */
-public interface IMessage<T extends ITextChannel> extends ISnowflake {
-
+public interface IMessage extends ISnowflake {
+	
 	boolean canDelete();
-
+	
 	boolean canEdit();
-
-	CompletableFuture<IMessage<T>> delete();
-
-	CompletableFuture<IMessage<T>> edit(RichEmbed embed);
-
-	CompletableFuture<IMessage<T>> edit(String content);
-
-	CompletableFuture<IMessage<T>> edit(String content, RichEmbed embed);
-
+	
+	CompletableFuture<IMessage> delete();
+	
+	CompletableFuture<IMessage> edit(RichEmbed embed);
+	
+	CompletableFuture<IMessage> edit(String content);
+	
+	CompletableFuture<IMessage> edit(String content, RichEmbed embed);
+	
 	IUser getAuthor();
-
-	T getChannel();
-
+	
+	ITextChannel getChannel();
+	
 	String getContent();
-
+	
 	Date getEditedTimestamp();
-
+	
 	IGuild getGuild();
-
+	
 	DiscLoader getLoader();
-
+	
 	String getNonce();
-
+	
 	Date getTimestamp();
-
+	
 	boolean isPinned();
-
+	
 	boolean isSystem();
-
+	
 	boolean isTTS();
-
-	CompletableFuture<IMessage<T>> pin();
-
+	
+	CompletableFuture<IMessage> pin();
+	
 	void setup(MessageJSON data);
-
-	CompletableFuture<IMessage<T>> unpin();
+	
+	CompletableFuture<IMessage> unpin();
 }

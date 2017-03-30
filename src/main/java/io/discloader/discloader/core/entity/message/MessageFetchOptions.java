@@ -21,7 +21,7 @@ public class MessageFetchOptions {
 		before = "";
 	}
 
-	public MessageFetchOptions setAfter(IMessage<?> after) {
+	public MessageFetchOptions setAfter(IMessage after) {
 		this.after = after.getID();
 		return this;
 	}
@@ -31,7 +31,7 @@ public class MessageFetchOptions {
 		return this;
 	}
 
-	public MessageFetchOptions setAround(IMessage<?> around) {
+	public MessageFetchOptions setAround(IMessage around) {
 		this.around = around.getID();
 		return this;
 	}
@@ -41,7 +41,7 @@ public class MessageFetchOptions {
 		return this;
 	}
 
-	public MessageFetchOptions setBefore(IMessage<?> before) {
+	public MessageFetchOptions setBefore(IMessage before) {
 		this.before = before.getID();
 		return this;
 	}

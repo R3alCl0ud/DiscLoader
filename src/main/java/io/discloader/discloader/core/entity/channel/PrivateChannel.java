@@ -31,7 +31,7 @@ import io.discloader.discloader.util.DLUtil.ChannelType;
  */
 public class PrivateChannel extends Channel implements IPrivateChannel {
 
-	private HashMap<String, IMessage<IPrivateChannel>> messages;
+	private HashMap<String, IMessage> messages;
 
 	private HashMap<String, IUser> typing;
 
@@ -54,53 +54,53 @@ public class PrivateChannel extends Channel implements IPrivateChannel {
 	}
 
 	@Override
-	public CompletableFuture<Map<String, IMessage<IPrivateChannel>>> deleteMessages(@SuppressWarnings("unchecked") IMessage<IPrivateChannel>... messages) {
-		HashMap<String, IMessage<IPrivateChannel>> msgs = new HashMap<>();
-		for (IMessage<IPrivateChannel> message : messages) {
+	public CompletableFuture<Map<String, IMessage>> deleteMessages(IMessage... messages) {
+		HashMap<String, IMessage> msgs = new HashMap<>();
+		for (IMessage message : messages) {
 			msgs.put(message.getID(), message);
 		}
 		return deleteMessages(msgs);
 	}
 
 	@Override
-	public CompletableFuture<Map<String, IMessage<IPrivateChannel>>> deleteMessages(Map<String, IMessage<IPrivateChannel>> messages) {
+	public CompletableFuture<Map<String, IMessage>> deleteMessages(Map<String, IMessage> messages) {
 		return new BulkDelete<IPrivateChannel>(this, messages).execute();
 	}
 
 	@Override
-	public CompletableFuture<IMessage<IPrivateChannel>> fetchMessage(String id) {
+	public CompletableFuture<IMessage> fetchMessage(String id) {
 		return new FetchMessage<IPrivateChannel>(this, id).execute();
 	}
 
 	@Override
-	public CompletableFuture<Map<String, IMessage<IPrivateChannel>>> fetchMessages() {
+	public CompletableFuture<Map<String, IMessage>> fetchMessages() {
 		return fetchMessages(new MessageFetchOptions());
 	}
 
 	@Override
-	public CompletableFuture<Map<String, IMessage<IPrivateChannel>>> fetchMessages(MessageFetchOptions options) {
+	public CompletableFuture<Map<String, IMessage>> fetchMessages(MessageFetchOptions options) {
 		return new FetchMessages<IPrivateChannel>(this, options).execute();
 	}
 
 	@Override
-	public CompletableFuture<Map<String, IMessage<IPrivateChannel>>> fetchPinnedMessages() {
+	public CompletableFuture<Map<String, IMessage>> fetchPinnedMessages() {
 		return new PinnedMessages<IPrivateChannel>(this).execute();
 	}
 
 	@Override
-	public IMessage<IPrivateChannel> getMessage(String id) {
+	public IMessage getMessage(String id) {
 		return messages.get(id);
 	}
 
 	@Override
-	public HashMap<String, IMessage<IPrivateChannel>> getMessages() {
+	public HashMap<String, IMessage> getMessages() {
 		return messages;
 	}
 
 	@Override
-	public Map<String, IMessage<IPrivateChannel>> getPinnedMessages() {
-		HashMap<String, IMessage<IPrivateChannel>> pins = new HashMap<>();
-		for (IMessage<IPrivateChannel> message : messages.values()) {
+	public Map<String, IMessage> getPinnedMessages() {
+		HashMap<String, IMessage> pins = new HashMap<>();
+		for (IMessage message : messages.values()) {
 			if (message.isPinned()) pins.put(message.getID(), message);
 		}
 		return pins;
@@ -122,22 +122,22 @@ public class PrivateChannel extends Channel implements IPrivateChannel {
 	}
 
 	@Override
-	public CompletableFuture<IMessage<IPrivateChannel>> pinMessage(IMessage<IPrivateChannel> message) {
+	public CompletableFuture<IMessage> pinMessage(IMessage message) {
 		return new PinMessage<IPrivateChannel>(message).execute();
 	}
 
 	@Override
-	public CompletableFuture<IMessage<IPrivateChannel>> sendEmbed(RichEmbed embed) {
+	public CompletableFuture<IMessage> sendEmbed(RichEmbed embed) {
 		return sendMessage(null, embed);
 	}
 
 	@Override
-	public CompletableFuture<IMessage<IPrivateChannel>> sendMessage(String content) {
+	public CompletableFuture<IMessage> sendMessage(String content) {
 		return sendMessage(content, null);
 	}
 
 	@Override
-	public CompletableFuture<IMessage<IPrivateChannel>> sendMessage(String content, RichEmbed embed) {
+	public CompletableFuture<IMessage> sendMessage(String content, RichEmbed embed) {
 		File file = null;
 		Attachment attachment = null;
 		if (embed.thumbnail != null && embed.thumbnail.file != null) {
@@ -165,7 +165,7 @@ public class PrivateChannel extends Channel implements IPrivateChannel {
 	}
 
 	@Override
-	public CompletableFuture<IMessage<IPrivateChannel>> unpinMessage(IMessage<IPrivateChannel> message) {
+	public CompletableFuture<IMessage> unpinMessage(IMessage message) {
 		return new UnpinMessage<IPrivateChannel>(message).execute();
 	}
 

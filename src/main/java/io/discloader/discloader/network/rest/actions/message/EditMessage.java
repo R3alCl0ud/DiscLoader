@@ -12,18 +12,18 @@ import io.discloader.discloader.network.rest.actions.RESTAction;
 import io.discloader.discloader.util.DLUtil.Endpoints;
 import io.discloader.discloader.util.DLUtil.Methods;
 
-public class EditMessage<T extends ITextChannel> extends RESTAction<IMessage<T>> {
+public class EditMessage<T extends ITextChannel> extends RESTAction<IMessage> {
 
-	private IMessage<T> message;
+	private IMessage message;
 	private SendableMessage sendable;
 
-	public EditMessage(IMessage<T> message, String content, RichEmbed embed, Attachment attachment, File file) {
+	public EditMessage(IMessage message, String content, RichEmbed embed, Attachment attachment, File file) {
 		super(message.getLoader());
 		this.message = message;
 		sendable = new SendableMessage(content, embed, attachment, file);
 	}
 
-	public CompletableFuture<IMessage<T>> execute() {
+	public CompletableFuture<IMessage> execute() {
 
 		String endpoint = Endpoints.message(message.getChannel().getID(), message.getID());
 		return super.execute(loader.rest.makeRequest(endpoint, Methods.PATCH, true, sendable));

@@ -37,9 +37,9 @@ public class ChannelUpdate extends AbstractHandler {
 			channel = loader.addChannel(data);
 		}
 		if (oldChannel instanceof ITextChannel) {
-			ITextChannel<?> oitc = (ITextChannel<?>) oldChannel, itc = (ITextChannel<?>) channel;
-			for (IMessage<?> message : oitc.getMessages().values()) {
-				itc.getMessages().put(message.getID(), (IMessage) message);
+			ITextChannel oitc = (ITextChannel) oldChannel, itc = (ITextChannel) channel;
+			for (IMessage message : oitc.getMessages().values()) {
+				itc.getMessages().put(message.getID(), message);
 			}
 		}
 		ChannelUpdateEvent event = new ChannelUpdateEvent(channel, oldChannel);
