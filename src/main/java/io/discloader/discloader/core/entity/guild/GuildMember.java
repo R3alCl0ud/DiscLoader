@@ -103,11 +103,7 @@ public class GuildMember implements IGuildMember {
 		user = member.getUser();
 		guild = member.getGuild();
 		nick = member.getNickname();
-		roleIDs = new String[member.getRoles().size()];
-		int i = 0;
-		for (IRole role : member.getRoles().values()) {
-			roleIDs[i] = role.getID();
-		}
+		roleIDs = member.getRoles().keySet().toArray(new String[] { });
 		joinedAt = Date.from(Instant.now());
 		deaf = member.isDeaf();
 		mute = deaf || member.isMuted();
