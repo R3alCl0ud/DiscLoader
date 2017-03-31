@@ -1,10 +1,28 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
+
 	<groupId>io.discloader</groupId>
 	<artifactId>discloader</artifactId>
-	<name>DiscLoader</name>
 	<version>0.1.1</version>
+	
+	<name>DiscLoader</name>
+	<description>A simple easy to use Discord API rest/gateway client</description>
+	<url>http://discloader.io</url>
+
+	<distributionManagement>
+		<repository>
+			<id>maven</id>
+			<name>DiscLoader Maven Repo</name>
+			<url>http://repo.discloader.io/repository/maven/</url>
+		</repository>
+		<snapshotRepository>
+			<id>archiva.snapshots</id>
+			<name>Internal Snapshot Repository</name>
+			<url>http://repo.discloader.io/repository/snapshots/</url>
+		</snapshotRepository>
+	</distributionManagement>
+
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<maven.compiler.source>1.8</maven.compiler.source>
@@ -13,56 +31,6 @@
 		<maven.build.timestamp.format>MMM.dd.yyyy</maven.build.timestamp.format>
 	</properties>
 
-	<repositories>
-		<repository>
-			<id>central</id>
-			<name>bintray</name>
-			<url>http://jcenter.bintray.com</url>
-		</repository>
-	</repositories>
-	<pluginRepositories>
-		<pluginRepository>
-			<id>sonatype-snapshots</id>
-			<name>Sonatype Snapshots</name>
-			<url>https://oss.sonatype.org/content/repositories/snapshots/</url>
-		</pluginRepository>
-	</pluginRepositories>
-
-	<profiles>
-		<profile>
-			<id>lwjgl-natives-linux></id>
-			<activation>
-				<os>
-					<family>unix</family>
-				</os>
-			</activation>
-			<properties>
-				<lwjgl.natives>natives-linux</lwjgl.natives>
-			</properties>
-		</profile>
-		<profile>
-			<id>lwjgl-natives-macos></id>
-			<activation>
-				<os>
-					<family>mac</family>
-				</os>
-			</activation>
-			<properties>
-				<lwjgl.natives>natives-macos</lwjgl.natives>
-			</properties>
-		</profile>
-		<profile>
-			<id>lwjgl-natives-windows></id>
-			<activation>
-				<os>
-					<family>windows</family>
-				</os>
-			</activation>
-			<properties>
-				<lwjgl.natives>natives-windows</lwjgl.natives>
-			</properties>
-		</profile>
-	</profiles>
 	<dependencies>
 		<dependency>
 			<groupId>junit</groupId>
@@ -86,16 +54,6 @@
 			<version>2.8.0</version>
 		</dependency>
 		<dependency>
-			<groupId>org.apache.httpcomponents</groupId>
-			<artifactId>httpcore</artifactId>
-			<version>4.4.5</version>
-		</dependency>
-		<dependency>
-			<groupId>org.apache.httpcomponents</groupId>
-			<artifactId>httpclient</artifactId>
-			<version>4.5.2</version>
-		</dependency>
-		<dependency>
 			<groupId>org.json</groupId>
 			<artifactId>json</artifactId>
 			<version>20160810</version>
@@ -106,6 +64,11 @@
 			<version>LATEST</version>
 		</dependency>
 		<dependency>
+			<groupId>commons-codec</groupId>
+			<artifactId>commons-codec</artifactId>
+			<version>1.9</version>
+		</dependency>
+		<dependency>
 			<groupId>pl.project13.maven</groupId>
 			<artifactId>git-commit-id-plugin</artifactId>
 			<version>2.2.2</version>
@@ -113,19 +76,22 @@
 			<scope>runtime</scope>
 		</dependency>
 	</dependencies>
-	<distributionManagement>
-		<repository>
-			<id>maven</id>
-			<name>DiscLoader Maven Repo</name>
-			<url>http://repo.discloader.io/repository/maven/</url>
-		</repository>
-		<snapshotRepository>
-			<id>archiva.snapshots</id>
-			<name>Internal Snapshot Repository</name>
-			<url>http://repo.discloader.io/repository/snapshots/</url>
-		</snapshotRepository>
-	</distributionManagement>
 
+	<repositories>
+		<repository>
+			<id>central</id>
+			<name>bintray</name>
+			<url>http://jcenter.bintray.com</url>
+		</repository>
+	</repositories>
+	<pluginRepositories>
+		<pluginRepository>
+			<id>sonatype-snapshots</id>
+			<name>Sonatype Snapshots</name>
+			<url>https://oss.sonatype.org/content/repositories/snapshots/</url>
+		</pluginRepository>
+	</pluginRepositories>
+	
 	<build>
 		<finalName>${project.artifactId}-${project.version}.${git.closest.tag.commit.count}</finalName>
 
@@ -147,6 +113,26 @@
 				</configuration>
 			</plugin>
 			<plugin>
+		    	<groupId>org.apache.maven.plugins</groupId>
+		       	<artifactId>maven-dependency-plugin</artifactId>
+		     	<version>2.10</version>
+		  		<configuration>
+		     		<failOnWarning>false</failOnWarning>
+		      		<ignoreNonCompile>true</ignoreNonCompile>
+				</configuration>
+		        <executions>
+		        	<execution>
+		     			<id>default</id>
+		       			<phase>verify</phase>
+		        		<goals>
+		          			<goal>analyze-only</goal>
+		           			<goal>analyze-duplicate</goal>
+		         			<goal>analyze-dep-mgt</goal>
+		       			</goals>
+		      		</execution>
+		    	</executions>
+		 	</plugin>
+			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-jar-plugin</artifactId>
 				<version>3.0.2</version>
@@ -156,6 +142,22 @@
 							<mainClass>io.discloader.discloader.common.start.Main</mainClass>
 						</manifest>
 					</archive>
+				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-shade-plugin</artifactId>
+				<version>3.0.0</version>
+				<executions>
+					<execution>
+						<phase>package</phase>
+						<goals>
+							<goal>shade</goal>
+						</goals>
+					</execution>
+				</executions>
+				<configuration>
+					<finalName>${project.artifactId}-v${project.version}_${git.commit.id.describe}-${maven.build.timestamp}</finalName>
 				</configuration>
 			</plugin>
 			<plugin>
@@ -211,22 +213,6 @@
 			</plugin>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-shade-plugin</artifactId>
-				<version>3.0.0</version>
-				<executions>
-					<execution>
-						<phase>package</phase>
-						<goals>
-							<goal>shade</goal>
-						</goals>
-					</execution>
-				</executions>
-				<configuration>
-					<finalName>${project.artifactId}-v${project.version}_${git.commit.id.describe}-${maven.build.timestamp}</finalName>
-				</configuration>
-			</plugin>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-javadoc-plugin</artifactId>
 				<version>2.10.4</version>
 				<configuration>
@@ -237,8 +223,25 @@
 					<maxmemory>1g</maxmemory>
 				</configuration>
 			</plugin>
+			<plugin>
+		        <groupId>org.apache.maven.plugins</groupId>
+		        <artifactId>maven-pmd-plugin</artifactId>
+		        <version>3.7</version>
+		        <configuration>
+		        	<failOnViolation>false</failOnViolation>
+		          	<!-- verbose so that violations print to stdout -->
+		          	<verbose>true</verbose>enforce
+		        </configuration>
+		        <executions>
+		          	<execution>
+		            	<id>default</id>
+		            	<phase>verify</phase>
+		            	<goals>
+		              		<goal>check</goal>
+		            	</goals>
+		          	</execution>
+		        </executions>
+			</plugin>
 		</plugins>
 	</build>
-	<url>http://discloader.io</url>
-	<description>A simple easy to use Discord API rest/gateway client</description>
 </project>
