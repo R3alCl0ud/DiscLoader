@@ -46,7 +46,6 @@ public class VoiceConnection {
 	public AudioPlayer player;
 
 	public final VoiceChannel channel;
-	public final DiscLoader loader;
 	public final StreamProvider provider;
 	private final CompletableFuture<VoiceConnection> future;
 	private final CompletableFuture<VoiceConnection> disconnection;
@@ -80,7 +79,6 @@ public class VoiceConnection {
 
 	public VoiceConnection(VoiceChannel channel, CompletableFuture<VoiceConnection> future) {
 		this.channel = channel;
-		this.loader = channel.getLoader();
 		this.future = future;
 		this.udpClient = new UDPVoiceClient(this);
 		this.ws = new VoiceWebSocket(this);
@@ -88,7 +86,7 @@ public class VoiceConnection {
 		this.SSRCs = new HashMap<>();
 		this.listeners = new ArrayList<>();
 		disconnection = new CompletableFuture<>();
-		this.userID = this.loader.user.getID();
+		this.userID = channel.getLoader().user.getID();
 
 		this.manager = new DefaultAudioPlayerManager();
 		AudioSourceManagers.registerLocalSource(this.manager);
@@ -105,6 +103,10 @@ public class VoiceConnection {
 	
 	public IGuild getGuild() {
 		return channel.getGuild();
+	}
+	
+	public DiscLoader getLoader() {
+		return channel.getLoader();
 	}
 
 	/**
@@ -153,7 +155,7 @@ public class VoiceConnection {
 	}
 
 	public void disconnected(String reason) {
-		disconnection.complete(loader.voiceConnections.remove(getGuild().getID()));
+		disconnection.complete(getLoader().voiceConnections.remove(getGuild().getID()));
 		for (IVoiceConnectionListener e : this.listeners) {
 			e.disconnected(reason);
 		}
@@ -270,7 +272,7 @@ public class VoiceConnection {
 
 	private void sendStateUpdate(IVoiceChannel channel) {
 		VoiceStateUpdate d = new VoiceStateUpdate(getGuild(), channel, false, false);
-		this.loader.socket.send(new Packet(DLUtil.OPCodes.VOICE_STATE_UPDATE, d));
+		getLoader().socket.send(new Packet(DLUtil.OPCodes.VOICE_STATE_UPDATE, d));
 	}
 
 	public void setSessionID(String sessionID) {
