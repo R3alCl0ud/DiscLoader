@@ -1,10 +1,28 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
+
 	<groupId>io.discloader</groupId>
 	<artifactId>discloader</artifactId>
-	<name>DiscLoader</name>
 	<version>0.1.1</version>
+	
+	<name>DiscLoader</name>
+	<description>A simple easy to use Discord API rest/gateway client</description>
+	<url>http://discloader.io</url>
+
+	<distributionManagement>
+		<repository>
+			<id>maven</id>
+			<name>DiscLoader Maven Repo</name>
+			<url>http://repo.discloader.io/repository/maven/</url>
+		</repository>
+		<snapshotRepository>
+			<id>archiva.snapshots</id>
+			<name>Internal Snapshot Repository</name>
+			<url>http://repo.discloader.io/repository/snapshots/</url>
+		</snapshotRepository>
+	</distributionManagement>
+
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<maven.compiler.source>1.8</maven.compiler.source>
@@ -13,56 +31,6 @@
 		<maven.build.timestamp.format>MMM.dd.yyyy</maven.build.timestamp.format>
 	</properties>
 
-	<repositories>
-		<repository>
-			<id>central</id>
-			<name>bintray</name>
-			<url>http://jcenter.bintray.com</url>
-		</repository>
-	</repositories>
-	<pluginRepositories>
-		<pluginRepository>
-			<id>sonatype-snapshots</id>
-			<name>Sonatype Snapshots</name>
-			<url>https://oss.sonatype.org/content/repositories/snapshots/</url>
-		</pluginRepository>
-	</pluginRepositories>
-
-	<profiles>
-		<profile>
-			<id>lwjgl-natives-linux></id>
-			<activation>
-				<os>
-					<family>unix</family>
-				</os>
-			</activation>
-			<properties>
-				<lwjgl.natives>natives-linux</lwjgl.natives>
-			</properties>
-		</profile>
-		<profile>
-			<id>lwjgl-natives-macos></id>
-			<activation>
-				<os>
-					<family>mac</family>
-				</os>
-			</activation>
-			<properties>
-				<lwjgl.natives>natives-macos</lwjgl.natives>
-			</properties>
-		</profile>
-		<profile>
-			<id>lwjgl-natives-windows></id>
-			<activation>
-				<os>
-					<family>windows</family>
-				</os>
-			</activation>
-			<properties>
-				<lwjgl.natives>natives-windows</lwjgl.natives>
-			</properties>
-		</profile>
-	</profiles>
 	<dependencies>
 		<dependency>
 			<groupId>junit</groupId>
@@ -113,20 +81,23 @@
 			<scope>runtime</scope>
 		</dependency>
 	</dependencies>
-	<distributionManagement>
-		<repository>
-			<id>maven</id>
-			<name>DiscLoader Maven Repo</name>
-			<url>http://repo.discloader.io/repository/maven/</url>
-		</repository>
-		<snapshotRepository>
-			<id>archiva.snapshots</id>
-			<name>Internal Snapshot Repository</name>
-			<url>http://repo.discloader.io/repository/snapshots/</url>
-		</snapshotRepository>
-	</distributionManagement>
 
-	<build>
+	<repositories>
+		<repository>
+			<id>central</id>
+			<name>bintray</name>
+			<url>http://jcenter.bintray.com</url>
+		</repository>
+	</repositories>
+	<pluginRepositories>
+		<pluginRepository>
+			<id>sonatype-snapshots</id>
+			<name>Sonatype Snapshots</name>
+			<url>https://oss.sonatype.org/content/repositories/snapshots/</url>
+		</pluginRepository>
+	</pluginRepositories>
+	
+		<build>
 		<finalName>${project.artifactId}-${project.version}.${git.closest.tag.commit.count}</finalName>
 
 		<plugins>
@@ -239,6 +210,40 @@
 			</plugin>
 		</plugins>
 	</build>
-	<url>http://discloader.io</url>
-	<description>A simple easy to use Discord API rest/gateway client</description>
+
+	<profiles>
+		<profile>
+			<id>lwjgl-natives-linux></id>
+			<activation>
+				<os>
+					<family>unix</family>
+				</os>
+			</activation>
+			<properties>
+				<lwjgl.natives>natives-linux</lwjgl.natives>
+			</properties>
+		</profile>
+		<profile>
+			<id>lwjgl-natives-macos></id>
+			<activation>
+				<os>
+					<family>mac</family>
+				</os>
+			</activation>
+			<properties>
+				<lwjgl.natives>natives-macos</lwjgl.natives>
+			</properties>
+		</profile>
+		<profile>
+			<id>lwjgl-natives-windows></id>
+			<activation>
+				<os>
+					<family>windows</family>
+				</os>
+			</activation>
+			<properties>
+				<lwjgl.natives>natives-windows</lwjgl.natives>
+			</properties>
+		</profile>
+	</profiles>
 </project>
