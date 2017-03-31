@@ -118,6 +118,26 @@
 				</configuration>
 			</plugin>
 			<plugin>
+		    	<groupId>org.apache.maven.plugins</groupId>
+		       	<artifactId>maven-dependency-plugin</artifactId>
+		     	<version>2.10</version>
+		  		<configuration>
+		     		<failOnWarning>false</failOnWarning>
+		      		<ignoreNonCompile>true</ignoreNonCompile>
+				</configuration>
+		        <executions>
+		        	<execution>
+		     			<id>default</id>
+		       			<phase>verify</phase>
+		        		<goals>
+		          			<goal>analyze-only</goal>
+		           			<goal>analyze-duplicate</goal>
+		         			<goal>analyze-dep-mgt</goal>
+		       			</goals>
+		      		</execution>
+		    	</executions>
+		 	</plugin>
+			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-jar-plugin</artifactId>
 				<version>3.0.2</version>
@@ -127,6 +147,22 @@
 							<mainClass>io.discloader.discloader.common.start.Main</mainClass>
 						</manifest>
 					</archive>
+				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-shade-plugin</artifactId>
+				<version>3.0.0</version>
+				<executions>
+					<execution>
+						<phase>package</phase>
+						<goals>
+							<goal>shade</goal>
+						</goals>
+					</execution>
+				</executions>
+				<configuration>
+					<finalName>${project.artifactId}-v${project.version}_${git.commit.id.describe}-${maven.build.timestamp}</finalName>
 				</configuration>
 			</plugin>
 			<plugin>
@@ -182,22 +218,6 @@
 			</plugin>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-shade-plugin</artifactId>
-				<version>3.0.0</version>
-				<executions>
-					<execution>
-						<phase>package</phase>
-						<goals>
-							<goal>shade</goal>
-						</goals>
-					</execution>
-				</executions>
-				<configuration>
-					<finalName>${project.artifactId}-v${project.version}_${git.commit.id.describe}-${maven.build.timestamp}</finalName>
-				</configuration>
-			</plugin>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-javadoc-plugin</artifactId>
 				<version>2.10.4</version>
 				<configuration>
@@ -229,40 +249,4 @@
 			</plugin>
 		</plugins>
 	</build>
-
-	<profiles>
-		<profile>
-			<id>lwjgl-natives-linux></id>
-			<activation>
-				<os>
-					<family>unix</family>
-				</os>
-			</activation>
-			<properties>
-				<lwjgl.natives>natives-linux</lwjgl.natives>
-			</properties>
-		</profile>
-		<profile>
-			<id>lwjgl-natives-macos></id>
-			<activation>
-				<os>
-					<family>mac</family>
-				</os>
-			</activation>
-			<properties>
-				<lwjgl.natives>natives-macos</lwjgl.natives>
-			</properties>
-		</profile>
-		<profile>
-			<id>lwjgl-natives-windows></id>
-			<activation>
-				<os>
-					<family>windows</family>
-				</os>
-			</activation>
-			<properties>
-				<lwjgl.natives>natives-windows</lwjgl.natives>
-			</properties>
-		</profile>
-	</profiles>
 </project>
