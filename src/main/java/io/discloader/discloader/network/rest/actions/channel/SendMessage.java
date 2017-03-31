@@ -35,7 +35,7 @@ public class SendMessage<T extends ITextChannel> extends RESTAction<IMessage> {
 			future.completeExceptionally(ex);
 			return;
 		}
-		future.complete(new Message<T>(channel, gson.fromJson(r, MessageJSON.class)));
+		future.complete(new Message<T>(channel, gson.<MessageJSON>fromJson(r, MessageJSON.class)));
 	}
 	
 }

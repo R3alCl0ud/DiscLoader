@@ -39,7 +39,7 @@ public class GuildChannel extends Channel implements IGuildChannel {
 	/**
 	 * The channel's name
 	 */
-	public String name;
+	protected String name;
 	
 	/**
 	 * The channel's position
@@ -174,7 +174,16 @@ public class GuildChannel extends Channel implements IGuildChannel {
 	 */
 	@Override
 	public IGuild getGuild() {
-		return null;
+		return guild;
+	}
+	
+	/*
+	 * (non-Javadoc)
+	 * @see io.discloader.discloader.entity.channel.IGuildChannel#getName()
+	 */
+	@Override
+	public String getName() {
+		return name;
 	}
 	
 }

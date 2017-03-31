@@ -16,7 +16,6 @@ import io.discloader.discloader.entity.IPermission;
 import io.discloader.discloader.entity.IPresence;
 import io.discloader.discloader.entity.Permissions;
 import io.discloader.discloader.entity.channel.IGuildVoiceChannel;
-import io.discloader.discloader.entity.channel.IVoiceChannel;
 import io.discloader.discloader.entity.guild.IGuild;
 import io.discloader.discloader.entity.guild.IGuildMember;
 import io.discloader.discloader.entity.guild.IRole;
@@ -164,11 +163,7 @@ public class GuildMember implements IGuildMember {
 		return guild;
 	}
 	
-	/**
-	 * Determines the member's highest role in the {@link #guild}'s role hiarchy
-	 * 
-	 * @return A Role object
-	 */
+
 	@Override
 	public IRole getHighestRole() {
 		IRole highest = null;
@@ -258,7 +253,7 @@ public class GuildMember implements IGuildMember {
 	 * @return a {@link VoiceChannel} object if {@link #hasVoiceConnection()} returns true, null otherwise.
 	 */
 	@Override
-	public IVoiceChannel getVoiceChannel() {
+	public IGuildVoiceChannel getVoiceChannel() {
 		VoiceState vs = guild.getVoiceStates().get(getID());
 		
 		return vs == null ? null : vs.channel;

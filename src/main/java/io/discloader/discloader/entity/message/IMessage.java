@@ -8,6 +8,7 @@ import io.discloader.discloader.core.entity.RichEmbed;
 import io.discloader.discloader.entity.ISnowflake;
 import io.discloader.discloader.entity.channel.ITextChannel;
 import io.discloader.discloader.entity.guild.IGuild;
+import io.discloader.discloader.entity.guild.IGuildMember;
 import io.discloader.discloader.entity.user.IUser;
 import io.discloader.discloader.network.json.MessageJSON;
 
@@ -37,6 +38,8 @@ public interface IMessage extends ISnowflake {
 	Date getEditedTimestamp();
 	
 	IGuild getGuild();
+	
+	IGuildMember getMember();
 	
 	DiscLoader getLoader();
 	

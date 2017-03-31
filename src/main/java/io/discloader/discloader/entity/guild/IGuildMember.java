@@ -8,7 +8,6 @@ import io.discloader.discloader.entity.IPermission;
 import io.discloader.discloader.entity.IPresence;
 import io.discloader.discloader.entity.ISnowflake;
 import io.discloader.discloader.entity.channel.IGuildVoiceChannel;
-import io.discloader.discloader.entity.channel.IVoiceChannel;
 import io.discloader.discloader.entity.user.IUser;
 import io.discloader.discloader.entity.voice.VoiceState;
 
@@ -16,51 +15,53 @@ import io.discloader.discloader.entity.voice.VoiceState;
  * @author Perry Berman
  */
 public interface IGuildMember extends ISnowflake {
-
+	
 	CompletableFuture<IGuildMember> ban();
-
+	
 	CompletableFuture<IGuildMember> deafen();
-
+	
 	IGuild getGuild();
-
+	
 	DiscLoader getLoader();
-
+	
 	String getNickname();
-
+	
 	String asMention();
-
+	
 	IPermission getPermissions();
-
+	
 	IPresence getPresence();
-
+	
 	Map<String, IRole> getRoles();
-
+	
 	IUser getUser();
-
+	
 	CompletableFuture<IGuildMember> setNick(String nick);
-
-	IVoiceChannel getVoiceChannel();
-
+	
+	IGuildVoiceChannel getVoiceChannel();
+	
 	VoiceState getVoiceState();
-
+	
 	CompletableFuture<IGuildMember> giveRole(IRole... roles);
-
+	
 	boolean isDeaf();
-
+	
 	boolean isMuted();
-
+	
 	CompletableFuture<IGuildMember> kick();
-
+	
 	CompletableFuture<IGuildMember> mute();
-
+	
 	CompletableFuture<IGuildMember> takeRole(IRole role);
-
+	
 	CompletableFuture<IGuildMember> unDeafen();
-
+	
 	CompletableFuture<IGuildMember> unMute();
 	
 	/**
-	 * @return
+	 * Determines the member's highest role in the {@link #guild}'s role hiarchy
+	 * 
+	 * @return A Role object
 	 */
 	IRole getHighestRole();
 	

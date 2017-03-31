@@ -1,12 +1,12 @@
 package io.discloader.discloader.entity.voice;
 
-import io.discloader.discloader.entity.channel.IVoiceChannel;
+import io.discloader.discloader.entity.channel.IGuildVoiceChannel;
 import io.discloader.discloader.entity.guild.IGuild;
 import io.discloader.discloader.entity.guild.IGuildMember;
 import io.discloader.discloader.network.json.VoiceStateJSON;
 
 public class VoiceState {
-	public IVoiceChannel channel;
+	public IGuildVoiceChannel channel;
 
 	public final IGuildMember member;
 	public final IGuild guild;

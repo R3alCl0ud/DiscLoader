@@ -12,14 +12,14 @@ import io.discloader.discloader.entity.guild.IGuild;
 import io.discloader.discloader.entity.guild.IGuildMember;
 
 public interface IGuildChannel extends IChannel {
-
+	
 	/**
 	 * Gets the members that can view/join this channel
 	 * 
 	 * @return A HashMap of GuildMember with access to view the channel
 	 */
 	Map<String, IGuildMember> getMembers();
-
+	
 	/**
 	 * Gets all of the channel's {@link IOverwrite overwrites} that applies to a {@link GuildMember}
 	 * 
@@ -29,9 +29,9 @@ public interface IGuildChannel extends IChannel {
 	 * @since 0.0.1
 	 */
 	Map<String, IOverwrite> overwritesOf(IGuildMember member);
-
+	
 	IOverwrite overwriteFor(Role role);
-
+	
 	/**
 	 * Evaluates the permissions for a member in the channel's {@link Guild}
 	 * 
@@ -41,7 +41,7 @@ public interface IGuildChannel extends IChannel {
 	 *         null if the channel doesn't belong to a {@link Guild}
 	 */
 	IPermission permissionsFor(IGuildMember iGuildMember);
-
+	
 	/**
 	 * Changes the channels settings
 	 * 
@@ -53,21 +53,21 @@ public interface IGuildChannel extends IChannel {
 	 * @return A Future that completes with a IGuildChannel if successful
 	 */
 	CompletableFuture<? extends IGuildChannel> edit(String name, String topic, int position, int bitrate, int userLimit);
-
+	
 	/**
 	 * Deletes the channel from the guild
 	 * 
 	 * @return A Future that completes with the deleted channel if successful.
 	 */
 	CompletableFuture<? extends IGuildChannel> delete();
-
+	
 	/**
 	 * Creates a channel with the same information as this channel.
 	 * 
 	 * @return A Future that completes with the new channel, if successful.
 	 */
 	CompletableFuture<? extends IGuildChannel> clone();
-
+	
 	/**
 	 * Sets the name of the channel.
 	 * 
@@ -75,7 +75,7 @@ public interface IGuildChannel extends IChannel {
 	 * @return A completed future object with the new name set, if successful.
 	 */
 	CompletableFuture<? extends IGuildChannel> setName(String name);
-
+	
 	/**
 	 * Permission setting for a member in the channel's {@link Guild}
 	 * 
@@ -86,11 +86,10 @@ public interface IGuildChannel extends IChannel {
 	 * @param allow Raw integer representations for allowed permissions.
 	 * @param deny Raw integer representations for denied permissions.
 	 * @param role The role to set an overwrite for.
-	 * @return A Future that completes with the role's new permission overwrite
-	 *         if successful.
+	 * @return A Future that completes with the role's new permission overwrite if successful.
 	 */
 	CompletableFuture<IOverwrite> setPermissions(int allow, int deny, Role role);
-
+	
 	/**
 	 * Permission setting for a member in the channel's {@link Guild}
 	 * 
@@ -101,12 +100,10 @@ public interface IGuildChannel extends IChannel {
 	 * @param allow Raw integer representations for allowed permissions.
 	 * @param deny Raw integer representations for denied permissions.
 	 * @param member The member to set an overwrite for.
-	 * @return A Future that completes with the member's new permission
-	 *         overwrite,
-	 *         if successful.
+	 * @return A Future that completes with the member's new permission overwrite, if successful.
 	 */
 	CompletableFuture<IOverwrite> setPermissions(int allow, int deny, GuildMember member);
-
+	
 	/**
 	 * Sets position in a channel's {@link Guild}
 	 * 
@@ -119,4 +116,6 @@ public interface IGuildChannel extends IChannel {
 	 * @return
 	 */
 	IGuild getGuild();
+	
+	String getName();
 }

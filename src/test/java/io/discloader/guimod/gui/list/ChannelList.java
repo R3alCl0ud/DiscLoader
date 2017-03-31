@@ -24,12 +24,12 @@ public class ChannelList<T extends Channel> extends AbstractList<T> {
 			switch (c.getType()) {
 			case TEXT:
 				GuildChannel gc = (GuildChannel) c;
-					listModel.addElement(String.format("<html>%s<br>%s<br>Guild: %s</html>", gc.getID(), gc.name, gc.getGuild().getID()));
+					listModel.addElement(String.format("<html>%s<br>%s<br>Guild: %s</html>", gc.getID(), gc.getName(), gc.getGuild().getID()));
 				items.add((T) c);
 				break;
 			case VOICE:
 				GuildChannel ggc = (GuildChannel) c;
-					listModel.addElement(String.format("<html>%s<br>%s<br>Guild: %s</html>", ggc.getID(), ggc.name, ggc.getGuild().getID()));
+					listModel.addElement(String.format("<html>%s<br>%s<br>Guild: %s</html>", ggc.getID(), ggc.getName(), ggc.getGuild().getID()));
 				items.add((T) c);
 				break;
 			case DM:

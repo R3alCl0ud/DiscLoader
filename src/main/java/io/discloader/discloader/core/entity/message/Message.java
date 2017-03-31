@@ -129,9 +129,9 @@ public class Message<T extends ITextChannel> implements IMessage {
 		
 		this.channel = channel;
 		
-		if (this.channel.isPrivate()) {
+		if (channel.isPrivate()) {
 			PrivateChannel privateChannel = (PrivateChannel) channel;
-			this.loader = privateChannel.getLoader();
+			loader = privateChannel.getLoader();
 		} else {
 			TextChannel textChannel = (TextChannel) channel;
 			this.loader = textChannel.getLoader();
@@ -293,13 +293,13 @@ public class Message<T extends ITextChannel> implements IMessage {
 	
 	@Override
 	public void setup(MessageJSON data) {
+		
 		mentions = new Mentions(this, data.mentions, data.mention_roles, data.mention_everyone);
 		
 		timestamp = DLUtil.parseISO8601(data.timestamp);
 		
 		editedAt = data.edited_timestamp != null ? DLUtil.parseISO8601(data.edited_timestamp) : null;
 		
-		member = guild == null ? null : guild.getMember(author.getID());
 		tts = data.tts;
 		
 		content = data.content;
@@ -307,6 +307,7 @@ public class Message<T extends ITextChannel> implements IMessage {
 		nonce = data.nonce;
 		
 		type = data.type;
+		
 	}
 	
 	/**
@@ -329,5 +330,10 @@ public class Message<T extends ITextChannel> implements IMessage {
 	@Override
 	public IUser getAuthor() {
 		return author;
+	}
+	
+	@Override
+	public IGuildMember getMember() {
+		return guild.getMember(author.getID());
 	}
 }

@@ -22,40 +22,44 @@ public class CommandHandler {
 	public static boolean selfBot = true;
 
 	public static void handleMessageCreate(MessageCreateEvent e) {
-		IMessage message = e.getMessage();
-		if (!handleCommands || message.getAuthor().isBot() || ((!e.loader.user.bot && selfBot) && !message.getAuthor().getID().equals(e.loader.user.getID())) || message.getContent().length() < prefix.length()) {
-			return;
-		}
-		String[] Args = e.args;
-		String label = Args[0];
-		String rest = "";
-		if (label.length() < message.getContent().length()) rest = message.getContent().substring(label.length() + 1);
-		int argc = Args.length > 1 ? Args.length - 1 : 1;
-
-		if (label.length() < prefix.length() || !label.substring(0, prefix.length()).equals(prefix)) {
-			return;
-		}
 		try {
-			label = label.substring(prefix.length());
-		} catch (Exception ex) {
-			ex.printStackTrace();
-		}
+			IMessage message = e.getMessage();
+			if (!handleCommands || message.getAuthor().isBot() || ((!e.loader.user.bot && selfBot) && !message.getAuthor().getID().equals(e.loader.user.getID())) || message.getContent().length() < prefix.length()) {
+				return;
+			}
+			String[] Args = e.args;
+			String label = Args[0];
+			String rest = "";
+			if (label.length() < message.getContent().length()) rest = message.getContent().substring(label.length() + 1);
+			int argc = Args.length > 1 ? Args.length - 1 : 1;
 
-		Command command = getCommand(label, message);
-		if (command != null) {
-			String[] args = new String[argc];
-			Matcher argM = command.getArgsPattern().matcher(rest);
-			if (argM.find()) {
-				for (int i = 0; i < argM.groupCount(); i++) {
-					try {
-						args[i] = argM.group(i + 1);
-					} catch (Exception ex) {
-						ex.printStackTrace();
+			if (label.length() < prefix.length() || !label.substring(0, prefix.length()).equals(prefix)) {
+				return;
+			}
+			try {
+				label = label.substring(prefix.length());
+			} catch (Exception ex) {
+				ex.printStackTrace();
+			}
+
+			Command command = getCommand(label, message);
+			if (command != null) {
+				String[] args = new String[argc];
+				Matcher argM = command.getArgsPattern().matcher(rest);
+				if (argM.find()) {
+					for (int i = 0; i < argM.groupCount(); i++) {
+						try {
+							args[i] = argM.group(i + 1);
+						} catch (Exception ex) {
+							ex.printStackTrace();
+						}
 					}
 				}
+				command.execute(e, args);
+				return;
 			}
-			command.execute(e, args);
-			return;
+		} catch (Exception e1) {
+			e1.printStackTrace();
 		}
 	}
 

@@ -26,7 +26,7 @@ public class CommandHelp extends Command {
 	@Override
 	public void execute(MessageCreateEvent e, String[] args) {
 		IMessage message = e.getMessage();
-		RichEmbed embed = new RichEmbed().setFooter(String.format("type `%shelp <page>` to tab threw the pages", CommandHandler.prefix), e.loader.user.getAvatar().toString())
+		RichEmbed embed = new RichEmbed().setFooter(String.format("type `%shelp <page>` to tab through the pages", CommandHandler.prefix), e.loader.user.getAvatar().toString())
 				.setAuthor(e.loader.user.getUsername(), "http://discloader.io", e.loader.user.getAvatar().toString()).setColor(0x08a2ff);
 		Command command;
 		embed.setThumbnail(this.getIcon().getFile());
@@ -63,6 +63,7 @@ public class CommandHelp extends Command {
 			embed.addField("Commands", commands, true);
 			embed.setTitle(String.format("Help. Page: 1/%d", (size / 10) + size % 10 != 0 ? 1 : 0));
 		}
+		System.out.println(DLUtil.gson.toJson(embed));
 		message.getChannel().sendEmbed(embed);
 	}
 	
