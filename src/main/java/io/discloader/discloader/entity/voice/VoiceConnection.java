@@ -70,8 +70,6 @@ public class VoiceConnection {
 
 	private String sessionID;
 
-	private int port;
-
 	private int SSRC;
 
 	public final ArrayList<IVoiceConnectionListener> listeners;
@@ -186,15 +184,6 @@ public class VoiceConnection {
 	 */
 	public CompletableFuture<VoiceConnection> getFuture() {
 		return future;
-	}
-
-	/**
-	 * The port the voice connection is opened on.
-	 * 
-	 * @return the port
-	 */
-	public int getPort() {
-		return this.port;
 	}
 
 	/**
