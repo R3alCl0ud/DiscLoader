@@ -5,6 +5,8 @@ import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Map;
+import java.util.List;
 import java.util.concurrent.CompletableFuture;
 
 import com.neovisionaries.ws.client.WebSocketException;
@@ -68,12 +70,12 @@ public class VoiceConnection {
 
 	private int SSRC;
 
-	public final ArrayList<IVoiceConnectionListener> listeners;
+	public final List<IVoiceConnectionListener> listeners = new ArrayList<>();
 
 	private boolean speaking;
 
 	@SuppressWarnings("unused")
-	private HashMap<Integer, String> SSRCs;
+	private Map<Integer, String> SSRCs = new HashMap<>();
 
 	public VoiceConnection(VoiceChannel channel, CompletableFuture<VoiceConnection> future) {
 		this.channel = channel;
@@ -81,8 +83,7 @@ public class VoiceConnection {
 		this.udpClient = new UDPVoiceClient(this);
 		this.ws = new VoiceWebSocket(this);
 		this.provider = new StreamProvider(this);
-		this.SSRCs = new HashMap<>();
-		this.listeners = new ArrayList<>();
+		
 		disconnection = new CompletableFuture<>();
 
 		this.manager = new DefaultAudioPlayerManager();
@@ -153,10 +154,7 @@ public class VoiceConnection {
 
 	public void disconnected(String reason) {
 		disconnection.complete(getLoader().voiceConnections.remove(getGuild().getID()));
-		for (IVoiceConnectionListener e : this.listeners) {
-			e.disconnected(reason);
-		}
-
+		listeners.stream().forEach(l -> l.disconnected(reason));
 	}
 
 	/**
@@ -262,9 +260,7 @@ public class VoiceConnection {
 	 * Executes when the voice connection has finished being setup
 	 */
 	public void ready() {
-		for (IVoiceConnectionListener e : this.listeners) {
-			e.ready();
-		}
+		this.listeners.stream().forEach(IVoiceConnectionListener::ready);
 	}
 
 	private void sendStateUpdate(IVoiceChannel channel) {
@@ -298,9 +294,7 @@ public class VoiceConnection {
 	private void socketReady() {
 		try {
 			this.ws.connect(this.endpoint, this.token);
-		} catch (IOException e) {
-			e.printStackTrace();
-		} catch (WebSocketException e) {
+		} catch (IOException | WebSocketException e) {
 			e.printStackTrace();
 		}
 	}
