@@ -97,7 +97,7 @@
 		</pluginRepository>
 	</pluginRepositories>
 	
-		<build>
+	<build>
 		<finalName>${project.artifactId}-${project.version}.${git.closest.tag.commit.count}</finalName>
 
 		<plugins>
@@ -207,6 +207,25 @@
 					<minmemory>128m</minmemory>
 					<maxmemory>1g</maxmemory>
 				</configuration>
+			</plugin>
+			<plugin>
+		        <groupId>org.apache.maven.plugins</groupId>
+		        <artifactId>maven-pmd-plugin</artifactId>
+		        <version>3.7</version>
+		        <configuration>
+		        	<failOnViolation>false</failOnViolation>
+		          	<!-- verbose so that violations print to stdout -->
+		          	<verbose>true</verbose>enforce
+		        </configuration>
+		        <executions>
+		          	<execution>
+		            	<id>default</id>
+		            	<phase>verify</phase>
+		            	<goals>
+		              		<goal>check</goal>
+		            	</goals>
+		          	</execution>
+		        </executions>
 			</plugin>
 		</plugins>
 	</build>
