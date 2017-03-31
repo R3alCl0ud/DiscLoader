@@ -543,9 +543,9 @@ public class DiscLoader {
 	 * @return A Future that completes with {@code this} if successful.
 	 */
 	public CompletableFuture<DiscLoader> login(String token) {
-		future = new CompletableFuture<>();
-		startup();
-		future.join();
+		// future = new CompletableFuture<>();
+		// startup();
+		// future.join();
 		this.token = token;
 		
 		CompletableFuture<DiscLoader> future2 = new CompletableFuture<>();

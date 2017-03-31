@@ -152,7 +152,7 @@ public class TextChannel extends GuildChannel implements IGuildTextChannel {
 	public CompletableFuture<IMessage> sendMessage(String content, RichEmbed embed) {
 		File file = null;
 		Attachment attachment = null;
-		if (embed.thumbnail != null && embed.thumbnail.file != null) {
+		if (embed != null && embed.thumbnail != null && embed.thumbnail.file != null) {
 			file = embed.thumbnail.file;
 			embed.thumbnail.file = null;
 			attachment = new Attachment(file.getName());
