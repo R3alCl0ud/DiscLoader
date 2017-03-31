@@ -45,8 +45,7 @@ public class VoiceConnection {
 	 */
 	public AudioPlayer player;
 
-	public final IGuild guild;
-	public final IVoiceChannel channel;
+	public final VoiceChannel channel;
 	public final DiscLoader loader;
 	public final StreamProvider provider;
 	private final CompletableFuture<VoiceConnection> future;
@@ -81,7 +80,6 @@ public class VoiceConnection {
 
 	public VoiceConnection(VoiceChannel channel, CompletableFuture<VoiceConnection> future) {
 		this.channel = channel;
-		this.guild = channel.getGuild();
 		this.loader = channel.getLoader();
 		this.future = future;
 		this.udpClient = new UDPVoiceClient(this);
@@ -103,6 +101,10 @@ public class VoiceConnection {
 		this.trackScheduler = new StreamSchedule(this.player, this, true);
 
 		this.sendStateUpdate(channel);
+	}
+	
+	public IGuild getGuild() {
+		return channel.getGuild();
 	}
 
 	/**
@@ -151,7 +153,7 @@ public class VoiceConnection {
 	}
 
 	public void disconnected(String reason) {
-		disconnection.complete(loader.voiceConnections.remove(guild.getID()));
+		disconnection.complete(loader.voiceConnections.remove(getGuild().getID()));
 		for (IVoiceConnectionListener e : this.listeners) {
 			e.disconnected(reason);
 		}
@@ -267,7 +269,7 @@ public class VoiceConnection {
 	}
 
 	private void sendStateUpdate(IVoiceChannel channel) {
-		VoiceStateUpdate d = new VoiceStateUpdate(this.guild, channel, false, false);
+		VoiceStateUpdate d = new VoiceStateUpdate(getGuild(), channel, false, false);
 		this.loader.socket.send(new Packet(DLUtil.OPCodes.VOICE_STATE_UPDATE, d));
 	}
 
