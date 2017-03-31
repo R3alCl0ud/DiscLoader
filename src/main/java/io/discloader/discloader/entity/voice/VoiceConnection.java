@@ -64,8 +64,6 @@ public class VoiceConnection {
 	 */
 	private String token;
 
-	private String userID;
-
 	private String sessionID;
 
 	private int SSRC;
@@ -86,7 +84,6 @@ public class VoiceConnection {
 		this.SSRCs = new HashMap<>();
 		this.listeners = new ArrayList<>();
 		disconnection = new CompletableFuture<>();
-		this.userID = channel.getLoader().user.getID();
 
 		this.manager = new DefaultAudioPlayerManager();
 		AudioSourceManagers.registerLocalSource(this.manager);
@@ -222,7 +219,7 @@ public class VoiceConnection {
 	 * @return the userID
 	 */
 	public String getUserID() {
-		return this.userID;
+		return getLoader().user.getID();
 	}
 
 	/**
@@ -296,13 +293,6 @@ public class VoiceConnection {
 	 */
 	public void setStateUpdated(boolean stateUpdated) {
 		this.stateUpdated = stateUpdated;
-	}
-
-	/**
-	 * @param userID the userID to set
-	 */
-	public void setUserID(String userID) {
-		this.userID = userID;
 	}
 
 	private void socketReady() {
