@@ -3,9 +3,10 @@ package io.discloader.discloader.core.entity;
 import io.discloader.discloader.core.entity.guild.GuildMember;
 import io.discloader.discloader.core.entity.guild.Role;
 import io.discloader.discloader.entity.IOverwrite;
-import io.discloader.discloader.entity.Permissions;
 import io.discloader.discloader.entity.channel.IGuildChannel;
 import io.discloader.discloader.entity.guild.IGuildMember;
+import io.discloader.discloader.entity.guild.IRole;
+import io.discloader.discloader.entity.util.Permissions;
 import io.discloader.discloader.network.json.OverwriteJSON;
 
 /**
@@ -108,7 +109,7 @@ public class Overwrite implements IOverwrite {
 		return channel.getGuild().getMembers().get(id);
 	}
 
-	public Role getRole() {
+	public IRole getRole() {
 		return channel.getGuild().getRoles().get(id);
 	}
 
@@ -124,6 +125,11 @@ public class Overwrite implements IOverwrite {
 			deny |= p.getValue();
 		}
 		return allow;
+	}
+
+	@Override
+	public String getType() {
+		return type;
 	}
 
 }

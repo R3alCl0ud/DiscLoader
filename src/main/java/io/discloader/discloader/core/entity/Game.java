@@ -53,4 +53,21 @@ public class Game implements IGame {
 	public String getName() {
 		return name;
 	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (!(obj instanceof IGame)) return false;
+		IGame game = (IGame) obj;
+
+		return name.equals(game.getName()) && isStream() == game.isStream() && url.equals(game.getURL());
+	}
+
+	@Override
+	public String getURL() {
+		return url;
+	}
+
+	public int hashCode() {
+		return (name + type + url).hashCode();
+	}
 }

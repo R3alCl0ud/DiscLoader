@@ -7,6 +7,10 @@ import io.discloader.discloader.core.entity.guild.Role;
 import io.discloader.discloader.core.entity.user.User;
 import io.discloader.discloader.entity.channel.ITextChannel;
 import io.discloader.discloader.entity.guild.IGuild;
+import io.discloader.discloader.entity.guild.IGuildMember;
+import io.discloader.discloader.entity.guild.IRole;
+import io.discloader.discloader.entity.message.IMentions;
+import io.discloader.discloader.entity.message.IMessage;
 import io.discloader.discloader.entity.user.IUser;
 import io.discloader.discloader.network.json.RoleJSON;
 import io.discloader.discloader.network.json.UserJSON;
@@ -15,9 +19,8 @@ import io.discloader.discloader.network.json.UserJSON;
  * Contains all things mention in a message
  * 
  * @author Perry Berman
- *
  */
-public class Mentions {
+public class Mentions implements IMentions {
 
 	/**
 	 * The current instance of DiscLoader
@@ -27,7 +30,7 @@ public class Mentions {
 	/**
 	 * The message these mentions apply to
 	 */
-	public final Message message;
+	public final IMessage message;
 
 	/**
 	 * The channel the {@link #message} was sent in.
@@ -50,9 +53,9 @@ public class Mentions {
 	/**
 	 * A HashMap of mentioned Roles. Indexed by {@link Role#id}.
 	 */
-	public final HashMap<String, Role> roles;
+	public final HashMap<String, IRole> roles;
 
-	public Mentions(Message message, UserJSON[] mentions, RoleJSON[] mention_roles, boolean mention_everyone) {
+	public Mentions(Message<?> message, UserJSON[] mentions, RoleJSON[] mention_roles, boolean mention_everyone) {
 		this.message = message;
 		loader = message.loader;
 		everyone = mention_everyone;
@@ -62,8 +65,7 @@ public class Mentions {
 		roles = new HashMap<>();
 		for (UserJSON data : mentions) {
 			IUser user = loader.users.get(data.id);
-			if (user == null)
-				user = loader.addUser(data);
+			if (user == null) user = loader.addUser(data);
 			users.put(data.id, user);
 		}
 		if (guild != null) {
@@ -71,6 +73,35 @@ public class Mentions {
 				roles.put(data.id, guild.getRoles().get(data.id));
 			}
 		}
+	}
+
+	@Override
+	public IMessage getMessage() {
+		return message;
+	}
+
+
+	public boolean isMentioned() {
+		return isMentioned(loader.user);
+	}
+
+	@Override
+	public boolean isMentioned(IGuildMember member) {
+		return isMentioned(member.getUser());
+	}
+
+	public boolean isMentioned(IRole role) {
+		return roles.containsKey(role.getID());
+	}
+
+	public boolean isMentioned(IUser user) {
+		boolean mentioned = everyone ? true : users.containsKey(user.getID());
+		return mentioned;
+	}
+
+
+	public boolean mentionedEveryone() {
+		return everyone;
 	}
 
 	public void patch(UserJSON[] mentions, RoleJSON[] mention_roles, boolean mention_everyone) {
@@ -79,8 +110,7 @@ public class Mentions {
 		roles.clear();
 		for (UserJSON data : mentions) {
 			IUser user = loader.users.get(data.id);
-			if (user == null)
-				user = loader.addUser(data);
+			if (user == null) user = loader.addUser(data);
 			users.put(data.id, user);
 		}
 		if (guild != null) {
@@ -88,34 +118,6 @@ public class Mentions {
 				roles.put(data.id, guild.getRoles().get(data.id));
 			}
 		}
-	}
-
-	/**
-	 * Whether or not you were mentioned
-	 * 
-	 * @return true if you were mentioned
-	 */
-	public boolean isMentioned() {
-		return isMentioned(loader.user);
-	}
-
-	public boolean isMentioned(User user) {
-		boolean mentioned = everyone ? true : users.containsKey(user.getID());
-		return mentioned;
-	}
-
-	public boolean isMentioned(Role role) {
-		return roles.containsKey(role.id);
-	}
-
-	/**
-	 * Whether or not {@literal @everyone} was mentioned
-	 * 
-	 * @return true if the {@link #message}'s content contains
-	 *         {@literal @everyone}, false otherwise
-	 */
-	public boolean mentionedEveryone() {
-		return everyone;
 	}
 
 }

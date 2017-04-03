@@ -3,9 +3,9 @@ package io.discloader.discloader.core.entity;
 import io.discloader.discloader.core.entity.guild.GuildMember;
 import io.discloader.discloader.core.entity.guild.Role;
 import io.discloader.discloader.entity.IPermission;
-import io.discloader.discloader.entity.Permissions;
 import io.discloader.discloader.entity.channel.IGuildChannel;
 import io.discloader.discloader.entity.guild.IGuildMember;
+import io.discloader.discloader.entity.util.Permissions;
 import io.discloader.discloader.util.DLUtil;
 
 /**

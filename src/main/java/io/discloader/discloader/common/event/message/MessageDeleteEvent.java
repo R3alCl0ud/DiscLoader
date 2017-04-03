@@ -4,8 +4,8 @@
 package io.discloader.discloader.common.event.message;
 
 import io.discloader.discloader.common.event.DLEvent;
-import io.discloader.discloader.core.entity.message.Message;
 import io.discloader.discloader.entity.channel.ITextChannel;
+import io.discloader.discloader.entity.message.IMessage;
 
 /**
  * @author Perry Berman
@@ -13,20 +13,20 @@ import io.discloader.discloader.entity.channel.ITextChannel;
  */
 public class MessageDeleteEvent extends DLEvent {
 
-	private final Message message;
+	private final IMessage message;
 	
-	public MessageDeleteEvent(Message message) {
-		super(message.loader);
+	public MessageDeleteEvent(IMessage message) {
+		super(message.getLoader());
 		
 		this.message = message;
 	}
 
-	public Message getMessage() {
+	public IMessage getMessage() {
 		return message;
 	}
 	
 	public ITextChannel getChannel() {
-		return message.channel;
+		return message.getChannel();
 	}
 	
 }

@@ -6,11 +6,12 @@ import io.discloader.discloader.client.registry.TextureRegistry;
 import io.discloader.discloader.client.render.util.IIcon;
 import io.discloader.discloader.common.event.message.MessageCreateEvent;
 import io.discloader.discloader.common.registry.CommandRegistry;
+import io.discloader.discloader.entity.channel.IGuildChannel;
+import io.discloader.discloader.entity.guild.IGuild;
+import io.discloader.discloader.entity.guild.IGuildMember;
 import io.discloader.discloader.util.DLNameSpacedMap;
 
 /**
- * 
- * 
  * @author Perry Berman
  * @since 0.0.1
  */
@@ -172,6 +173,10 @@ public class Command {
 	public Command setUsage(String usage) {
 		this.usage = usage;
 		return this;
+	}
+
+	public boolean senderHasPermissions(IGuildMember member, IGuild guild, IGuildChannel channel) {
+		return true;
 	}
 
 }

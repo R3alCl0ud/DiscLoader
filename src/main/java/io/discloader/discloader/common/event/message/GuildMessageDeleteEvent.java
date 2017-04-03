@@ -1,16 +1,16 @@
 package io.discloader.discloader.common.event.message;
 
 import io.discloader.discloader.core.entity.channel.TextChannel;
-import io.discloader.discloader.core.entity.message.Message;
 import io.discloader.discloader.entity.guild.IGuild;
+import io.discloader.discloader.entity.message.IMessage;
 
 public class GuildMessageDeleteEvent extends MessageDeleteEvent {
 
 	private IGuild guild;
 
-	public GuildMessageDeleteEvent(Message message) {
+	public GuildMessageDeleteEvent(IMessage message) {
 		super(message);
-		guild = message.guild;
+		guild = message.getGuild();
 	}
 
 	/**
