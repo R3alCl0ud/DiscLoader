@@ -5,7 +5,7 @@
 	<groupId>io.discloader</groupId>
 	<artifactId>discloader</artifactId>
 	<version>0.1.1</version>
-	
+
 	<name>DiscLoader</name>
 	<description>A simple easy to use Discord API rest/gateway client</description>
 	<url>http://discloader.io</url>
@@ -91,9 +91,9 @@
 			<url>https://oss.sonatype.org/content/repositories/snapshots/</url>
 		</pluginRepository>
 	</pluginRepositories>
-	
+
 	<build>
-		<finalName>${project.artifactId}-${project.version}.${git.closest.tag.commit.count}</finalName>
+		<finalName>${project.artifactId}-${project.version}</finalName>
 
 		<plugins>
 			<plugin>
@@ -113,25 +113,25 @@
 				</configuration>
 			</plugin>
 			<plugin>
-		    	<groupId>org.apache.maven.plugins</groupId>
-		       	<artifactId>maven-dependency-plugin</artifactId>
-		     	<version>2.10</version>
-		  		<configuration>
-		     		<failOnWarning>false</failOnWarning>
-		      		<ignoreNonCompile>true</ignoreNonCompile>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-dependency-plugin</artifactId>
+				<version>2.10</version>
+				<configuration>
+					<failOnWarning>false</failOnWarning>
+					<ignoreNonCompile>true</ignoreNonCompile>
 				</configuration>
-		        <executions>
-		        	<execution>
-		     			<id>default</id>
-		       			<phase>verify</phase>
-		        		<goals>
-		          			<goal>analyze-only</goal>
-		           			<goal>analyze-duplicate</goal>
-		         			<goal>analyze-dep-mgt</goal>
-		       			</goals>
-		      		</execution>
-		    	</executions>
-		 	</plugin>
+				<executions>
+					<execution>
+						<id>default</id>
+						<phase>verify</phase>
+						<goals>
+							<goal>analyze-only</goal>
+							<goal>analyze-duplicate</goal>
+							<goal>analyze-dep-mgt</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-jar-plugin</artifactId>
@@ -217,30 +217,30 @@
 				<version>2.10.4</version>
 				<configuration>
 					<reportOutputDirectory>${basedir}</reportOutputDirectory>
-					<destDir>docs/${project.version}_${git.commit.id.describe}</destDir>
+					<destDir>docs/${project.version}</destDir>
 					<overview>${basedir}/docs/index.html</overview>
 					<minmemory>128m</minmemory>
 					<maxmemory>1g</maxmemory>
 				</configuration>
 			</plugin>
 			<plugin>
-		        <groupId>org.apache.maven.plugins</groupId>
-		        <artifactId>maven-pmd-plugin</artifactId>
-		        <version>3.7</version>
-		        <configuration>
-		        	<failOnViolation>false</failOnViolation>
-		          	<!-- verbose so that violations print to stdout -->
-		          	<verbose>true</verbose>enforce
-		        </configuration>
-		        <executions>
-		          	<execution>
-		            	<id>default</id>
-		            	<phase>verify</phase>
-		            	<goals>
-		              		<goal>check</goal>
-		            	</goals>
-		          	</execution>
-		        </executions>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-pmd-plugin</artifactId>
+				<version>3.7</version>
+				<configuration>
+					<failOnViolation>false</failOnViolation>
+					<!-- verbose so that violations print to stdout -->
+					<verbose>true</verbose>
+				</configuration>
+				<executions>
+					<execution>
+						<id>default</id>
+						<phase>verify</phase>
+						<goals>
+							<goal>check</goal>
+						</goals>
+					</execution>
+				</executions>
 			</plugin>
 		</plugins>
 	</build>

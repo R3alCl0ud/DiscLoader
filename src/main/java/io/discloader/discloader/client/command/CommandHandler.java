@@ -6,6 +6,8 @@ import java.util.regex.Matcher;
 import io.discloader.discloader.common.event.message.MessageCreateEvent;
 import io.discloader.discloader.common.language.LanguageRegistry;
 import io.discloader.discloader.common.registry.CommandRegistry;
+import io.discloader.discloader.entity.channel.IGuildChannel;
+import io.discloader.discloader.entity.channel.IGuildTextChannel;
 import io.discloader.discloader.entity.guild.IGuild;
 import io.discloader.discloader.entity.message.IMessage;
 
@@ -44,6 +46,7 @@ public class CommandHandler {
 
 			Command command = getCommand(label, message);
 			if (command != null) {
+				if (message.getChannel() instanceof IGuildChannel && !command.shouldExecute(message.getMember(), (IGuildChannel) message.getChannel())) return;
 				String[] args = new String[argc];
 				Matcher argM = command.getArgsPattern().matcher(rest);
 				if (argM.find()) {

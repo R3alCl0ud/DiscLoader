@@ -5,11 +5,7 @@ import io.discloader.discloader.entity.channel.IChannel;
 import io.discloader.discloader.network.json.ChannelJSON;
 import io.discloader.discloader.util.DLUtil.ChannelType;
 
-/**
- * Represents any channel on discord
- * 
- * @author Perry Berman
- */
+
 public class Channel implements IChannel {
 
 	/**

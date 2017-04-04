@@ -175,7 +175,7 @@ public class Command {
 		return this;
 	}
 
-	public boolean senderHasPermissions(IGuildMember member, IGuild guild, IGuildChannel channel) {
+	public boolean shouldExecute(IGuildMember member, IGuildChannel channel) {
 		return true;
 	}
 

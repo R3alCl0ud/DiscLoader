@@ -1,6 +1,7 @@
 package io.discloader.discloader.core.entity.message;
 
 import io.discloader.discloader.core.entity.guild.Emoji;
+import io.discloader.discloader.entity.message.IMessage;
 import io.discloader.discloader.network.json.ReactionJSON;
 
 public class Reaction {
@@ -8,9 +9,9 @@ public class Reaction {
 	private boolean me;
 	private int count;
 	private Emoji emoji;
-	private Message message;
+	private IMessage message;
 
-	public Reaction(ReactionJSON data, Message message) {
+	public Reaction(ReactionJSON data, IMessage message) {
 		this.message = message;
 	}
 
@@ -28,7 +29,7 @@ public class Reaction {
 		return emoji;
 	}
 
-	public Message getMessage() {
+	public IMessage getMessage() {
 		return message;
 	}
 

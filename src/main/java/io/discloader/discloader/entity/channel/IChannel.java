@@ -7,6 +7,12 @@ import io.discloader.discloader.entity.ISnowflake;
 import io.discloader.discloader.network.json.ChannelJSON;
 import io.discloader.discloader.util.DLUtil.ChannelType;
 
+/**
+ * Represents any channel on discord
+ * 
+ * @author Perry Berman
+ * @see ISnowflake
+ */
 public interface IChannel extends ISnowflake {
 
 	/**

@@ -2,6 +2,7 @@ package io.discloader.discloader.core.entity.message;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 import java.util.concurrent.CompletableFuture;
 
 import io.discloader.discloader.common.DiscLoader;
@@ -9,13 +10,15 @@ import io.discloader.discloader.core.entity.RichEmbed;
 import io.discloader.discloader.core.entity.channel.Channel;
 import io.discloader.discloader.core.entity.channel.PrivateChannel;
 import io.discloader.discloader.core.entity.channel.TextChannel;
-import io.discloader.discloader.core.entity.message.embed.MessageEmbed;
 import io.discloader.discloader.entity.ISnowflake;
 import io.discloader.discloader.entity.channel.ITextChannel;
 import io.discloader.discloader.entity.guild.IGuild;
 import io.discloader.discloader.entity.guild.IGuildMember;
 import io.discloader.discloader.entity.message.IMentions;
 import io.discloader.discloader.entity.message.IMessage;
+import io.discloader.discloader.entity.message.IMessageAttachment;
+import io.discloader.discloader.entity.message.IMessageEmbed;
+import io.discloader.discloader.entity.message.IReaction;
 import io.discloader.discloader.entity.user.IUser;
 import io.discloader.discloader.network.json.MessageJSON;
 import io.discloader.discloader.network.rest.actions.channel.pin.PinMessage;
@@ -24,21 +27,9 @@ import io.discloader.discloader.network.rest.actions.message.DeleteMessage;
 import io.discloader.discloader.network.rest.actions.message.EditMessage;
 import io.discloader.discloader.util.DLUtil;
 
-/**
- * Represents a message object on the api <br>
- * <b>How to send messages</b>
- * 
- * <pre>
- * 
- * Message message = ITextChannel.sendMessage(content).join();
- * </pre>
- * 
- * @author Perry Berman
- * @since 0.0.1
- * @see ITextChannel#sendMessage(String, RichEmbed)
- * @see ISnowflake
- */
 public class Message<T extends ITextChannel> implements IMessage {
+
+	private List<IMessageAttachment> attachments;
 
 	/**
 	 * The message's {@link ISnowflake Snowflake} ID.
@@ -111,17 +102,11 @@ public class Message<T extends ITextChannel> implements IMessage {
 	 */
 	public IGuild guild;
 
-	/**
-	 * The member who sent the message if applicable
-	 */
 	public IGuildMember member;
 
 	private int type;
 
-	/**
-	 * 
-	 */
-	public ArrayList<MessageEmbed> embeds;
+	public ArrayList<IMessageEmbed> embeds;
 
 	/**
 	 * Creates a new message object
@@ -130,7 +115,7 @@ public class Message<T extends ITextChannel> implements IMessage {
 	 * @param data The message's data
 	 */
 	public Message(T channel, MessageJSON data) {
-		this.id = data.id;
+		id = data.id;
 
 		this.channel = channel;
 
@@ -139,17 +124,18 @@ public class Message<T extends ITextChannel> implements IMessage {
 			loader = privateChannel.getLoader();
 		} else {
 			TextChannel textChannel = (TextChannel) channel;
-			this.loader = textChannel.getLoader();
-			this.guild = textChannel.getGuild();
+			loader = textChannel.getLoader();
+			guild = textChannel.getGuild();
 		}
 
-		if (!this.loader.users.containsKey(data.author.id)) {
-			this.author = this.loader.addUser(data.author);
+		if (!loader.users.containsKey(data.author.id)) {
+			author = loader.addUser(data.author);
 		} else {
-			this.author = this.loader.users.get(data.author.id);
+			author = loader.users.get(data.author.id);
 		}
 
 		embeds = new ArrayList<>();
+		attachments = new ArrayList<>();
 
 		setup(data);
 	}
@@ -213,6 +199,16 @@ public class Message<T extends ITextChannel> implements IMessage {
 	}
 
 	@Override
+	public List<IMessageAttachment> getAttachments() {
+		return null;
+	}
+
+	@Override
+	public IUser getAuthor() {
+		return author;
+	}
+
+	@Override
 	public T getChannel() {
 		return channel;
 	}
@@ -228,6 +224,11 @@ public class Message<T extends ITextChannel> implements IMessage {
 	}
 
 	@Override
+	public List<IMessageEmbed> getEmbeds() {
+		return embeds;
+	}
+
+	@Override
 	public IGuild getGuild() {
 		return guild;
 	}
@@ -240,6 +241,26 @@ public class Message<T extends ITextChannel> implements IMessage {
 	@Override
 	public DiscLoader getLoader() {
 		return loader;
+	}
+
+	@Override
+	public IGuildMember getMember() {
+		return guild.getMember(author.getID());
+	}
+
+	@Override
+	public IMentions getMentions() {
+		return mentions;
+	}
+
+	@Override
+	public String getNonce() {
+		return nonce;
+	}
+
+	@Override
+	public List<IReaction> getReactions() {
+		return null;
 	}
 
 	@Override
@@ -331,25 +352,5 @@ public class Message<T extends ITextChannel> implements IMessage {
 		CompletableFuture<IMessage> future = new UnpinMessage<T>(this).execute();
 		future.thenAcceptAsync(action -> this.pinned = false);
 		return future;
-	}
-
-	@Override
-	public String getNonce() {
-		return nonce;
-	}
-
-	@Override
-	public IUser getAuthor() {
-		return author;
-	}
-
-	@Override
-	public IGuildMember getMember() {
-		return guild.getMember(author.getID());
-	}
-
-	@Override
-	public IMentions getMentions() {
-		return mentions;
 	}
 }
