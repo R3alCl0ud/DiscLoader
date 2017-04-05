@@ -426,6 +426,10 @@ public class DiscLoader {
 		future.complete("ready");
 	}
 	
+	public void disconnect() {
+		socket.ws.disconnect(1000);
+	}
+	
 	public void emit(DLEvent event) {
 		for (IEventListener handler : handlers) {
 			if (event instanceof DLPreInitEvent) {

@@ -10,10 +10,13 @@ import java.time.OffsetDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
+import java.util.Locale;
 
 import com.google.gson.Gson;
 
+import io.discloader.discloader.client.render.util.Resource;
 import io.discloader.discloader.common.DiscLoader;
+import io.discloader.discloader.common.language.Language;
 import io.discloader.discloader.core.entity.Permission;
 import io.discloader.discloader.network.gateway.DiscSocketListener;
 
@@ -573,11 +576,10 @@ public final class DLUtil {
 	
 	public static final Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
 	
-	public static final File MissingTexture = ClassLoader.getSystemResource("assets/discloader/texture/gui/icons/missing-icon.png") == null ? null
-			: new File(ClassLoader.getSystemResource("assets/discloader/texture/gui/icons/missing-icon.png").getFile());
+	public static final File MissingTexture = ClassLoader.getSystemResource(new Resource("discloader", "texture/gui/icons/missing-icon.png").getPath()) == null ? null
+			: new File(ClassLoader.getSystemResource(new Resource("discloader", "texture/gui/icons/missing-icon.png").getPath()).getFile());
 	
-	// public static final Language enUS = new Language(ClassLoader.getSystemResourceAsStream("assets/discloader/lang/en_US.lang"),
-	// Locale.US);
+	public static final Language enUS = new Language(ClassLoader.getSystemResourceAsStream("assets/discloader/lang/en-US.lang"), Locale.US);
 	
 	/**
 	 * An {@link ArrayList} of {@link WSEvents} that are handled by the {@link DiscSocketListener SocketListener} before the
