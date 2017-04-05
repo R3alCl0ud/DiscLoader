@@ -5,6 +5,8 @@ import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Map;
+import java.util.List;
 import java.util.concurrent.CompletableFuture;
 
 import com.neovisionaries.ws.client.WebSocketException;
@@ -45,9 +47,7 @@ public class VoiceConnection {
 	 */
 	public AudioPlayer player;
 
-	public final IGuild guild;
-	public final IVoiceChannel channel;
-	public final DiscLoader loader;
+	public final VoiceChannel channel;
 	public final StreamProvider provider;
 	private final CompletableFuture<VoiceConnection> future;
 	private final CompletableFuture<VoiceConnection> disconnection;
@@ -66,33 +66,25 @@ public class VoiceConnection {
 	 */
 	private String token;
 
-	private String userID;
-
 	private String sessionID;
-
-	private int port;
 
 	private int SSRC;
 
-	public final ArrayList<IVoiceConnectionListener> listeners;
+	public final List<IVoiceConnectionListener> listeners = new ArrayList<>();
 
 	private boolean speaking;
 
 	@SuppressWarnings("unused")
-	private HashMap<Integer, String> SSRCs;
+	private Map<Integer, String> SSRCs = new HashMap<>();
 
 	public VoiceConnection(VoiceChannel channel, CompletableFuture<VoiceConnection> future) {
 		this.channel = channel;
-		this.guild = channel.getGuild();
-		this.loader = channel.getLoader();
 		this.future = future;
 		this.udpClient = new UDPVoiceClient(this);
 		this.ws = new VoiceWebSocket(this);
 		this.provider = new StreamProvider(this);
-		this.SSRCs = new HashMap<>();
-		this.listeners = new ArrayList<>();
+		
 		disconnection = new CompletableFuture<>();
-		this.userID = this.loader.user.getID();
 
 		this.manager = new DefaultAudioPlayerManager();
 		AudioSourceManagers.registerLocalSource(this.manager);
@@ -105,6 +97,14 @@ public class VoiceConnection {
 		this.trackScheduler = new StreamSchedule(this.player, this, true);
 
 		this.sendStateUpdate(channel);
+	}
+	
+	public IGuild getGuild() {
+		return channel.getGuild();
+	}
+	
+	public DiscLoader getLoader() {
+		return channel.getLoader();
 	}
 
 	/**
@@ -153,11 +153,8 @@ public class VoiceConnection {
 	}
 
 	public void disconnected(String reason) {
-		disconnection.complete(loader.voiceConnections.remove(guild.getID()));
-		for (IVoiceConnectionListener e : this.listeners) {
-			e.disconnected(reason);
-		}
-
+		disconnection.complete(getLoader().voiceConnections.remove(getGuild().getID()));
+		listeners.stream().forEach(l -> l.disconnected(reason));
 	}
 
 	/**
@@ -186,15 +183,6 @@ public class VoiceConnection {
 	 */
 	public CompletableFuture<VoiceConnection> getFuture() {
 		return future;
-	}
-
-	/**
-	 * The port the voice connection is opened on.
-	 * 
-	 * @return the port
-	 */
-	public int getPort() {
-		return this.port;
 	}
 
 	/**
@@ -229,7 +217,7 @@ public class VoiceConnection {
 	 * @return the userID
 	 */
 	public String getUserID() {
-		return this.userID;
+		return getLoader().user.getID();
 	}
 
 	/**
@@ -272,14 +260,12 @@ public class VoiceConnection {
 	 * Executes when the voice connection has finished being setup
 	 */
 	public void ready() {
-		for (IVoiceConnectionListener e : this.listeners) {
-			e.ready();
-		}
+		this.listeners.stream().forEach(IVoiceConnectionListener::ready);
 	}
 
 	private void sendStateUpdate(IVoiceChannel channel) {
-		VoiceStateUpdate d = new VoiceStateUpdate(this.guild, channel, false, false);
-		this.loader.socket.send(new Packet(DLUtil.OPCodes.VOICE_STATE_UPDATE, d));
+		VoiceStateUpdate d = new VoiceStateUpdate(getGuild(), channel, false, false);
+		getLoader().socket.send(new Packet(DLUtil.OPCodes.VOICE_STATE_UPDATE, d));
 	}
 
 	public void setSessionID(String sessionID) {
@@ -305,19 +291,10 @@ public class VoiceConnection {
 		this.stateUpdated = stateUpdated;
 	}
 
-	/**
-	 * @param userID the userID to set
-	 */
-	public void setUserID(String userID) {
-		this.userID = userID;
-	}
-
 	private void socketReady() {
 		try {
 			this.ws.connect(this.endpoint, this.token);
-		} catch (IOException e) {
-			e.printStackTrace();
-		} catch (WebSocketException e) {
+		} catch (IOException | WebSocketException e) {
 			e.printStackTrace();
 		}
 	}
