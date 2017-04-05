@@ -1,5 +1,6 @@
 package io.discloader.discloader.entity.channel;
 
+import java.util.Collection;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 
@@ -15,7 +16,7 @@ import io.discloader.discloader.entity.user.IUser;
  * @since 0.0.3
  */
 public interface ITextChannel extends IChannel {
-	
+
 	/**
 	 * Deletes multiple messages from the channel.
 	 * 
@@ -24,7 +25,7 @@ public interface ITextChannel extends IChannel {
 	 */
 	// @SuppressWarnings("unchecked")
 	CompletableFuture<Map<String, IMessage>> deleteMessages(IMessage... messages);
-	
+
 	/**
 	 * Deletes multiple messages from the channel.
 	 * 
@@ -32,56 +33,61 @@ public interface ITextChannel extends IChannel {
 	 * @return A HashMap of the deleted messages if successful.
 	 */
 	CompletableFuture<Map<String, IMessage>> deleteMessages(Map<String, IMessage> messages);
-	
+
 	/**
 	 * @param id The id of the message to fetch
 	 * @return a new message object
 	 */
 	CompletableFuture<IMessage> fetchMessage(String id);
-	
+
 	/**
 	 * @return A HashMap of fetched messages
 	 */
 	<T extends ITextChannel> CompletableFuture<Map<String, IMessage>> fetchMessages();
-	
+
 	/**
 	 * @param options The fetch options to use
 	 * @return A HashMap of fetched messages
 	 */
 	<T extends ITextChannel> CompletableFuture<Map<String, IMessage>> fetchMessages(MessageFetchOptions options);
-	
+
 	/**
 	 * @param id The Snowflake ID of the message
 	 * @return The cached message, or null if no message was found
 	 */
 	<T extends ITextChannel> IMessage getMessage(String id);
-	
+
 	/**
 	 * Gets the channels cached messages
 	 * 
 	 * @return A HashMap of cached messages
 	 */
 	<T extends ITextChannel> Map<String, IMessage> getMessages();
-	
+
+	Collection<IMessage> getMessageCollection();
+
 	/**
 	 * Downloads and caches a channel's pinned messages
 	 * 
-	 * @return A Future that completes with a HashMap of the channel's pinned messages if successful.
+	 * @return A Future that completes with a HashMap of the channel's pinned
+	 *         messages if successful.
 	 */
 	<T extends ITextChannel> CompletableFuture<Map<String, IMessage>> fetchPinnedMessages();
-	
+
 	/**
-	 * Checks if any of the channel's cached messages are pinned to the channel, and returns all cached messages that are pinned.
+	 * Checks if any of the channel's cached messages are pinned to the channel,
+	 * and returns all cached messages that are pinned.
 	 * 
-	 * @return A HashMap of pinned messages. Indexed by {@link Message#id message.id}.
+	 * @return A HashMap of pinned messages. Indexed by {@link Message#id
+	 *         message.id}.
 	 */
 	<T extends ITextChannel> Map<String, IMessage> getPinnedMessages();
-	
+
 	/**
 	 * @return A HashMap of typing users. Indexed by {@link User#id}.
 	 */
 	Map<String, IUser> getTyping();
-	
+
 	/**
 	 * Checks if a certain user is typing in this channel
 	 * 
@@ -89,15 +95,16 @@ public interface ITextChannel extends IChannel {
 	 * @return {@code true} if the user is typing, false otherwise.
 	 */
 	boolean isTyping(IUser author);
-	
+
 	/**
-	 * Pins a message to the channel if not already pinned, and the client has sufficient permissions
+	 * Pins a message to the channel if not already pinned, and the client has
+	 * sufficient permissions
 	 * 
 	 * @param message The message to pin
 	 * @return A Future that completes with the pinned message if successful.
 	 */
 	<T extends ITextChannel> CompletableFuture<IMessage> pinMessage(IMessage message);
-	
+
 	/**
 	 * Sends a {@link Message} to the channel.
 	 * 
@@ -105,7 +112,7 @@ public interface ITextChannel extends IChannel {
 	 * @return A Future that completes with a {@link Message} if successful,
 	 */
 	<T extends ITextChannel> CompletableFuture<IMessage> sendEmbed(RichEmbed embed);
-	
+
 	/**
 	 * Sends a {@link Message} to the channel.
 	 * 
@@ -113,29 +120,31 @@ public interface ITextChannel extends IChannel {
 	 * @return A Future that completes with a {@link Message} if successful,
 	 */
 	<T extends ITextChannel> CompletableFuture<IMessage> sendMessage(String content);
-	
+
 	/**
 	 * Sends a {@link Message} to the channel.
 	 * 
 	 * @param content The message's content
 	 * @param embed The RichEmbed to send with the message
-	 * @return A Future that completes with the pinned {@link Message} if successful.
+	 * @return A Future that completes with the pinned {@link Message} if
+	 *         successful.
 	 */
 	<T extends ITextChannel> CompletableFuture<IMessage> sendMessage(String content, RichEmbed embed);
-	
+
 	/**
 	 * Sets the client as typing in the channel
 	 * 
 	 * @return A Future that completes with null if successful.
 	 */
 	CompletableFuture<Map<String, IUser>> startTyping();
-	
+
 	/**
 	 * Unpins a message if it is pinned in the channel.
 	 * 
 	 * @param message The message to unpin.
-	 * @return A Future that completes with the unpinned {@link Message} if successful.
+	 * @return A Future that completes with the unpinned {@link Message} if
+	 *         successful.
 	 */
 	<T extends ITextChannel> CompletableFuture<IMessage> unpinMessage(IMessage message);
-	
+
 }

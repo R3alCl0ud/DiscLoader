@@ -16,7 +16,7 @@ import io.discloader.guimod.gui.list.AbstractList;
 public abstract class AbstractTab<T, V extends AbstractList<T>, S extends AbstractInfo<T>> extends JPanel implements ListSelectionListener {
 
 	private static final long serialVersionUID = -335604613355001641L;
-	public final DiscLoader loader;
+	public DiscLoader loader;
 	public S info;
 	public V list;
 
@@ -31,18 +31,18 @@ public abstract class AbstractTab<T, V extends AbstractList<T>, S extends Abstra
 		this.add(Box.createRigidArea(new Dimension(50, 0)));
 		this.add(this.info = this.createInfo());
 	}
-	
+
 	@Override
 	public void valueChanged(ListSelectionEvent e) {
 		if (this.list.folders.getSelectedIndex() != -1) {
 			this.info.update(this.list.items.get(list.folders.getSelectedIndex()));
 		}
 	}
-	
+
 	public V createList() {
 		return null;
 	}
-	
+
 	public S createInfo() {
 		return null;
 	}

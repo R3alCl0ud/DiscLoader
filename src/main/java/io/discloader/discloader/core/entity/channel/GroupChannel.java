@@ -1,6 +1,7 @@
 package io.discloader.discloader.core.entity.channel;
 
 import java.io.File;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
@@ -96,6 +97,11 @@ public class GroupChannel extends Channel implements IGroupChannel, IVoiceChanne
 	}
 	
 	@Override
+	public Collection<IMessage> getMessageCollection() {
+		return getMessages().values();
+	}
+	
+	@Override
 	public HashMap<String, IMessage> getMessages() {
 		return messages;
 	}
@@ -141,6 +147,11 @@ public class GroupChannel extends Channel implements IGroupChannel, IVoiceChanne
 	// }
 	
 	@Override
+	public <T extends ITextChannel> CompletableFuture<IMessage> pinMessage(IMessage message) {
+		return null;
+	}
+	
+	@Override
 	public CompletableFuture<IMessage> sendEmbed(RichEmbed embed) {
 		return sendMessage(null, embed);
 	}
@@ -162,20 +173,13 @@ public class GroupChannel extends Channel implements IGroupChannel, IVoiceChanne
 		return new SendMessage<IGroupChannel>(this, content, embed, attachment, file).execute();
 	}
 	
+
 	@Override
 	public CompletableFuture<Map<String, IUser>> startTyping() {
 		return new StartTyping(this).execute();
 	}
-	
 	@Override
 	public CompletableFuture<IMessage> unpinMessage(IMessage message) {
 		return new UnpinMessage<IGroupChannel>(message).execute();
-	}
-	
-
-	
-	@Override
-	public <T extends ITextChannel> CompletableFuture<IMessage> pinMessage(IMessage message) {
-		return null;
 	}
 }

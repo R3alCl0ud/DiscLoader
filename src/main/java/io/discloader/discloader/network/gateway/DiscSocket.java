@@ -115,7 +115,7 @@ public class DiscSocket {
 				try {
 					Thread.sleep(interval);
 				} catch (InterruptedException e) {
-					e.printStackTrace();
+					// e.printStackTrace();
 				}
 
 				while (ws.isOpen() && !heartbeatThread.isInterrupted()) {
@@ -123,7 +123,7 @@ public class DiscSocket {
 					try {
 						Thread.sleep(interval);
 					} catch (InterruptedException e) {
-						e.printStackTrace();
+						// e.printStackTrace();
 					}
 				}
 
@@ -180,8 +180,8 @@ public class DiscSocket {
 		logger.info("Attempting to Heartbeat");
 		JSONObject payload = new JSONObject();
 		payload.put("op", OPCodes.HEARTBEAT).put("d", s);
-		send(payload, true);
 		lastHeartbeatAck = false;
+		send(payload, true);
 	}
 
 	public void startGuildSync() {

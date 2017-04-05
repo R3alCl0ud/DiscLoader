@@ -47,6 +47,7 @@ public abstract class AbstractList<T> extends JPanel {
 		this.add(Box.createRigidArea(new Dimension(0, 40)));
 		pane.setViewportView(this.folders);
 		this.folders.setMinimumSize(new Dimension(300, 400));
+		setMinimumSize(new Dimension(300, 500));
 		this.setMaximumSize(new Dimension(300, 1000));
 	}
 
@@ -57,5 +58,5 @@ public abstract class AbstractList<T> extends JPanel {
 	public ArrayList<T> createItems() {
 		return new ArrayList<T>();
 	}
-	
+
 }

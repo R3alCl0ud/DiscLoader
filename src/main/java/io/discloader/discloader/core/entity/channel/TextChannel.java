@@ -1,6 +1,7 @@
 package io.discloader.discloader.core.entity.channel;
 
 import java.io.File;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
@@ -33,17 +34,18 @@ import io.discloader.discloader.util.DLUtil.ChannelType;
  * @version 3
  */
 public class TextChannel extends GuildChannel implements IGuildTextChannel {
-	
+
 	/**
-	 * A {@link HashMap} of the channel's cached messages. Indexed by {@link Message#id}.
+	 * A {@link HashMap} of the channel's cached messages. Indexed by
+	 * {@link Message#id}.
 	 * 
 	 * @author Perry Berman
 	 * @since 0.0.1
 	 */
 	private final HashMap<String, IMessage> messages;
-	
+
 	private HashMap<String, IUser> typing;
-	
+
 	/**
 	 * The channel's topic
 	 * 
@@ -51,14 +53,14 @@ public class TextChannel extends GuildChannel implements IGuildTextChannel {
 	 * @since 0.0.3
 	 */
 	private String topic;
-	
+
 	public TextChannel(IGuild guild, ChannelJSON data) {
 		super(guild, data);
-		
+
 		messages = new HashMap<>();
 		typing = new HashMap<>();
 	}
-	
+
 	@Override
 	public CompletableFuture<Map<String, IMessage>> deleteMessages(IMessage... messages) {
 		HashMap<String, IMessage> msgs = new HashMap<>();
@@ -67,59 +69,71 @@ public class TextChannel extends GuildChannel implements IGuildTextChannel {
 		}
 		return deleteMessages(msgs);
 	}
-	
+
 	@Override
 	public CompletableFuture<Map<String, IMessage>> deleteMessages(Map<String, IMessage> messages) {
 		return new BulkDelete<IGuildTextChannel>(this, messages).execute();
 	}
-	
+
 	@Override
 	public CompletableFuture<IMessage> fetchMessage(String id) {
 		return new FetchMessage<IGuildTextChannel>(this, id).execute();
 	}
-	
+
 	@Override
 	public CompletableFuture<Map<String, IMessage>> fetchMessages() {
 		return fetchMessages(new MessageFetchOptions());
 	}
-	
+
 	@Override
 	public CompletableFuture<Map<String, IMessage>> fetchMessages(MessageFetchOptions options) {
 		return new FetchMessages<IGuildTextChannel>(this, options).execute();
 	}
-	
+
 	@Override
 	public CompletableFuture<Map<String, IMessage>> fetchPinnedMessages() {
 		return new PinnedMessages<IGuildTextChannel>(this).execute();
 	}
-	
+
 	@Override
 	public IMessage getMessage(String id) {
 		return messages.get(id);
 	}
-	
+
+	@Override
+	public Collection<IMessage> getMessageCollection() {
+		return getMessages().values();
+	}
+
 	@Override
 	public Map<String, IMessage> getMessages() {
 		return messages;
 	}
-	
+
 	@Override
 	public Map<String, IMessage> getPinnedMessages() {
 		HashMap<String, IMessage> pins = new HashMap<>();
 		for (IMessage message : messages.values()) {
-			if (message.isPinned())
-				pins.put(message.getID(), message);
+			if (message.isPinned()) pins.put(message.getID(), message);
 		}
 		return pins;
 	}
-	
+
+	/**
+	 * @return the topic
+	 */
+	public String getTopic() {
+		return topic;
+	}
+
 	@Override
 	public Map<String, IUser> getTyping() {
 		return typing;
 	}
-	
+
 	/**
-	 * Checks if a certain {@link GuildMember guild member} is typing in this channel
+	 * Checks if a certain {@link GuildMember guild member} is typing in this
+	 * channel
 	 * 
 	 * @param member The member to check.
 	 * @return {@code true} if the member is typing, false otherwise.
@@ -127,27 +141,27 @@ public class TextChannel extends GuildChannel implements IGuildTextChannel {
 	public boolean isTyping(GuildMember member) {
 		return typing.containsKey(member.getID());
 	}
-	
+
 	@Override
 	public boolean isTyping(IUser user) {
 		return typing.containsKey(user.getID());
 	}
-	
+
 	@Override
 	public CompletableFuture<IMessage> pinMessage(IMessage message) {
 		return new PinMessage<IGuildTextChannel>(message).execute();
 	}
-	
+
 	@Override
 	public CompletableFuture<IMessage> sendEmbed(RichEmbed embed) {
 		return sendMessage(null, embed);
 	}
-	
+
 	@Override
 	public CompletableFuture<IMessage> sendMessage(String content) {
 		return sendMessage(content, null);
 	}
-	
+
 	@Override
 	public CompletableFuture<IMessage> sendMessage(String content, RichEmbed embed) {
 		File file = null;
@@ -159,38 +173,31 @@ public class TextChannel extends GuildChannel implements IGuildTextChannel {
 		}
 		return new SendMessage<IGuildTextChannel>(this, content, embed, attachment, file).execute();
 	}
-	
-	@Override
-	public void setup(ChannelJSON data) {
-		super.setup(data);
-		
-		this.type = ChannelType.TEXT;
-		
-		this.topic = data.topic;
-	}
-	
-	@Override
-	public CompletableFuture<Map<String, IUser>> startTyping() {
-		return new StartTyping(this).execute();
-	}
-	
-	@Override
-	public CompletableFuture<IMessage> unpinMessage(IMessage message) {
-		return new UnpinMessage<IGuildTextChannel>(message).execute();
-	}
-	
-	/**
-	 * @return the topic
-	 */
-	public String getTopic() {
-		return topic;
-	}
-	
+
 	/**
 	 * @param topic the topic to set
 	 */
 	public CompletableFuture<IGuildTextChannel> setTopic(String topic) {
 		return null;
 	}
-	
+
+	@Override
+	public void setup(ChannelJSON data) {
+		super.setup(data);
+
+		this.type = ChannelType.TEXT;
+
+		this.topic = data.topic;
+	}
+
+	@Override
+	public CompletableFuture<Map<String, IUser>> startTyping() {
+		return new StartTyping(this).execute();
+	}
+
+	@Override
+	public CompletableFuture<IMessage> unpinMessage(IMessage message) {
+		return new UnpinMessage<IGuildTextChannel>(message).execute();
+	}
+
 }

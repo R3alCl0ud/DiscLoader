@@ -1,6 +1,7 @@
 package io.discloader.discloader.core.entity.channel;
 
 import java.io.File;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
@@ -93,6 +94,11 @@ public class PrivateChannel extends Channel implements IPrivateChannel {
 	}
 
 	@Override
+	public Collection<IMessage> getMessageCollection() {
+		return getMessages().values();
+	}
+
+	@Override
 	public HashMap<String, IMessage> getMessages() {
 		return messages;
 	}
@@ -149,11 +155,6 @@ public class PrivateChannel extends Channel implements IPrivateChannel {
 	}
 
 	@Override
-	public CompletableFuture<Map<String, IUser>> startTyping() {
-		return new StartTyping(this).execute();
-	}
-
-	@Override
 	public void setup(ChannelJSON data) {
 		super.setup(data);
 		if (data.recipients[0] != null) {
@@ -165,8 +166,12 @@ public class PrivateChannel extends Channel implements IPrivateChannel {
 	}
 
 	@Override
+	public CompletableFuture<Map<String, IUser>> startTyping() {
+		return new StartTyping(this).execute();
+	}
+
+	@Override
 	public CompletableFuture<IMessage> unpinMessage(IMessage message) {
 		return new UnpinMessage<IPrivateChannel>(message).execute();
 	}
-
 }

@@ -1,5 +1,6 @@
 package io.discloader.guimod.gui;
 
+import java.awt.Component;
 import java.awt.GridLayout;
 import java.awt.Image;
 import java.net.URL;
@@ -26,26 +27,30 @@ public class TabbedPanel extends JPanel {
 
 	private static final long serialVersionUID = -6974630780146823721L;
 	public final DiscLoader loader;
+	private static JTabbedPane tabbedPane;
 
 	public TabbedPanel(DiscLoader loader) {
 		super(new GridLayout(1, 1));
 		this.loader = loader;
 		// System.out.print();
-		JTabbedPane tabbedPane = new JTabbedPane();
+		tabbedPane = new JTabbedPane();
 		tabbedPane.addTab("Mods", new ModsFolder<ModContainer>(this.loader));
 		tabbedPane.addTab(LanguageRegistry.getLocalized("gui.tabcommands.name"), new CommandsTab<Command>(this.loader));
-		tabbedPane.addTab("Users",
-				resizeImageIcon(createImageIcon("texture.gui.icons.missing-icon", "Missing Icon"), 16, 16),
-				new UserFolders<User>(this.loader), "Users");
+		tabbedPane.addTab("Users", resizeImageIcon(createImageIcon("texture.gui.icons.missing-icon", "Missing Icon"), 16, 16), new UserFolders<User>(this.loader), "Users");
 		tabbedPane.addTab("Channels", new ChannelTab<Channel>(loader));
-		tabbedPane.addTab("Guilds",
-				resizeImageIcon(createImageIcon("texture.gui.icons.missing-icon", "Missing Icon"), 16, 16),
-				new GuildFolders<Guild>(this.loader), "Guilds");
-
+		tabbedPane.addTab("Guilds", resizeImageIcon(createImageIcon("texture.gui.icons.missing-icon", "Missing Icon"), 16, 16), new GuildFolders<Guild>(this.loader), "Guilds");
 		tabbedPane.addTab("Embed Builder", new EmbedBuilder());
 		tabbedPane.setTabLayoutPolicy(JTabbedPane.SCROLL_TAB_LAYOUT);
 		this.add(tabbedPane);
 		this.validate();
+	}
+
+	public static void addTab(String name, Component comp) {
+		tabbedPane.addTab(name, comp);
+	}
+
+	public static void removeTab(Component tab) {
+		tabbedPane.remove(tab);
 	}
 
 	protected ImageIcon createImageIcon(String path, String description) {

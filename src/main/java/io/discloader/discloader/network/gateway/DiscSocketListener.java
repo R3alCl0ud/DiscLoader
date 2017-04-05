@@ -129,7 +129,7 @@ public class DiscSocketListener extends WebSocketAdapter {
 
 		if (packet.op == DLUtil.OPCodes.HEARTBEAT_ACK) {
 			socket.lastHeartbeatAck = true;
-			loader.emit("debug", "Heartbeat Acknowledged");
+			// loader.emit("debug", "Heartbeat Acknowledged");
 			logger.info("Heartbeat Acknowledged");
 		} else if (packet.op == OPCodes.HEARTBEAT) {
 			logger.info("Recieved Heartbeat request from Gateway.");

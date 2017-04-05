@@ -1,5 +1,6 @@
 package io.discloader.discloader.entity.user;
 
+import java.time.OffsetDateTime;
 import java.util.concurrent.CompletableFuture;
 
 import io.discloader.discloader.client.render.util.IIcon;
@@ -33,5 +34,7 @@ public interface IUser extends ISnowflake {
 	void setup(UserJSON data);
 
 	String toString();
+
+	OffsetDateTime joinedAt();
 
 }

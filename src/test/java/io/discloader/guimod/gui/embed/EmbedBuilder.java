@@ -14,7 +14,6 @@ import io.discloader.discloader.core.entity.RichEmbed;
 
 /**
  * @author Perry Berman
- *
  */
 public class EmbedBuilder extends JPanel {
 
@@ -31,11 +30,11 @@ public class EmbedBuilder extends JPanel {
 		embeds = new ArrayList<>();
 		embeds.add(new RichEmbed());
 		this.add(new CenterPanel(new JLabel("RichEmbed Builder", JLabel.CENTER)));
-		add(new CenterPanel(fields = new FieldList(embeds.get(0))));
 		addField = new JButton("Add new field");
-		addField.addActionListener(fields);
 		addField.setActionCommand(FieldList.ADD_FIELD);
+		addField.addActionListener(fields);
 		add(new CenterPanel(addField));
+		add(new CenterPanel(fields = new FieldList(embeds.get(0))));
 	}
 
 	public Component add(Component comp) {
