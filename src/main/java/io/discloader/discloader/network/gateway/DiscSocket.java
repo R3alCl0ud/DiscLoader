@@ -7,6 +7,7 @@ import java.util.logging.Logger;
 import org.json.JSONObject;
 
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.neovisionaries.ws.client.WebSocket;
 import com.neovisionaries.ws.client.WebSocketException;
 import com.neovisionaries.ws.client.WebSocketFactory;
@@ -51,7 +52,7 @@ public class DiscSocket {
 
 	private int remaining = 120;
 
-	public Gson gson = new Gson();
+	private Gson gson = new GsonBuilder().serializeNulls().create();
 
 	private ArrayList<Object> queue;
 
@@ -151,7 +152,12 @@ public class DiscSocket {
 
 	public void send(Object payload, boolean force) {
 		if (force) {
-			ws.sendText(DLUtil.gson.toJson(payload));
+			if (payload instanceof String) {
+				System.out.println(payload.toString());
+				ws.sendText(payload.toString());
+			} else {
+				ws.sendText(DLUtil.gson.toJson(payload));
+			}
 			return;
 		}
 		queue.add(payload);

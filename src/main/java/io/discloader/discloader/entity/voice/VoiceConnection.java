@@ -7,6 +7,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.concurrent.CompletableFuture;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.neovisionaries.ws.client.WebSocketException;
 import com.sedmelluq.discord.lavaplayer.player.AudioPlayer;
 import com.sedmelluq.discord.lavaplayer.player.AudioPlayerManager;
@@ -80,6 +82,8 @@ public class VoiceConnection {
 
 	@SuppressWarnings("unused")
 	private HashMap<Integer, String> SSRCs;
+
+	private Gson gson = new GsonBuilder().serializeNulls().create();
 
 	public VoiceConnection(VoiceChannel channel, CompletableFuture<VoiceConnection> future) {
 		this.channel = channel;
@@ -279,7 +283,8 @@ public class VoiceConnection {
 
 	private void sendStateUpdate(IVoiceChannel channel) {
 		VoiceStateUpdate d = new VoiceStateUpdate(this.guild, channel, false, false);
-		this.loader.socket.send(new Packet(DLUtil.OPCodes.VOICE_STATE_UPDATE, d));
+		System.out.println(gson.toJson(new Packet(4, d)));
+		this.loader.socket.send(gson.toJson(new Packet(4, d)));
 	}
 
 	public void setSessionID(String sessionID) {
