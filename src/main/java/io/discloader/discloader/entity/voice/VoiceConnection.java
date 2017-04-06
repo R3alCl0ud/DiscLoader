@@ -284,7 +284,7 @@ public class VoiceConnection {
 	private void sendStateUpdate(IVoiceChannel channel) {
 		VoiceStateUpdate d = new VoiceStateUpdate(this.guild, channel, false, false);
 		System.out.println(gson.toJson(new Packet(4, d)));
-		this.loader.socket.send(gson.toJson(new Packet(4, d)));
+		loader.socket.send(new Packet(4, d));
 	}
 
 	public void setSessionID(String sessionID) {

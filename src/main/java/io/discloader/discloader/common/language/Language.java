@@ -18,7 +18,7 @@ public class Language {
 	/**
 	 * mapping of language entries
 	 */
-	public final HashMap<String, HashMap<String, HashMap<String, String>>> types;
+	public final HashMap<String, String> types;
 	
 	/**
 	 * Creates a new language object

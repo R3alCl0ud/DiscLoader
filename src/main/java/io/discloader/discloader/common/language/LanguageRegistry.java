@@ -9,7 +9,7 @@ import java.util.Locale;
 public class LanguageRegistry {
 
 	private static LanguageRegistry langs = new LanguageRegistry();
-	public final HashMap<Locale, HashMap<String, HashMap<String, HashMap<String, String>>>> localizedNames;
+	public final HashMap<Locale, HashMap<String, String>> localizedNames;
 
 	/**
 	 * Creates a new LanguageRegistry instance
@@ -30,38 +30,18 @@ public class LanguageRegistry {
 		return langs;
 	}
 
-	public static HashMap<String, HashMap<String, HashMap<String, String>>> getLocale(Locale locale) {
+	public static HashMap<String, String> getLocale(Locale locale) {
 		if (getLocales().localizedNames.containsKey(locale)) return getLocales().localizedNames.get(locale);
 		return null;
 	}
 
-	public static HashMap<String, HashMap<String, String>> getLocalized(Locale locale, String type) {
-		if (getLocale(locale) != null) return getLocale(locale).get(type);
+	public static String getLocalized(Locale locale, String holder) {
+		if (getLocale(locale) != null) return getLocale(locale).get(holder);
 		return null;
 	}
 
-	public static HashMap<String, String> getLocalized(Locale locale, String type, String field) {
-		if (getLocalized(locale, type) != null) return getLocalized(locale, type).get(field);
-		return null;
-	}
-
-	/**
-	 * @param locale The locale of the localized string
-	 * @param type The type of the object. ie: command
-	 * @param field The unlocalized name of the object
-	 * @param prop The property to get the localizedname of
-	 * @return The localized string
-	 */
-	public static String getLocalized(Locale locale, String type, String field, String prop) {
-		if (getLocalized(locale, type, field) != null) return getLocalized(locale, type, field).get(prop);
-		return null;
-	}
-
-	public static String getLocalized(String TypeFieldProp) {
-		String[] l = TypeFieldProp.split("[.]");
-		if (l.length < 1 || l.length > 3) return null;
-		String t = l[0], f = l[1], p = l[2];
-		return getLocalized(Locale.US, t, f, p);
+	public static String getLocalized(String holder) {
+		return getLocalized(Locale.US, holder);
 	}
 
 	/**
@@ -74,22 +54,7 @@ public class LanguageRegistry {
 			langs.localizedNames.put(lang.getLocale(), lang.types);
 			return;
 		}
-		HashMap<String, HashMap<String, HashMap<String, String>>> Names = langs.localizedNames.get(lang.getLocale());
-		for (String t : lang.types.keySet()) {
-			if (!Names.containsKey(t)) {
-				Names.put(t, lang.types.get(t));
-				continue;
-			}
-			for (String f : lang.types.get(t).keySet()) {
-				if (!Names.get(t).containsKey(f)) {
-					Names.get(t).put(f, lang.types.get(t).get(f));
-					continue;
-				}
-				for (String p : lang.types.get(t).get(f).keySet()) {
-					Names.get(t).get(f).put(p, lang.types.get(t).get(f).get(p));
-				}
-			}
-		}
+
 	}
 
 }

@@ -9,7 +9,8 @@ import io.discloader.discloader.entity.guild.IGuild;
 public class VoiceStateUpdate {
 
 	public String guild_id;
-	public String channel_id = "null";
+	public String channel_id;
+	// public String session_id;
 
 	public boolean self_mute;
 	public boolean self_deaf;

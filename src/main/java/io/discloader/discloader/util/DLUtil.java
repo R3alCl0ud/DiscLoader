@@ -585,10 +585,9 @@ public final class DLUtil {
 
 	public static final Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
 
-	public static final File MissingTexture = ClassLoader.getSystemResource(new Resource("discloader", "texture/gui/icons/missing-icon.png").getPath()) == null ? null
-			: new File(ClassLoader.getSystemResource(new Resource("discloader", "texture/gui/icons/missing-icon.png").getPath()).getFile());
+	public static final File MissingTexture = new Resource("discloader", "texture/gui/icons/missing-icon.png").getPath() == null ? null : new File(new Resource("discloader", "texture/gui/icons/missing-icon.png").getPath());
 
-	public static final Language enUS = new Language(ClassLoader.getSystemResourceAsStream("assets/discloader/lang/en-US.lang"), Locale.US);
+	public static final Language enUS = new Language(new Resource("discloader", "lang/en-US.lang").getResourceAsStream(), Locale.US);
 
 	/**
 	 * An {@link ArrayList} of {@link WSEvents} that are handled by the

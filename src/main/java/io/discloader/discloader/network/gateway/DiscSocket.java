@@ -14,6 +14,8 @@ import com.neovisionaries.ws.client.WebSocketFactory;
 
 import io.discloader.discloader.client.logger.DLLogger;
 import io.discloader.discloader.common.DiscLoader;
+import io.discloader.discloader.entity.sendable.Packet;
+import io.discloader.discloader.entity.sendable.VoiceStateUpdate;
 import io.discloader.discloader.util.DLUtil;
 import io.discloader.discloader.util.DLUtil.OPCodes;
 import io.discloader.discloader.util.DLUtil.Status;
@@ -101,7 +103,11 @@ public class DiscSocket {
 		if (payload instanceof JSONObject) {
 			ws.sendText(payload.toString());
 		} else {
-			ws.sendText(DLUtil.gson.toJson(payload));
+			if (payload instanceof Packet && ((Packet) payload).d instanceof VoiceStateUpdate) {
+				ws.sendText(gson.toJson(payload));
+			} else {
+				ws.sendText(DLUtil.gson.toJson(payload));
+			}
 		}
 		queue.remove(payload);
 		handleQueue();
@@ -152,9 +158,8 @@ public class DiscSocket {
 
 	public void send(Object payload, boolean force) {
 		if (force) {
-			if (payload instanceof String) {
-				System.out.println(payload.toString());
-				ws.sendText(payload.toString());
+			if (payload instanceof Packet && ((Packet) payload).d instanceof VoiceStateUpdate) {
+				ws.sendText(gson.toJson(payload));
 			} else {
 				ws.sendText(DLUtil.gson.toJson(payload));
 			}
