@@ -7,6 +7,7 @@ import javax.swing.ImageIcon;
 import javax.swing.JLabel;
 
 import io.discloader.discloader.client.command.Command;
+import io.discloader.discloader.common.language.LanguageRegistry;
 import io.discloader.discloader.util.DLUtil;
 
 public class CommandInfo<T extends Command> extends AbstractInfo<T> {
@@ -33,8 +34,10 @@ public class CommandInfo<T extends Command> extends AbstractInfo<T> {
 		this.icon.setIcon(new ImageIcon(command.getIcon().getImage()));
 		this.unlocalizedName.setText(String.format("UnlocalizedName: %s", command.getUnlocalizedName()));
 		this.id.setText(String.format("id: %s", command.getId()));
-		this.usage.setText(String.format("Usage: %s", command.getUsage()));
-		this.desc.setText(String.format("Description: %s", command.getDescription()));
+		String usage = LanguageRegistry.getLocalized(command, "usage"), desc = LanguageRegistry.getLocalized(command, "desc");
+		System.out.println(usage + "\n" + desc);
+		this.usage.setText(String.format("Usage: %s", usage == null ? command.getUsage() : usage));
+		this.desc.setText(String.format("Description: %s", desc == null ? command.getDescription() : desc));
 	}
 
 }

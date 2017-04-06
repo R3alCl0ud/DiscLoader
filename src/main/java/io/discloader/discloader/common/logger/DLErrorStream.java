@@ -15,7 +15,7 @@ public class DLErrorStream extends PrintStream {
 	}
 
 	public void print(String string) {
-		this.logger.severe(string.trim().replaceAll("[\n\r]", "") + "\n");
+		this.logger.severe(string.trim().replaceAll("[\n\r]", ""));
 	}
 
 	public void println(String string) {
@@ -26,7 +26,7 @@ public class DLErrorStream extends PrintStream {
 		for (Object o : args) {
 			template = String.format(template, o);
 		}
-		this.logger.info(template);
+		this.logger.info(template.trim());
 		return (PrintStream) this.out;
 	}
 

@@ -14,27 +14,28 @@ public class Language {
 	 * The locale the language applies to
 	 */
 	private Locale locale;
-	
+
 	/**
 	 * mapping of language entries
 	 */
 	public final HashMap<String, String> types;
-	
+
 	/**
 	 * Creates a new language object
+	 * 
 	 * @param langStream A File Input Stream of the .lang file for this language
 	 * @param locale The locale the language applies to
 	 */
 	public Language(InputStream langStream, Locale locale) {
-		this.types = LanguageParser.parseLang(langStream);
-		this.setLocale(locale);
+		types = LanguageParser.parseLang(langStream);
+		setLocale(locale);
 	}
 
 	/**
 	 * @return the locale
 	 */
 	public Locale getLocale() {
-		return this.locale;
+		return locale;
 	}
 
 	/**

@@ -21,16 +21,19 @@ public class LanguageParser {
 	private static String regex = "(.*)(?<!\\\\)=\\s*(.*)";
 	private static Pattern pattern = Pattern.compile(regex);
 
-	public static HashMap<String, String> parseLang(InputStream fis) {
+	public static HashMap<String, String> parseLang(InputStream is) {
 		HashMap<String, String> lang = new HashMap<>();
-		Scanner sc = new Scanner(fis);
-		while (sc.hasNextLine()) {
-			String l = sc.nextLine();
-			Matcher matcher = pattern.matcher(l);
-			if (!matcher.find() || matcher.groupCount() < 3) continue;
-			System.out.println(matcher.group(1) + matcher.group(2));
+		if (is != null) {
+			Scanner sc = new Scanner(is);
+			while (sc.hasNextLine()) {
+				String l = sc.nextLine();
+				Matcher matcher = pattern.matcher(l);
+				if (!matcher.find()) continue;
+				System.out.println(matcher.group(1) + " = " + matcher.group(2));
+				lang.put(matcher.group(1), matcher.group(2));
+			}
+			sc.close();
 		}
-		sc.close();
 		return lang;
 	}
 

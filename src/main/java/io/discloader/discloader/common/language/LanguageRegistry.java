@@ -3,6 +3,8 @@ package io.discloader.discloader.common.language;
 import java.util.HashMap;
 import java.util.Locale;
 
+import io.discloader.discloader.client.command.Command;
+
 /**
  * @author Perry Berman
  */
@@ -44,6 +46,10 @@ public class LanguageRegistry {
 		return getLocalized(Locale.US, holder);
 	}
 
+	public static String getLocalized(Command command, String property) {
+		return getLocalized("command." + command.getUnlocalizedName() + "." + property);
+	}
+
 	/**
 	 * Adds a language to the registry
 	 * 
@@ -54,7 +60,9 @@ public class LanguageRegistry {
 			langs.localizedNames.put(lang.getLocale(), lang.types);
 			return;
 		}
-
+		for (String key : lang.types.keySet()) {
+			getLocale(lang.getLocale()).put(key, lang.types.get(key));
+		}
 	}
 
 }

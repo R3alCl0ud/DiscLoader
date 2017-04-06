@@ -1,5 +1,5 @@
 command.help.name=Help
-command.help.desc=The help command
+command.help.desc=Displays information about the available commands
 command.mods.name=Mods
 command.mods.desc=Lists currently loaded mods
 command.invite.name=Invite

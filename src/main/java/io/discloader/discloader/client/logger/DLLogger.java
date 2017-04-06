@@ -15,77 +15,77 @@ import java.util.logging.Logger;
 
 /**
  * @author Perry Berman
- *
  */
 public class DLLogger {
 
-    public final Logger LOGGER;
-    private static FileHandler fileHandler = null;
+	public final Logger LOGGER;
+	private static FileHandler fileHandler = null;
 
-    public DLLogger(String name) {
-        File logFolder = new File("logs");
+	public DLLogger(String name) {
+		File logFolder = new File("logs");
 
-        if (!logFolder.exists()) {
-            logFolder.mkdirs();
-        }
+		if (!logFolder.exists()) {
+			logFolder.mkdirs();
+		}
 
-        this.LOGGER = Logger.getLogger(name);
+		this.LOGGER = Logger.getLogger(name);
 
-        Handler consoleHandler = new Handler() {
-            @Override
-            public void publish(LogRecord record) {
-                if (getFormatter() == null) {
-                    setFormatter(new DLLogFormatter());
-                }
+		Handler consoleHandler = new Handler() {
 
-                try {
-                    String message = getFormatter().format(record);
-                    if (record.getLevel().intValue() >= Level.WARNING.intValue()) {
-                        System.err.write(message.getBytes());
-                    } else {
-                        System.out.write(message.getBytes());
-                    }
-                } catch (Exception exception) {
-                    reportError(null, exception, ErrorManager.FORMAT_FAILURE);
-                }
+			@Override
+			public void publish(LogRecord record) {
+				if (getFormatter() == null) {
+					setFormatter(new DLLogFormatter());
+				}
 
-            }
+				try {
+					String message = getFormatter().format(record).trim() + "\n";
+					if (record.getLevel().intValue() >= Level.WARNING.intValue()) {
+						System.err.write(message.getBytes());
+					} else {
+						System.out.write(message.getBytes());
+					}
+				} catch (Exception exception) {
+					reportError(null, exception, ErrorManager.FORMAT_FAILURE);
+				}
 
-            @Override
-            public void close() throws SecurityException {
-            }
+			}
 
-            @Override
-            public void flush() {
-            }
-        };
-        this.LOGGER.setLevel(Level.ALL);
-        this.LOGGER.addHandler(consoleHandler);
-        this.LOGGER.addHandler(getFileHandler());
-        this.LOGGER.setUseParentHandlers(false);
-    }
+			@Override
+			public void close() throws SecurityException {
+			}
 
-    public Logger getLogger() {
-        return this.LOGGER;
-    }
+			@Override
+			public void flush() {
+			}
+		};
+		this.LOGGER.setLevel(Level.ALL);
+		this.LOGGER.addHandler(consoleHandler);
+		this.LOGGER.addHandler(getFileHandler());
+		this.LOGGER.setUseParentHandlers(false);
+	}
 
-    /**
-     * @return the fileHandler
-     */
-    public static FileHandler getFileHandler() {
-        if (fileHandler == null) {
-            try {
-                Date date = new Date();
-                date.setTime(System.currentTimeMillis());
-                fileHandler = new FileHandler(String.format("logs/%s.log", date.toString().replace(':', '-')));
-                fileHandler.setFormatter(new DLLogFormatter());
-            } catch (SecurityException e) {
-                e.printStackTrace();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
+	public Logger getLogger() {
+		return this.LOGGER;
+	}
 
-        return fileHandler;
-    }
+	/**
+	 * @return the fileHandler
+	 */
+	public static FileHandler getFileHandler() {
+		if (fileHandler == null) {
+			try {
+				Date date = new Date();
+				date.setTime(System.currentTimeMillis());
+				fileHandler = new FileHandler(String.format("logs/%s.log", date.toString().replace(':', '-')));
+				fileHandler.setFormatter(new DLLogFormatter());
+			} catch (SecurityException e) {
+				e.printStackTrace();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
+
+		return fileHandler;
+	}
 }

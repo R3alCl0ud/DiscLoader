@@ -7,7 +7,6 @@ import java.util.logging.LogRecord;
 
 /**
  * @author Perry Berman
- *
  */
 public final class DLLogFormatter extends Formatter {
 
@@ -16,8 +15,8 @@ public final class DLLogFormatter extends Formatter {
 	@Override
 	public String format(final LogRecord record) {
 		String time = new SimpleDateFormat(PATTERN).format(new Date(record.getMillis()));
-		
-		return String.format("[%s] [%s/%s]: %s\n", time, record.getLoggerName(), record.getLevel().getName(), formatMessage(record).trim());
+
+		return String.format("[%s] [%s/%s]: %s\n", time, record.getLoggerName(), record.getLevel().getName(), formatMessage(record).trim().trim());
 	}
 
 }

@@ -17,11 +17,12 @@ public class MessageList extends AbstractList<IMessage> {
 
 	public DefaultListModel<Object> createListModel() {
 		DefaultListModel<Object> list = new DefaultListModel<>();
-		for (IMessage message : tchannel.getMessageCollection()) {
-			list.addElement(format(message.getID(), message.getAuthor().toString()));
-			items.add(message);
+		if (tchannel != null) {
+			for (IMessage message : tchannel.getMessageCollection()) {
+				list.addElement(format(message.getID(), message.getAuthor().toString()));
+				items.add(message);
+			}
 		}
-
 		return list;
 	}
 
