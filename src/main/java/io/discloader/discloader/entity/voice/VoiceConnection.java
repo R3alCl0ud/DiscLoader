@@ -96,7 +96,7 @@ public class VoiceConnection {
 		this.SSRCs = new HashMap<>();
 		this.listeners = new ArrayList<>();
 		disconnection = new CompletableFuture<>();
-		this.userID = this.loader.user.getID();
+		this.userID = Long.toUnsignedString(this.loader.user.getID());
 
 		this.manager = new DefaultAudioPlayerManager();
 		AudioSourceManagers.registerLocalSource(this.manager);

@@ -112,7 +112,7 @@ public interface IEventListener {
 
 	void GuildEmojiDelete(GuildEmojiDeleteEvent event);
 
-	void GuildEmojisUpdate(Map<String, IGuildEmoji> map);
+	void GuildEmojisUpdate(Map<Long, IGuildEmoji> map);
 
 	void GuildEmojiUpdate(GuildEmojiUpdateEvent event);
 

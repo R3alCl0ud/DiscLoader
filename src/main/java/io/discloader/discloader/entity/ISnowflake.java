@@ -31,9 +31,11 @@ public interface ISnowflake {
 	/**
 	 * @return The object's Snowflake ID.
 	 */
-	String getID();
+	long getID();
 
 	@Override
 	int hashCode();
+
+	// long getIDAsLong();
 
 }

@@ -1,6 +1,7 @@
 package io.discloader.discloader.core.entity.user;
 
 import io.discloader.discloader.entity.user.IUser;
+import io.discloader.discloader.entity.util.SnowflakeUtil;
 import io.discloader.discloader.network.json.OAuthApplicationJSON;
 import io.discloader.discloader.util.DLUtil;
 
@@ -77,7 +78,7 @@ public class OAuth2Application {
 	 * @return The Application's OAuth2 authorization link
 	 */
 	public String getOAuthURL(int permissions) {
-		return DLUtil.Endpoints.OAuth2Authorize(this.clientID, "bot", permissions);
+		return DLUtil.Endpoints.OAuth2Authorize(SnowflakeUtil.parse(clientID), "bot", permissions);
 	}
 
 	/**
@@ -86,7 +87,7 @@ public class OAuth2Application {
 	 * @return The Application's OAuth2 authorization link
 	 */
 	public String getOAuthURL() {
-		return this.getOAuthURL(0);
+		return getOAuthURL(0);
 	}
 
 }

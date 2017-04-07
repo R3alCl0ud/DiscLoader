@@ -16,7 +16,7 @@ public class GroupChannelCreateEvent extends ChannelCreateEvent {
 		return (GroupChannel) super.getChannel();
 	}
 
-	public Map<String, IUser> getRecipients() {
+	public Map<Long, IUser> getRecipients() {
 		return getChannel().getRecipients();
 	}
 

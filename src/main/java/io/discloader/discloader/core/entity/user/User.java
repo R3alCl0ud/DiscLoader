@@ -8,6 +8,7 @@ import io.discloader.discloader.client.render.util.IIcon;
 import io.discloader.discloader.common.DiscLoader;
 import io.discloader.discloader.entity.user.IUser;
 import io.discloader.discloader.entity.user.IUserProfile;
+import io.discloader.discloader.entity.util.SnowflakeUtil;
 import io.discloader.discloader.network.json.UserJSON;
 import io.discloader.discloader.network.rest.actions.FetchUserProfile;
 import io.discloader.discloader.util.DLUtil;
@@ -27,7 +28,7 @@ public class User implements IUser {
 	/**
 	 * The user's unique Snowflake ID.
 	 */
-	private final String id;
+	private final long id;
 
 	/**
 	 * The user's username
@@ -62,7 +63,7 @@ public class User implements IUser {
 	public User(DiscLoader loader, UserJSON user) {
 		this.loader = loader;
 
-		this.id = user.id;
+		this.id = SnowflakeUtil.parse(user.id);
 
 		if (user.username != null) {
 			this.setup(user);
@@ -107,7 +108,7 @@ public class User implements IUser {
 	 * @return the id
 	 */
 	@Override
-	public String getID() {
+	public long getID() {
 		return id;
 	}
 
@@ -143,7 +144,7 @@ public class User implements IUser {
 	}
 
 	@Override
-	public OffsetDateTime joinedAt() {
+	public OffsetDateTime createdAt() {
 		return DLUtil.creationTime(this);
 	}
 

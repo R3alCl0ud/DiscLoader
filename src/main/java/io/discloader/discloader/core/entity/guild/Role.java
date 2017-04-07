@@ -6,6 +6,7 @@ import io.discloader.discloader.common.DiscLoader;
 import io.discloader.discloader.core.entity.Permission;
 import io.discloader.discloader.entity.guild.IGuild;
 import io.discloader.discloader.entity.guild.IRole;
+import io.discloader.discloader.entity.util.SnowflakeUtil;
 import io.discloader.discloader.network.json.RoleJSON;
 
 /**
@@ -94,8 +95,8 @@ public class Role implements IRole {
 	}
 	
 	@Override
-	public String getID() {
-		return id;
+	public long getID() {
+		return SnowflakeUtil.parse(id);
 	}
 	
 	@Override

@@ -93,139 +93,139 @@ public final class DLUtil {
 			return String.format("%s/assets/%s", HOST, asset);
 		}
 
-		public static final String avatar(String id, String avatar) {
-			return String.format("%s/avatars/%s/%s%s", CDN, id, avatar, avatar.startsWith("a_") ? ".gif" : ".jpg");
+		public static final String avatar(long id, String avatar) {
+			return String.format("%s/avatars/%d/%s%s", CDN, id, avatar, avatar.startsWith("a_") ? ".gif" : ".jpg");
 		}
 
-		public static final String bulkDelete(String channelID) {
+		public static final String bulkDelete(long channelID) {
 			return String.format("%s/bulk-delete", messages(channelID));
 		}
 
-		public static final String channel(String channelID) {
-			return String.format("%s/channels/%s", API, channelID);
+		public static final String channel(long channelID) {
+			return String.format("%s/channels/%d", API, channelID);
 		}
 
-		public static final String channelOverwrites(String channelID) {
+		public static final String channelOverwrites(long channelID) {
 			return String.format("%s/permissions", channel(channelID));
 		}
 
-		public static final String channelOverwrite(String channelID, String overwriteID) {
-			return String.format("%s/%s", channelOverwrites(channelID), overwriteID);
+		public static final String channelOverwrite(long channelID, long overwriteID) {
+			return String.format("%s/%d", channelOverwrites(channelID), overwriteID);
 		}
 
-		public static final String channelPinnedMessage(String channelID, String messageID) {
-			return String.format("%s/%s", channelPins(channelID), messageID);
+		public static final String channelPinnedMessage(long channelID, long messageID) {
+			return String.format("%s/%d", channelPins(channelID), messageID);
 		}
 
-		public static final String channelPins(String channelID) {
+		public static final String channelPins(long channelID) {
 			return String.format("%s/pins", channel(channelID));
 		}
 
-		public static final String customEmoji(String emojiID) {
-			return String.format("%s/emojis/%s.png", CDN, emojiID);
+		public static final String customEmoji(long emojiID) {
+			return String.format("%s/emojis/%d.png", CDN, emojiID);
 		}
 
-		public static final String channelTyping(String channelID) {
+		public static final String channelTyping(long channelID) {
 			return String.format("%s/typing", channel(channelID));
 		}
 
-		public static final String guild(String guildID) {
-			return String.format("%s/%s", guilds, guildID);
+		public static final String guild(long guildID) {
+			return String.format("%s/%d", guilds, guildID);
 		}
 
-		public static final String guildBanMember(String guildID, String memberID) {
-			return String.format("%s/%s", guildBans(guildID), memberID);
+		public static final String guildBanMember(long guildID, long memberID) {
+			return String.format("%s/%d", guildBans(guildID), memberID);
 		}
 
-		public static final String guildBans(String guildID) {
+		public static final String guildBans(long guildID) {
 			return String.format("%s/bans", guild(guildID));
 		}
 
-		public static final String guildChannels(String guildID) {
+		public static final String guildChannels(long guildID) {
 			return String.format("%s/channels", guild(guildID));
 		}
 
-		public static final String guildEmoji(String guildID, String emojiID) {
-			return String.format("%s/%s", guildEmojis(guildID), emojiID);
+		public static final String guildEmoji(long guildID, long emojiID) {
+			return String.format("%s/%d", guildEmojis(guildID), emojiID);
 		}
 
-		public static final String guildEmojis(String guildID) {
+		public static final String guildEmojis(long guildID) {
 			return String.format("%s/guilds/%s/emojis", API, guild(guildID));
 		}
 
-		public static final String guildIcon(String guildID, String icon) {
-			return String.format("%s/icons/%s/%s.jpg", CDN, guildID, icon);
+		public static final String guildIcon(long guildID, String icon) {
+			return String.format("%s/icons/%d/%s.jpg", CDN, guildID, icon);
 		}
 
-		public static final String guildInvites(String guildID) {
+		public static final String guildInvites(long guildID) {
 			return String.format("%s/invites", guild(guildID));
 		}
 
-		public static final String guildMember(String guildID, String memberID) {
-			return String.format("%s/%s", guildMembers(guildID), memberID);
+		public static final String guildMember(long guildID, long memberID) {
+			return String.format("%s/%d", guildMembers(guildID), memberID);
 		}
 
-		public static final String guildMemberRole(String guildID, String memberID, String roleID) {
-			return String.format("%s/roles/%s", guildMember(guildID, memberID), roleID);
+		public static final String guildMemberRole(long guildID, long memberID, long roleID) {
+			return String.format("%s/roles/%d", guildMember(guildID, memberID), roleID);
 		}
 
-		public static final String guildMembers(String guildID) {
+		public static final String guildMembers(long guildID) {
 			return String.format("%s/members", guild(guildID));
 		}
 
-		public static final String guildNick(String guildID) {
+		public static final String guildNick(long guildID) {
 			return String.format("%s/@me/nick", guildMembers(guildID));
 		}
 
-		public static final String guildPrune(String guildID) {
+		public static final String guildPrune(long guildID) {
 			return String.format("%s/prune", guild(guildID));
 		}
 
-		public static final String guildRole(String guildID, String roleID) {
-			return String.format("%s/%s", guildRoles(guildID), roleID);
+		public static final String guildRole(long guildID, long roleID) {
+			return String.format("%s/%d", guildRoles(guildID), roleID);
 		}
 
-		public static final String guildRoles(String guildID) {
+		public static final String guildRoles(long guildID) {
 			return String.format("%s/roles", guild(guildID));
 		}
 
-		public static final String guildSlash(String guildID, String splashHash) {
-			return String.format("%s/splashes/%s/%s.jpg", CDN, guildID, splashHash);
+		public static final String guildSlash(long guildID, String splashHash) {
+			return String.format("%s/splashes/%d/%s.jpg", CDN, guildID, splashHash);
 		}
 
-		public static final String invite(String id) {
-			return String.format("%s/invite/%s", API, id);
+		public static final String invite(long id) {
+			return String.format("%s/invite/%d", API, id);
 		}
 
-		public static final String inviteLink(String id) {
-			return String.format("https://discord.gg/%s", id);
+		public static final String inviteLink(long id) {
+			return String.format("https://discord.gg/%d", id);
 		}
 
-		public static final String message(String channelID, String messageID) {
-			return String.format("%s/%s", Endpoints.messages(channelID), messageID);
+		public static final String message(long channelID, long messageID) {
+			return String.format("%s/%d", Endpoints.messages(channelID), messageID);
 		}
 
-		public static final String messages(String channelID) {
+		public static final String messages(long channelID) {
 			return String.format("%s/messages", Endpoints.channel(channelID));
 		}
 
-		public static final String OAuth2Authorize(String clientID, String scope, int permissions) {
-			return String.format("%s/authorize?client_id=%s&scope=%s&permissions=%d", OAuth2, clientID, scope, permissions);
+		public static final String OAuth2Authorize(long clientID, String scope, int permissions) {
+			return String.format("%s/authorize?client_id=%d&scope=%s&permissions=%d", OAuth2, clientID, scope, permissions);
 		}
 
-		public static final String user(String userID) {
-			return String.format("%s/users/%s", API, userID);
+		public static final String user(long userID) {
+			return String.format("%s/users/%d", API, userID);
 		}
 
-		public static final String userChannels(String userID) {
+		public static final String userChannels(long userID) {
 			return String.format("%s/channels", Endpoints.user(userID));
 		}
 
-		public static final String userGuild(String guildID) {
-			return String.format("%s/%s", currentUserGuilds, guildID);
+		public static final String userGuild(long guildID) {
+			return String.format("%s/%d", currentUserGuilds, guildID);
 		}
 
-		public static final String userProfile(String userID) {
+		public static final String userProfile(long userID) {
 			return String.format("%s/profile", user(userID));
 		}
 	}
@@ -654,7 +654,7 @@ public final class DLUtil {
 	}
 
 	public static OffsetDateTime creationTime(ISnowflake snowflake) {
-		long time = Long.parseUnsignedLong(snowflake.getID(), 10) >> 22;
+		long time = snowflake.getID() >> 22;
 		long discord_epoch = 1420070400000L;
 		time += discord_epoch;
 		return OffsetDateTime.from(Instant.ofEpochMilli(time));

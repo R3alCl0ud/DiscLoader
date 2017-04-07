@@ -115,7 +115,7 @@ public class VoiceWebSocket extends WebSocketAdapter {
     }
 
     public void sendIdentify() {
-        VoiceIdentify payload = new VoiceIdentify(connection.guild.getID(), connection.loader.user.getID(), connection.getSessionID(), connection.getToken());
+        VoiceIdentify payload = new VoiceIdentify(Long.toUnsignedString(connection.guild.getID()), Long.toUnsignedString(connection.loader.user.getID()), connection.getSessionID(), connection.getToken());
         VoicePacket packet = new VoicePacket(IDENTIFY, payload);
         this.ws.sendText(this.gson.toJson(packet));
     }

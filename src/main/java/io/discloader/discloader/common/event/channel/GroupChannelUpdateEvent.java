@@ -21,7 +21,7 @@ public class GroupChannelUpdateEvent extends ChannelUpdateEvent {
 		return (GroupChannel) oldChannel;
 	}
 
-	public Map<String, IUser> getRecipients() {
+	public Map<Long, IUser> getRecipients() {
 		return getChannel().getRecipients();
 	}
 

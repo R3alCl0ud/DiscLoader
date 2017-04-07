@@ -25,13 +25,13 @@ public class ModifyMember {
 	private IGuildMember member;
 
 	public ModifyMember(IGuildMember member, IGuildVoiceChannel channel) {
-		this.channel_id = channel.getID();
+		this.channel_id = Long.toUnsignedString(channel.getID());
 		this.member = member;
 		this.nick = member.getNickname();
 		this.roles = new String[member.getRoles().size()];
 		int i = 0;
 		for (IRole r : member.getRoles().values()) {
-			roles[i] = r.getID();
+			roles[i] = Long.toUnsignedString(r.getID());
 			i++;
 		}
 		mute = member.isMuted();
@@ -39,7 +39,7 @@ public class ModifyMember {
 	}
 
 	public ModifyMember(IGuildMember member, String nick, HashMap<String, IRole> hashMap, boolean mute, boolean deaf, IVoiceChannel channel) {
-		this.channel_id = channel.getID();
+		this.channel_id = Long.toUnsignedString(channel.getID());
 		this.nick = nick;
 		this.mute = mute;
 		this.deaf = deaf;
@@ -48,7 +48,7 @@ public class ModifyMember {
 		this.roles = new String[hashMap.size()];
 		int i = 0;
 		for (IRole r : hashMap.values()) {
-			this.roles[i] = r.getID();
+			this.roles[i] = Long.toUnsignedString(r.getID());
 			i++;
 		}
 	}

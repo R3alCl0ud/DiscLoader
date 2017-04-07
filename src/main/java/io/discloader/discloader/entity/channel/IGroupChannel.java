@@ -6,7 +6,7 @@ import io.discloader.discloader.entity.user.IUser;
 
 public interface IGroupChannel extends ITextChannel {
 
-	Map<String, IUser> getRecipients();
+	Map<Long, IUser> getRecipients();
 
 
 }

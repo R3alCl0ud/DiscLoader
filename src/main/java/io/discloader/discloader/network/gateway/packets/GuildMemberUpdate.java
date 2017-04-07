@@ -5,6 +5,7 @@ import io.discloader.discloader.common.event.guild.member.GuildMemberUpdateEvent
 import io.discloader.discloader.core.entity.guild.GuildMember;
 import io.discloader.discloader.entity.guild.IGuild;
 import io.discloader.discloader.entity.guild.IGuildMember;
+import io.discloader.discloader.entity.util.SnowflakeUtil;
 import io.discloader.discloader.network.gateway.DiscSocket;
 import io.discloader.discloader.network.json.MemberJSON;
 import io.discloader.discloader.util.DLUtil.Status;
@@ -24,7 +25,7 @@ public class GuildMemberUpdate extends AbstractHandler {
 		String d = this.gson.toJson(packet);
 		MemberJSON data = this.gson.fromJson(d, MemberJSON.class);
 		IGuild guild = this.loader.guilds.get(data.guild_id);
-		IGuildMember member = guild.getMember(data.user.id);
+		IGuildMember member = guild.getMember(SnowflakeUtil.parse(data.user.id));
 		if (member == null) {
 			member = guild.addMember(data);
 		}

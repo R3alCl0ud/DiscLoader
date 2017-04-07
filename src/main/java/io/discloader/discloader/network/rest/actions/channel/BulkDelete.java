@@ -12,18 +12,18 @@ import io.discloader.discloader.util.DLUtil.Methods;
 /**
  * @author Perry Berman
  */
-public class BulkDelete<T extends ITextChannel> extends RESTAction<Map<String, IMessage>> {
+public class BulkDelete<T extends ITextChannel> extends RESTAction<Map<Long, IMessage>> {
 
 	public T channel;
-	public Map<String, IMessage> messages;
+	public Map<Long, IMessage> messages;
 
-	public BulkDelete(T channel, Map<String, IMessage> messages) {
+	public BulkDelete(T channel, Map<Long, IMessage> messages) {
 		super(channel.getLoader());
 		this.channel = channel;
 		this.messages = messages;
 	}
 
-	public CompletableFuture<Map<String, IMessage>> execute() {
+	public CompletableFuture<Map<Long, IMessage>> execute() {
 		return super.execute(loader.rest.makeRequest(Endpoints.bulkDelete(channel.getID()), Methods.GET, true));
 	}
 

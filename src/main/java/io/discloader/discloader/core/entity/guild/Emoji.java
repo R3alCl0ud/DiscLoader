@@ -8,6 +8,7 @@ import io.discloader.discloader.common.DiscLoader;
 import io.discloader.discloader.entity.guild.IGuild;
 import io.discloader.discloader.entity.guild.IGuildEmoji;
 import io.discloader.discloader.entity.guild.IRole;
+import io.discloader.discloader.entity.util.SnowflakeUtil;
 import io.discloader.discloader.network.json.EmojiJSON;
 
 /**
@@ -91,7 +92,7 @@ public class Emoji implements IGuildEmoji {
 			// no need to continue if roles don't match up
 			if (!getRoles().containsKey(role.getID())) return false;
 		}
-		return id.equals(emoji.id) && guild.getID().equals(emoji.guild.getID()) && name.equals(emoji.name) && managed == emoji.managed;
+		return id.equals(emoji.id) && guild.getID() == emoji.guild.getID() && name.equals(emoji.name) && managed == emoji.managed;
 	}
 
 	@Override
@@ -139,13 +140,10 @@ public class Emoji implements IGuildEmoji {
 		return this.guild;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * @see io.discloader.discloader.entity.ISnowflake#getID()
-	 */
+
 	@Override
-	public String getID() {
-		return null;
+	public long getID() {
+		return SnowflakeUtil.parse(id);
 	}
 
 }

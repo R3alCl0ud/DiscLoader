@@ -26,8 +26,8 @@ public class MessageList extends AbstractList<IMessage> {
 		return list;
 	}
 
-	public String format(String id, String author) {
-		return String.format("<html>%s<br>%s</html>", id, author);
+	public String format(long id, String author) {
+		return String.format("<html>%d<br>%s</html>", id, author);
 	}
 
 }

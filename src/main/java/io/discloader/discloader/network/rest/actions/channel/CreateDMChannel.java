@@ -27,7 +27,7 @@ public class CreateDMChannel extends RESTAction<PrivateChannel> {
 	}
 
 	public CompletableFuture<PrivateChannel> execute() {
-		return super.execute(loader.rest.makeRequest(Endpoints.currentUserChannels, Methods.POST, true, new dm(user.getID())));
+		return super.execute(loader.rest.makeRequest(Endpoints.currentUserChannels, Methods.POST, true, new dm(Long.toUnsignedString(user.getID()))));
 	}
 
 	public void complete(String packet, Throwable ex) {

@@ -32,9 +32,9 @@ import io.discloader.discloader.util.DLUtil.ChannelType;
  */
 public class PrivateChannel extends Channel implements IPrivateChannel {
 
-	private HashMap<String, IMessage> messages;
+	private HashMap<Long, IMessage> messages;
 
-	private HashMap<String, IUser> typing;
+	private HashMap<Long, IUser> typing;
 
 	/**
 	 * The user that this DM Channel was opened with
@@ -55,8 +55,8 @@ public class PrivateChannel extends Channel implements IPrivateChannel {
 	}
 
 	@Override
-	public CompletableFuture<Map<String, IMessage>> deleteMessages(IMessage... messages) {
-		HashMap<String, IMessage> msgs = new HashMap<>();
+	public CompletableFuture<Map<Long, IMessage>> deleteMessages(IMessage... messages) {
+		HashMap<Long, IMessage> msgs = new HashMap<>();
 		for (IMessage message : messages) {
 			msgs.put(message.getID(), message);
 		}
@@ -64,27 +64,27 @@ public class PrivateChannel extends Channel implements IPrivateChannel {
 	}
 
 	@Override
-	public CompletableFuture<Map<String, IMessage>> deleteMessages(Map<String, IMessage> messages) {
+	public CompletableFuture<Map<Long, IMessage>> deleteMessages(Map<Long, IMessage> messages) {
 		return new BulkDelete<IPrivateChannel>(this, messages).execute();
 	}
 
 	@Override
-	public CompletableFuture<IMessage> fetchMessage(String id) {
+	public CompletableFuture<IMessage> fetchMessage(long id) {
 		return new FetchMessage<IPrivateChannel>(this, id).execute();
 	}
 
 	@Override
-	public CompletableFuture<Map<String, IMessage>> fetchMessages() {
+	public CompletableFuture<Map<Long, IMessage>> fetchMessages() {
 		return fetchMessages(new MessageFetchOptions());
 	}
 
 	@Override
-	public CompletableFuture<Map<String, IMessage>> fetchMessages(MessageFetchOptions options) {
+	public CompletableFuture<Map<Long, IMessage>> fetchMessages(MessageFetchOptions options) {
 		return new FetchMessages<IPrivateChannel>(this, options).execute();
 	}
 
 	@Override
-	public CompletableFuture<Map<String, IMessage>> fetchPinnedMessages() {
+	public CompletableFuture<Map<Long, IMessage>> fetchPinnedMessages() {
 		return new PinnedMessages<IPrivateChannel>(this).execute();
 	}
 
@@ -99,13 +99,13 @@ public class PrivateChannel extends Channel implements IPrivateChannel {
 	}
 
 	@Override
-	public HashMap<String, IMessage> getMessages() {
+	public HashMap<Long, IMessage> getMessages() {
 		return messages;
 	}
 
 	@Override
-	public Map<String, IMessage> getPinnedMessages() {
-		HashMap<String, IMessage> pins = new HashMap<>();
+	public Map<Long, IMessage> getPinnedMessages() {
+		HashMap<Long, IMessage> pins = new HashMap<>();
 		for (IMessage message : messages.values()) {
 			if (message.isPinned()) pins.put(message.getID(), message);
 		}
@@ -118,7 +118,7 @@ public class PrivateChannel extends Channel implements IPrivateChannel {
 	}
 
 	@Override
-	public HashMap<String, IUser> getTyping() {
+	public HashMap<Long, IUser> getTyping() {
 		return typing;
 	}
 
@@ -166,7 +166,7 @@ public class PrivateChannel extends Channel implements IPrivateChannel {
 	}
 
 	@Override
-	public CompletableFuture<Map<String, IUser>> startTyping() {
+	public CompletableFuture<Map<Long, IUser>> startTyping() {
 		return new StartTyping(this).execute();
 	}
 

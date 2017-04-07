@@ -38,6 +38,7 @@ import io.discloader.discloader.entity.sendable.EditChannel;
 import io.discloader.discloader.entity.sendable.FetchMembers;
 import io.discloader.discloader.entity.sendable.SendableMessage;
 import io.discloader.discloader.entity.user.IUser;
+import io.discloader.discloader.entity.util.SnowflakeUtil;
 import io.discloader.discloader.network.json.ChannelJSON;
 import io.discloader.discloader.network.json.GuildJSON;
 import io.discloader.discloader.network.json.InviteJSON;
@@ -154,7 +155,7 @@ public class RESTManager {
 		return future;
 	}
 	
-	public CompletableFuture<IGuildMember> loadGuildMember(IGuild guild, String memberID) {
+	public CompletableFuture<IGuildMember> loadGuildMember(IGuild guild, long memberID) {
 		CompletableFuture<IGuildMember> future = new CompletableFuture<>();
 		this.makeRequest(DLUtil.Endpoints.guildMember(guild.getID(), memberID), DLUtil.Methods.GET, true).thenAcceptAsync(action -> {
 			future.complete(guild.addMember(this.gson.fromJson(action, MemberJSON.class)));
@@ -162,14 +163,14 @@ public class RESTManager {
 		return future;
 	}
 	
-	public CompletableFuture<HashMap<String, IGuildMember>> loadGuildMembers(IGuild guild, int limit, String after) {
-		CompletableFuture<HashMap<String, IGuildMember>> future = new CompletableFuture<>();
+	public CompletableFuture<HashMap<Long, IGuildMember>> loadGuildMembers(IGuild guild, int limit, long after) {
+		CompletableFuture<HashMap<Long, IGuildMember>> future = new CompletableFuture<>();
 		FetchMembers fetchMem = new FetchMembers(limit, after);
 		this.makeRequest(Endpoints.guildMembers(guild.getID()), Methods.GET, true, fetchMem).thenAcceptAsync(action -> {
-			HashMap<String, IGuildMember> members = new HashMap<>();
+			HashMap<Long, IGuildMember> members = new HashMap<>();
 			MemberJSON[] data = DLUtil.gson.fromJson(action, MemberJSON[].class);
 			for (MemberJSON mem : data) {
-				members.put(mem.user.id, guild.addMember(mem));
+				members.put(SnowflakeUtil.parse(mem.user.id), guild.addMember(mem));
 			}
 			future.complete(members);
 		});
@@ -245,7 +246,7 @@ public class RESTManager {
 	
 	public CompletableFuture<IGuildMember> setNick(IGuildMember member, String nick) {
 		CompletableFuture<IGuildMember> future = new CompletableFuture<>();
-		String endpoint = member.getID().equals(loader.user.getID()) ? DLUtil.Endpoints.guildNick(member.getGuild().getID()) : DLUtil.Endpoints.guildMember(member.getGuild().getID(), member.getID());
+		String endpoint = member.getID() == loader.user.getID() ? DLUtil.Endpoints.guildNick(member.getGuild().getID()) : DLUtil.Endpoints.guildMember(member.getGuild().getID(), member.getID());
 		makeRequest(endpoint, DLUtil.Methods.PATCH, true, new JSONObject().put("nick", nick)).thenAcceptAsync(action -> {
 			future.complete(member);
 		});

@@ -1,9 +1,11 @@
 package io.discloader.discloader.entity.invite;
 
 import io.discloader.discloader.common.DiscLoader;
+import io.discloader.discloader.entity.IInvite;
 import io.discloader.discloader.entity.channel.IGuildChannel;
 import io.discloader.discloader.entity.guild.IGuild;
 import io.discloader.discloader.entity.user.IUser;
+import io.discloader.discloader.entity.util.SnowflakeUtil;
 import io.discloader.discloader.network.json.InviteJSON;
 import io.discloader.discloader.util.DLUtil.ChannelTypes;
 
@@ -13,7 +15,7 @@ import io.discloader.discloader.util.DLUtil.ChannelTypes;
  * @author Perry Berman
  * @since 0.1.0
  */
-public class Invite {
+public class Invite implements IInvite {
 
 	/**
 	 * The invite code (unique ID)
@@ -78,4 +80,51 @@ public class Invite {
 		this.temporary = data.temporary;
 		this.revoked = data.revoked;
 	}
+
+	@Override
+	public long getID() {
+		return SnowflakeUtil.parse(code);
+	}
+
+	@Override
+	public IGuildChannel getChannel() {
+		return channel;
+	}
+
+	@Override
+	public IGuild getGuild() {
+		return guild;
+	}
+
+	@Override
+	public IUser getInviter() {
+		return inviter;
+	}
+
+	@Override
+	public int getMaxAge() {
+		return maxAge;
+	}
+
+	@Override
+	public int getMaxUses() {
+		return maxUses;
+	}
+
+	@Override
+	public int getUses() {
+		return uses;
+	}
+
+	@Override
+	public boolean isTemporary() {
+		return temporary;
+	}
+
+	@Override
+	public boolean isValid() {
+		return !revoked;
+	}
+
+ 
 }

@@ -1,7 +1,7 @@
 package io.discloader.discloader.core.entity.message;
 
+import java.time.OffsetDateTime;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 
@@ -20,12 +20,12 @@ import io.discloader.discloader.entity.message.IMessageAttachment;
 import io.discloader.discloader.entity.message.IMessageEmbed;
 import io.discloader.discloader.entity.message.IReaction;
 import io.discloader.discloader.entity.user.IUser;
+import io.discloader.discloader.entity.util.SnowflakeUtil;
 import io.discloader.discloader.network.json.MessageJSON;
 import io.discloader.discloader.network.rest.actions.channel.pin.PinMessage;
 import io.discloader.discloader.network.rest.actions.channel.pin.UnpinMessage;
 import io.discloader.discloader.network.rest.actions.message.DeleteMessage;
 import io.discloader.discloader.network.rest.actions.message.EditMessage;
-import io.discloader.discloader.util.DLUtil;
 
 public class Message<T extends ITextChannel> implements IMessage {
 
@@ -34,7 +34,7 @@ public class Message<T extends ITextChannel> implements IMessage {
 	/**
 	 * The message's {@link ISnowflake Snowflake} ID.
 	 */
-	private final String id;
+	private final long id;
 
 	/**
 	 * The message's content
@@ -68,12 +68,12 @@ public class Message<T extends ITextChannel> implements IMessage {
 	/**
 	 * The time at which the message was sent
 	 */
-	private Date timestamp;
+	private String timestamp;
 
 	/**
 	 * The time at which the message was lasted edited at
 	 */
-	private Date editedAt;
+	// private String editedAt;
 
 	/**
 	 * An object containing the information about who was mentioned in the
@@ -91,9 +91,6 @@ public class Message<T extends ITextChannel> implements IMessage {
 	 */
 	public final T channel;
 
-	/**
-	 * The user who authored the message
-	 */
 	public final IUser author;
 
 	/**
@@ -115,7 +112,7 @@ public class Message<T extends ITextChannel> implements IMessage {
 	 * @param data The message's data
 	 */
 	public Message(T channel, MessageJSON data) {
-		id = data.id;
+		id = SnowflakeUtil.parse(data.id);
 
 		this.channel = channel;
 
@@ -147,15 +144,9 @@ public class Message<T extends ITextChannel> implements IMessage {
 
 	@Override
 	public boolean canEdit() {
-		return loader.user.getID().equals(author.getID());
+		return loader.user.getID() == author.getID();
 	}
 
-	/**
-	 * Deletes the message if the loader has suficient permissions
-	 * 
-	 * @see DLUtil.PermissionFlags
-	 * @return A Future that completes with {@literal this} when sucessfull
-	 */
 	@Override
 	public CompletableFuture<IMessage> delete() {
 		return new DeleteMessage<T>(this.channel, this).execute();
@@ -200,7 +191,7 @@ public class Message<T extends ITextChannel> implements IMessage {
 
 	@Override
 	public List<IMessageAttachment> getAttachments() {
-		return null;
+		return attachments;
 	}
 
 	@Override
@@ -219,8 +210,8 @@ public class Message<T extends ITextChannel> implements IMessage {
 	}
 
 	@Override
-	public java.util.Date getEditedTimestamp() {
-		return editedAt;
+	public OffsetDateTime getEditedAt() {
+		return OffsetDateTime.parse(edited_timestamp);
 	}
 
 	@Override
@@ -234,7 +225,7 @@ public class Message<T extends ITextChannel> implements IMessage {
 	}
 
 	@Override
-	public String getID() {
+	public long getID() {
 		return id;
 	}
 
@@ -264,8 +255,8 @@ public class Message<T extends ITextChannel> implements IMessage {
 	}
 
 	@Override
-	public Date getTimestamp() {
-		return timestamp;
+	public OffsetDateTime createdAt() {
+		return OffsetDateTime.parse(timestamp);
 	}
 
 	/**
@@ -276,7 +267,7 @@ public class Message<T extends ITextChannel> implements IMessage {
 	 * @since 0.1.0
 	 */
 	public boolean isEditable() {
-		return loader.user.getID().equals(author.getID());
+		return loader.user.getID() == author.getID();
 	}
 
 	/**
@@ -328,9 +319,9 @@ public class Message<T extends ITextChannel> implements IMessage {
 
 		mentions = new Mentions(this, data.mentions, data.mention_roles, data.mention_everyone);
 
-		timestamp = DLUtil.parseISO8601(data.timestamp);
+		timestamp = data.timestamp;
 
-		editedAt = data.edited_timestamp != null ? DLUtil.parseISO8601(data.edited_timestamp) : null;
+		edited_timestamp = data.edited_timestamp;
 
 		tts = data.tts;
 
@@ -352,5 +343,12 @@ public class Message<T extends ITextChannel> implements IMessage {
 		CompletableFuture<IMessage> future = new UnpinMessage<T>(this).execute();
 		future.thenAcceptAsync(action -> this.pinned = false);
 		return future;
+	}
+
+	/**
+	 * @param attachments the attachments to set
+	 */
+	public void setAttachments(List<IMessageAttachment> attachments) {
+		this.attachments = attachments;
 	}
 }

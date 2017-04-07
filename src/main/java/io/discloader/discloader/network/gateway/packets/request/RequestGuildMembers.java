@@ -15,7 +15,7 @@ public class RequestGuildMembers {
 	public final int limit;
 	
 	public RequestGuildMembers(Guild guild, String query, int limit) {
-		this.guild_id = guild.getID();
+		this.guild_id = Long.toUnsignedString(guild.getID());
 		
 		this.query = query;
 		

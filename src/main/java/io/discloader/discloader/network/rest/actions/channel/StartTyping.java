@@ -9,7 +9,7 @@ import io.discloader.discloader.network.rest.actions.RESTAction;
 import io.discloader.discloader.util.DLUtil.Endpoints;
 import io.discloader.discloader.util.DLUtil.Methods;
 
-public class StartTyping extends RESTAction<Map<String, IUser>> {
+public class StartTyping extends RESTAction<Map<Long, IUser>> {
 	private ITextChannel channel;
 	
 	public StartTyping(ITextChannel channel) {
@@ -17,7 +17,7 @@ public class StartTyping extends RESTAction<Map<String, IUser>> {
 		this.channel = channel;
 	}
 	
-	public CompletableFuture<Map<String, IUser>> execute() {
+	public CompletableFuture<Map<Long, IUser>> execute() {
 		return super.execute(loader.rest.makeRequest(Endpoints.channelTyping(channel.getID()), Methods.POST, true));
 	}
 	

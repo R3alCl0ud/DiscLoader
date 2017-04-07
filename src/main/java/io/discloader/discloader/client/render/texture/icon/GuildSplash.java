@@ -9,6 +9,7 @@ import javax.swing.ImageIcon;
 import io.discloader.discloader.client.render.texture.AbstractTexture;
 import io.discloader.discloader.core.entity.guild.Guild;
 import io.discloader.discloader.entity.invite.InviteGuild;
+import io.discloader.discloader.entity.util.SnowflakeUtil;
 import io.discloader.discloader.util.DLUtil;
 import io.discloader.discloader.util.DLUtil.Endpoints;
 
@@ -35,7 +36,7 @@ public class GuildSplash extends AbstractTexture {
 		} else if (guild != null) {
 			return Endpoints.guildSlash(guild.getID(), guild.splashHash);
 		} else {
-			return Endpoints.guildSlash(partGuild.id, partGuild.splashHash);
+			return Endpoints.guildSlash(SnowflakeUtil.parse(partGuild.id), partGuild.splashHash);
 		}
 	}
 

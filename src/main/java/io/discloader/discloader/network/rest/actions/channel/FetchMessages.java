@@ -14,7 +14,7 @@ import io.discloader.discloader.util.DLUtil;
 import io.discloader.discloader.util.DLUtil.Endpoints;
 import io.discloader.discloader.util.DLUtil.Methods;
 
-public class FetchMessages<T extends ITextChannel> extends RESTAction<Map<String, IMessage>> {
+public class FetchMessages<T extends ITextChannel> extends RESTAction<Map<Long, IMessage>> {
 
 	public T channel;
 	public MessageFetchOptions options;
@@ -25,7 +25,7 @@ public class FetchMessages<T extends ITextChannel> extends RESTAction<Map<String
 		this.options = options;
 	}
 
-	public CompletableFuture<Map<String, IMessage>> execute() {
+	public CompletableFuture<Map<Long, IMessage>> execute() {
 		return super.execute(loader.rest.makeRequest(Endpoints.messages(channel.getID()), Methods.GET, true, options));
 	}
 
@@ -36,7 +36,7 @@ public class FetchMessages<T extends ITextChannel> extends RESTAction<Map<String
 			return;
 		} else {
 			MessageJSON[] data = DLUtil.gson.fromJson(s, MessageJSON[].class);
-			HashMap<String, IMessage> messages = new HashMap<>();
+			HashMap<Long, IMessage> messages = new HashMap<>();
 			for (MessageJSON m : data) {
 				IMessage message = new Message<>(channel, m);
 				channel.getMessages().put(message.getID(), message);

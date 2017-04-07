@@ -12,6 +12,7 @@ import io.discloader.discloader.entity.guild.IRole;
 import io.discloader.discloader.entity.message.IMentions;
 import io.discloader.discloader.entity.message.IMessage;
 import io.discloader.discloader.entity.user.IUser;
+import io.discloader.discloader.entity.util.SnowflakeUtil;
 import io.discloader.discloader.network.json.RoleJSON;
 import io.discloader.discloader.network.json.UserJSON;
 
@@ -48,14 +49,14 @@ public class Mentions implements IMentions {
 	/**
 	 * A HashMap of mentioned Users. Indexed by {@link User#id}.
 	 */
-	public final HashMap<String, IUser> users;
+	public final HashMap<Long, IUser> users;
 
 	/**
 	 * A HashMap of mentioned Roles. Indexed by {@link Role#id}.
 	 */
-	public final HashMap<String, IRole> roles;
+	public final HashMap<Long, IRole> roles;
 
-	public Mentions(Message<?> message, UserJSON[] mentions, RoleJSON[] mention_roles, boolean mention_everyone) {
+	public Mentions(Message<?> message, UserJSON[] mentions, String[] mention_roles, boolean mention_everyone) {
 		this.message = message;
 		loader = message.loader;
 		everyone = mention_everyone;
@@ -64,13 +65,14 @@ public class Mentions implements IMentions {
 		users = new HashMap<>();
 		roles = new HashMap<>();
 		for (UserJSON data : mentions) {
-			IUser user = loader.users.get(data.id);
+			IUser user = loader.users.get(SnowflakeUtil.parse(data.id));
 			if (user == null) user = loader.addUser(data);
-			users.put(data.id, user);
+			users.put(SnowflakeUtil.parse(data.id), user);
 		}
 		if (guild != null) {
-			for (RoleJSON data : mention_roles) {
-				roles.put(data.id, guild.getRoles().get(data.id));
+			for (String id : mention_roles) {
+				long idl = SnowflakeUtil.parse(id);
+				roles.put(idl, guild.getRoles().get(idl));
 			}
 		}
 	}
@@ -79,7 +81,6 @@ public class Mentions implements IMentions {
 	public IMessage getMessage() {
 		return message;
 	}
-
 
 	public boolean isMentioned() {
 		return isMentioned(loader.user);
@@ -99,7 +100,6 @@ public class Mentions implements IMentions {
 		return mentioned;
 	}
 
-
 	public boolean mentionedEveryone() {
 		return everyone;
 	}
@@ -111,11 +111,11 @@ public class Mentions implements IMentions {
 		for (UserJSON data : mentions) {
 			IUser user = loader.users.get(data.id);
 			if (user == null) user = loader.addUser(data);
-			users.put(data.id, user);
+			users.put(SnowflakeUtil.parse(data.id), user);
 		}
 		if (guild != null) {
 			for (RoleJSON data : mention_roles) {
-				roles.put(data.id, guild.getRoles().get(data.id));
+				roles.put(SnowflakeUtil.parse(data.id), guild.getRoles().get(data.id));
 			}
 		}
 	}

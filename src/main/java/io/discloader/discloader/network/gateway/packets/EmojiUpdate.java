@@ -37,7 +37,7 @@ public class EmojiUpdate extends AbstractHandler {
 				IGuildEmoji oldEmoji;
 				for (IGuildEmoji emoji : emojis.values()) {
 					oldEmoji = guild.getEmojis().get(emoji.getID());
-					if (emoji.getID().equals(oldEmoji.getID()) && !emoji.equals(oldEmoji)) {
+					if (emoji.getID() == oldEmoji.getID() && !emoji.equals(oldEmoji)) {
 						GuildEmojiUpdateEvent event = new GuildEmojiUpdateEvent(emoji, oldEmoji);
 						loader.emit(Events.GUILD_EMOJI_UPDATE, event);
 						loader.emit(event);

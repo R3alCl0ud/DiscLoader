@@ -149,7 +149,11 @@ public class DiscSocketListener extends WebSocketAdapter {
 
 		if (packet.op == OPCodes.DISPATCH) {
 			if (!handlers.containsKey(packet.t)) return;
-			handlers.get(packet.t).handle(packet);
+			try {
+				handlers.get(packet.t).handle(packet);
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
 		}
 	}
 

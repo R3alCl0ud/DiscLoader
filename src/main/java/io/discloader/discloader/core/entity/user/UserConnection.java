@@ -1,6 +1,7 @@
 package io.discloader.discloader.core.entity.user;
 
 import io.discloader.discloader.entity.user.IUserConnection;
+import io.discloader.discloader.entity.util.SnowflakeUtil;
 import io.discloader.discloader.network.json.ConnectionJSON;
 
 /**
@@ -10,12 +11,12 @@ public class UserConnection implements IUserConnection {
 
 	private String type;
 	private String name;
-	private String id;
+	private long id;
 
 	public UserConnection(ConnectionJSON data) {
 		type = data.type;
 		name = data.name;
-		id = data.id;
+		id = SnowflakeUtil.parse(data.id);
 	}
 
 	/**
@@ -33,7 +34,7 @@ public class UserConnection implements IUserConnection {
 	}
 
 	@Override
-	public String getID() {
+	public long getID() {
 		return id;
 	}
 }

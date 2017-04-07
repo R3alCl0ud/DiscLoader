@@ -23,7 +23,6 @@ public class ChannelUpdate extends AbstractHandler {
 	}
 
 	@Override
-	@SuppressWarnings({ "unchecked", "rawtypes" })
 	public void handle(SocketPacket packet) {
 		String d = gson.toJson(packet.d);
 		ChannelJSON data = gson.fromJson(d, ChannelJSON.class);
@@ -31,7 +30,7 @@ public class ChannelUpdate extends AbstractHandler {
 		IChannel oldChannel = loader.channels.get(data.id);
 		IChannel channel = null;
 		if (data.guild_id != null) {
-			guild = loader.guilds.get(data.guild_id);
+			guild = loader.getGuild(data.guild_id);
 			channel = loader.addChannel(data, guild);
 		} else {
 			channel = loader.addChannel(data);

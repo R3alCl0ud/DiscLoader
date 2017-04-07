@@ -19,7 +19,7 @@ public class MessageJSON {
 	public UserJSON author;
 
 	public UserJSON[] mentions;
-	public RoleJSON[] mention_roles;
+	public String[] mention_roles;
 	public EmbedJSON[] embeds;
 	public AttachmentJSON[] attachments;
 	public ReactionJSON[] reactions;

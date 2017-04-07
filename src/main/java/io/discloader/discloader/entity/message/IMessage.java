@@ -1,6 +1,6 @@
 package io.discloader.discloader.entity.message;
 
-import java.util.Date;
+import java.time.OffsetDateTime;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 
@@ -14,6 +14,7 @@ import io.discloader.discloader.entity.guild.IGuildMember;
 import io.discloader.discloader.entity.user.IUser;
 import io.discloader.discloader.entity.util.Permissions;
 import io.discloader.discloader.network.json.MessageJSON;
+import io.discloader.discloader.util.DLUtil;
 
 /**
  * Represents a message object on the api <br>
@@ -51,6 +52,12 @@ public interface IMessage extends ISnowflake {
 	 */
 	boolean canEdit();
 
+	/**
+	 * Deletes the message if the loader has suficient permissions
+	 * 
+	 * @see DLUtil.PermissionFlags
+	 * @return A Future that completes with {@literal this} when sucessfull
+	 */
 	CompletableFuture<IMessage> delete();
 
 	/**
@@ -79,13 +86,19 @@ public interface IMessage extends ISnowflake {
 
 	List<IMessageAttachment> getAttachments();
 
+	/**
+	 * The {@link IUser user} who authored the message
+	 * 
+	 * @return An {@link IUser} object representing the {@link IMessage
+	 *         message's} author.
+	 */
 	IUser getAuthor();
 
 	ITextChannel getChannel();
 
 	String getContent();
 
-	Date getEditedTimestamp();
+	OffsetDateTime getEditedAt();
 
 	/**
 	 * @return A List of {@link IMessageEmbed} objects sent with the message.
@@ -111,7 +124,7 @@ public interface IMessage extends ISnowflake {
 
 	List<IReaction> getReactions();
 
-	Date getTimestamp();
+	OffsetDateTime createdAt();
 
 	/**
 	 * @return {@code true} if pinned, otherwise {@code false}.

@@ -6,6 +6,7 @@ import io.discloader.discloader.core.entity.guild.GuildMember;
 import io.discloader.discloader.entity.guild.IGuild;
 import io.discloader.discloader.entity.guild.IGuildMember;
 import io.discloader.discloader.entity.user.IUser;
+import io.discloader.discloader.entity.util.SnowflakeUtil;
 import io.discloader.discloader.network.gateway.DiscSocket;
 import io.discloader.discloader.network.json.GuildMemberRemoveJSON;
 import io.discloader.discloader.util.DLUtil;
@@ -26,7 +27,7 @@ public class GuildBanAdd extends AbstractHandler {
 		GuildMemberRemoveJSON data = this.gson.fromJson(d, GuildMemberRemoveJSON.class);
 		IGuild guild = loader.guilds.get(data.guild_id);
 		IUser user = loader.addUser(data.user);
-		IGuildMember member = guild.getMember(data.user.id);
+		IGuildMember member = guild.getMember(SnowflakeUtil.parse(data.user.id));
 		if (member == null) {
 			member = new GuildMember(guild, user);
 		}

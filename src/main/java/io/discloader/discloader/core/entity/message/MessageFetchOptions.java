@@ -9,16 +9,17 @@ import io.discloader.discloader.entity.message.IMessage;
  * @author Perry Berman
  */
 public class MessageFetchOptions {
-	public String around;
-	public String before;
-	public String after;
+
+	public long around;
+	public long before;
+	public long after;
 	public int limit;
 
 	public MessageFetchOptions() {
 		limit = 50;
-		around = "";
-		after = "";
-		before = "";
+		// around;
+		// after = "";
+		// before = "";
 	}
 
 	public MessageFetchOptions setAfter(IMessage after) {
@@ -26,7 +27,7 @@ public class MessageFetchOptions {
 		return this;
 	}
 
-	public MessageFetchOptions setAfter(String after) {
+	public MessageFetchOptions setAfter(long after) {
 		this.after = after;
 		return this;
 	}
@@ -36,7 +37,7 @@ public class MessageFetchOptions {
 		return this;
 	}
 
-	public MessageFetchOptions setAround(String around) {
+	public MessageFetchOptions setAround(long around) {
 		this.around = around;
 		return this;
 	}
@@ -46,7 +47,7 @@ public class MessageFetchOptions {
 		return this;
 	}
 
-	public MessageFetchOptions setBefore(String before) {
+	public MessageFetchOptions setBefore(long before) {
 		this.before = before;
 		return this;
 	}

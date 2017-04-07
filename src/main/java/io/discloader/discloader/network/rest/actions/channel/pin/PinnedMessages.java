@@ -13,7 +13,7 @@ import io.discloader.discloader.util.DLUtil;
 import io.discloader.discloader.util.DLUtil.Endpoints;
 import io.discloader.discloader.util.DLUtil.Methods;
 
-public class PinnedMessages<T extends ITextChannel> extends RESTAction<Map<String, IMessage>> {
+public class PinnedMessages<T extends ITextChannel> extends RESTAction<Map<Long, IMessage>> {
 
 	private T channel;
 
@@ -22,7 +22,7 @@ public class PinnedMessages<T extends ITextChannel> extends RESTAction<Map<Strin
 		this.channel = channel;
 	}
 
-	public CompletableFuture<Map<String, IMessage>> execute() {
+	public CompletableFuture<Map<Long, IMessage>> execute() {
 		return super.execute(loader.rest.makeRequest(Endpoints.channelPins(channel.getID()), Methods.GET, true));
 	}
 
@@ -33,7 +33,7 @@ public class PinnedMessages<T extends ITextChannel> extends RESTAction<Map<Strin
 			return;
 		} else {
 			MessageJSON[] data = DLUtil.gson.fromJson(s, MessageJSON[].class);
-			HashMap<String, IMessage> messages = new HashMap<>();
+			HashMap<Long, IMessage> messages = new HashMap<>();
 			for (MessageJSON m : data) {
 				IMessage message = new Message<T>(channel, m);
 				channel.getMessages().put(message.getID(), message);

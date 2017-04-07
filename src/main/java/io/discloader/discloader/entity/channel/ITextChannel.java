@@ -23,8 +23,10 @@ public interface ITextChannel extends IChannel {
 	 * @param messages The messages to delete
 	 * @return A HashMap of the deleted messages if successful.
 	 */
-	// @SuppressWarnings("unchecked")
-	CompletableFuture<Map<String, IMessage>> deleteMessages(IMessage... messages);
+	CompletableFuture<Map<Long, IMessage>> deleteMessages(IMessage... messages);
+
+	// CompletableFuture<Map<Long, IMessage>> deleteMessages(Map<Long, IMessage>
+	// messages);
 
 	/**
 	 * Deletes multiple messages from the channel.
@@ -32,39 +34,24 @@ public interface ITextChannel extends IChannel {
 	 * @param messages A HashMap of messages to delete
 	 * @return A HashMap of the deleted messages if successful.
 	 */
-	CompletableFuture<Map<String, IMessage>> deleteMessages(Map<String, IMessage> messages);
+	CompletableFuture<Map<Long, IMessage>> deleteMessages(Map<Long, IMessage> messages);
 
 	/**
 	 * @param id The id of the message to fetch
 	 * @return a new message object
 	 */
-	CompletableFuture<IMessage> fetchMessage(String id);
+	CompletableFuture<IMessage> fetchMessage(long id);
 
 	/**
 	 * @return A HashMap of fetched messages
 	 */
-	<T extends ITextChannel> CompletableFuture<Map<String, IMessage>> fetchMessages();
+	<T extends ITextChannel> CompletableFuture<Map<Long, IMessage>> fetchMessages();
 
 	/**
 	 * @param options The fetch options to use
 	 * @return A HashMap of fetched messages
 	 */
-	<T extends ITextChannel> CompletableFuture<Map<String, IMessage>> fetchMessages(MessageFetchOptions options);
-
-	/**
-	 * @param id The Snowflake ID of the message
-	 * @return The cached message, or null if no message was found
-	 */
-	<T extends ITextChannel> IMessage getMessage(String id);
-
-	/**
-	 * Gets the channels cached messages
-	 * 
-	 * @return A HashMap of cached messages
-	 */
-	<T extends ITextChannel> Map<String, IMessage> getMessages();
-
-	Collection<IMessage> getMessageCollection();
+	<T extends ITextChannel> CompletableFuture<Map<Long, IMessage>> fetchMessages(MessageFetchOptions options);
 
 	/**
 	 * Downloads and caches a channel's pinned messages
@@ -72,7 +59,22 @@ public interface ITextChannel extends IChannel {
 	 * @return A Future that completes with a HashMap of the channel's pinned
 	 *         messages if successful.
 	 */
-	<T extends ITextChannel> CompletableFuture<Map<String, IMessage>> fetchPinnedMessages();
+	<T extends ITextChannel> CompletableFuture<Map<Long, IMessage>> fetchPinnedMessages();
+
+	/**
+	 * @param id The Snowflake ID of the message
+	 * @return The cached message, or null if no message was found
+	 */
+	<T extends ITextChannel> IMessage getMessage(String id);
+
+	Collection<IMessage> getMessageCollection();
+
+	/**
+	 * Gets the channels cached messages
+	 * 
+	 * @return A HashMap of cached messages
+	 */
+	<T extends ITextChannel> Map<Long, IMessage> getMessages();
 
 	/**
 	 * Checks if any of the channel's cached messages are pinned to the channel,
@@ -81,12 +83,12 @@ public interface ITextChannel extends IChannel {
 	 * @return A HashMap of pinned messages. Indexed by {@link Message#id
 	 *         message.id}.
 	 */
-	<T extends ITextChannel> Map<String, IMessage> getPinnedMessages();
+	<T extends ITextChannel> Map<Long, IMessage> getPinnedMessages();
 
 	/**
 	 * @return A HashMap of typing users. Indexed by {@link User#id}.
 	 */
-	Map<String, IUser> getTyping();
+	Map<Long, IUser> getTyping();
 
 	/**
 	 * Checks if a certain user is typing in this channel
@@ -136,7 +138,7 @@ public interface ITextChannel extends IChannel {
 	 * 
 	 * @return A Future that completes with null if successful.
 	 */
-	CompletableFuture<Map<String, IUser>> startTyping();
+	CompletableFuture<Map<Long, IUser>> startTyping();
 
 	/**
 	 * Unpins a message if it is pinned in the channel.

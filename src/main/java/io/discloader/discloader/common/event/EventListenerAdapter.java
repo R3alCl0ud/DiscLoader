@@ -99,7 +99,7 @@ public abstract class EventListenerAdapter implements IEventListener {
 	}
 
 	@Override
-	public void GuildEmojisUpdate(Map<String, IGuildEmoji> emojis) {
+	public void GuildEmojisUpdate(Map<Long, IGuildEmoji> emojis) {
 	}
 
 	@Override

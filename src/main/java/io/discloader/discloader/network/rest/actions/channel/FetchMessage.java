@@ -14,9 +14,9 @@ import io.discloader.discloader.util.DLUtil.Methods;
 public class FetchMessage<T extends ITextChannel> extends RESTAction<IMessage> {
 
 	public T channel;
-	public String messageID;
+	public long messageID;
 
-	public FetchMessage(T channel, String messageID) {
+	public FetchMessage(T channel, long messageID) {
 		super(channel.getLoader());
 		this.channel = channel;
 		this.messageID = messageID;

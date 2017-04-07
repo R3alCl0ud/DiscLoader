@@ -16,8 +16,8 @@ public class VoiceStateUpdate {
 	public boolean self_deaf;
 
 	public VoiceStateUpdate(IGuild guild, IVoiceChannel channel, boolean mute, boolean deaf) {
-		this.guild_id = guild.getID();
-		if (channel != null) channel_id = channel.getID();
+		this.guild_id = Long.toUnsignedString(guild.getID());
+		if (channel != null) channel_id = Long.toUnsignedString(channel.getID());
 		self_mute = mute;
 		self_deaf = deaf;
 	}
