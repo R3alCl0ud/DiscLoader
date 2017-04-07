@@ -3,7 +3,6 @@ package io.discloader.discloader.client.registry;
 import java.util.HashMap;
 
 import io.discloader.discloader.client.command.Command;
-import io.discloader.discloader.client.render.ResourceHandler;
 import io.discloader.discloader.client.render.texture.icon.CommandIcon;
 import io.discloader.discloader.client.render.texture.icon.GuildIcon;
 import io.discloader.discloader.client.render.texture.icon.UserIcon;
@@ -14,7 +13,7 @@ import io.discloader.discloader.client.render.texture.icon.UserIcon;
  */
 public class TextureRegistry {
 
-	public static final ResourceHandler resourceHandler = new ResourceHandler();
+	// public static final ResourceHandler resourceHandler = new ResourceHandler();
 	
 	private static HashMap<Integer, CommandIcon> commandIcons = new HashMap<Integer, CommandIcon>();
 	private static HashMap<String, UserIcon> userIcons = new HashMap<String, UserIcon>();

@@ -168,22 +168,24 @@ public class GuildChannel extends Channel implements IGuildChannel {
 		position = data.position;
 	}
 	
-	/*
-	 * (non-Javadoc)
-	 * @see io.discloader.discloader.entity.channel.IGuildChannel#getGuild()
-	 */
 	@Override
 	public IGuild getGuild() {
 		return guild;
 	}
 	
-	/*
-	 * (non-Javadoc)
-	 * @see io.discloader.discloader.entity.channel.IGuildChannel#getName()
-	 */
 	@Override
 	public String getName() {
 		return name;
+	}
+	
+	@Override
+	public CompletableFuture<IOverwrite> setOverwrite(IOverwrite overwrite) {
+		return new SetOverwrite(this, overwrite).execute();
+	}
+	
+	@Override
+	public int getPosition() {
+		return position;
 	}
 	
 }

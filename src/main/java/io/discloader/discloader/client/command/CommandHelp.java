@@ -4,6 +4,7 @@ import java.io.File;
 import java.util.Locale;
 
 import io.discloader.discloader.client.render.util.IIcon;
+import io.discloader.discloader.client.render.util.Resource;
 import io.discloader.discloader.common.event.message.MessageCreateEvent;
 import io.discloader.discloader.common.language.LanguageRegistry;
 import io.discloader.discloader.common.registry.CommandRegistry;
@@ -15,12 +16,12 @@ import io.discloader.discloader.util.DLUtil;
  * @author Perry Berman
  */
 public class CommandHelp extends Command {
-
+	
 	public CommandHelp() {
 		super();
 		setTextureName("discloader:help").setDescription("Displays information about the available commands").setUsage("help [<command>]");
 	}
-
+	
 	@Override
 	public void execute(MessageCreateEvent e, String[] args) {
 		IMessage message = e.getMessage();
@@ -32,11 +33,11 @@ public class CommandHelp extends Command {
 			if (command != null) {
 				File icon = DLUtil.MissingTexture;
 				IIcon iicon = command.getIcon();
-
+				
 				if (iicon != null && iicon.getFile() != null) {
 					icon = iicon.getFile();
 				}
-
+				
 				embed.setTitle(command.getUnlocalizedName()).setThumbnail(icon).addField("Description", this.getCommandDesc(command), true).addField("Usage", command.getUsage(), true);
 			}
 		} else if (args.length == 1 && args[0].length() > 0) {
@@ -64,7 +65,7 @@ public class CommandHelp extends Command {
 		System.out.println(DLUtil.gson.toJson(embed));
 		message.getChannel().sendEmbed(embed);
 	}
-
+	
 	private String getCommandDesc(Command command) {
 		String desc = LanguageRegistry.getLocalized(Locale.US, "command." + command.getUnlocalizedName() + ".desc");
 		if (desc == null || desc.length() < 1) {
@@ -72,5 +73,9 @@ public class CommandHelp extends Command {
 		}
 		return desc;
 	}
-
+	
+	public Resource getResourceLocation() {
+		return new Resource("discloader", "texture/commands/help.png");
+	}
+	
 }

@@ -10,18 +10,17 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipException;
 import java.util.zip.ZipFile;
 
-import io.discloader.discloader.client.registry.TextureRegistry;
 import io.discloader.discloader.common.language.Language;
 import io.discloader.discloader.common.language.LanguageRegistry;
 
 /**
- * Reads the mod jar as a ZipFile to load it's language files, and other stuff 
+ * Reads the mod jar as a ZipFile to load it's language files, and other stuff
  * 
  * @author Perry Berman
  * @since 0.0.3
  */
 public class ZipReader {
-
+	
 	public static void readZip(File zip) {
 		ZipFile zipFile = null;
 		try {
@@ -33,14 +32,13 @@ public class ZipReader {
 			if (zipFile != null) {
 				// read zip file
 				for (ZipEntry e : readEntries(zipFile.entries())) {
-				    
 					if (e.getName().endsWith(".lang")) { // the entry is a language file
 						InputStream is = zipFile.getInputStream(e);
 						Language lang = new Language(is, getLocale(e.getName()));
 						LanguageRegistry.registerLanguage(lang);
-					} else if ( e.getName().endsWith(".png")) { // the entry is an icon
-					    InputStream is = zipFile.getInputStream(e);
-					    TextureRegistry.resourceHandler.addResource(is, e);
+					} else if (e.getName().endsWith(".png")) { // the entry is an icon
+						InputStream is = zipFile.getInputStream(e);
+						// TextureRegistry.resourceHandler.addResource(is, e);
 					}
 				}
 			}
@@ -48,7 +46,7 @@ public class ZipReader {
 			e.printStackTrace();
 		}
 	}
-
+	
 	protected static ArrayList<ZipEntry> readEntries(Enumeration<? extends ZipEntry> enumeration) {
 		ArrayList<ZipEntry> entries = new ArrayList<ZipEntry>();
 		ZipEntry entry = null;
@@ -59,18 +57,18 @@ public class ZipReader {
 			}
 			entries.add(entry);
 		}
-
+		
 		return entries;
 	}
-
+	
 	protected static Locale getLocale(String s) {
 		s = s.substring(s.lastIndexOf('/') + 1, s.indexOf('.'));
 		s = s.replace('_', '-');
 		if (s.equals("en-US"))
 			return Locale.US;
-		else if(s.equals("en-UK"))
+		else if (s.equals("en-UK"))
 			return Locale.UK;
 		return Locale.US;
 	}
-
+	
 }

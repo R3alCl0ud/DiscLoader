@@ -96,14 +96,14 @@ public class Main {
                     token = args[i + 1];
                 } else {
                     LOGGER.severe("Expected argument after -t");
-                    System.exit(1);
+					// System.exit(1);
                 }
             } else if (args[i].equals("-p")) {
                 if (i + 1 < args.length) {
                     CommandHandler.prefix = args[i + 1];
                 } else {
                     LOGGER.severe("Expected argument after -p");
-                    System.exit(1);
+					// System.exit(1);
                 }
             } else if (args[i].equals("-s")) {
                 if (i + 1 < args.length) {
@@ -112,7 +112,7 @@ public class Main {
                     shards = Integer.parseInt(g[1], 10);
                 } else {
                     LOGGER.severe("Expected argument after -s");
-                    System.exit(1);
+					// System.exit(1);
                 }
             } else if (args[i].equals("-S")) {
                 if (i + 1 < args.length) {
@@ -120,7 +120,7 @@ public class Main {
                     shards = Integer.parseInt(args[i + 1], 10);
                 } else {
                     LOGGER.severe("Expected argument after -S");
-                    System.exit(1);
+					// System.exit(1);
                 }
             }
         }

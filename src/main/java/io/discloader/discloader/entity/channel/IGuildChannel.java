@@ -14,33 +14,18 @@ import io.discloader.discloader.entity.guild.IGuildMember;
 public interface IGuildChannel extends IChannel {
 	
 	/**
-	 * Gets the members that can view/join this channel
+	 * Creates a channel with the same information as this channel.
 	 * 
-	 * @return A HashMap of GuildMember with access to view the channel
+	 * @return A Future that completes with the new channel, if successful.
 	 */
-	Map<String, IGuildMember> getMembers();
+	CompletableFuture<? extends IGuildChannel> clone();
 	
 	/**
-	 * Gets all of the channel's {@link IOverwrite overwrites} that applies to a {@link GuildMember}
+	 * Deletes the channel from the guild
 	 * 
-	 * @param member The member of whom we are looking for overwrites that apply.
-	 * @author Perry Berman
-	 * @return A {@link Map} of overwrite objects, indexed by {@link IOverwrite#getID()}
-	 * @since 0.0.1
+	 * @return A Future that completes with the deleted channel if successful.
 	 */
-	Map<String, IOverwrite> overwritesOf(IGuildMember member);
-	
-	IOverwrite overwriteFor(Role role);
-	
-	/**
-	 * Evaluates the permissions for a member in the channel's {@link Guild}
-	 * 
-	 * @param iGuildMember The member whose permissions we are evaluating.
-	 * @return A new Permissions object that contains {@literal this}, the {@literal member}, and their evaluated permissions
-	 *         {@link Integer}. <br>
-	 *         null if the channel doesn't belong to a {@link Guild}
-	 */
-	IPermission permissionsFor(IGuildMember iGuildMember);
+	CompletableFuture<? extends IGuildChannel> delete();
 	
 	/**
 	 * Changes the channels settings
@@ -55,18 +40,42 @@ public interface IGuildChannel extends IChannel {
 	CompletableFuture<? extends IGuildChannel> edit(String name, String topic, int position, int bitrate, int userLimit);
 	
 	/**
-	 * Deletes the channel from the guild
-	 * 
-	 * @return A Future that completes with the deleted channel if successful.
+	 * @return
 	 */
-	CompletableFuture<? extends IGuildChannel> delete();
+	IGuild getGuild();
 	
 	/**
-	 * Creates a channel with the same information as this channel.
+	 * Gets the members that can view/join this channel
 	 * 
-	 * @return A Future that completes with the new channel, if successful.
+	 * @return A HashMap of GuildMember with access to view the channel
 	 */
-	CompletableFuture<? extends IGuildChannel> clone();
+	Map<String, IGuildMember> getMembers();
+	
+	String getName();
+	
+	int getPosition();
+	
+	IOverwrite overwriteFor(Role role);
+	
+	/**
+	 * Gets all of the channel's {@link IOverwrite overwrites} that applies to a {@link GuildMember}
+	 * 
+	 * @param member The member of whom we are looking for overwrites that apply.
+	 * @author Perry Berman
+	 * @return A {@link Map} of overwrite objects, indexed by {@link IOverwrite#getID()}
+	 * @since 0.0.1
+	 */
+	Map<String, IOverwrite> overwritesOf(IGuildMember member);
+	
+	/**
+	 * Evaluates the permissions for a member in the channel's {@link Guild}
+	 * 
+	 * @param iGuildMember The member whose permissions we are evaluating.
+	 * @return A new Permissions object that contains {@literal this}, the {@literal member}, and their evaluated permissions
+	 *         {@link Integer}. <br>
+	 *         null if the channel doesn't belong to a {@link Guild}
+	 */
+	IPermission permissionsFor(IGuildMember iGuildMember);
 	
 	/**
 	 * Sets the name of the channel.
@@ -76,19 +85,7 @@ public interface IGuildChannel extends IChannel {
 	 */
 	CompletableFuture<? extends IGuildChannel> setName(String name);
 	
-	/**
-	 * Permission setting for a member in the channel's {@link Guild}
-	 * 
-	 * <pre>
-	 * setPermissions(READ_MESSAGE &amp; SEND_MESSAGE, 0x00000000, role);
-	 * </pre>
-	 * 
-	 * @param allow Raw integer representations for allowed permissions.
-	 * @param deny Raw integer representations for denied permissions.
-	 * @param role The role to set an overwrite for.
-	 * @return A Future that completes with the role's new permission overwrite if successful.
-	 */
-	CompletableFuture<IOverwrite> setPermissions(int allow, int deny, Role role);
+	CompletableFuture<IOverwrite> setOverwrite(IOverwrite overwrite);
 	
 	/**
 	 * Permission setting for a member in the channel's {@link Guild}
@@ -105,17 +102,24 @@ public interface IGuildChannel extends IChannel {
 	CompletableFuture<IOverwrite> setPermissions(int allow, int deny, GuildMember member);
 	
 	/**
+	 * Permission setting for a member in the channel's {@link Guild}
+	 * 
+	 * <pre>
+	 * setPermissions(READ_MESSAGE &amp; SEND_MESSAGE, 0x00000000, role);
+	 * </pre>
+	 * 
+	 * @param allow Raw integer representations for allowed permissions.
+	 * @param deny Raw integer representations for denied permissions.
+	 * @param role The role to set an overwrite for.
+	 * @return A Future that completes with the role's new permission overwrite if successful.
+	 */
+	CompletableFuture<IOverwrite> setPermissions(int allow, int deny, Role role);
+	
+	/**
 	 * Sets position in a channel's {@link Guild}
 	 * 
 	 * @param position The new possition of the channel
 	 * @return A completed future with the position set.
 	 */
 	CompletableFuture<? extends IGuildChannel> setPosition(int position);
-	
-	/**
-	 * @return
-	 */
-	IGuild getGuild();
-	
-	String getName();
 }
