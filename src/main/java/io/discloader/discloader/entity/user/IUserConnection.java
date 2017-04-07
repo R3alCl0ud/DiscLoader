@@ -1,6 +1,6 @@
 package io.discloader.discloader.entity.user;
 
-import io.discloader.discloader.entity.ISnowflake;
+import io.discloader.discloader.entity.util.ISnowflake;
 
 /**
  * @author Perry Berman

@@ -6,7 +6,7 @@ import io.discloader.discloader.core.entity.guild.GuildMember;
 import io.discloader.discloader.core.entity.guild.Role;
 import io.discloader.discloader.core.entity.message.Message;
 import io.discloader.discloader.entity.IPermission;
-import io.discloader.discloader.entity.ISnowflake;
+import io.discloader.discloader.entity.util.ISnowflake;
 
 /**
  * @author Perry Berman

@@ -3,8 +3,6 @@ package io.discloader.discloader.entity.util;
 import java.time.Instant;
 import java.time.OffsetDateTime;
 
-import io.discloader.discloader.entity.ISnowflake;
-
 public class SnowflakeUtil {
 
 	public static final long DISCORD_EPOCH = 1420070400000L;

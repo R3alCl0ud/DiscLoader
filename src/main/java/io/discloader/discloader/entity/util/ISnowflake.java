@@ -1,4 +1,4 @@
-package io.discloader.discloader.entity;
+package io.discloader.discloader.entity.util;
 
 import io.discloader.discloader.entity.channel.IChannel;
 import io.discloader.discloader.entity.guild.IGuildEmoji;

@@ -1,6 +1,7 @@
 package io.discloader.discloader.entity;
 
 import io.discloader.discloader.common.DiscLoader;
+import io.discloader.discloader.entity.util.ISnowflake;
 
 /**
  * @author Perry Berman

@@ -1,4 +1,4 @@
-package io.discloader.discloader.entity;
+package io.discloader.discloader.entity.util;
 
 import java.time.OffsetDateTime;
 

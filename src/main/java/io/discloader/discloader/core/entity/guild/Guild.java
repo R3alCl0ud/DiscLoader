@@ -176,7 +176,7 @@ public class Guild implements IGuild {
 
 	/**
 	 * A Private HashMap of the guild's raw voice states. Indexed by
-	 * {@link GuildMember#id}
+	 * {@link GuildMember#getID}
 	 * 
 	 * @author Perry Berman
 	 */
@@ -916,14 +916,14 @@ public class Guild implements IGuild {
 		rawStates.put(state.member.getID(), state);
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * @see
-	 * io.discloader.discloader.entity.guild.IGuild#getMember(java.lang.String)
-	 */
 	@Override
 	public IGuildMember getMember(long memberID) {
 		return members.get(memberID);
+	}
+
+	@Override
+	public IGuildMember getMember(String memberID) {
+		return getMember(SnowflakeUtil.parse(memberID));
 	}
 
 	@Override
@@ -931,10 +931,6 @@ public class Guild implements IGuild {
 		return presences.get(memberID);
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * @see io.discloader.discloader.entity.guild.IGuild#getName()
-	 */
 	@Override
 	public String getName() {
 		return name;

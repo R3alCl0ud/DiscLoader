@@ -6,12 +6,12 @@ import java.util.concurrent.CompletableFuture;
 
 import io.discloader.discloader.common.DiscLoader;
 import io.discloader.discloader.core.entity.RichEmbed;
-import io.discloader.discloader.entity.ISnowflake;
 import io.discloader.discloader.entity.channel.IGuildTextChannel;
 import io.discloader.discloader.entity.channel.ITextChannel;
 import io.discloader.discloader.entity.guild.IGuild;
 import io.discloader.discloader.entity.guild.IGuildMember;
 import io.discloader.discloader.entity.user.IUser;
+import io.discloader.discloader.entity.util.ISnowflake;
 import io.discloader.discloader.entity.util.Permissions;
 import io.discloader.discloader.network.json.MessageJSON;
 import io.discloader.discloader.util.DLUtil;

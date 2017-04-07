@@ -388,9 +388,9 @@ public class DiscLoader {
 	}
 
 	public IGuild addGuild(GuildJSON guild) {
-		boolean exists = guilds.containsKey(guild.id);
-
 		IGuild newGuild = new Guild(this, guild);
+
+		boolean exists = guilds.containsKey(newGuild.getID());
 		try {
 			guilds.put(newGuild.getID(), newGuild);
 		} catch (Exception e) {

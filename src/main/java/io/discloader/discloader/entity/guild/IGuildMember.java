@@ -6,9 +6,9 @@ import java.util.concurrent.CompletableFuture;
 import io.discloader.discloader.common.DiscLoader;
 import io.discloader.discloader.entity.IPermission;
 import io.discloader.discloader.entity.IPresence;
-import io.discloader.discloader.entity.ISnowflake;
 import io.discloader.discloader.entity.channel.IGuildVoiceChannel;
 import io.discloader.discloader.entity.user.IUser;
+import io.discloader.discloader.entity.util.ISnowflake;
 import io.discloader.discloader.entity.voice.VoiceState;
 
 /**

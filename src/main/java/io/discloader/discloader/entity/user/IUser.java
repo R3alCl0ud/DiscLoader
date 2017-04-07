@@ -4,8 +4,8 @@ import java.util.concurrent.CompletableFuture;
 
 import io.discloader.discloader.client.render.util.IIcon;
 import io.discloader.discloader.common.DiscLoader;
-import io.discloader.discloader.entity.ICreationTime;
-import io.discloader.discloader.entity.ISnowflake;
+import io.discloader.discloader.entity.util.ICreationTime;
+import io.discloader.discloader.entity.util.ISnowflake;
 import io.discloader.discloader.network.json.UserJSON;
 
 /**

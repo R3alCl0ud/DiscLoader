@@ -19,7 +19,7 @@ import io.discloader.discloader.client.render.util.Resource;
 import io.discloader.discloader.common.DiscLoader;
 import io.discloader.discloader.common.language.Language;
 import io.discloader.discloader.core.entity.Permission;
-import io.discloader.discloader.entity.ISnowflake;
+import io.discloader.discloader.entity.util.ISnowflake;
 import io.discloader.discloader.network.gateway.DiscSocketListener;
 
 /**

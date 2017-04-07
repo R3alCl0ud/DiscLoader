@@ -7,11 +7,11 @@ import java.util.concurrent.CompletableFuture;
 import io.discloader.discloader.common.DiscLoader;
 import io.discloader.discloader.common.exceptions.PermissionsException;
 import io.discloader.discloader.entity.IPresence;
-import io.discloader.discloader.entity.ISnowflake;
 import io.discloader.discloader.entity.channel.IGuildChannel;
 import io.discloader.discloader.entity.channel.IGuildTextChannel;
 import io.discloader.discloader.entity.channel.IGuildVoiceChannel;
 import io.discloader.discloader.entity.user.IUser;
+import io.discloader.discloader.entity.util.ISnowflake;
 import io.discloader.discloader.entity.util.Permissions;
 import io.discloader.discloader.entity.voice.VoiceState;
 import io.discloader.discloader.network.json.GuildJSON;
@@ -46,6 +46,8 @@ public interface IGuild extends ISnowflake {
 	int getMemberCount();
 
 	IGuildMember getMember(long memberID);
+	
+	IGuildMember getMember(String memberID);
 
 	Map<Long, IGuildMember> getMembers();
 
