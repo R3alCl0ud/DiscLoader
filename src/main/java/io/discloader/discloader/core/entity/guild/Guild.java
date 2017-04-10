@@ -4,7 +4,9 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 
@@ -23,6 +25,8 @@ import io.discloader.discloader.common.exceptions.GuildSyncException;
 import io.discloader.discloader.common.exceptions.MissmatchException;
 import io.discloader.discloader.common.exceptions.PermissionsException;
 import io.discloader.discloader.common.exceptions.UnauthorizedException;
+import io.discloader.discloader.common.registry.EntityRegistry;
+import io.discloader.discloader.common.registry.FactoryManager;
 import io.discloader.discloader.core.entity.Permission;
 import io.discloader.discloader.core.entity.Presence;
 import io.discloader.discloader.core.entity.channel.Channel;
@@ -39,6 +43,7 @@ import io.discloader.discloader.entity.channel.IVoiceChannel;
 import io.discloader.discloader.entity.guild.IGuild;
 import io.discloader.discloader.entity.guild.IGuildEmoji;
 import io.discloader.discloader.entity.guild.IGuildMember;
+import io.discloader.discloader.entity.guild.IIntegration;
 import io.discloader.discloader.entity.guild.IRole;
 import io.discloader.discloader.entity.guild.VoiceRegion;
 import io.discloader.discloader.entity.invite.Invite;
@@ -219,6 +224,35 @@ public class Guild implements IGuild {
 	 * Method used internally by DiscLoader to make a new {@link GuildMember}
 	 * object when a member's data is recieved
 	 * 
+	 * @param user the member's {@link User} object.
+	 * @param roles the member's role's ids.
+	 * @param deaf is the member deafened.
+	 * @param mute is the member muted.
+	 * @param nick The member's nickname.
+	 * @param emitEvent if a {@code GuildMemberAddEvent} should be fired by the
+	 *            client.
+	 * @return The {@link GuildMember} that was instantiated.
+	 */
+	@Override
+	public GuildMember addMember(IUser user, String[] roles, boolean deaf, boolean mute, String nick, boolean emitEvent) {
+		boolean exists = this.members.containsKey(user.getID());
+		GuildMember member = new GuildMember(this, user, roles, deaf, mute, nick);
+		this.members.put(member.getID(), member);
+		if (this.loader.ready == true && emitEvent && !exists) {
+			GuildMemberAddEvent event = new GuildMemberAddEvent(member);
+			this.loader.emit(DLUtil.Events.GUILD_MEMBER_ADD, event);
+			for (IEventListener e : loader.handlers) {
+				e.GuildMemberAdd(event);
+			}
+		}
+
+		return member;
+	}
+
+	/**
+	 * Method used internally by DiscLoader to make a new {@link GuildMember}
+	 * object when a member's data is recieved
+	 * 
 	 * @param data The member's data
 	 * @return The {@link GuildMember} that was instantiated.
 	 */
@@ -246,35 +280,6 @@ public class Guild implements IGuild {
 			loader.emit(DLUtil.Events.GUILD_MEMBER_ADD, event);
 			loader.emit(event);
 		}
-		return member;
-	}
-
-	/**
-	 * Method used internally by DiscLoader to make a new {@link GuildMember}
-	 * object when a member's data is recieved
-	 * 
-	 * @param user the member's {@link User} object.
-	 * @param roles the member's role's ids.
-	 * @param deaf is the member deafened.
-	 * @param mute is the member muted.
-	 * @param nick The member's nickname.
-	 * @param emitEvent if a {@code GuildMemberAddEvent} should be fired by the
-	 *            client.
-	 * @return The {@link GuildMember} that was instantiated.
-	 */
-	@Override
-	public GuildMember addMember(IUser user, String[] roles, boolean deaf, boolean mute, String nick, boolean emitEvent) {
-		boolean exists = this.members.containsKey(user.getID());
-		GuildMember member = new GuildMember(this, user, roles, deaf, mute, nick);
-		this.members.put(member.getID(), member);
-		if (this.loader.ready == true && emitEvent && !exists) {
-			GuildMemberAddEvent event = new GuildMemberAddEvent(member);
-			this.loader.emit(DLUtil.Events.GUILD_MEMBER_ADD, event);
-			for (IEventListener e : loader.handlers) {
-				e.GuildMemberAdd(event);
-			}
-		}
-
 		return member;
 	}
 
@@ -563,18 +568,23 @@ public class Guild implements IGuild {
 		return SnowflakeUtil.parse(id);
 	}
 
+	@Override
+	public CompletableFuture<List<IIntegration>> getIntegrations() {
+		return null;
+	}
+
 	/**
 	 * Retrieves the guild's invites from Discord's API
 	 * 
 	 * @return A Future that completes with a HashMap of Invite objects, indexed
 	 *         by {@link Invite#code}, if successful.
 	 */
-	public CompletableFuture<HashMap<Long, IInvite>> getInvites() {
-		CompletableFuture<HashMap<Long, IInvite>> future = new CompletableFuture<>();
-		HashMap<Long, IInvite> invites = new HashMap<>();
+	public CompletableFuture<List<IInvite>> getInvites() {
+		CompletableFuture<List<IInvite>> future = new CompletableFuture<>();
+		List<IInvite> invites = new ArrayList<>();
 		loader.rest.getInvites(this).thenAcceptAsync(action -> {
-			for (InviteJSON i : action) {
-				invites.put(SnowflakeUtil.parse(i.code), new Invite(i, loader));
+			for (InviteJSON data : action) {
+				invites.add(FactoryManager.instance.getInviteFactory().buildInvite(data));
 			}
 			future.complete(invites);
 		});
@@ -584,6 +594,16 @@ public class Guild implements IGuild {
 	@Override
 	public DiscLoader getLoader() {
 		return loader;
+	}
+
+	@Override
+	public IGuildMember getMember(long memberID) {
+		return members.get(memberID);
+	}
+
+	@Override
+	public IGuildMember getMember(String memberID) {
+		return getMember(SnowflakeUtil.parse(memberID));
 	}
 
 	@Override
@@ -600,6 +620,11 @@ public class Guild implements IGuild {
 		return members;
 	}
 
+	@Override
+	public String getName() {
+		return name;
+	}
+
 	/**
 	 * Returns a {@link GuildMember} object repersenting the guild's owner
 	 * 
@@ -607,6 +632,11 @@ public class Guild implements IGuild {
 	 */
 	public IGuildMember getOwner() {
 		return members.get(ownerID);
+	}
+
+	@Override
+	public IPresence getPresence(long memberID) {
+		return presences.get(memberID);
 	}
 
 	/*
@@ -689,6 +719,11 @@ public class Guild implements IGuild {
 	@Override
 	public int hashCode() {
 		return id.hashCode();
+	}
+
+	@Override
+	public boolean hasPermission(Permissions permissions) {
+		return isOwner() || getCurrentMember().getPermissions().hasPermission(permissions);
 	}
 
 	/*
@@ -850,8 +885,8 @@ public class Guild implements IGuild {
 			}
 			ProgressLogger.step(3, 7, "Caching Channels");
 			if (data.channels != null && data.channels.length > 0) {
-				for (ChannelJSON channel : data.channels) {
-					this.loader.addChannel(channel, this);
+				for (ChannelJSON channelData : data.channels) {
+					EntityRegistry.addChannel(channelData);
 				}
 			}
 			ProgressLogger.step(4, 7, "Caching Presences");
@@ -914,31 +949,6 @@ public class Guild implements IGuild {
 	@Override
 	public void updateVoiceState(VoiceState state) {
 		rawStates.put(state.member.getID(), state);
-	}
-
-	@Override
-	public IGuildMember getMember(long memberID) {
-		return members.get(memberID);
-	}
-
-	@Override
-	public IGuildMember getMember(String memberID) {
-		return getMember(SnowflakeUtil.parse(memberID));
-	}
-
-	@Override
-	public IPresence getPresence(long memberID) {
-		return presences.get(memberID);
-	}
-
-	@Override
-	public String getName() {
-		return name;
-	}
-
-	@Override
-	public boolean hasPermission(Permissions permissions) {
-		return isOwner() || getCurrentMember().getPermissions().hasPermission(permissions);
 	}
 
 }

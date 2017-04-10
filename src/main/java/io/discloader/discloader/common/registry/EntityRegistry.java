@@ -12,7 +12,9 @@ import io.discloader.discloader.entity.channel.ITextChannel;
 import io.discloader.discloader.entity.channel.IVoiceChannel;
 import io.discloader.discloader.entity.guild.IGuild;
 import io.discloader.discloader.entity.user.IUser;
+import io.discloader.discloader.entity.util.SnowflakeUtil;
 import io.discloader.discloader.entity.voice.VoiceConnection;
+import io.discloader.discloader.network.json.ChannelJSON;
 import io.discloader.discloader.network.json.GuildJSON;
 import io.discloader.discloader.network.json.UserJSON;
 
@@ -27,6 +29,31 @@ public class EntityRegistry {
 	private static final Map<Long, IGroupChannel> groupChannels = new HashMap<>();
 	private static final Map<Long, IPrivateChannel> privateChannels = new HashMap<>();
 	private static final Map<Long, IGuildChannel> guildChannels = new HashMap<>();
+
+	public static IChannel addChannel(ChannelJSON data) {
+		IChannel channel = FactoryManager.instance.getChannelFactory().buildChannel(data);
+		switch (channel.getType()) {
+		case DM:
+			privateChannels.put(channel.getID(), (IPrivateChannel) channel);
+			textChannels.put(channel.getID(), (ITextChannel) channel);
+			break;
+		case GROUPDM:
+			groupChannels.put(channel.getID(), (IGroupChannel) channel);
+			textChannels.put(channel.getID(), (ITextChannel) channel);
+			break;
+		case TEXT:
+			textChannels.put(channel.getID(), (ITextChannel) channel);
+			break;
+		case VOICE:
+			voiceChannels.put(channel.getID(), (IVoiceChannel) channel);
+			break;
+		default:
+			break;
+		}
+		channels.put(channel.getID(), channel);
+		if (channel instanceof IGuildChannel) guildChannels.put(channel.getID(), (IGuildChannel) channel);
+		return channel;
+	}
 
 	public static IGuild addGuild(GuildJSON data) {
 		IGuild guild = FactoryManager.instance.getGuildFactory().buildGuild(data);
@@ -50,7 +77,7 @@ public class EntityRegistry {
 	/**
 	 * @return the groupchannels
 	 */
-	public static Collection<IGroupChannel> getGroupchannels() {
+	public static Collection<IGroupChannel> getGroupChannels() {
 		return groupChannels.values();
 	}
 
@@ -58,10 +85,14 @@ public class EntityRegistry {
 		return guilds.get(guildID);
 	}
 
+	public static IGuild getGuildByID(String guildID) {
+		return guilds.get(SnowflakeUtil.parse(guildID));
+	}
+
 	/**
 	 * @return the guildchannels
 	 */
-	public static Collection<IGuildChannel> getGuildchannels() {
+	public static Collection<IGuildChannel> getGuildChannels() {
 		return guildChannels.values();
 	}
 
@@ -72,14 +103,14 @@ public class EntityRegistry {
 	/**
 	 * @return the privatechannels
 	 */
-	public static Collection<IPrivateChannel> getPrivatechannels() {
+	public static Collection<IPrivateChannel> getPrivateChannels() {
 		return privateChannels.values();
 	}
 
 	/**
 	 * @return the textchannels
 	 */
-	public static Collection<ITextChannel> getTextchannels() {
+	public static Collection<ITextChannel> getTextChannels() {
 		return textChannels.values();
 	}
 
@@ -97,18 +128,26 @@ public class EntityRegistry {
 	/**
 	 * @return the voicechannels
 	 */
-	public static Collection<IVoiceChannel> getVoicechannels() {
+	public static Collection<IVoiceChannel> getVoiceChannels() {
 		return voiceChannels.values();
 	}
 
 	/**
 	 * @return the voiceconnections
 	 */
-	public static Collection<VoiceConnection> getVoiceconnections() {
+	public static Collection<VoiceConnection> getVoiceConnections() {
 		return voiceConnections.values();
 	}
 
 	public static boolean guildExists(IGuild guild) {
 		return guilds.containsValue(guild);
+	}
+
+	public static boolean userExists(long userID) {
+		return users.containsKey(userID);
+	}
+
+	public static boolean userExists(String userID) {
+		return users.containsKey(SnowflakeUtil.parse(userID));
 	}
 }
