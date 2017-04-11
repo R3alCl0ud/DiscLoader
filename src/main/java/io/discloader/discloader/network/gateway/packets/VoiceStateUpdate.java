@@ -26,9 +26,9 @@ public class VoiceStateUpdate extends AbstractHandler {
 	@Override
 	public void handle(SocketPacket packet) {
 		String d = this.gson.toJson(packet.d);
-		System.out.println(d);
 		VoiceStateJSON data = this.gson.fromJson(d, VoiceStateJSON.class);
 		IGuild guild = EntityRegistry.getGuildByID(data.guild_id);
+		if (guild.getMember(data.user_id) == null) return;
 		VoiceConnection connection = EntityRegistry.getVoiceConnectionByID(guild.getID());
 		if (connection != null && connection.getUserID().equals(data.user_id)) {
 			connection.setSessionID(data.session_id);

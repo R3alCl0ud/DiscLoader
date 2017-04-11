@@ -130,7 +130,7 @@ public class Message<T extends ITextChannel> implements IMessage {
 			}
 		} else {
 			UserJSON wh = new UserJSON();
-			wh.id = data.webhook_id;
+			wh.id = data.webhook_id == null ? "0" : data.webhook_id;
 			author = EntityRegistry.addUser(wh);
 		}
 		embeds = new ArrayList<>();

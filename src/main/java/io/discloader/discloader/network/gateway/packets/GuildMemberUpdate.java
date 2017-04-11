@@ -1,6 +1,5 @@
 package io.discloader.discloader.network.gateway.packets;
 
-import io.discloader.discloader.common.event.IEventListener;
 import io.discloader.discloader.common.event.guild.member.GuildMemberUpdateEvent;
 import io.discloader.discloader.common.registry.EntityRegistry;
 import io.discloader.discloader.core.entity.guild.GuildMember;
@@ -22,7 +21,7 @@ public class GuildMemberUpdate extends AbstractHandler {
 
 	@Override
 	public void handle(SocketPacket packet) {
-		String d = this.gson.toJson(packet);
+		String d = this.gson.toJson(packet.d);
 		MemberJSON data = this.gson.fromJson(d, MemberJSON.class);
 		IGuild guild = EntityRegistry.getGuildByID(data.guild_id);
 		IGuildMember member = guild.getMember(SnowflakeUtil.parse(data.user.id));

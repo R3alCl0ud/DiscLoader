@@ -18,7 +18,6 @@ import io.discloader.discloader.client.registry.TextureRegistry;
 import io.discloader.discloader.client.render.texture.icon.GuildIcon;
 import io.discloader.discloader.client.render.texture.icon.GuildSplash;
 import io.discloader.discloader.common.DiscLoader;
-import io.discloader.discloader.common.event.IEventListener;
 import io.discloader.discloader.common.event.guild.member.GuildMemberAddEvent;
 import io.discloader.discloader.common.exceptions.AccountTypeException;
 import io.discloader.discloader.common.exceptions.GuildSyncException;

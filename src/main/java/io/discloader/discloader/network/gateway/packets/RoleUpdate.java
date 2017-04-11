@@ -5,6 +5,7 @@ package io.discloader.discloader.network.gateway.packets;
 
 import io.discloader.discloader.common.event.IEventListener;
 import io.discloader.discloader.common.event.guild.role.GuildRoleUpdateEvent;
+import io.discloader.discloader.common.registry.EntityRegistry;
 import io.discloader.discloader.entity.guild.IGuild;
 import io.discloader.discloader.entity.guild.IRole;
 import io.discloader.discloader.network.gateway.DiscSocket;
@@ -25,7 +26,7 @@ public class RoleUpdate extends AbstractHandler {
 	public void handle(SocketPacket packet) {
 		String d = this.gson.toJson(packet.d);
 		Packet data = this.gson.fromJson(d, Packet.class);
-		IGuild guild = this.loader.guilds.get(data.guild_id);
+		IGuild guild = EntityRegistry.getGuildByID(data.guild_id);
 		IRole oldRole = guild.getRoles().get(data.role.id);
 		IRole role = guild.addRole(data.role);
 		GuildRoleUpdateEvent event = new GuildRoleUpdateEvent(role, oldRole);

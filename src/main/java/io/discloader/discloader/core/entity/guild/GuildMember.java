@@ -72,7 +72,7 @@ public class GuildMember implements IGuildMember {
 		user = EntityRegistry.addUser(data.user);
 		this.guild = guild;
 		nick = data.nick != null ? data.nick : user.getUsername();
-		joinedAt = OffsetDateTime.parse(data.joined_at);
+		joinedAt = data.joined_at == null ? user.createdAt() : OffsetDateTime.parse(data.joined_at);
 		roleIDs = data.roles != null ? data.roles : new String[] {};
 
 		deaf = data.deaf;
@@ -87,15 +87,15 @@ public class GuildMember implements IGuildMember {
 
 		roleIDs = new String[] {};
 
-		joinedAt = OffsetDateTime.from(Instant.now());
+		joinedAt = user.createdAt();
 	}
 
-	public GuildMember(Guild guild, IUser user2, String[] roles, boolean deaf, boolean mute, String nick) {
-		this.user = user2;
+	public GuildMember(Guild guild, IUser user, String[] roles, boolean deaf, boolean mute, String nick) {
+		this.user = user;
 		this.guild = guild;
-		this.nick = nick != null ? nick : user2.getUsername();
+		this.nick = nick != null ? nick : user.getUsername();
 		roleIDs = roles != null ? roles : new String[] {};
-		joinedAt = OffsetDateTime.from(Instant.now());
+		joinedAt = user.createdAt();
 		this.deaf = deaf;
 		this.mute = deaf || mute;
 	}
@@ -418,6 +418,11 @@ public class GuildMember implements IGuildMember {
 		if (!guild.isOwner() && role.getPosition() >= guild.getCurrentMember().getHighestRole().getPosition()) throw new PermissionsException("Cannot take away roles higher than your's");
 
 		return getLoader().rest.takeRole(this, role);
+	}
+
+	@Override
+	public String toString() {
+		return user.toString();
 	}
 
 	@Override

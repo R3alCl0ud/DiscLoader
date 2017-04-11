@@ -54,7 +54,7 @@ public class EntityRegistry {
 	}
 
 	public static IUser addUser(UserJSON data) {
-		if (userExists(data.id)) return getUserByID(data.id);
+		if (userExists(data.id == null ? "0" : data.id)) return getUserByID(data.id == null ? "0" : data.id);
 		IUser user = FactoryManager.instance.getUserFactory().buildUser(data);
 		users.put(user.getID(), user);
 		return user;
@@ -178,6 +178,10 @@ public class EntityRegistry {
 
 	public static void removeGuild(IGuild guild) {
 		guilds.remove(guild.getID());
+	}
+
+	public static void removeChannel(IChannel channel) {
+		
 	}
 
 	public static boolean userExists(long userID) {

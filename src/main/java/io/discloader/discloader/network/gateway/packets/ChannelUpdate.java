@@ -35,7 +35,6 @@ public class ChannelUpdate extends AbstractHandler {
 		} else {
 			channel = EntityRegistry.addChannel(data);
 		}
-		System.out.println(channel != null);
 		if (oldChannel instanceof ITextChannel) {
 			ITextChannel oitc = (ITextChannel) oldChannel, itc = (ITextChannel) channel;
 			for (IMessage message : oitc.getMessages().values()) {
