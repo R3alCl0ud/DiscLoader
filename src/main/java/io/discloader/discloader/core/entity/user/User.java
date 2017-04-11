@@ -63,7 +63,7 @@ public class User implements IUser {
 	public User(DiscLoader loader, UserJSON user) {
 		this.loader = loader;
 
-		this.id = SnowflakeUtil.parse(user.id);
+		this.id = SnowflakeUtil.parse(user.id == null ? "0" : user.id);
 
 		if (user.username != null) {
 			this.setup(user);

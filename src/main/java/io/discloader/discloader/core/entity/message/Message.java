@@ -6,10 +6,10 @@ import java.util.List;
 import java.util.concurrent.CompletableFuture;
 
 import io.discloader.discloader.common.DiscLoader;
+import io.discloader.discloader.common.registry.EntityRegistry;
 import io.discloader.discloader.core.entity.RichEmbed;
 import io.discloader.discloader.core.entity.channel.Channel;
-import io.discloader.discloader.core.entity.channel.PrivateChannel;
-import io.discloader.discloader.core.entity.channel.TextChannel;
+import io.discloader.discloader.entity.channel.IGuildTextChannel;
 import io.discloader.discloader.entity.channel.ITextChannel;
 import io.discloader.discloader.entity.guild.IGuild;
 import io.discloader.discloader.entity.guild.IGuildMember;
@@ -22,6 +22,7 @@ import io.discloader.discloader.entity.user.IUser;
 import io.discloader.discloader.entity.util.ISnowflake;
 import io.discloader.discloader.entity.util.SnowflakeUtil;
 import io.discloader.discloader.network.json.MessageJSON;
+import io.discloader.discloader.network.json.UserJSON;
 import io.discloader.discloader.network.rest.actions.channel.pin.PinMessage;
 import io.discloader.discloader.network.rest.actions.channel.pin.UnpinMessage;
 import io.discloader.discloader.network.rest.actions.message.DeleteMessage;
@@ -116,21 +117,22 @@ public class Message<T extends ITextChannel> implements IMessage {
 
 		this.channel = channel;
 
-		if (channel.isPrivate()) {
-			PrivateChannel privateChannel = (PrivateChannel) channel;
-			loader = privateChannel.getLoader();
-		} else {
-			TextChannel textChannel = (TextChannel) channel;
-			loader = textChannel.getLoader();
-			guild = textChannel.getGuild();
+		loader = DiscLoader.getDiscLoader();
+		if (channel != null && channel instanceof IGuildTextChannel) {
+			guild = ((IGuildTextChannel) channel).getGuild();
 		}
 
-		if (!loader.users.containsKey(data.author.id)) {
-			author = loader.addUser(data.author);
+		if (data.author != null) {
+			if (!EntityRegistry.userExists(data.author.id)) {
+				author = EntityRegistry.addUser(data.author);
+			} else {
+				author = EntityRegistry.getUserByID(data.author.id);
+			}
 		} else {
-			author = loader.users.get(data.author.id);
+			UserJSON wh = new UserJSON();
+			wh.id = data.webhook_id;
+			author = EntityRegistry.addUser(wh);
 		}
-
 		embeds = new ArrayList<>();
 		attachments = new ArrayList<>();
 

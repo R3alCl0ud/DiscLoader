@@ -84,7 +84,7 @@ public class Guild implements IGuild {
 	/**
 	 * The guild's owner's Snowflake ID.
 	 */
-	public String ownerID;
+	public long ownerID;
 
 	/**
 	 * The hash code of the guild's icon
@@ -235,15 +235,13 @@ public class Guild implements IGuild {
 	 */
 	@Override
 	public GuildMember addMember(IUser user, String[] roles, boolean deaf, boolean mute, String nick, boolean emitEvent) {
-		boolean exists = this.members.containsKey(user.getID());
+		boolean exists = members.containsKey(user.getID());
 		GuildMember member = new GuildMember(this, user, roles, deaf, mute, nick);
-		this.members.put(member.getID(), member);
-		if (this.loader.ready == true && emitEvent && !exists) {
+		members.put(member.getID(), member);
+		if (loader.ready == true && emitEvent && !exists) {
 			GuildMemberAddEvent event = new GuildMemberAddEvent(member);
-			this.loader.emit(DLUtil.Events.GUILD_MEMBER_ADD, event);
-			for (IEventListener e : loader.handlers) {
-				e.GuildMemberAdd(event);
-			}
+			loader.emit(DLUtil.Events.GUILD_MEMBER_ADD, event);
+			loader.emit(event);
 		}
 
 		return member;
@@ -271,7 +269,7 @@ public class Guild implements IGuild {
 	 * @return The {@link GuildMember} that was instantiated.
 	 */
 	public IGuildMember addMember(MemberJSON data, boolean shouldEmit) {
-		boolean exists = members.containsKey(data.user.id);
+		boolean exists = members.containsKey(SnowflakeUtil.parse(data.user.id));
 		IGuildMember member = new GuildMember(this, data);
 		members.put(member.getID(), member);
 
@@ -490,7 +488,7 @@ public class Guild implements IGuild {
 			if (!guild.roles.containsKey(role.getID())) return false;
 		for (IGuildMember member : members.values())
 			if (!guild.members.containsKey(member.getID())) return false;
-		return guild.name.equals(name) && guild.ownerID.equals(ownerID) && guild.icon.equals(icon) && (isSyncing() == guild.isSyncing());
+		return guild.name.equals(name) && guild.ownerID == ownerID && guild.icon.equals(icon) && (isSyncing() == guild.isSyncing());
 	}
 
 	/**
@@ -593,7 +591,7 @@ public class Guild implements IGuild {
 
 	@Override
 	public DiscLoader getLoader() {
-		return loader;
+		return DiscLoader.getDiscLoader();
 	}
 
 	@Override
@@ -865,7 +863,7 @@ public class Guild implements IGuild {
 			name = data.name;
 			icon = data.icon != null ? data.icon : null;
 			iconURL = icon != null ? Endpoints.guildIcon(getID(), icon) : null;
-			ownerID = data.owner_id;
+			ownerID = SnowflakeUtil.parse(data.owner_id);
 			memberCount = data.member_count;
 			voiceRegion = new VoiceRegion(data.region);
 			splashHash = data.splash;
@@ -886,7 +884,9 @@ public class Guild implements IGuild {
 			ProgressLogger.step(3, 7, "Caching Channels");
 			if (data.channels != null && data.channels.length > 0) {
 				for (ChannelJSON channelData : data.channels) {
-					EntityRegistry.addChannel(channelData);
+					IGuildChannel chan = (IGuildChannel) EntityRegistry.addChannel(channelData, this);
+					if (chan instanceof IGuildTextChannel) textChannels.put(chan.getID(), (IGuildTextChannel) chan);
+					else if (chan instanceof IGuildVoiceChannel) voiceChannels.put(chan.getID(), (IGuildVoiceChannel) chan);
 				}
 			}
 			ProgressLogger.step(4, 7, "Caching Presences");

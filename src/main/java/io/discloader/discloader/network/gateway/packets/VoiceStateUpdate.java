@@ -5,6 +5,7 @@ package io.discloader.discloader.network.gateway.packets;
 
 import io.discloader.discloader.common.event.IEventListener;
 import io.discloader.discloader.common.event.voice.VoiceStateUpdateEvent;
+import io.discloader.discloader.common.registry.EntityRegistry;
 import io.discloader.discloader.entity.guild.IGuild;
 import io.discloader.discloader.entity.util.SnowflakeUtil;
 import io.discloader.discloader.entity.voice.VoiceConnection;
@@ -25,9 +26,10 @@ public class VoiceStateUpdate extends AbstractHandler {
 	@Override
 	public void handle(SocketPacket packet) {
 		String d = this.gson.toJson(packet.d);
+		System.out.println(d);
 		VoiceStateJSON data = this.gson.fromJson(d, VoiceStateJSON.class);
-		IGuild guild = loader.getGuild(data.guild_id);
-		VoiceConnection connection = this.loader.voiceConnections.get(guild.getID());
+		IGuild guild = EntityRegistry.getGuildByID(data.guild_id);
+		VoiceConnection connection = EntityRegistry.getVoiceConnectionByID(guild.getID());
 		if (connection != null && connection.getUserID().equals(data.user_id)) {
 			connection.setSessionID(data.session_id);
 			connection.setStateUpdated(true);

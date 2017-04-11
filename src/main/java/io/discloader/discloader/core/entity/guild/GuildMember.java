@@ -1,6 +1,7 @@
 package io.discloader.discloader.core.entity.guild;
 
 import java.time.Instant;
+import java.time.OffsetDateTime;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -9,6 +10,7 @@ import java.util.concurrent.CompletableFuture;
 import io.discloader.discloader.common.DiscLoader;
 import io.discloader.discloader.common.exceptions.PermissionsException;
 import io.discloader.discloader.common.exceptions.VoiceConnectionException;
+import io.discloader.discloader.common.registry.EntityRegistry;
 import io.discloader.discloader.core.entity.Permission;
 import io.discloader.discloader.core.entity.channel.VoiceChannel;
 import io.discloader.discloader.core.entity.user.User;
@@ -23,7 +25,6 @@ import io.discloader.discloader.entity.util.Permissions;
 import io.discloader.discloader.entity.voice.VoiceState;
 import io.discloader.discloader.network.json.MemberJSON;
 import io.discloader.discloader.network.rest.actions.guild.ModifyMember;
-import io.discloader.discloader.util.DLUtil;
 
 /**
  * Represents a member in a {@link Guild}
@@ -65,13 +66,13 @@ public class GuildMember implements IGuildMember {
 	 * A {@link Date} object representing when the member joined the
 	 * {@link Guild}.
 	 */
-	public final Date joinedAt;
+	public final OffsetDateTime joinedAt;
 
 	public GuildMember(IGuild guild, MemberJSON data) {
-		user = guild.getLoader().addUser(data.user);
+		user = EntityRegistry.addUser(data.user);
 		this.guild = guild;
 		nick = data.nick != null ? data.nick : user.getUsername();
-		joinedAt = DLUtil.parseISO8601(data.joined_at);
+		joinedAt = OffsetDateTime.parse(data.joined_at);
 		roleIDs = data.roles != null ? data.roles : new String[] {};
 
 		deaf = data.deaf;
@@ -86,7 +87,7 @@ public class GuildMember implements IGuildMember {
 
 		roleIDs = new String[] {};
 
-		joinedAt = Date.from(Instant.now());
+		joinedAt = OffsetDateTime.from(Instant.now());
 	}
 
 	public GuildMember(Guild guild, IUser user2, String[] roles, boolean deaf, boolean mute, String nick) {
@@ -94,7 +95,7 @@ public class GuildMember implements IGuildMember {
 		this.guild = guild;
 		this.nick = nick != null ? nick : user2.getUsername();
 		roleIDs = roles != null ? roles : new String[] {};
-		joinedAt = Date.from(Instant.now());
+		joinedAt = OffsetDateTime.from(Instant.now());
 		this.deaf = deaf;
 		this.mute = deaf || mute;
 	}
@@ -104,7 +105,7 @@ public class GuildMember implements IGuildMember {
 		guild = member.getGuild();
 		nick = member.getNickname();
 		roleIDs = member.getRoles().keySet().toArray(new String[] {});
-		joinedAt = Date.from(Instant.now());
+		joinedAt = OffsetDateTime.from(Instant.now());
 		deaf = member.isDeaf();
 		mute = deaf || member.isMuted();
 	}
@@ -155,10 +156,6 @@ public class GuildMember implements IGuildMember {
 		return getID() == member.getID() && nick.equals(member.nick);
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * @see io.discloader.discloader.entity.guild.IGuildMember#getGuild()
-	 */
 	@Override
 	public IGuild getGuild() {
 		return guild;

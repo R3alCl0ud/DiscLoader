@@ -31,27 +31,19 @@ public class EntityRegistry {
 	private static final Map<Long, IGuildChannel> guildChannels = new HashMap<>();
 
 	public static IChannel addChannel(ChannelJSON data) {
-		IChannel channel = FactoryManager.instance.getChannelFactory().buildChannel(data);
-		switch (channel.getType()) {
-		case DM:
-			privateChannels.put(channel.getID(), (IPrivateChannel) channel);
-			textChannels.put(channel.getID(), (ITextChannel) channel);
-			break;
-		case GROUPDM:
-			groupChannels.put(channel.getID(), (IGroupChannel) channel);
-			textChannels.put(channel.getID(), (ITextChannel) channel);
-			break;
-		case TEXT:
-			textChannels.put(channel.getID(), (ITextChannel) channel);
-			break;
-		case VOICE:
-			voiceChannels.put(channel.getID(), (IVoiceChannel) channel);
-			break;
-		default:
-			break;
+		return addChannel(data, null);
+	}
+
+	public static IChannel addChannel(ChannelJSON data, IGuild guild) {
+		IChannel channel = FactoryManager.instance.getChannelFactory().buildChannel(data, guild);
+		if (channel != null) {
+			channels.put(channel.getID(), channel);
+			if (channel instanceof ITextChannel) textChannels.put(channel.getID(), (ITextChannel) channel);
+			if (channel instanceof IPrivateChannel) privateChannels.put(channel.getID(), (IPrivateChannel) channel);
+			if (channel instanceof IGroupChannel) groupChannels.put(channel.getID(), (IGroupChannel) channel);
+			if (channel instanceof IVoiceChannel) voiceChannels.put(channel.getID(), (IVoiceChannel) channel);
+			if (channel instanceof IGuildChannel) guildChannels.put(channel.getID(), (IGuildChannel) channel);
 		}
-		channels.put(channel.getID(), channel);
-		if (channel instanceof IGuildChannel) guildChannels.put(channel.getID(), (IGuildChannel) channel);
 		return channel;
 	}
 
@@ -62,9 +54,18 @@ public class EntityRegistry {
 	}
 
 	public static IUser addUser(UserJSON data) {
+		if (userExists(data.id)) return getUserByID(data.id);
 		IUser user = FactoryManager.instance.getUserFactory().buildUser(data);
 		users.put(user.getID(), user);
 		return user;
+	}
+
+	public static IChannel getChannelByID(long channelID) {
+		return channels.get(channelID);
+	}
+
+	public static IChannel getChannelByID(String channelID) {
+		return channels.get(SnowflakeUtil.parse(channelID));
 	}
 
 	/**
@@ -100,11 +101,27 @@ public class EntityRegistry {
 		return guilds.values();
 	}
 
+	public static ITextChannel getPrivateChannelByID(long channelID) {
+		return privateChannels.get(channelID);
+	}
+
+	public static ITextChannel getPrivateChannelByID(String channelID) {
+		return getPrivateChannelByID(SnowflakeUtil.parse(channelID));
+	}
+
 	/**
 	 * @return the privatechannels
 	 */
 	public static Collection<IPrivateChannel> getPrivateChannels() {
 		return privateChannels.values();
+	}
+
+	public static ITextChannel getTextChannelByID(long channelID) {
+		return textChannels.get(channelID);
+	}
+
+	public static ITextChannel getTextChannelByID(String channelID) {
+		return getTextChannelByID(SnowflakeUtil.parse(channelID));
 	}
 
 	/**
@@ -139,8 +156,28 @@ public class EntityRegistry {
 		return voiceConnections.values();
 	}
 
+	public static VoiceConnection getVoiceConnectionByGuild(IGuild guild) {
+		return getVoiceConnectionByID(guild.getID());
+	}
+
+	public static VoiceConnection getVoiceConnectionByID(long guildID) {
+		return voiceConnections.get(guildID);
+	}
+
 	public static boolean guildExists(IGuild guild) {
 		return guilds.containsValue(guild);
+	}
+
+	public static boolean guildExists(long guildID) {
+		return guilds.containsKey(guildID);
+	}
+
+	public static boolean guildExists(String guildID) {
+		return guildExists(SnowflakeUtil.parse(guildID));
+	}
+
+	public static void removeGuild(IGuild guild) {
+		guilds.remove(guild.getID());
 	}
 
 	public static boolean userExists(long userID) {
@@ -149,5 +186,9 @@ public class EntityRegistry {
 
 	public static boolean userExists(String userID) {
 		return users.containsKey(SnowflakeUtil.parse(userID));
+	}
+
+	public static IUser getUserByID(String userID) {
+		return getUserByID(SnowflakeUtil.parse(userID));
 	}
 }

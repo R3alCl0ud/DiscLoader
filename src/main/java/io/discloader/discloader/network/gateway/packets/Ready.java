@@ -1,5 +1,6 @@
 package io.discloader.discloader.network.gateway.packets;
 
+import io.discloader.discloader.common.registry.EntityRegistry;
 import io.discloader.discloader.core.entity.user.DLUser;
 import io.discloader.discloader.network.gateway.DiscSocket;
 import io.discloader.discloader.network.json.ChannelJSON;
@@ -30,12 +31,12 @@ public class Ready extends AbstractHandler {
 
 			// load the guilds
 			for (GuildJSON guild : readyJSON.guilds) {
-				loader.addGuild(guild);
+				EntityRegistry.addGuild(guild);
 			}
 
 			// load the private channels
 			for (ChannelJSON data : readyJSON.private_channels) {
-				loader.addChannel(data);
+				EntityRegistry.addChannel(data, null);
 			}
 		} catch (Exception e) {
 			e.printStackTrace();

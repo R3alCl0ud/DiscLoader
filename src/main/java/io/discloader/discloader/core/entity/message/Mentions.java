@@ -3,6 +3,7 @@ package io.discloader.discloader.core.entity.message;
 import java.util.HashMap;
 
 import io.discloader.discloader.common.DiscLoader;
+import io.discloader.discloader.common.registry.EntityRegistry;
 import io.discloader.discloader.core.entity.guild.Role;
 import io.discloader.discloader.core.entity.user.User;
 import io.discloader.discloader.entity.channel.ITextChannel;
@@ -64,12 +65,14 @@ public class Mentions implements IMentions {
 		channel = message.channel;
 		users = new HashMap<>();
 		roles = new HashMap<>();
-		for (UserJSON data : mentions) {
-			IUser user = loader.users.get(SnowflakeUtil.parse(data.id));
-			if (user == null) user = loader.addUser(data);
-			users.put(SnowflakeUtil.parse(data.id), user);
+		if (mentions != null) {
+			for (UserJSON data : mentions) {
+				IUser user = EntityRegistry.getUserByID(data.id);
+				if (user == null) user = EntityRegistry.addUser(data);
+				users.put(user.getID(), user);
+			}
 		}
-		if (guild != null) {
+		if (guild != null && mention_roles != null) {
 			for (String id : mention_roles) {
 				long idl = SnowflakeUtil.parse(id);
 				roles.put(idl, guild.getRoles().get(idl));

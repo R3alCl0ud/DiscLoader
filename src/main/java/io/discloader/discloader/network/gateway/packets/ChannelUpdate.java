@@ -3,8 +3,8 @@
  */
 package io.discloader.discloader.network.gateway.packets;
 
-import io.discloader.discloader.common.event.IEventListener;
 import io.discloader.discloader.common.event.channel.ChannelUpdateEvent;
+import io.discloader.discloader.common.registry.EntityRegistry;
 import io.discloader.discloader.entity.channel.IChannel;
 import io.discloader.discloader.entity.channel.ITextChannel;
 import io.discloader.discloader.entity.guild.IGuild;
@@ -27,14 +27,15 @@ public class ChannelUpdate extends AbstractHandler {
 		String d = gson.toJson(packet.d);
 		ChannelJSON data = gson.fromJson(d, ChannelJSON.class);
 		IGuild guild = null;
-		IChannel oldChannel = loader.channels.get(data.id);
+		IChannel oldChannel = EntityRegistry.getChannelByID(data.id);
 		IChannel channel = null;
 		if (data.guild_id != null) {
-			guild = loader.getGuild(data.guild_id);
-			channel = loader.addChannel(data, guild);
+			guild = EntityRegistry.getGuildByID(data.guild_id);
+			channel = EntityRegistry.addChannel(data, guild);
 		} else {
-			channel = loader.addChannel(data);
+			channel = EntityRegistry.addChannel(data);
 		}
+		System.out.println(channel != null);
 		if (oldChannel instanceof ITextChannel) {
 			ITextChannel oitc = (ITextChannel) oldChannel, itc = (ITextChannel) channel;
 			for (IMessage message : oitc.getMessages().values()) {
@@ -43,9 +44,7 @@ public class ChannelUpdate extends AbstractHandler {
 		}
 		ChannelUpdateEvent event = new ChannelUpdateEvent(channel, oldChannel);
 		loader.emit(Events.CHANNEL_UPDATE, event);
-		for (IEventListener e : loader.handlers) {
-			e.ChannelUpdate(event);
-		}
+		loader.emit(event);
 	}
 
 }

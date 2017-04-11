@@ -60,6 +60,7 @@ import io.discloader.discloader.common.exceptions.AccountTypeException;
 import io.discloader.discloader.common.exceptions.GuildSyncException;
 import io.discloader.discloader.common.logger.DLErrorStream;
 import io.discloader.discloader.common.logger.DLPrintStream;
+import io.discloader.discloader.common.registry.EntityRegistry;
 import io.discloader.discloader.common.registry.ModRegistry;
 import io.discloader.discloader.common.start.Main;
 import io.discloader.discloader.core.entity.channel.Channel;
@@ -415,10 +416,10 @@ public class DiscLoader {
 		try {
 			if (socket.status != DLUtil.Status.READY && socket.status != DLUtil.Status.NEARLY) {
 				int unavailable = 0;
-				for (IGuild guild : guilds.values()) {
+				for (IGuild guild : EntityRegistry.getGuilds()) {
 					unavailable += guild.isAvailable() ? 0 : 1;
 				}
-				ProgressLogger.progress(guilds.size() - unavailable, guilds.size(), "Guilds Cached");
+				ProgressLogger.progress(EntityRegistry.getGuilds().size() - unavailable, EntityRegistry.getGuilds().size(), "Guilds Cached");
 				if (unavailable == 0) {
 
 					socket.status = Status.NEARLY;

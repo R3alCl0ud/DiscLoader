@@ -3,8 +3,8 @@
  */
 package io.discloader.discloader.network.gateway.packets;
 
-import io.discloader.discloader.common.event.IEventListener;
 import io.discloader.discloader.common.event.guild.member.GuildMemberRemoveEvent;
+import io.discloader.discloader.common.registry.EntityRegistry;
 import io.discloader.discloader.entity.guild.IGuild;
 import io.discloader.discloader.entity.guild.IGuildMember;
 import io.discloader.discloader.entity.util.SnowflakeUtil;
@@ -25,13 +25,11 @@ public class GuildMemberRemove extends AbstractHandler {
 	public void handle(SocketPacket packet) {
 		String d = this.gson.toJson(packet.d);
 		GuildMemberRemoveJSON data = this.gson.fromJson(d, GuildMemberRemoveJSON.class);
-		IGuild guild = loader.getGuild(data.guild_id);
+		IGuild guild = EntityRegistry.getGuildByID(data.guild_id);
 		IGuildMember member = guild.getMembers().remove(SnowflakeUtil.parse(data.user.id));
 		GuildMemberRemoveEvent event = new GuildMemberRemoveEvent(member);
 		if (this.loader.ready && this.socket.status == Status.READY) {
-			for (IEventListener e : loader.handlers) {
-				e.GuildMemberRemove(event);
-			}
+			loader.emit(event);
 		}
 
 	}

@@ -7,6 +7,7 @@ import io.discloader.discloader.client.command.CommandHandler;
 import io.discloader.discloader.common.event.message.GuildMessageCreateEvent;
 import io.discloader.discloader.common.event.message.MessageCreateEvent;
 import io.discloader.discloader.common.event.message.PrivateMessageCreateEvent;
+import io.discloader.discloader.common.registry.EntityRegistry;
 import io.discloader.discloader.core.entity.message.Message;
 import io.discloader.discloader.entity.channel.ITextChannel;
 import io.discloader.discloader.entity.message.IMessage;
@@ -30,8 +31,9 @@ public class MessageCreate extends AbstractHandler {
 		MessageJSON data = this.gson.fromJson(gson.toJson(packet.d), MessageJSON.class);
 		try {
 			long channelID = SnowflakeUtil.parse(data.channel_id);
-			ITextChannel channel = this.socket.loader.textChannels.get(channelID);
-			if (channel == null) channel = this.socket.loader.privateChannels.get(channelID);
+			ITextChannel channel = EntityRegistry.getTextChannelByID(channelID);
+			if (channel == null) channel = EntityRegistry.getPrivateChannelByID(channelID);
+			if (channel == null) return;
 			IMessage message = new Message<>(channel, data);
 			channel.getMessages().put(message.getID(), message);
 			if (channel.isTyping(message.getAuthor())) {

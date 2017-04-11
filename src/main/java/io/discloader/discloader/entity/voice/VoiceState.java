@@ -17,12 +17,12 @@ public class VoiceState {
 	public boolean mute;
 	public boolean suppressed;
 
-	public VoiceState(VoiceStateJSON data, IGuild guild2) {
-		this.guild = guild2;
-		this.member = guild2.getMember(SnowflakeUtil.parse(data.user_id));
-		this.deaf = data.deaf || data.self_deaf ? true : false;
-		this.mute = data.mute || data.self_mute ? true : false;
-		this.suppressed = data.suppress;
-		this.channel = data.channel_id == null ? null : guild2.getVoiceChannels().get(SnowflakeUtil.parse(data.channel_id));
+	public VoiceState(VoiceStateJSON data, IGuild guild) {
+		this.guild = guild;
+		member = guild.getMember(data.user_id);
+		deaf = data.deaf || data.self_deaf ? true : false;
+		mute = data.mute || data.self_mute ? true : false;
+		suppressed = data.suppress;
+		channel = data.channel_id == null ? null : guild.getVoiceChannels().get(SnowflakeUtil.parse(data.channel_id));
 	}
 }
