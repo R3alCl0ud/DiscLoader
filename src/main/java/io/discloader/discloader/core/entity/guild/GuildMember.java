@@ -1,6 +1,5 @@
 package io.discloader.discloader.core.entity.guild;
 
-import java.time.Instant;
 import java.time.OffsetDateTime;
 import java.util.ArrayList;
 import java.util.Date;
@@ -95,7 +94,7 @@ public class GuildMember implements IGuildMember {
 		this.guild = guild;
 		this.nick = nick != null ? nick : user.getUsername();
 		roleIDs = roles != null ? roles : new String[] {};
-		joinedAt = user.createdAt();
+		joinedAt = OffsetDateTime.now();
 		this.deaf = deaf;
 		this.mute = deaf || mute;
 	}
@@ -105,7 +104,7 @@ public class GuildMember implements IGuildMember {
 		guild = member.getGuild();
 		nick = member.getNickname();
 		roleIDs = member.getRoles().keySet().toArray(new String[] {});
-		joinedAt = OffsetDateTime.from(Instant.now());
+		joinedAt = member.getJoinTime();
 		deaf = member.isDeaf();
 		mute = deaf || member.isMuted();
 	}
@@ -435,4 +434,13 @@ public class GuildMember implements IGuildMember {
 		return new ModifyMember(this, nick, getRoles(), false, deaf, getVoiceChannel()).execute();
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * @see io.discloader.discloader.entity.guild.IGuildMember#getJoinTime()
+	 */
+	@Override
+	public OffsetDateTime getJoinTime() {
+		return joinedAt;
+	}
+	
 }

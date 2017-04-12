@@ -1,5 +1,6 @@
 package io.discloader.discloader.entity.guild;
 
+import java.time.OffsetDateTime;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 
@@ -15,6 +16,8 @@ import io.discloader.discloader.entity.voice.VoiceState;
  * @author Perry Berman
  */
 public interface IGuildMember extends ISnowflake {
+	
+	OffsetDateTime getJoinTime();
 	
 	CompletableFuture<IGuildMember> ban();
 	
