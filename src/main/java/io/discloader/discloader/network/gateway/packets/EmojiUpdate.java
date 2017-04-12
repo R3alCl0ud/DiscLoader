@@ -2,10 +2,10 @@ package io.discloader.discloader.network.gateway.packets;
 
 import java.util.HashMap;
 
-import io.discloader.discloader.common.event.IEventListener;
 import io.discloader.discloader.common.event.guild.emoji.GuildEmojiCreateEvent;
 import io.discloader.discloader.common.event.guild.emoji.GuildEmojiDeleteEvent;
 import io.discloader.discloader.common.event.guild.emoji.GuildEmojiUpdateEvent;
+import io.discloader.discloader.common.registry.EntityRegistry;
 import io.discloader.discloader.core.entity.guild.Emoji;
 import io.discloader.discloader.entity.guild.IGuild;
 import io.discloader.discloader.entity.guild.IGuildEmoji;
@@ -24,7 +24,7 @@ public class EmojiUpdate extends AbstractHandler {
 	public void handle(SocketPacket packet) {
 		String d = this.gson.toJson(packet.d);
 		EmojiUpdateJSON data = gson.fromJson(d, EmojiUpdateJSON.class);
-		IGuild guild = loader.guilds.get(data.guild_id);
+		IGuild guild = EntityRegistry.getGuildByID(data.guild_id);
 
 		HashMap<String, IGuildEmoji> emojis = new HashMap<>();
 		for (EmojiJSON e : data.emojis) {
@@ -59,11 +59,6 @@ public class EmojiUpdate extends AbstractHandler {
 						loader.emit(event);
 					}
 				}
-			}
-
-			loader.emit(Events.GUILD_EMOJIS_UPDATE, guild.getEmojis());
-			for (IEventListener e : loader.handlers) {
-				e.GuildEmojisUpdate(guild.getEmojis());
 			}
 		}
 

@@ -21,7 +21,6 @@ public class GuildMemberAdd extends AbstractHandler {
 	public void handle(SocketPacket packet) {
 		String d = this.gson.toJson(packet.d);
 		MemberJSON data = this.gson.fromJson(d, MemberJSON.class);
-		System.out.println(d);
 		IGuild guild = EntityRegistry.getGuildByID(data.guild_id);
 		guild.addMember(data);
 	}

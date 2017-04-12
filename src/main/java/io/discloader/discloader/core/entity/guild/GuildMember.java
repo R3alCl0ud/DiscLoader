@@ -89,7 +89,7 @@ public class GuildMember implements IGuildMember {
 		joinedAt = user.createdAt();
 	}
 
-	public GuildMember(Guild guild, IUser user, String[] roles, boolean deaf, boolean mute, String nick) {
+	public GuildMember(IGuild guild, IUser user, String[] roles, boolean deaf, boolean mute, String nick) {
 		this.user = user;
 		this.guild = guild;
 		this.nick = nick != null ? nick : user.getUsername();

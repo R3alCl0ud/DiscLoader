@@ -8,7 +8,7 @@ public class GuildMessageUpdateEvent extends MessageUpdateEvent {
 
 	private IGuild guild;
 
-	public GuildMessageUpdateEvent(Message message, Message oldMessage) {
+	public GuildMessageUpdateEvent(Message<?> message, Message<?> oldMessage) {
 		super(message, oldMessage);
 		guild = message.guild;
 	}

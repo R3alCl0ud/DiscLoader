@@ -2,6 +2,7 @@ package io.discloader.discloader.network.gateway.packets;
 
 import io.discloader.discloader.common.event.UserUpdateEvent;
 import io.discloader.discloader.common.event.guild.member.GuildMemberUpdateEvent;
+import io.discloader.discloader.common.registry.EntityRegistry;
 import io.discloader.discloader.core.entity.user.User;
 import io.discloader.discloader.entity.guild.IGuild;
 import io.discloader.discloader.entity.guild.IGuildMember;
@@ -14,23 +15,23 @@ import io.discloader.discloader.util.DLUtil;
  * @author Perry Berman
  */
 public class PresenceUpdate extends AbstractHandler {
-	
+
 	public PresenceUpdate(DiscSocket socket) {
 		super(socket);
 	}
-	
+
 	@Override
 	public void handle(SocketPacket packet) {
 		PresenceJSON data = this.gson.fromJson(gson.toJson(packet.d), PresenceJSON.class);
-		IUser user = loader.users.containsKey(data.user.id) ? loader.users.get(data.user.id) : null;
+		IUser user = EntityRegistry.getUserByID(data.user.id);
 		if (user == null) {
 			if (data.user.username != null) {
-				user = loader.addUser(data.user);
+				user = EntityRegistry.addUser(data.user);
 			} else {
 				return;
 			}
 		}
-		
+
 		IUser oldUser = new User(user);
 		user.setup(data.user);
 		if (!user.equals(oldUser)) {
@@ -38,8 +39,8 @@ public class PresenceUpdate extends AbstractHandler {
 			loader.emit(DLUtil.Events.USER_UPDATE, event);
 			loader.emit(event);
 		}
-		
-		IGuild guild = data.guild_id != null ? loader.guilds.get(data.guild_id) : null;
+
+		IGuild guild = data.guild_id == null ? null : EntityRegistry.getGuildByID(data.guild_id);
 		if (guild != null) {
 			IGuildMember oldMember = guild.getMember(user.getID()), member;
 			member = guild.addMember(user, data.roles, false, false, data.nick, false);
@@ -53,5 +54,5 @@ public class PresenceUpdate extends AbstractHandler {
 			}
 		}
 	}
-	
+
 }
