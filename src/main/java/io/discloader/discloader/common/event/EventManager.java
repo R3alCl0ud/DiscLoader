@@ -44,12 +44,16 @@ import io.discloader.discloader.entity.guild.IGuild;
 
 public class EventManager {
 
-	public final List<IEventListener> handlers = new ArrayList<>();
+	private final List<IEventListener> handlers = new ArrayList<>();
 	private final List<Consumer<DLEvent>> consumers = new ArrayList<>();
 	private final Map<Consumer<DLEvent>, Function<IGuild, Boolean>> guildTest = new HashMap<>();
 
 	public void addEventHandler(IEventListener e) {
 		handlers.add(e);
+	}
+
+	public void removeEventHandler(IEventListener e) {
+		handlers.remove(e);
 	}
 
 	public void emit(DLEvent event) {
@@ -161,6 +165,10 @@ public class EventManager {
 		// consumers.add(consumer);
 		onceEvent(consumer);
 		guildTest.put(consumer, checker);
+	}
+
+	public List<IEventListener> getHandlers() {
+		return handlers;
 	}
 
 }

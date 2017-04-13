@@ -304,7 +304,7 @@ public class DiscLoader {
 		timer = new Timer();
 		ready = false;
 		eventManager = new EventManager();
-		handlers = eventManager.handlers;
+		handlers = eventManager.getHandlers();
 		ModRegistry.loader = this;
 
 	}
@@ -538,7 +538,7 @@ public class DiscLoader {
 	}
 
 	public void removeEventHandler(IEventListener e) {
-		handlers.remove(e);
+		eventManager.removeEventHandler(e);
 	}
 
 	/**
