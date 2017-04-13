@@ -22,6 +22,7 @@ public class GUIEvents extends EventListenerAdapter {
 	
 	public void RawPacket(RawEvent e) {
 		if (e.isGateway() && e.getFrame().isTextFrame()) {
+//			System.out.println(e.getFrame().getPayloadText());
 			SocketPacket packet = gson.fromJson(e.getFrame().getPayloadText(), SocketPacket.class);
 			PacketsTab.update(packet);
 		}
@@ -37,7 +38,7 @@ public class GUIEvents extends EventListenerAdapter {
 		if (window != null) {
 			window.remove(WindowFrame.loading);
 			window.revalidate();
-			window.add(this.setTabs(new TabbedPanel(e.loader)));
+			window.add(setTabs(new TabbedPanel(e.loader)));
 			window.revalidate();
 			window.repaint();
 		}

@@ -2,8 +2,11 @@ package io.discloader.discloader.common;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Timer;
 import java.util.concurrent.CompletableFuture;
+import java.util.function.Consumer;
+import java.util.function.Function;
 import java.util.logging.Logger;
 
 import com.google.gson.Gson;
@@ -18,44 +21,10 @@ import io.discloader.discloader.common.discovery.ModCandidate;
 import io.discloader.discloader.common.discovery.ModContainer;
 import io.discloader.discloader.common.discovery.ModDiscoverer;
 import io.discloader.discloader.common.event.DLEvent;
-import io.discloader.discloader.common.event.DLPreInitEvent;
+import io.discloader.discloader.common.event.EventManager;
 import io.discloader.discloader.common.event.IEventListener;
-import io.discloader.discloader.common.event.RawEvent;
 import io.discloader.discloader.common.event.ReadyEvent;
-import io.discloader.discloader.common.event.UserUpdateEvent;
-import io.discloader.discloader.common.event.channel.ChannelCreateEvent;
-import io.discloader.discloader.common.event.channel.ChannelDeleteEvent;
-import io.discloader.discloader.common.event.channel.ChannelUpdateEvent;
-import io.discloader.discloader.common.event.channel.GuildChannelCreateEvent;
-import io.discloader.discloader.common.event.channel.GuildChannelDeleteEvent;
-import io.discloader.discloader.common.event.channel.GuildChannelUpdateEvent;
-import io.discloader.discloader.common.event.channel.TypingStartEvent;
-import io.discloader.discloader.common.event.guild.GuildBanAddEvent;
-import io.discloader.discloader.common.event.guild.GuildBanRemoveEvent;
 import io.discloader.discloader.common.event.guild.GuildCreateEvent;
-import io.discloader.discloader.common.event.guild.GuildDeleteEvent;
-import io.discloader.discloader.common.event.guild.GuildSyncEvent;
-import io.discloader.discloader.common.event.guild.GuildUpdateEvent;
-import io.discloader.discloader.common.event.guild.emoji.GuildEmojiCreateEvent;
-import io.discloader.discloader.common.event.guild.emoji.GuildEmojiDeleteEvent;
-import io.discloader.discloader.common.event.guild.emoji.GuildEmojiUpdateEvent;
-import io.discloader.discloader.common.event.guild.member.GuildMemberAddEvent;
-import io.discloader.discloader.common.event.guild.member.GuildMemberRemoveEvent;
-import io.discloader.discloader.common.event.guild.member.GuildMemberUpdateEvent;
-import io.discloader.discloader.common.event.guild.member.GuildMembersChunkEvent;
-import io.discloader.discloader.common.event.guild.role.GuildRoleCreateEvent;
-import io.discloader.discloader.common.event.guild.role.GuildRoleDeleteEvent;
-import io.discloader.discloader.common.event.guild.role.GuildRoleUpdateEvent;
-import io.discloader.discloader.common.event.message.GuildMessageCreateEvent;
-import io.discloader.discloader.common.event.message.GuildMessageDeleteEvent;
-import io.discloader.discloader.common.event.message.GuildMessageUpdateEvent;
-import io.discloader.discloader.common.event.message.MessageCreateEvent;
-import io.discloader.discloader.common.event.message.MessageDeleteEvent;
-import io.discloader.discloader.common.event.message.MessageUpdateEvent;
-import io.discloader.discloader.common.event.message.PrivateMessageCreateEvent;
-import io.discloader.discloader.common.event.message.PrivateMessageDeleteEvent;
-import io.discloader.discloader.common.event.message.PrivateMessageUpdateEvent;
-import io.discloader.discloader.common.event.voice.VoiceStateUpdateEvent;
 import io.discloader.discloader.common.exceptions.AccountTypeException;
 import io.discloader.discloader.common.exceptions.GuildSyncException;
 import io.discloader.discloader.common.logger.DLErrorStream;
@@ -124,13 +93,15 @@ public class DiscLoader {
 		return ModRegistry.loader;
 	}
 
-	public final ArrayList<IEventListener> handlers = new ArrayList<>();
+	public final List<IEventListener> handlers;
 
 	public final DiscSocket socket;
 
 	public String token;
 
 	public boolean ready;
+
+	private EventManager eventManager;
 
 	public final ClientRegistry clientRegistry;
 
@@ -332,7 +303,8 @@ public class DiscLoader {
 		syncingGuilds = new HashMap<>();
 		timer = new Timer();
 		ready = false;
-
+		eventManager = new EventManager();
+		handlers = eventManager.handlers;
 		ModRegistry.loader = this;
 
 	}
@@ -385,7 +357,7 @@ public class DiscLoader {
 	}
 
 	public void addEventHandler(IEventListener e) {
-		handlers.add(e);
+		eventManager.addEventHandler(e);
 	}
 
 	public IGuild addGuild(GuildJSON guild) {
@@ -414,20 +386,40 @@ public class DiscLoader {
 
 	public void checkReady() {
 		try {
-			if (socket.status != DLUtil.Status.READY && socket.status != DLUtil.Status.NEARLY) {
+			if (socket.status != Status.READY && socket.status != Status.NEARLY) {
 				int unavailable = 0;
 				for (IGuild guild : EntityRegistry.getGuilds()) {
 					unavailable += guild.isAvailable() ? 0 : 1;
 				}
 				ProgressLogger.progress(EntityRegistry.getGuilds().size() - unavailable, EntityRegistry.getGuilds().size(), "Guilds Cached");
 				if (unavailable == 0) {
-
 					socket.status = Status.NEARLY;
+					/*
+					 * Uncomment when you are sure that this will work
+					 * if (!user.isBot()) {
+					 * // System.out.println("Just checking something");
+					 * // List<CompletableFuture<Map<Long, IGuildMember>>>
+					 * futures = new ArrayList<>();
+					 * // for (IGuild guild : EntityRegistry.getGuilds()) {
+					 * // if (guild.isLarge() && guild.getMembers().size() <
+					 * guild.getMemberCount())
+					 * futures.add(guild.fetchMembers());
+					 * // }
+					 * // System.out.println(futures.size());
+					 * // if (futures.size() > 0) {
+					 * // CompletableFuture.allOf(futures.toArray(new
+					 * CompletableFuture[0])).thenAcceptAsync(a -> emitReady());
+					 * // } else {
+					 * // emitReady();
+					 * // }
+					 * } else {
+					 */
 					try {
 						emitReady();
 					} catch (Exception e) {
 						e.printStackTrace();
 					}
+					// }
 				}
 			}
 		} catch (Exception e) {
@@ -435,93 +427,16 @@ public class DiscLoader {
 		}
 	}
 
-	public void doneLoading() {
-		future.complete("ready");
-	}
-
 	public void disconnect() {
 		socket.ws.disconnect(1000);
 	}
 
+	public void doneLoading() {
+		future.complete("ready");
+	}
+
 	public void emit(DLEvent event) {
-		for (IEventListener handler : handlers) {
-			if (event instanceof DLPreInitEvent) {
-				handler.PreInit((DLPreInitEvent) event);
-			} else if (event instanceof RawEvent) {
-				handler.RawPacket((RawEvent) event);
-			} else if (event instanceof ReadyEvent) {
-				handler.Ready((ReadyEvent) event);
-			} else if (event instanceof GuildChannelCreateEvent) {
-				handler.GuildChannelCreate((GuildChannelCreateEvent) event);
-			} else if (event instanceof ChannelCreateEvent) {
-				handler.ChannelCreate((ChannelCreateEvent) event);
-			} else if (event instanceof GuildChannelDeleteEvent) {
-				handler.GuildChannelDelete((GuildChannelDeleteEvent) event);
-			} else if (event instanceof ChannelDeleteEvent) {
-				handler.ChannelDelete((ChannelDeleteEvent) event);
-			} else if (event instanceof GuildChannelUpdateEvent) {
-				handler.GuildChannelUpdate((GuildChannelUpdateEvent) event);
-			} else if (event instanceof ChannelUpdateEvent) {
-				handler.ChannelUpdate((ChannelUpdateEvent) event);
-			} else if (event instanceof GuildCreateEvent) {
-				handler.GuildCreate((GuildCreateEvent) event);
-			} else if (event instanceof GuildDeleteEvent) {
-				handler.GuildDelete((GuildDeleteEvent) event);
-			} else if (event instanceof GuildUpdateEvent) {
-				handler.GuildUpdate((GuildUpdateEvent) event);
-			} else if (event instanceof GuildBanAddEvent) {
-				handler.GuildBanAdd((GuildBanAddEvent) event);
-			} else if (event instanceof GuildBanRemoveEvent) {
-				handler.GuildBanRemove((GuildBanRemoveEvent) event);
-			} else if (event instanceof GuildMemberAddEvent) {
-				handler.GuildMemberAdd((GuildMemberAddEvent) event);
-			} else if (event instanceof GuildEmojiCreateEvent) {
-				handler.GuildEmojiCreate((GuildEmojiCreateEvent) event);
-			} else if (event instanceof GuildEmojiDeleteEvent) {
-				handler.GuildEmojiDelete((GuildEmojiDeleteEvent) event);
-			} else if (event instanceof GuildEmojiUpdateEvent) {
-				handler.GuildEmojiUpdate((GuildEmojiUpdateEvent) event);
-			} else if (event instanceof GuildMemberRemoveEvent) {
-				handler.GuildMemberRemove((GuildMemberRemoveEvent) event);
-			} else if (event instanceof GuildMemberUpdateEvent) {
-				handler.GuildMemberUpdate((GuildMemberUpdateEvent) event);
-			} else if (event instanceof GuildMembersChunkEvent) {
-				handler.GuildMembersChunk((GuildMembersChunkEvent) event);
-			} else if (event instanceof GuildRoleCreateEvent) {
-				handler.GuildRoleCreate((GuildRoleCreateEvent) event);
-			} else if (event instanceof GuildRoleDeleteEvent) {
-				handler.GuildRoleDelete((GuildRoleDeleteEvent) event);
-			} else if (event instanceof GuildRoleUpdateEvent) {
-				handler.GuildRoleUpdate((GuildRoleUpdateEvent) event);
-			} else if (event instanceof GuildSyncEvent) {
-				syncingGuilds.remove(((GuildSyncEvent) event).getGuild());
-				handler.GuildSync((GuildSyncEvent) event);
-			} else if (event instanceof GuildMessageCreateEvent) {
-				handler.GuildMessageCreate((GuildMessageCreateEvent) event);
-			} else if (event instanceof GuildMessageDeleteEvent) {
-				handler.GuildMessageDelete((GuildMessageDeleteEvent) event);
-			} else if (event instanceof GuildMessageUpdateEvent) {
-				handler.GuildMessageUpdate((GuildMessageUpdateEvent) event);
-			} else if (event instanceof PrivateMessageCreateEvent) {
-				handler.PrivateMessageCreate((PrivateMessageCreateEvent) event);
-			} else if (event instanceof GuildMessageDeleteEvent) {
-				handler.PrivateMessageDelete((PrivateMessageDeleteEvent) event);
-			} else if (event instanceof PrivateMessageUpdateEvent) {
-				handler.PrivateMessageUpdate((PrivateMessageUpdateEvent) event);
-			} else if (event instanceof MessageCreateEvent) {
-				handler.MessageCreate((MessageCreateEvent) event);
-			} else if (event instanceof MessageDeleteEvent) {
-				handler.MessageDelete((MessageDeleteEvent) event);
-			} else if (event instanceof MessageUpdateEvent) {
-				handler.MessageUpdate((MessageUpdateEvent) event);
-			} else if (event instanceof TypingStartEvent) {
-				handler.TypingStart((TypingStartEvent) event);
-			} else if (event instanceof UserUpdateEvent) {
-				handler.UserUpdate((UserUpdateEvent) event);
-			} else if (event instanceof VoiceStateUpdateEvent) {
-				handler.VoiceStateUpdate((VoiceStateUpdateEvent) event);
-			}
-		}
+		eventManager.emit(event);
 	}
 
 	public void emit(String event) {
@@ -543,12 +458,20 @@ public class DiscLoader {
 		emit(event);
 	}
 
+	public IGuild getGuild(long guildID) {
+		return guilds.get(guildID);
+	}
+
 	public IGuild getGuild(String guildID) {
 		return getGuild(SnowflakeUtil.parse(guildID));
 	}
 
-	public IGuild getGuild(long guildID) {
-		return guilds.get(guildID);
+	public boolean isGuildSyncing(Guild guild) {
+		return syncingGuilds.containsKey(guild.getID());
+	}
+
+	public boolean isGuildSyncing(String guildID) {
+		return syncingGuilds.containsKey(guildID);
 	}
 
 	/**
@@ -602,6 +525,18 @@ public class DiscLoader {
 		return future2;
 	}
 
+	public void onceEvent(Consumer<DLEvent> consumer, Function<IGuild, Boolean> checker) {
+		eventManager.onceEvent(consumer, checker);
+	}
+
+	public void onceEvent(Consumer<DLEvent> consumer) {
+		eventManager.onceEvent(consumer);
+	}
+
+	public void onEvent(Consumer<DLEvent> consumer) {
+		eventManager.onEvent(consumer);
+	}
+
 	public void removeEventHandler(IEventListener e) {
 		handlers.remove(e);
 	}
@@ -620,14 +555,6 @@ public class DiscLoader {
 		Command.defaultCommands = options.defaultCommands;
 		CommandHandler.prefix = options.prefix;
 		return this;
-	}
-
-	public boolean isGuildSyncing(Guild guild) {
-		return syncingGuilds.containsKey(guild.getID());
-	}
-
-	public boolean isGuildSyncing(String guildID) {
-		return syncingGuilds.containsKey(guildID);
 	}
 
 	/**
@@ -667,24 +594,6 @@ public class DiscLoader {
 	/**
 	 * Syncs guilds to client if the logged in user is not a bot
 	 * 
-	 * @param guildIDs the ids of the guilds to sync
-	 * @throws AccountTypeException
-	 * @throws GuildSyncException
-	 */
-	public void syncGuilds(String... guildIDs) throws AccountTypeException, GuildSyncException {
-		if (user.bot) throw new AccountTypeException("Only user accounts are allowed to sync guilds");
-
-		for (String id : guildIDs) {
-			if (isGuildSyncing(id)) throw new GuildSyncException("Cannot syncing a guild that is currently syncing");
-		}
-
-		Packet packet = new Packet(12, guildIDs);
-		socket.send(packet, true);
-	}
-
-	/**
-	 * Syncs guilds to client if the logged in user is not a bot
-	 * 
 	 * @param guilds the guilds to sync
 	 * @throws GuildSyncException
 	 * @throws AccountTypeException
@@ -699,6 +608,24 @@ public class DiscLoader {
 		}
 
 		Packet packet = new Packet(12, ids);
+		socket.send(packet, true);
+	}
+
+	/**
+	 * Syncs guilds to client if the logged in user is not a bot
+	 * 
+	 * @param guildIDs the ids of the guilds to sync
+	 * @throws AccountTypeException
+	 * @throws GuildSyncException
+	 */
+	public void syncGuilds(String... guildIDs) throws AccountTypeException, GuildSyncException {
+		if (user.bot) throw new AccountTypeException("Only user accounts are allowed to sync guilds");
+
+		for (String id : guildIDs) {
+			if (isGuildSyncing(id)) throw new GuildSyncException("Cannot syncing a guild that is currently syncing");
+		}
+
+		Packet packet = new Packet(12, guildIDs);
 		socket.send(packet, true);
 	}
 

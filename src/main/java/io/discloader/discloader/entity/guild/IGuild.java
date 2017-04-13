@@ -27,6 +27,10 @@ import io.discloader.discloader.network.json.RoleJSON;
  */
 public interface IGuild extends ISnowflake, ICreationTime {
 
+	IGuildMember addMember(IGuildMember member);
+
+	IGuildMember addMember(IGuildMember member, boolean emit);
+
 	/**
 	 * @param user
 	 * @param roles
@@ -43,25 +47,13 @@ public interface IGuild extends ISnowflake, ICreationTime {
 	 */
 	IGuildMember addMember(MemberJSON data);
 
-	IGuildMember addMember(IGuildMember member);
-
-	IGuildMember addMember(IGuildMember member, boolean emit);
-
-	IGuildMember removeMember(IGuildMember member);
-
-	IRole removeRole(IRole role);
-
-	IRole removeRole(long roleID);
-
-	IRole removeRole(String roleID);
+	IRole addRole(IRole role);
 
 	/**
 	 * @param role
 	 * @return
 	 */
 	IRole addRole(RoleJSON role);
-
-	IRole addRole(IRole role);
 
 	CompletableFuture<IGuildMember> ban(IGuildMember member);
 
@@ -71,6 +63,12 @@ public interface IGuild extends ISnowflake, ICreationTime {
 	 * @return
 	 */
 	CompletableFuture<IGuildChannel> createChannel(String name, String name2);
+
+	CompletableFuture<Map<Long, IGuildMember>> fetchMembers();
+
+	CompletableFuture<Map<Long, IGuildMember>> fetchMembers(int limit);
+
+	// CompletableFuture<Map>
 
 	/**
 	 * @return
@@ -92,8 +90,6 @@ public interface IGuild extends ISnowflake, ICreationTime {
 	 */
 	DiscLoader getLoader();
 
-	IGuildMember getOwner();
-
 	IGuildMember getMember(long memberID);
 
 	IGuildMember getMember(String memberID);
@@ -103,6 +99,8 @@ public interface IGuild extends ISnowflake, ICreationTime {
 	Map<Long, IGuildMember> getMembers();
 
 	String getName();
+
+	IGuildMember getOwner();
 
 	IPresence getPresence(long memberID);
 
@@ -131,6 +129,8 @@ public interface IGuild extends ISnowflake, ICreationTime {
 	 */
 	boolean isAvailable();
 
+	boolean isLarge();
+
 	/**
 	 * @return
 	 */
@@ -154,6 +154,14 @@ public interface IGuild extends ISnowflake, ICreationTime {
 	 *             {@link Permissions#KICK_MEMBERS} permission.
 	 */
 	CompletableFuture<IGuildMember> kickMember(IGuildMember guildMember);
+
+	IGuildMember removeMember(IGuildMember member);
+
+	IRole removeRole(IRole role);
+
+	IRole removeRole(long roleID);
+
+	IRole removeRole(String roleID);
 
 	/**
 	 * @param pe

@@ -10,6 +10,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
+import java.util.function.Consumer;
 
 import org.apache.commons.codec.binary.Base64;
 import org.json.JSONObject;
@@ -19,7 +20,9 @@ import io.discloader.discloader.client.registry.TextureRegistry;
 import io.discloader.discloader.client.render.texture.icon.GuildIcon;
 import io.discloader.discloader.client.render.texture.icon.GuildSplash;
 import io.discloader.discloader.common.DiscLoader;
+import io.discloader.discloader.common.event.DLEvent;
 import io.discloader.discloader.common.event.guild.member.GuildMemberAddEvent;
+import io.discloader.discloader.common.event.guild.member.GuildMembersChunkEvent;
 import io.discloader.discloader.common.exceptions.AccountTypeException;
 import io.discloader.discloader.common.exceptions.GuildSyncException;
 import io.discloader.discloader.common.exceptions.MissmatchException;
@@ -48,6 +51,7 @@ import io.discloader.discloader.entity.guild.IIntegration;
 import io.discloader.discloader.entity.guild.IRole;
 import io.discloader.discloader.entity.guild.VoiceRegion;
 import io.discloader.discloader.entity.invite.Invite;
+import io.discloader.discloader.entity.sendable.Packet;
 import io.discloader.discloader.entity.user.IUser;
 import io.discloader.discloader.entity.util.Permissions;
 import io.discloader.discloader.entity.util.SnowflakeUtil;
@@ -529,6 +533,30 @@ public class Guild implements IGuild {
 		return loader.rest.loadGuildMember(this, memberID);
 	}
 
+	public CompletableFuture<Map<Long, IGuildMember>> fetchMembers() {
+		return fetchMembers(0);
+	}
+
+	private static int i = 0;
+
+	@Override
+	public CompletableFuture<Map<Long, IGuildMember>> fetchMembers(int limit) {
+		CompletableFuture<Map<Long, IGuildMember>> future = new CompletableFuture<>();
+		final Consumer<DLEvent> consumer = event -> {
+			if (event instanceof GuildMembersChunkEvent) {
+				i++;
+				System.out.println(getID() + " " + i);
+				GuildMembersChunkEvent gmce = (GuildMembersChunkEvent) event;
+				future.complete(gmce.members);
+			}
+		};
+		loader.onceEvent(consumer, guild -> guild.getID() == getID());
+		Packet payload = new Packet(8, new MemberQuery(limit, ""));
+		System.out.println(DLUtil.gson.toJson(payload));
+		loader.socket.send(payload);
+		return future;
+	}
+
 	/**
 	 * Gets a HashMap of GuildMembers that are in the guild.
 	 * 
@@ -537,7 +565,7 @@ public class Guild implements IGuild {
 	 * @return A CompletableFuture that completes with a HashMap of GuildMembers
 	 *         if successful, null otherwise.
 	 */
-	public CompletableFuture<HashMap<Long, IGuildMember>> fetchMembers(int limit, long after) {
+	public CompletableFuture<Map<Long, IGuildMember>> fetchMembers(int limit, long after) {
 		return loader.rest.loadGuildMembers(this, limit, after);
 	}
 
@@ -549,7 +577,7 @@ public class Guild implements IGuild {
 	 * @return A CompletableFuture that completes with a HashMap of GuildMembers
 	 *         if successful, null otherwise.
 	 */
-	public CompletableFuture<HashMap<Long, IGuildMember>> fetchMembers(long after) {
+	public CompletableFuture<Map<Long, IGuildMember>> fetchMembers(long after) {
 		return loader.rest.loadGuildMembers(this, 50, after);
 	}
 
@@ -1003,6 +1031,18 @@ public class Guild implements IGuild {
 	@Override
 	public void updateVoiceState(VoiceState state) {
 		rawStates.put(state.member.getID(), state);
+	}
+
+	public class MemberQuery {
+
+		public String guild_id = Long.toUnsignedString(getID(), 10);
+		public int limit;
+		public String query;
+
+		public MemberQuery(int limit, String query) {
+			this.limit = limit;
+			this.query = query;
+		}
 	}
 
 }

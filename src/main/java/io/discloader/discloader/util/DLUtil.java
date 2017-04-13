@@ -599,7 +599,7 @@ public final class DLUtil {
 	 * @version First draft
 	 */
 	public static final ArrayList<String> EventWhitelist = new ArrayList<String>(
-			Arrays.asList(WSEvents.HELLO, WSEvents.READY, WSEvents.GUILD_CREATE, WSEvents.GUILD_DELETE, WSEvents.GUILD_MEMBER_ADD, WSEvents.GUILD_MEMBER_REMOVE, WSEvents.GUILD_MEMBER_UPDATE));
+			Arrays.asList(WSEvents.HELLO, WSEvents.READY, WSEvents.GUILD_CREATE, WSEvents.GUILD_DELETE, WSEvents.GUILD_MEMBER_ADD, WSEvents.GUILD_MEMBER_REMOVE, WSEvents.GUILD_MEMBER_UPDATE, WSEvents.GUILD_MEMBERS_CHUNK));
 
 	/**
 	 * Converts a ISO-8601 DateTime string to a {@link Date} object.

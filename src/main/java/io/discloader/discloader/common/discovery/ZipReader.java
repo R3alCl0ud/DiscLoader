@@ -38,6 +38,7 @@ public class ZipReader {
 						LanguageRegistry.registerLanguage(lang);
 					} else if (e.getName().endsWith(".png")) { // the entry is an icon
 						InputStream is = zipFile.getInputStream(e);
+						is.close();
 						// TextureRegistry.resourceHandler.addResource(is, e);
 					}
 				}
