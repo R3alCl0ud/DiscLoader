@@ -69,10 +69,7 @@ import io.discloader.discloader.util.DLUtil.Status;
  * 	// create a new instance of DiscLoader
  * 	DiscLoader loader = new DiscLoader();
  * 
- * 	// make it do it's startup stuff
- * 	loader.startup();
- * 
- * 	// since it's probably done, time to login
+ * 	// time to login
  * 	loader.login(TOKEN);
  *
  * }
@@ -509,16 +506,6 @@ public class DiscLoader {
 					e.printStackTrace();
 				}
 			});
-			// if (future2.isDone()) {
-			// String text = future2.get();
-			// Gson gson = new Gson();
-			// Gateway gateway = gson.fromJson(text, Gateway.class);
-			// try {
-			// this.socket.connectSocket(gateway.url + "?v=6&encoding=json");
-			// } catch (Exception e) {
-			// e.printStackTrace();
-			// }
-			// }
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

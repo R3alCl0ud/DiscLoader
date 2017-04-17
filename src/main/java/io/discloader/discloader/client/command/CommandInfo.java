@@ -25,7 +25,8 @@ public class CommandInfo extends Command {
 		RichEmbed embed = new RichEmbed(guild.getName()).setColor(0x427df4);
 		embed.setDescription("Created on " + ZonedDateTime.from(guild.createdAt()).format(DateTimeFormatter.ofPattern("d MMM uuuu 'at' h:mma ZZZZ", Locale.US)));
 		embed.addField("Owner", guild.getOwner().toString(), true);
-		embed.addField("Users", String.format("%d/%d", guild.getMembers().size(), guild.getMemberCount()), true);
+		embed.addField("Members", String.format("%d/%d", guild.getMembers().size(), guild.getMemberCount()), true);
+		embed.addField("Text Channels", "" + guild.getTextChannels().size(), true).addField("Voice Channels", "" + guild.getVoiceChannels().size(), true);
 		embed.setTimestamp(ZonedDateTime.now());
 		embed.setThumbnail(guild.getIconURL());
 		embed.setFooter(String.format("Guild ID: %d", guild.getID()));

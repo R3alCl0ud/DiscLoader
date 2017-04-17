@@ -7,75 +7,76 @@ import io.discloader.discloader.entity.voice.VoiceConnection;
 
 /**
  * @author Perry Berman
- *
  */
 public class StreamSender {
-    private final StreamProvider provider;
-    private DatagramSocket udpSocket;
-    private Thread packetThread;
-    // private VoiceWebSocket ws;
-    private final VoiceConnection connection;
 
-    public StreamSender(StreamProvider streamer) {
-        this.provider = streamer;
-        this.connection = provider.connection;
-    }
+	private final StreamProvider provider;
+	private DatagramSocket udpSocket;
+	private Thread packetThread;
+	// private VoiceWebSocket ws;
+	private final VoiceConnection connection;
 
-    public void sendPackets() {
-        udpSocket = connection.getUdpClient().udpSocket;
-        packetThread = new Thread("Some stream") {
-            @Override
-            public void run() {
-                long lastSent = System.currentTimeMillis();
-                while (!udpSocket.isClosed() && !packetThread.isInterrupted()) {
-                    try {
-                        if ((System.currentTimeMillis() - lastSent) > 20) {
+	public StreamSender(StreamProvider streamer) {
+		this.provider = streamer;
+		this.connection = provider.connection;
+		// provider.udpClient.udpSocket
+	}
 
-                        }
+	public void sendPackets() {
+		udpSocket = provider.udpClient.udpSocket;
+		packetThread = new Thread("Some stream") {
 
-                        DatagramPacket packet = provider.getNextPacket();
-                        if (packet != null)
-                            udpSocket.send(packet);
+			@Override
+			public void run() {
+				long lastSent = System.currentTimeMillis();
+				while (!udpSocket.isClosed() && !packetThread.isInterrupted()) {
+					try {
+						if ((System.currentTimeMillis() - lastSent) > 20) {
 
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    } finally {
-                        long sleepTime = 20 - (System.currentTimeMillis() - lastSent);
-                        if (sleepTime > 0) {
-                            try {
-                                Thread.sleep(sleepTime);
-                            } catch (InterruptedException e) {
-                                Thread.currentThread().interrupt();
-                            }
-                        }
-                        if (System.currentTimeMillis() < lastSent + 60) {
-                            lastSent += 20;
-                        } else {
-                            lastSent = System.currentTimeMillis();
-                        }
-                    }
+						}
 
-                }
-            }
-        };
+						DatagramPacket packet = provider.getNextPacket();
+						if (packet != null) udpSocket.send(packet);
 
-        packetThread.setPriority((Thread.NORM_PRIORITY + Thread.MAX_PRIORITY) / 2);
-        packetThread.setDaemon(true);
-        packetThread.start();
+					} catch (Exception e) {
+						e.printStackTrace();
+					} finally {
+						long sleepTime = 20 - (System.currentTimeMillis() - lastSent);
+						if (sleepTime > 0) {
+							try {
+								Thread.sleep(sleepTime);
+							} catch (InterruptedException e) {
+								Thread.currentThread().interrupt();
+							}
+						}
+						if (System.currentTimeMillis() < lastSent + 60) {
+							lastSent += 20;
+						} else {
+							lastSent = System.currentTimeMillis();
+						}
+					}
 
-    }
+				}
+			}
+		};
 
-    public void close() {
-        if (packetThread != null) {
-            packetThread.interrupt();
-        }
-    }
+		packetThread.setPriority((Thread.NORM_PRIORITY + Thread.MAX_PRIORITY) / 2);
+		packetThread.setDaemon(true);
+		packetThread.start();
 
-    /**
-     * @return the open
-     */
-    public boolean isOpen() {
-        return packetThread != null;
-    }
+	}
+
+	public void close() {
+		if (packetThread != null) {
+			packetThread.interrupt();
+		}
+	}
+
+	/**
+	 * @return the open
+	 */
+	public boolean isOpen() {
+		return packetThread != null;
+	}
 
 }

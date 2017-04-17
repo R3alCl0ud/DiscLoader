@@ -76,6 +76,20 @@ import io.discloader.discloader.util.DLUtil.Endpoints;
  */
 public class Guild implements IGuild {
 
+	public class MemberQuery {
+
+		public String guild_id = Long.toUnsignedString(getID(), 10);
+		public int limit;
+		public String query;
+
+		public MemberQuery(int limit, String query) {
+			this.limit = limit;
+			this.query = query;
+		}
+	}
+
+	private static int i = 0;
+
 	/**
 	 * The guild's Snowflake ID.
 	 */
@@ -330,7 +344,7 @@ public class Guild implements IGuild {
 	 */
 	@Override
 	public CompletableFuture<IGuildMember> ban(IGuildMember member) {
-		return this.loader.rest.banMember(this, member);
+		return loader.rest.banMember(this, member);
 	}
 
 	/**
@@ -351,7 +365,7 @@ public class Guild implements IGuild {
 	 *         the prune operation if successful.
 	 */
 	public CompletableFuture<Integer> beginPrune(int days) {
-		return this.loader.rest.beginPrune(this, days);
+		return loader.rest.beginPrune(this, days);
 	}
 
 	@Override
@@ -536,8 +550,6 @@ public class Guild implements IGuild {
 	public CompletableFuture<Map<Long, IGuildMember>> fetchMembers() {
 		return fetchMembers(0);
 	}
-
-	private static int i = 0;
 
 	@Override
 	public CompletableFuture<Map<Long, IGuildMember>> fetchMembers(int limit) {
@@ -726,6 +738,11 @@ public class Guild implements IGuild {
 		return loader.rest.pruneCount(this, days);
 	}
 
+	@Override
+	public IRole getRoleByID(long roleID) {
+		return roles.get(roleID);
+	}
+
 	/*
 	 * (non-Javadoc)
 	 * @see io.discloader.discloader.entity.guild.IGuild#getRoles()
@@ -735,6 +752,11 @@ public class Guild implements IGuild {
 		return roles;
 	}
 
+	@Override
+	public IGuildTextChannel getTextChannelByID(long channelID) {
+		return textChannels.get(channelID);
+	}
+
 	/*
 	 * (non-Javadoc)
 	 * @see io.discloader.discloader.entity.guild.IGuild#getTextChannels()
@@ -742,6 +764,11 @@ public class Guild implements IGuild {
 	@Override
 	public Map<Long, IGuildTextChannel> getTextChannels() {
 		return textChannels;
+	}
+
+	@Override
+	public IGuildVoiceChannel getVoiceChannelByID(long channelID) {
+		return voiceChannels.get(channelID);
 	}
 
 	/*
@@ -1031,18 +1058,6 @@ public class Guild implements IGuild {
 	@Override
 	public void updateVoiceState(VoiceState state) {
 		rawStates.put(state.member.getID(), state);
-	}
-
-	public class MemberQuery {
-
-		public String guild_id = Long.toUnsignedString(getID(), 10);
-		public int limit;
-		public String query;
-
-		public MemberQuery(int limit, String query) {
-			this.limit = limit;
-			this.query = query;
-		}
 	}
 
 }

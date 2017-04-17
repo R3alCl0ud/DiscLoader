@@ -106,20 +106,20 @@ public interface IGuild extends ISnowflake, ICreationTime {
 
 	Map<Long, IPresence> getPresences();
 
+	IRole getRoleByID(long roleID);
+
 	Map<Long, IRole> getRoles();
+	
+	IGuildTextChannel getTextChannelByID(long channelID);
 
 	Map<Long, IGuildTextChannel> getTextChannels();
 
+	IGuildVoiceChannel getVoiceChannelByID(long channelID);
+
 	Map<Long, IGuildVoiceChannel> getVoiceChannels();
 
-	/**
-	 * @return
-	 */
 	VoiceRegion getVoiceRegion();
 
-	/**
-	 * @return
-	 */
 	HashMap<Long, VoiceState> getVoiceStates();
 
 	boolean hasPermission(Permissions permissions);
