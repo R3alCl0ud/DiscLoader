@@ -15,14 +15,18 @@ public abstract class AbstractInfo<T extends Object> extends JPanel {
 		this.setLayout(new BoxLayout(this, BoxLayout.PAGE_AXIS));
 		this.validate();
 	}
-	
+
 	public void update(T object) {
 		return;
 	}
-	
+
 	public Component add(Component comp) {
 		super.add(comp);
 		comp.setForeground(new Color(0xFFFFFF));
 		return comp;
+	}
+
+	public String format(String place, Object data) {
+		return String.format("<html>%s: %s</html>", place, data.toString());
 	}
 }

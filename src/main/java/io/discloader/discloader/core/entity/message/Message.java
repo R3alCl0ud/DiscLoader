@@ -213,7 +213,7 @@ public class Message<T extends ITextChannel> implements IMessage {
 
 	@Override
 	public OffsetDateTime getEditedAt() {
-		return OffsetDateTime.parse(edited_timestamp);
+		return edited_timestamp == null ? null : OffsetDateTime.parse(edited_timestamp);
 	}
 
 	@Override

@@ -1,11 +1,12 @@
 package io.discloader.discloader.core.entity.channel;
 
+import java.time.OffsetDateTime;
+
 import io.discloader.discloader.common.DiscLoader;
 import io.discloader.discloader.entity.channel.IChannel;
 import io.discloader.discloader.entity.util.SnowflakeUtil;
 import io.discloader.discloader.network.json.ChannelJSON;
 import io.discloader.discloader.util.DLUtil.ChannelType;
-
 
 public class Channel implements IChannel {
 
@@ -57,5 +58,10 @@ public class Channel implements IChannel {
 
 	public String toMention() {
 		return String.format("<#%s>", id);
+	}
+
+	@Override
+	public OffsetDateTime createdAt() {
+		return SnowflakeUtil.creationTime(this);
 	}
 }

@@ -43,7 +43,7 @@ public class ChannelInfo<T extends Channel> extends AbstractInfo<T> implements A
 			if (channel instanceof TextChannel) {
 				TextChannel tc = (TextChannel) channel;
 				textChannel = tc;
-				add(new JLabel(String.format("Topic: %s", tc.getTopic())));
+				add(new JLabel(format("Topic", tc.getTopic() == null ? "" : tc.getTopic())));
 				JButton open = new JButton("View Messages");
 				open.addActionListener(this);
 				open.setActionCommand("OPEN");
@@ -69,8 +69,6 @@ public class ChannelInfo<T extends Channel> extends AbstractInfo<T> implements A
 			messages = false;
 		} else if (e.getActionCommand().equals("OPEN") && !messages && textChannel != null) {
 			messages = true;
-			System.out.println(textChannel != null && textChannel.getLoader() != null);
-
 			try {
 				TabbedPanel.addTab("Messages", new MessagesTab(textChannel, this));
 			} catch (Exception e1) {

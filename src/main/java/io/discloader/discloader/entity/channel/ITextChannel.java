@@ -45,7 +45,7 @@ public interface ITextChannel extends IChannel {
 	/**
 	 * @return A HashMap of fetched messages
 	 */
-	<T extends ITextChannel> CompletableFuture<Map<Long, IMessage>> fetchMessages();
+	CompletableFuture<Map<Long, IMessage>> fetchMessages();
 
 	/**
 	 * @param options The fetch options to use

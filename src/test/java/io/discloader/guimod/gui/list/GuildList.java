@@ -3,6 +3,7 @@ package io.discloader.guimod.gui.list;
 import javax.swing.DefaultListModel;
 
 import io.discloader.discloader.common.DiscLoader;
+import io.discloader.discloader.common.registry.EntityRegistry;
 import io.discloader.discloader.core.entity.guild.Guild;
 import io.discloader.discloader.entity.guild.IGuild;
 
@@ -18,7 +19,7 @@ public class GuildList<T extends Guild> extends AbstractList<T> {
 	@SuppressWarnings("unchecked")
 	public DefaultListModel<Object> createListModel() {
 		DefaultListModel<Object> listModel = new DefaultListModel<Object>();
-		for (IGuild guild : this.loader.guilds.values()) {
+		for (IGuild guild : EntityRegistry.getGuilds()) {
 			listModel.addElement(String.format("<html>%s<br>%s<br>%s</html>", guild.getName(), guild.getID(), guild.getVoiceRegion().id));
 			this.items.add((T) guild);
 		}

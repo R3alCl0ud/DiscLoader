@@ -37,15 +37,15 @@ public class MessagesTab extends JPanel implements ActionListener, ListSelection
 		this.add(Box.createRigidArea(new Dimension(50, 0)));
 		this.add(this.list);
 		this.add(Box.createRigidArea(new Dimension(50, 0)));
-		this.add(this.info = this.createInfo());
 		close = new JButton("Close");
 		close.addActionListener(this);
 		close.addActionListener(parent);
 		close.setActionCommand("CLOSE");
+		add(close);
+		this.add(this.info = this.createInfo());
 	}
 
 	public MessageList createList() {
-		System.out.println(tchannel != null);// && tchannel.getLoader() != null
 		return new MessageList(tchannel);
 	}
 
