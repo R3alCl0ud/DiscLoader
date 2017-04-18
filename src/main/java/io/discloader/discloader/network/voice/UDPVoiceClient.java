@@ -18,15 +18,20 @@ public class UDPVoiceClient {
 	public static final int SESSION_DESCRIPTION = 4;
 	public static final int SPEAKING = 5;
 
-	public DatagramSocket udpSocket;
+	public DatagramSocket udpSocket = null;
 
 	@SuppressWarnings("unused")
-    private final VoiceConnection connection;
+	private final VoiceConnection connection;
 
 	protected InetSocketAddress voice_gateway;
 
 	public UDPVoiceClient(VoiceConnection connection) {
 		this.connection = connection;
+		// try {
+		// this.udpSocket = new DatagramSocket();
+		// } catch (SocketException e) {
+		// e.printStackTrace();
+		// }
 	}
 
 	public void bindConnection() {
@@ -36,10 +41,10 @@ public class UDPVoiceClient {
 			e.printStackTrace();
 		}
 	}
-	
+
 	public InetSocketAddress discoverAddress(InetSocketAddress endpoint, int ssrc) {
 		try {
-			this.udpSocket = new DatagramSocket();
+			if (udpSocket == null) udpSocket = new DatagramSocket();
 			ByteBuffer buffer = ByteBuffer.allocate(70);
 			buffer.putInt(ssrc);
 			DatagramPacket discovery = new DatagramPacket(buffer.array(), buffer.array().length, endpoint);

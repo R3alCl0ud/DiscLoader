@@ -136,6 +136,7 @@ public class VoiceConnection {
 				return;
 			}
 		}
+//		udpClient.bindConnection();
 		String payload = DLUtil.gson.toJson(new VoicePacket(1, new VoiceUDPBegin(new VoiceData(externalAddress.getHostString(), externalAddress.getPort()))));
 		this.ws.send(payload);
 		this.ws.startHeartbeat(data.heartbeat_interval);

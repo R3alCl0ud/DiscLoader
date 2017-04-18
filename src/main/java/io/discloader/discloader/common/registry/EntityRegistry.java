@@ -176,12 +176,20 @@ public class EntityRegistry {
 		return guildExists(SnowflakeUtil.parse(guildID));
 	}
 
+	public static void putVoiceConnection(VoiceConnection connection) {
+		voiceConnections.put(connection.guild.getID(), connection);
+	}
+
 	public static void removeGuild(IGuild guild) {
 		guilds.remove(guild.getID());
 	}
 
 	public static void removeChannel(IChannel channel) {
-		
+
+	}
+
+	public static boolean hasVoiceConnection(long guildID) {
+		return voiceConnections.containsKey(guildID);
 	}
 
 	public static boolean userExists(long userID) {

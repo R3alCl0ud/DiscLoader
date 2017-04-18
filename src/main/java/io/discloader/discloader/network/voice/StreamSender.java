@@ -11,7 +11,7 @@ import io.discloader.discloader.entity.voice.VoiceConnection;
 public class StreamSender {
 
 	private final StreamProvider provider;
-	private DatagramSocket udpSocket;
+	public DatagramSocket udpSocket;
 	private Thread packetThread;
 	// private VoiceWebSocket ws;
 	private final VoiceConnection connection;
@@ -23,7 +23,7 @@ public class StreamSender {
 	}
 
 	public void sendPackets() {
-		udpSocket = provider.udpClient.udpSocket;
+		udpSocket = connection.getUdpClient().udpSocket;
 		packetThread = new Thread("Some stream") {
 
 			@Override
