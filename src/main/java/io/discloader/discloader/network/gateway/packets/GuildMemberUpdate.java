@@ -8,6 +8,7 @@ import io.discloader.discloader.entity.guild.IGuild;
 import io.discloader.discloader.entity.guild.IGuildMember;
 import io.discloader.discloader.network.gateway.DiscSocket;
 import io.discloader.discloader.network.json.MemberJSON;
+import io.discloader.discloader.util.DLUtil.Events;
 
 /**
  * @author Perry Berman
@@ -25,11 +26,11 @@ public class GuildMemberUpdate extends AbstractHandler {
 		String d = this.gson.toJson(packet.d);
 		MemberJSON data = this.gson.fromJson(d, MemberJSON.class);
 		IGuild guild = EntityRegistry.getGuildByID(data.guild_id);
-		IGuildMember member = guild.getMember(data.user.id);
-		if (member == null) member = gfac.buildMember(guild, data);
-		IGuildMember oldMember = gfac.buildMember(member);
-		if (shouldEmit()) {
+		IGuildMember oldMember = guild.getMember(data.user.id), member = gfac.buildMember(guild, data);
+		guild.addMember(member);
+		if (shouldEmit() && oldMember != null) {
 			GuildMemberUpdateEvent event = new GuildMemberUpdateEvent(member, oldMember, guild);
+			loader.emit(Events.GUILD_MEMBER_UPDATE, event);
 			loader.emit(event);
 		}
 	}

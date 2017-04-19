@@ -1,6 +1,5 @@
 package io.discloader.discloader.network.rest;
 
-import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -16,7 +15,6 @@ import com.google.gson.Gson;
 import io.discloader.discloader.common.DiscLoader;
 import io.discloader.discloader.common.registry.FactoryManager;
 import io.discloader.discloader.common.registry.factory.GuildFactory;
-import io.discloader.discloader.core.entity.RichEmbed;
 import io.discloader.discloader.core.entity.channel.GuildChannel;
 import io.discloader.discloader.core.entity.channel.TextChannel;
 import io.discloader.discloader.core.entity.channel.VoiceChannel;
@@ -24,29 +22,24 @@ import io.discloader.discloader.core.entity.guild.Emoji;
 import io.discloader.discloader.core.entity.guild.Guild;
 import io.discloader.discloader.core.entity.guild.GuildMember;
 import io.discloader.discloader.core.entity.guild.Role;
-import io.discloader.discloader.core.entity.message.Message;
 import io.discloader.discloader.core.entity.user.DLUser;
 import io.discloader.discloader.core.entity.user.OAuth2Application;
-import io.discloader.discloader.core.entity.user.User;
 import io.discloader.discloader.entity.channel.ITextChannel;
 import io.discloader.discloader.entity.guild.IGuild;
 import io.discloader.discloader.entity.guild.IGuildEmoji;
 import io.discloader.discloader.entity.guild.IGuildMember;
 import io.discloader.discloader.entity.guild.IRole;
 import io.discloader.discloader.entity.message.IMessage;
-import io.discloader.discloader.entity.sendable.Attachment;
 import io.discloader.discloader.entity.sendable.CreateEmoji;
 import io.discloader.discloader.entity.sendable.CreateRole;
 import io.discloader.discloader.entity.sendable.EditChannel;
 import io.discloader.discloader.entity.sendable.FetchMembers;
-import io.discloader.discloader.entity.sendable.SendableMessage;
 import io.discloader.discloader.entity.user.IUser;
 import io.discloader.discloader.entity.util.SnowflakeUtil;
 import io.discloader.discloader.network.json.ChannelJSON;
 import io.discloader.discloader.network.json.GuildJSON;
 import io.discloader.discloader.network.json.InviteJSON;
 import io.discloader.discloader.network.json.MemberJSON;
-import io.discloader.discloader.network.json.MessageJSON;
 import io.discloader.discloader.network.json.OAuthApplicationJSON;
 import io.discloader.discloader.network.json.RoleJSON;
 import io.discloader.discloader.network.json.UserJSON;
@@ -88,8 +81,8 @@ public class RESTManager {
 		return future;
 	}
 
-	public CompletableFuture<Emoji> createEmoji(Guild guild, String name, String image) {
-		CompletableFuture<Emoji> future = new CompletableFuture<>();
+	public CompletableFuture<IGuildEmoji> createEmoji(Guild guild, String name, String image) {
+		CompletableFuture<IGuildEmoji> future = new CompletableFuture<>();
 		CreateEmoji ce = new CreateEmoji(name, image);
 		this.makeRequest(Endpoints.guildEmojis(guild.getID()), Methods.POST, true, ce).thenAcceptAsync(action -> {
 			System.out.println(action);
@@ -225,21 +218,12 @@ public class RESTManager {
 		return future;
 	}
 
-	public CompletableFuture<Message> sendMessage(ITextChannel channel, String content, RichEmbed embed, Attachment attachment, File file) {
-		if (content != null && content.length() < 0 && (embed == null && attachment == null)) return null;
-		CompletableFuture<Message> msgSent = new CompletableFuture<Message>();
-		this.makeRequest(DLUtil.Endpoints.messages(channel.getID()), DLUtil.Methods.POST, true, new SendableMessage(content, embed, attachment, file)).thenAcceptAsync(action -> {
-			msgSent.complete(new Message(channel, this.gson.fromJson(action, MessageJSON.class)));
-		});
-		return msgSent;
-	}
-
-	public CompletableFuture<User> setAvatar(String avatar) {
-		CompletableFuture<User> future = new CompletableFuture<User>();
+	public CompletableFuture<DLUser> setAvatar(String avatar) {
+		CompletableFuture<DLUser> future = new CompletableFuture<>();
 		try {
 			String base64 = new String("data:image/jpg;base64," + Base64.encodeBase64String(Files.readAllBytes(Paths.get(avatar))));
-			this.makeRequest(DLUtil.Endpoints.currentUser, DLUtil.Methods.PATCH, true, new JSONObject().put("avatar", base64)).thenAcceptAsync(action -> {
-				loader.user.setup(this.gson.fromJson(action, UserJSON.class));
+			this.makeRequest(Endpoints.currentUser, Methods.PATCH, true, new JSONObject().put("avatar", base64)).thenAcceptAsync(action -> {
+				loader.user.setup(gson.fromJson(action, UserJSON.class));
 				future.complete(loader.user);
 			});
 		} catch (IOException e) {

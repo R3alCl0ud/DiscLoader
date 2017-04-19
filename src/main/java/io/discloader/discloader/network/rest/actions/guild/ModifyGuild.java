@@ -5,12 +5,13 @@ import java.util.concurrent.CompletableFuture;
 import org.json.JSONObject;
 
 import io.discloader.discloader.core.entity.guild.Guild;
+import io.discloader.discloader.entity.guild.IGuild;
 import io.discloader.discloader.network.json.GuildJSON;
 import io.discloader.discloader.network.rest.actions.RESTAction;
 import io.discloader.discloader.util.DLUtil.Endpoints;
 import io.discloader.discloader.util.DLUtil.Methods;
 
-public class ModifyGuild extends RESTAction<Guild> {
+public class ModifyGuild extends RESTAction<IGuild> {
 
 	private Guild guild;
 	private JSONObject payload;
@@ -21,7 +22,7 @@ public class ModifyGuild extends RESTAction<Guild> {
 		payload = data;
 	}
 
-	public CompletableFuture<Guild> execute() {
+	public CompletableFuture<IGuild> execute() {
 		return super.execute(loader.rest.makeRequest(Endpoints.guild(guild.getID()), Methods.PATCH, true, payload));
 	}
 

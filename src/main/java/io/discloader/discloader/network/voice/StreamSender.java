@@ -19,7 +19,6 @@ public class StreamSender {
 	public StreamSender(StreamProvider streamer) {
 		this.provider = streamer;
 		this.connection = provider.connection;
-		// provider.udpClient.udpSocket
 	}
 
 	public void sendPackets() {

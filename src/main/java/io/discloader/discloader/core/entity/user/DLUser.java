@@ -14,23 +14,24 @@ import io.discloader.discloader.entity.user.IUser;
  * @author Perry Berman
  */
 public class DLUser extends User {
-	
+
 	/**
-	 * The currently loggedin user's email address. Only applies to user accounts
+	 * The currently loggedin user's email address. Only applies to user
+	 * accounts
 	 */
 	public String email;
 	/**
 	 * The currently loggedin user's password. Only applies to user accounts
 	 */
 	public String password;
-	
+
 	private boolean afk;
-	
+
 	/**
 	 * User's persence. shows as default if {@code user.id != loader.user.id}
 	 */
 	public final Presence presence;
-	
+
 	/**
 	 * Creates a new DLUser object
 	 * 
@@ -38,22 +39,24 @@ public class DLUser extends User {
 	 */
 	public DLUser(IUser iUser) {
 		super(iUser);
-		
+
 		this.presence = new Presence();
-		
+
 		this.afk = false;
-		
+
 	}
-	
+
 	/**
-	 * Gets the OAuth2 application of the logged in user, if the {@link User#bot} is true
+	 * Gets the OAuth2 application of the logged in user, if the
+	 * {@link User#bot} is true
 	 * 
-	 * @return A Future that completes with a new {@link OAuth2Application} if successful
+	 * @return A Future that completes with a new {@link OAuth2Application} if
+	 *         successful
 	 */
 	public CompletableFuture<OAuth2Application> getOAuth2Application() {
 		return this.loader.rest.getApplicationInfo();
 	}
-	
+
 	/**
 	 * Set's the user's status
 	 * 
@@ -63,18 +66,19 @@ public class DLUser extends User {
 	public DLUser setAFK(boolean afk) {
 		return this.setPresence(null, null, this.afk);
 	}
-	
+
 	/**
 	 * Sets the currently logged in user's avatar
 	 * 
 	 * @param avatarLocation The location on disk of the new avatar image
-	 * @return A CompletableFuture that completes with {@code this} if successfull, or the error response if failed. Returns null if
+	 * @return A CompletableFuture that completes with {@code this} if
+	 *         successfull, or the error response if failed. Returns null if
 	 *         {@code this.id != this.loader.user.id}
 	 */
-	public CompletableFuture<User> setAvatar(String avatarLocation) {
+	public CompletableFuture<DLUser> setAvatar(String avatarLocation) {
 		return this.loader.rest.setAvatar(avatarLocation);
 	}
-	
+
 	/**
 	 * Sets the currently loggedin user's game
 	 * 
@@ -82,9 +86,9 @@ public class DLUser extends User {
 	 * @return this
 	 */
 	public DLUser setGame(String game) {
-		return this.setPresence(presence.status, game != null ? new Game(game) : null, this.afk);
+		return setPresence(presence.status, game != null ? new Game(game) : null, this.afk);
 	}
-	
+
 	/**
 	 * Set's the currently logged in user's presence
 	 * 
@@ -100,17 +104,18 @@ public class DLUser extends User {
 		loader.socket.send(payload);
 		return this;
 	}
-	
+
 	/**
 	 * Sets the user's status.
 	 * 
-	 * @param status The new status, can be {@literal online}, {@literal idle}, {@literal dnd}, {@literal invisible}, etc..
+	 * @param status The new status, can be {@literal online}, {@literal idle},
+	 *            {@literal dnd}, {@literal invisible}, etc..
 	 * @return this
 	 */
 	public DLUser setStatus(String status) {
 		return this.setPresence(status, null, this.afk);
 	}
-	
+
 	/**
 	 * Set's the currently logged in user's username.
 	 * 
@@ -120,5 +125,5 @@ public class DLUser extends User {
 	public CompletableFuture<DLUser> setUsername(String username) {
 		return this.loader.rest.setUsername(username);
 	}
-	
+
 }

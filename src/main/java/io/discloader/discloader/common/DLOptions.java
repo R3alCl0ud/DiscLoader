@@ -41,6 +41,10 @@ public class DLOptions {
 
 	public int shards = 1;
 
+	public DLOptions() {
+		this("TOKEN", "/", false, false, 0, 1);
+	}
+
 	public DLOptions(boolean defaultCommands, boolean useWindow) {
 		this("TOKEN", "/", defaultCommands, useWindow, 0, 1);
 	}
@@ -69,4 +73,21 @@ public class DLOptions {
 	public DLOptions(String token, String prefix, int shard, int shards) {
 		this(token, prefix, true, false, shard, shards);
 	}
+
+	public DLOptions setToken(String token) {
+		this.token = token;
+		return this;
+	}
+
+	public DLOptions setPrefix(String prefix) {
+		this.prefix = prefix;
+		return this;
+	}
+
+	public DLOptions setSharding(int shard, int totalShards) {
+		this.shard = shard;
+		this.shards = totalShards;
+		return this;
+	}
+
 }

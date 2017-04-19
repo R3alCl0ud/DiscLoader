@@ -43,10 +43,11 @@ public class PresenceUpdate extends AbstractHandler {
 		IGuild guild = data.guild_id == null ? null : EntityRegistry.getGuildByID(data.guild_id);
 		if (guild != null) {
 			IGuildMember oldMember = guild.getMember(user.getID()), member;
-			member = guild.addMember(user, data.roles, false, false, data.nick, false);
 			if (oldMember == null && !data.status.equalsIgnoreCase("offline")) {
+				member = guild.addMember(user, data.roles, false, false, data.nick, false);
 				loader.emit(DLUtil.Events.GUILD_MEMBER_AVAILABLE, member);
 			} else if (oldMember != null) {
+				member = guild.addMember(user, data.roles, oldMember.isDeaf(), oldMember.isMuted(), data.nick, false);
 				guild.setPresence(data);
 				loader.emit(new GuildMemberUpdateEvent(member, oldMember, guild));
 			} else {

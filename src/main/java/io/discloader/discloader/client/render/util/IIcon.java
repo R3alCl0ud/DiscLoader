@@ -5,26 +5,26 @@ import java.io.File;
 
 /**
  * @author Perry Berman
- *
  */
 public interface IIcon {
-	
-	
+
 	File getFile();
-	
+
 	int getIconHeight();
-	
+
 	String getIconName();
-	
+
+	String toHash();
+
 	int getIconWidth();
-	
+
 	Image getImage();
-	
+
 	void setIconHeight(int height);
-	
+
 	void setIconName(String iconName);
-	
+
 	void setIconWidth(int width);
-	
+
 	void setImage(Image image);
 }

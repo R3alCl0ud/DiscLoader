@@ -214,4 +214,16 @@ public abstract class EventListenerAdapter implements IEventListener {
 	public void VoiceStateUpdate(VoiceStateUpdateEvent e) {
 	}
 
+	@Override
+	public void GuildMemberNicknameChanged() {
+	}
+
+	@Override
+	public void GuildMemberRoleAdd() {
+	}
+
+	@Override
+	public void GuildMemberRoleRemove() {
+	}
+
 }

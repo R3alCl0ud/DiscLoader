@@ -123,6 +123,12 @@ public interface IEventListener {
 	 */
 	void GuildMemberAdd(GuildMemberAddEvent event);
 
+	void GuildMemberNicknameChanged();
+
+	void GuildMemberRoleAdd();
+
+	void GuildMemberRoleRemove();
+
 	/**
 	 * Executed when a GuildMemberAvailable event is sent to the client
 	 * 

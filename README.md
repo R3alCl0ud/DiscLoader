@@ -1,5 +1,5 @@
 # DiscLoader
-Simple Discord API abstractions for Java.
+A High Level Java wrapper for the Discord API written in 
 Created to replace the method daisy chaining confusion of other Java libraries for the Discord API.
 
 [Documentation](http://docs.discloader.io)
@@ -43,8 +43,9 @@ Created to replace the method daisy chaining confusion of other Java libraries f
 | arg | description | default |
 |-----|--------------|---------|
 | `nogui` | if DiscLoader is executed with nogui as an argument the GUI window doesn't show | loads GUI |
-| `-t` | The api token to use to authenticate | `""` |
-| `-p` | The prefix to use for commands | `"//"` |
+| `-t=<token>` | The api token to use to authenticate | `""` |
+| `-p=<prefix>` | The prefix to use for commands | `"//"` |
+| `-s=<shard>:<shards>` | The info for sharding | `"0:1"` |
 
 ### Options file
 

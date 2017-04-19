@@ -15,6 +15,8 @@ public interface IUser extends ISnowflake, ICreationTime {
 
 	String asMention();
 
+	boolean equals(IUser user);
+
 	IIcon getAvatar();
 
 	String getDiscriminator();

@@ -31,7 +31,6 @@ import io.discloader.discloader.common.exceptions.UnauthorizedException;
 import io.discloader.discloader.common.registry.EntityRegistry;
 import io.discloader.discloader.common.registry.FactoryManager;
 import io.discloader.discloader.common.registry.factory.GuildFactory;
-import io.discloader.discloader.core.entity.Permission;
 import io.discloader.discloader.core.entity.Presence;
 import io.discloader.discloader.core.entity.channel.Channel;
 import io.discloader.discloader.core.entity.channel.TextChannel;
@@ -42,7 +41,6 @@ import io.discloader.discloader.entity.IPresence;
 import io.discloader.discloader.entity.channel.IGuildChannel;
 import io.discloader.discloader.entity.channel.IGuildTextChannel;
 import io.discloader.discloader.entity.channel.IGuildVoiceChannel;
-import io.discloader.discloader.entity.channel.ITextChannel;
 import io.discloader.discloader.entity.channel.IVoiceChannel;
 import io.discloader.discloader.entity.guild.IGuild;
 import io.discloader.discloader.entity.guild.IGuildEmoji;
@@ -68,12 +66,6 @@ import io.discloader.discloader.network.rest.actions.guild.ModifyGuild;
 import io.discloader.discloader.util.DLUtil;
 import io.discloader.discloader.util.DLUtil.Endpoints;
 
-/**
- * This represents a Guild in Discord's API
- * 
- * @author Perry Berman
- * @since 0.0.1
- */
 public class Guild implements IGuild {
 
 	public class MemberQuery {
@@ -333,37 +325,15 @@ public class Guild implements IGuild {
 		return role;
 	}
 
-	/**
-	 * Bans the member from the {@link Guild} if the {@link DiscLoader loader}
-	 * has sufficient permissions
-	 *
-	 * @param member The member to ban from the guild
-	 * @see Permission
-	 * @return A CompletableFuture that completes with {@code this} if
-	 *         successful
-	 */
 	@Override
 	public CompletableFuture<IGuildMember> ban(IGuildMember member) {
 		return loader.rest.banMember(this, member);
 	}
 
-	/**
-	 * Begin a prune operation. Requires the 'KICK_MEMBERS' permission.
-	 * 
-	 * @return A Future that completes with the number of member kicked during
-	 *         the prune operation if successful.
-	 */
 	public CompletableFuture<Integer> beginPrune() {
 		return beginPrune(1);
 	}
 
-	/**
-	 * Begin a prune operation. Requires the 'KICK_MEMBERS' permission.
-	 * 
-	 * @param days The number of days to prune (1 or more)
-	 * @return A Future that completes with the number of member kicked during
-	 *         the prune operation if successful.
-	 */
 	public CompletableFuture<Integer> beginPrune(int days) {
 		return loader.rest.beginPrune(this, days);
 	}
@@ -378,14 +348,7 @@ public class Guild implements IGuild {
 		return SnowflakeUtil.creationTime(this);
 	}
 
-	/**
-	 * Creates a new custom emoji
-	 * 
-	 * @param name The name of the new emoji
-	 * @param image The file
-	 * @return A Future the completes with the created Emoji if successful.
-	 */
-	public CompletableFuture<Emoji> createEmoji(String name, File image) {
+	public CompletableFuture<IGuildEmoji> createEmoji(String name, File image) {
 		String base64 = null;
 		try {
 			base64 = new String("data:image/jpg;base64," + Base64.encodeBase64String(Files.readAllBytes(image.toPath())));
@@ -395,14 +358,7 @@ public class Guild implements IGuild {
 		return this.createEmoji(name, base64);
 	}
 
-	/**
-	 * Creates a new custom emoji
-	 * 
-	 * @param name The name of the emoji
-	 * @param image The emoji's image encoded to base64
-	 * @return A Future the completes with the created Emoji if successful.
-	 */
-	public CompletableFuture<Emoji> createEmoji(String name, String image) {
+	public CompletableFuture<IGuildEmoji> createEmoji(String name, String image) {
 		return this.loader.rest.createEmoji(this, name, image);
 	}
 
@@ -493,32 +449,18 @@ public class Guild implements IGuild {
 		return this.loader.rest.createVoiceChannel(this, new JSONObject().put("name", name).put("bitrate", bitrate).put("user_limit", userLimit));
 	}
 
-	/**
-	 * Deletes the Guild if the user you have logged in as is the owner of the
-	 * guild
-	 * 
-	 * @return A Future that completes with {@code this} if successful, and
-	 *         fails with a {@link UnauthorizedException}
-	 * @throws UnauthorizedException Thrown if you are not the owner of the
-	 *             guild.
-	 */
-	public CompletableFuture<Guild> delete() {
+	public CompletableFuture<IGuild> delete() {
 		if (!isOwner()) throw new UnauthorizedException("Only the guild's owner can delete a guild");
-		CompletableFuture<Guild> future = new CompletableFuture<Guild>();
-		loader.rest.makeRequest(DLUtil.Endpoints.guild(getID()), DLUtil.Methods.DELETE, true).thenAcceptAsync(data -> {
+		CompletableFuture<IGuild> future = new CompletableFuture<>();
+		loader.rest.makeRequest(Endpoints.guild(getID()), DLUtil.Methods.DELETE, true).thenAcceptAsync(data -> {
 			future.complete(this);
 		});
 		return future;
 	}
 
-	/**
-	 * @return A Future that completes with {@code this} if successful.
-	 * @throws PermissionsException Thrown if the current user doesn't have the
-	 *             {@link Permissions#MANAGE_GUILD} permission.
-	 */
-	public CompletableFuture<Guild> edit() {
+	public CompletableFuture<IGuild> edit(String name, String icon, IGuildVoiceChannel afkChannel) throws IOException {
 		if (!isOwner() && getCurrentMember().getPermissions().hasPermission(Permissions.MANAGE_GUILD)) throw new PermissionsException();
-		return null;
+		return new CompletableFuture<>();
 	}
 
 	/**
@@ -537,12 +479,6 @@ public class Guild implements IGuild {
 		return guild.name.equals(name) && guild.ownerID == ownerID && guild.icon.equals(icon) && (isSyncing() == guild.isSyncing());
 	}
 
-	/**
-	 * Fetches a GuildMember from the REST API
-	 * 
-	 * @param memberID the ID of the member to load
-	 * @return CompletableFuture.GuildMember
-	 */
 	public CompletableFuture<IGuildMember> fetchMember(long memberID) {
 		return loader.rest.loadGuildMember(this, memberID);
 	}
@@ -600,12 +536,6 @@ public class Guild implements IGuild {
 		return voiceChannels.get(afk_channel_id);
 	}
 
-	/**
-	 * Returns the {@link GuildMember} object for the {@link User} you are
-	 * logged in as.
-	 * 
-	 * @return A GuildMember object
-	 */
 	@Override
 	public IGuildMember getCurrentMember() {
 		return members.get(loader.user.getID());
@@ -617,8 +547,13 @@ public class Guild implements IGuild {
 	 * 
 	 * @return the default TextChannel
 	 */
-	public ITextChannel getDefaultChannel() {
+	public IGuildTextChannel getDefaultChannel() {
 		return textChannels.get(id);
+	}
+
+	@Override
+	public IRole getDefaultRole() {
+		return getRoleByID(getID());
 	}
 
 	@Override
@@ -707,6 +642,11 @@ public class Guild implements IGuild {
 	}
 
 	@Override
+	public long getOwnerID() {
+		return ownerID;
+	}
+
+	@Override
 	public IPresence getPresence(long memberID) {
 		return presences.get(memberID);
 	}
@@ -716,24 +656,10 @@ public class Guild implements IGuild {
 		return presences;
 	}
 
-	/**
-	 * same as {@link #getPruneCount(int days)} but only grabs one days worth
-	 * 
-	 * @return A Future that completes with the number of member that would be
-	 *         kicked in a prune operation
-	 */
 	public CompletableFuture<Integer> getPruneCount() {
 		return getPruneCount(1);
 	}
 
-	/**
-	 * Returns the number of members that would be removed in a prune operation.
-	 * Requires the KICK_MEMBERS permission.
-	 * 
-	 * @param days The number of days to count prune for (1 or more)
-	 * @return A Future that completes with the number of member that would be
-	 *         kicked in a prune operation
-	 */
 	public CompletableFuture<Integer> getPruneCount(int days) {
 		return loader.rest.pruneCount(this, days);
 	}
@@ -743,10 +669,6 @@ public class Guild implements IGuild {
 		return roles.get(roleID);
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * @see io.discloader.discloader.entity.guild.IGuild#getRoles()
-	 */
 	@Override
 	public Map<Long, IRole> getRoles() {
 		return roles;
@@ -757,10 +679,6 @@ public class Guild implements IGuild {
 		return textChannels.get(channelID);
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * @see io.discloader.discloader.entity.guild.IGuild#getTextChannels()
-	 */
 	@Override
 	public Map<Long, IGuildTextChannel> getTextChannels() {
 		return textChannels;
@@ -788,6 +706,11 @@ public class Guild implements IGuild {
 		return voiceRegion;
 	}
 
+	@Override
+	public CompletableFuture<List<VoiceRegion>> getVoiceRegions() {
+		return new CompletableFuture<>();
+	}
+
 	/**
 	 * returns a HashMap of the guild's members' voice states. Indexed by
 	 * {@link GuildMember#id}
@@ -809,29 +732,15 @@ public class Guild implements IGuild {
 		return isOwner() || getCurrentMember().getPermissions().hasPermission(permissions);
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * @see io.discloader.discloader.entity.guild.IGuild#isAvailable()
-	 */
 	@Override
 	public boolean isAvailable() {
 		return available;
 	}
 
-	/**
-	 * Whether or not the guild has at least 250 members.
-	 * 
-	 * @return {@code if} {@link #memberCount} is greater than or equal to 250,
-	 *         {@code false} otherwise.
-	 */
 	public boolean isLarge() {
 		return memberCount >= 250;
 	}
 
-	/**
-	 * @return {@code true} if {@link #getCurrentMember()}{@link GuildMember#id
-	 *         .id} is equal to {@link #ownerID}, false otherwise.
-	 */
 	@Override
 	public boolean isOwner() {
 		return isOwner(getCurrentMember());
@@ -899,53 +808,26 @@ public class Guild implements IGuild {
 		return removeRole(SnowflakeUtil.parse(roleID));
 	}
 
-	/**
-	 * @param channel The {@link VoiceChannel} to set as the afk channel.
-	 * @throws PermissionsException
-	 * @throws MissmatchException
-	 */
-	public CompletableFuture<Guild> setAfkChannel(VoiceChannel channel) {
+	public CompletableFuture<IGuild> setAFKChannel(IGuildVoiceChannel channel) {
 		if (!isOwner() && !getCurrentMember().getPermissions().hasPermission(Permissions.MANAGE_GUILD)) throw new PermissionsException("Insuficient Permissions");
 		if (!id.equals(channel.getGuild().getID())) throw new MissmatchException("Afk Channel cannot be set to a voice channel from another guild");
 		return new ModifyGuild(this, new JSONObject().put("afk_channel_id", channel.getID())).execute();
 	}
 
-	/**
-	 * Sets the guild's icon if the loader has sufficient permissions
-	 * 
-	 * @param icon location of icon file on disk
-	 * @return A Future that completes with {@code this} if successful.
-	 * @throws IOException Exception thrown if there is an error reading icon
-	 *             file
-	 * @throws PermissionsException
-	 */
-	public CompletableFuture<Guild> setIcon(String icon) throws IOException {
+	public CompletableFuture<IGuild> setIcon(String icon) throws IOException {
 		if (!isOwner() && !getCurrentMember().getPermissions().hasPermission(Permissions.MANAGE_GUILD)) throw new PermissionsException("Insuficient Permissions");
 		String base64 = new String("data:image/jpg;base64," + Base64.encodeBase64String(Files.readAllBytes(Paths.get(icon))));
 		return new ModifyGuild(this, new JSONObject().put("icon", base64)).execute();
 	}
 
-	/**
-	 * Sets the guild's name if the loader has sufficient permissions
-	 * 
-	 * @param name The guild's new name
-	 * @return A Future that completes with {@code this} if successful.
-	 * @throws PermissionsException
-	 */
-	public CompletableFuture<Guild> setName(String name) {
+	public CompletableFuture<IGuild> setName(String name) {
 		if (!isOwner() && !getCurrentMember().getPermissions().hasPermission(Permissions.MANAGE_GUILD)) throw new PermissionsException("Insuficient Permissions");
 		return new ModifyGuild(this, new JSONObject().put("name", name)).execute();
 	}
 
-	/**
-	 * @param owner
-	 * @return A Future that completes with {@code this} if successful.
-	 * @throws UnauthorizedException Thrown if you are not the owner of theS
-	 *             guild.
-	 */
-	public CompletableFuture<Guild> setOwner(GuildMember owner) {
+	public CompletableFuture<IGuild> setOwner(IGuildMember member) {
 		if (!isOwner()) throw new UnauthorizedException("Only the guild's owner can delete a guild");
-		return new ModifyGuild(this, new JSONObject().put("owner_id", owner.getID())).execute();
+		return new ModifyGuild(this, new JSONObject().put("owner_id", SnowflakeUtil.asString(member))).execute();
 	}
 
 	@Override
@@ -1032,25 +914,11 @@ public class Guild implements IGuild {
 		}
 	}
 
-	/**
-	 * Sets the Guild's voice region to the specified region
-	 * 
-	 * @param region The new voice region
-	 * @return A Future that completes with {@code this} if successful.
-	 * @throws PermissionsException
-	 */
-	public CompletableFuture<Guild> setVoiceRegion(String region) {
+	public CompletableFuture<IGuild> setVoiceRegion(String region) {
 		if (!isOwner() && !getCurrentMember().getPermissions().hasPermission(Permissions.MANAGE_GUILD)) throw new PermissionsException("Insuficient Permissions");
 		return new ModifyGuild(this, new JSONObject().put("region", region)).execute();
 	}
 
-	/**
-	 * Syncs the guild to the client if the logged in user is not a bot.
-	 * 
-	 * @throws GuildSyncException Thrown if {@link #isSyncing()} returns true.
-	 * @throws AccountTypeException Thrown if client is logged in as a bot
-	 *             account
-	 */
 	public void sync() throws GuildSyncException, AccountTypeException {
 		loader.syncGuilds(this.id);
 	}
