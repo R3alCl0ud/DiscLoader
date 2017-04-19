@@ -24,6 +24,7 @@ import io.discloader.discloader.common.event.guild.emoji.GuildEmojiCreateEvent;
 import io.discloader.discloader.common.event.guild.emoji.GuildEmojiDeleteEvent;
 import io.discloader.discloader.common.event.guild.emoji.GuildEmojiUpdateEvent;
 import io.discloader.discloader.common.event.guild.member.GuildMemberAddEvent;
+import io.discloader.discloader.common.event.guild.member.GuildMemberNicknameUpdateEvent;
 import io.discloader.discloader.common.event.guild.member.GuildMemberRemoveEvent;
 import io.discloader.discloader.common.event.guild.member.GuildMemberUpdateEvent;
 import io.discloader.discloader.common.event.guild.member.GuildMembersChunkEvent;
@@ -111,6 +112,8 @@ public class EventManager {
 				handler.GuildMemberRemove((GuildMemberRemoveEvent) event);
 			} else if (event instanceof GuildMemberUpdateEvent) {
 				handler.GuildMemberUpdate((GuildMemberUpdateEvent) event);
+			} else if (event instanceof GuildMemberNicknameUpdateEvent) {
+				handler.GuildMemberNicknameUpdated((GuildMemberNicknameUpdateEvent) event);
 			} else if (event instanceof GuildMembersChunkEvent) {
 				handler.GuildMembersChunk((GuildMembersChunkEvent) event);
 			} else if (event instanceof GuildRoleCreateEvent) {
@@ -162,7 +165,6 @@ public class EventManager {
 	}
 
 	public void onceEvent(Consumer<DLEvent> consumer, Function<IGuild, Boolean> checker) {
-		// consumers.add(consumer);
 		onceEvent(consumer);
 		guildTest.put(consumer, checker);
 	}

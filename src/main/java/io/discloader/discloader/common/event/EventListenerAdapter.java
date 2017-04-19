@@ -19,6 +19,7 @@ import io.discloader.discloader.common.event.guild.emoji.GuildEmojiCreateEvent;
 import io.discloader.discloader.common.event.guild.emoji.GuildEmojiDeleteEvent;
 import io.discloader.discloader.common.event.guild.emoji.GuildEmojiUpdateEvent;
 import io.discloader.discloader.common.event.guild.member.GuildMemberAddEvent;
+import io.discloader.discloader.common.event.guild.member.GuildMemberNicknameUpdateEvent;
 import io.discloader.discloader.common.event.guild.member.GuildMemberRemoveEvent;
 import io.discloader.discloader.common.event.guild.member.GuildMemberUpdateEvent;
 import io.discloader.discloader.common.event.guild.member.GuildMembersChunkEvent;
@@ -215,7 +216,7 @@ public abstract class EventListenerAdapter implements IEventListener {
 	}
 
 	@Override
-	public void GuildMemberNicknameChanged() {
+	public void GuildMemberNicknameUpdated(GuildMemberNicknameUpdateEvent event) {
 	}
 
 	@Override

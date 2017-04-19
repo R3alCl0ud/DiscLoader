@@ -19,6 +19,7 @@ import io.discloader.discloader.common.DiscLoader;
 import io.discloader.discloader.common.event.EventListenerAdapter;
 import io.discloader.discloader.common.event.RawEvent;
 import io.discloader.discloader.common.event.ReadyEvent;
+import io.discloader.discloader.common.event.guild.member.GuildMemberRemoveEvent;
 import io.discloader.discloader.common.event.guild.member.GuildMemberUpdateEvent;
 import io.discloader.discloader.common.logger.DLErrorStream;
 import io.discloader.discloader.common.logger.DLPrintStream;
@@ -26,6 +27,7 @@ import io.discloader.discloader.common.registry.EntityRegistry;
 import io.discloader.discloader.core.entity.RichEmbed;
 import io.discloader.discloader.entity.channel.ITextChannel;
 import io.discloader.discloader.entity.guild.IGuildMember;
+import io.discloader.discloader.util.DLUtil.Endpoints;
 
 /**
  * DiscLoader client entry point
@@ -93,12 +95,21 @@ public class Main {
 			}
 
 			@Override
+			public void GuildMemberRemove(GuildMemberRemoveEvent event) {
+				IGuildMember member = event.getMember();
+				ITextChannel testChannel = EntityRegistry.getTextChannelByID(282230026869669888L);
+				RichEmbed embed = new RichEmbed(member.toString()).setDescription("Left the guild").setColor(0xf10000).setThumbnail(Endpoints.avatar(member.getID(), member.getUser().getAvatar().toString()));
+				embed.setTimestamp(OffsetDateTime.now());
+				testChannel.sendEmbed(embed);
+			}
+
+			@Override
 			public void GuildMemberUpdate(GuildMemberUpdateEvent event) {
 				IGuildMember member = event.member, oldMember = event.oldMember;
 				if (!member.getNickname().equals(oldMember.getNickname())) {
 					ITextChannel testChannel = EntityRegistry.getTextChannelByID(282230026869669888L);
-					RichEmbed embed = new RichEmbed("Member Updated").setColor(0xfefa2a);
-					embed.addField("Nickname Updated", String.format("**%s**(ID: `%d`) has changed their nickname to **%s** from **%s**", member.toString(), member.getID(), member.getNickname(), oldMember.getNickname()));
+					RichEmbed embed = new RichEmbed(member.toString()).setColor(0xfefa2a).setDescription("Nickname changed");
+					embed.addField("Old Nickname", oldMember.getNickname(), true).addField("New Nickname", member.getNickname(), true);
 					embed.setTimestamp(OffsetDateTime.now());
 					testChannel.sendEmbed(embed);
 				}
