@@ -67,6 +67,8 @@ public interface ITextChannel extends IChannel {
 	 */
 	<T extends ITextChannel> IMessage getMessage(String id);
 
+	IMessage getMessage(long messageID);
+
 	Collection<IMessage> getMessageCollection();
 
 	/**

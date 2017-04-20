@@ -13,6 +13,7 @@ import io.discloader.discloader.entity.channel.IPrivateChannel;
 import io.discloader.discloader.entity.message.IMessage;
 import io.discloader.discloader.entity.sendable.Attachment;
 import io.discloader.discloader.entity.user.IUser;
+import io.discloader.discloader.entity.util.SnowflakeUtil;
 import io.discloader.discloader.network.json.ChannelJSON;
 import io.discloader.discloader.network.rest.actions.channel.BulkDelete;
 import io.discloader.discloader.network.rest.actions.channel.FetchMessage;
@@ -89,9 +90,15 @@ public class PrivateChannel extends Channel implements IPrivateChannel {
 	}
 
 	@Override
-	public IMessage getMessage(String id) {
-		return messages.get(id);
+	public IMessage getMessage(long messageID) {
+		return messages.get(messageID);
 	}
+
+	@Override
+	public IMessage getMessage(String id) {
+		return getMessage(SnowflakeUtil.parse(id));
+	}
+
 
 	@Override
 	public Collection<IMessage> getMessageCollection() {

@@ -16,6 +16,7 @@ import io.discloader.discloader.entity.channel.IVoiceChannel;
 import io.discloader.discloader.entity.message.IMessage;
 import io.discloader.discloader.entity.sendable.Attachment;
 import io.discloader.discloader.entity.user.IUser;
+import io.discloader.discloader.entity.util.SnowflakeUtil;
 import io.discloader.discloader.entity.voice.VoiceConnection;
 import io.discloader.discloader.network.json.ChannelJSON;
 import io.discloader.discloader.network.rest.actions.channel.BulkDelete;
@@ -95,8 +96,13 @@ public class GroupChannel extends Channel implements IGroupChannel, IVoiceChanne
 	}
 
 	@Override
+	public IMessage getMessage(long messageID) {
+		return messages.get(messageID);
+	}
+
+	@Override
 	public IMessage getMessage(String id) {
-		return messages.get(id);
+		return getMessage(SnowflakeUtil.parse(id));
 	}
 
 	@Override

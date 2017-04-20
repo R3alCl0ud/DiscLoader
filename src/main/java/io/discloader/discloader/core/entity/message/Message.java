@@ -135,6 +135,7 @@ public class Message<T extends ITextChannel> implements IMessage {
 		}
 		embeds = new ArrayList<>();
 		attachments = new ArrayList<>();
+		content = data.content;
 
 		setup(data);
 	}
@@ -233,7 +234,7 @@ public class Message<T extends ITextChannel> implements IMessage {
 
 	@Override
 	public DiscLoader getLoader() {
-		return loader;
+		return channel.getLoader();
 	}
 
 	@Override
