@@ -19,7 +19,11 @@ import io.discloader.discloader.common.event.guild.emoji.GuildEmojiCreateEvent;
 import io.discloader.discloader.common.event.guild.emoji.GuildEmojiDeleteEvent;
 import io.discloader.discloader.common.event.guild.emoji.GuildEmojiUpdateEvent;
 import io.discloader.discloader.common.event.guild.member.GuildMemberAddEvent;
-import io.discloader.discloader.common.event.guild.member.GuildMemberNicknameUpdateEvent;
+import io.discloader.discloader.common.event.guild.member.GuildMemberEvent;
+import io.discloader.discloader.common.event.guild.member.GuildMemberEvent.NicknameUpdateEvent;
+import io.discloader.discloader.common.event.guild.member.GuildMemberEvent.VoiceJoinEvent;
+import io.discloader.discloader.common.event.guild.member.GuildMemberEvent.VoiceLeaveEvent;
+import io.discloader.discloader.common.event.guild.member.GuildMemberEvent.VoiceSwitchEvent;
 import io.discloader.discloader.common.event.guild.member.GuildMemberRemoveEvent;
 import io.discloader.discloader.common.event.guild.member.GuildMemberUpdateEvent;
 import io.discloader.discloader.common.event.guild.member.GuildMembersChunkEvent;
@@ -117,18 +121,14 @@ public interface IEventListener {
 
 	void GuildEmojiUpdate(GuildEmojiUpdateEvent event);
 
+	void GuildMemberEvent(GuildMemberEvent event);
+
 	/**
 	 * Executed when a {@link GuildMember} joins a guild
 	 * 
 	 * @param event The GuildMemberAddEvent object to be passed to the handler
 	 */
 	void GuildMemberAdd(GuildMemberAddEvent event);
-
-	void GuildMemberNicknameUpdated(GuildMemberNicknameUpdateEvent event);
-
-	void GuildMemberRoleAdd();
-
-	void GuildMemberRoleRemove();
 
 	/**
 	 * Executed when a GuildMemberAvailable event is sent to the client
@@ -137,12 +137,24 @@ public interface IEventListener {
 	 */
 	void GuildMemberAvailable(GuildMember member);
 
+	void GuildMemberNicknameUpdated(NicknameUpdateEvent event);
+
 	/**
 	 * Executed when a {@link GuildMember} leaves, or is kicked from a guild
 	 * 
 	 * @param e The GuildMemberRemoveEvent object to be passed to the handler
 	 */
 	void GuildMemberRemove(GuildMemberRemoveEvent e);
+
+	void GuildMemberRoleAdd();
+
+	void GuildMemberRoleRemove();
+
+	void GuildMemberVoiceJoin(VoiceJoinEvent event);
+
+	void GuildMemberVoiceLeave(VoiceLeaveEvent event);
+
+	void GuildMemberVoiceSwitch(VoiceSwitchEvent event);
 
 	/**
 	 * Executed when a GuildMembersChunk event is sent to the client

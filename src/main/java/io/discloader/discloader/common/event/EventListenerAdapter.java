@@ -19,7 +19,10 @@ import io.discloader.discloader.common.event.guild.emoji.GuildEmojiCreateEvent;
 import io.discloader.discloader.common.event.guild.emoji.GuildEmojiDeleteEvent;
 import io.discloader.discloader.common.event.guild.emoji.GuildEmojiUpdateEvent;
 import io.discloader.discloader.common.event.guild.member.GuildMemberAddEvent;
-import io.discloader.discloader.common.event.guild.member.GuildMemberNicknameUpdateEvent;
+import io.discloader.discloader.common.event.guild.member.GuildMemberEvent;
+import io.discloader.discloader.common.event.guild.member.GuildMemberEvent.VoiceJoinEvent;
+import io.discloader.discloader.common.event.guild.member.GuildMemberEvent.VoiceLeaveEvent;
+import io.discloader.discloader.common.event.guild.member.GuildMemberEvent.VoiceSwitchEvent;
 import io.discloader.discloader.common.event.guild.member.GuildMemberRemoveEvent;
 import io.discloader.discloader.common.event.guild.member.GuildMemberUpdateEvent;
 import io.discloader.discloader.common.event.guild.member.GuildMembersChunkEvent;
@@ -216,7 +219,7 @@ public abstract class EventListenerAdapter implements IEventListener {
 	}
 
 	@Override
-	public void GuildMemberNicknameUpdated(GuildMemberNicknameUpdateEvent event) {
+	public void GuildMemberNicknameUpdated(GuildMemberEvent.NicknameUpdateEvent event) {
 	}
 
 	@Override
@@ -225,6 +228,22 @@ public abstract class EventListenerAdapter implements IEventListener {
 
 	@Override
 	public void GuildMemberRoleRemove() {
+	}
+
+	@Override
+	public void GuildMemberVoiceJoin(VoiceJoinEvent event) {
+	}
+
+	@Override
+	public void GuildMemberVoiceLeave(VoiceLeaveEvent event) {
+	}
+
+	@Override
+	public void GuildMemberVoiceSwitch(VoiceSwitchEvent event) {
+	}
+
+	@Override
+	public void GuildMemberEvent(io.discloader.discloader.common.event.guild.member.GuildMemberEvent event) {
 	}
 
 }

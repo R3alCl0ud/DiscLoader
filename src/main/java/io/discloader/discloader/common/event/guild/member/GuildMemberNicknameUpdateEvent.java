@@ -7,12 +7,11 @@ import io.discloader.discloader.entity.guild.IGuildMember;
 public class GuildMemberNicknameUpdateEvent extends DLEvent {
 
 	private IGuildMember member;
-	private String nick, oldNick;
+	private String oldNick;
 
-	public GuildMemberNicknameUpdateEvent(IGuildMember member, String nick, String oldNick) {
+	public GuildMemberNicknameUpdateEvent(IGuildMember member, String oldNick) {
 		super(member.getLoader());
 		this.member = member;
-		this.nick = nick;
 		this.oldNick = oldNick;
 	}
 
@@ -31,7 +30,7 @@ public class GuildMemberNicknameUpdateEvent extends DLEvent {
 	 * @return the nick
 	 */
 	public String getNickname() {
-		return nick;
+		return member.getNickname();
 	}
 
 	/**

@@ -226,6 +226,10 @@ public interface IGuild extends ISnowflake, ICreationTime {
 
 	IGuildTextChannel getTextChannelByID(long channelID);
 
+	IGuildTextChannel getTextChannelByID(String channelID);
+
+	IGuildTextChannel getTextChannelByName(String channelName);
+
 	Map<Long, IGuildTextChannel> getTextChannels();
 
 	IGuildVoiceChannel getVoiceChannelByID(long channelID);

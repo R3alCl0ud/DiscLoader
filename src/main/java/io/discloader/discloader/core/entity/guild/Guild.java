@@ -928,4 +928,16 @@ public class Guild implements IGuild {
 		rawStates.put(state.member.getID(), state);
 	}
 
+	@Override
+	public IGuildTextChannel getTextChannelByID(String channelID) {
+		return getTextChannelByID(SnowflakeUtil.parse(channelID));
+	}
+
+	@Override
+	public IGuildTextChannel getTextChannelByName(String channelName) {
+		for (IGuildTextChannel channel : textChannels.values())
+			if (channel.getName().equals(channelName)) return channel;
+		return null;
+	}
+
 }

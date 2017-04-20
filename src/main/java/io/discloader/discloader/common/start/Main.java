@@ -4,7 +4,6 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.time.OffsetDateTime;
 // import java.util.concurrent.ExecutionException;
 import java.util.logging.Logger;
 import java.util.regex.Matcher;
@@ -19,15 +18,8 @@ import io.discloader.discloader.common.DiscLoader;
 import io.discloader.discloader.common.event.EventListenerAdapter;
 import io.discloader.discloader.common.event.RawEvent;
 import io.discloader.discloader.common.event.ReadyEvent;
-import io.discloader.discloader.common.event.guild.member.GuildMemberRemoveEvent;
-import io.discloader.discloader.common.event.guild.member.GuildMemberUpdateEvent;
 import io.discloader.discloader.common.logger.DLErrorStream;
 import io.discloader.discloader.common.logger.DLPrintStream;
-import io.discloader.discloader.common.registry.EntityRegistry;
-import io.discloader.discloader.core.entity.RichEmbed;
-import io.discloader.discloader.entity.channel.ITextChannel;
-import io.discloader.discloader.entity.guild.IGuildMember;
-import io.discloader.discloader.util.DLUtil.Endpoints;
 
 /**
  * DiscLoader client entry point
@@ -94,26 +86,6 @@ public class Main {
 				System.out.printf("Ready as user: %s", loader.user);
 			}
 
-			@Override
-			public void GuildMemberRemove(GuildMemberRemoveEvent event) {
-				IGuildMember member = event.getMember();
-				ITextChannel testChannel = EntityRegistry.getTextChannelByID(282230026869669888L);
-				RichEmbed embed = new RichEmbed(member.toString()).setDescription("Left the guild").setColor(0xf10000).setThumbnail(Endpoints.avatar(member.getID(), member.getUser().getAvatar().toString()));
-				embed.setTimestamp(OffsetDateTime.now());
-				testChannel.sendEmbed(embed);
-			}
-
-			@Override
-			public void GuildMemberUpdate(GuildMemberUpdateEvent event) {
-				IGuildMember member = event.member, oldMember = event.oldMember;
-				if (!member.getNickname().equals(oldMember.getNickname())) {
-					ITextChannel testChannel = EntityRegistry.getTextChannelByID(282230026869669888L);
-					RichEmbed embed = new RichEmbed(member.toString()).setColor(0xfefa2a).setDescription("Nickname changed");
-					embed.addField("Old Nickname", oldMember.getNickname(), true).addField("New Nickname", member.getNickname(), true);
-					embed.setTimestamp(OffsetDateTime.now());
-					testChannel.sendEmbed(embed);
-				}
-			}
 		});
 		loader.login();
 

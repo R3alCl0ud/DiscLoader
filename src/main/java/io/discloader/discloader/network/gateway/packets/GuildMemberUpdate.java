@@ -1,5 +1,6 @@
 package io.discloader.discloader.network.gateway.packets;
 
+import io.discloader.discloader.common.event.guild.member.GuildMemberNicknameUpdateEvent;
 import io.discloader.discloader.common.event.guild.member.GuildMemberUpdateEvent;
 import io.discloader.discloader.common.registry.EntityRegistry;
 import io.discloader.discloader.common.registry.FactoryManager;
@@ -32,6 +33,7 @@ public class GuildMemberUpdate extends AbstractHandler {
 			GuildMemberUpdateEvent event = new GuildMemberUpdateEvent(member, oldMember, guild);
 			loader.emit(Events.GUILD_MEMBER_UPDATE, event);
 			loader.emit(event);
+			if (!member.getNickname().equals(oldMember.getNickname())) loader.emit(new GuildMemberNicknameUpdateEvent(member, oldMember.getNickname()));
 		}
 	}
 }

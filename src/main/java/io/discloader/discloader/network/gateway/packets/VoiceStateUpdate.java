@@ -3,7 +3,9 @@
  */
 package io.discloader.discloader.network.gateway.packets;
 
-import io.discloader.discloader.common.event.IEventListener;
+import io.discloader.discloader.common.event.guild.member.GuildMemberEvent.VoiceJoinEvent;
+import io.discloader.discloader.common.event.guild.member.GuildMemberEvent.VoiceLeaveEvent;
+import io.discloader.discloader.common.event.guild.member.GuildMemberEvent.VoiceSwitchEvent;
 import io.discloader.discloader.common.event.voice.VoiceStateUpdateEvent;
 import io.discloader.discloader.common.registry.EntityRegistry;
 import io.discloader.discloader.entity.guild.IGuild;
@@ -12,7 +14,6 @@ import io.discloader.discloader.entity.voice.VoiceConnection;
 import io.discloader.discloader.entity.voice.VoiceState;
 import io.discloader.discloader.network.gateway.DiscSocket;
 import io.discloader.discloader.network.json.VoiceStateJSON;
-import io.discloader.discloader.util.DLUtil.Status;
 
 /**
  * @author Perry Berman
@@ -35,12 +36,20 @@ public class VoiceStateUpdate extends AbstractHandler {
 			connection.setStateUpdated(true);
 		}
 		VoiceState currentState = new VoiceState(data, guild);
-		guild.updateVoiceState(currentState);
 		VoiceState oldState = guild.getVoiceStates().get(SnowflakeUtil.parse(data.user_id));
-		if (loader.ready && loader.socket.status == Status.READY && oldState != null) {
-			VoiceStateUpdateEvent event = new VoiceStateUpdateEvent(oldState, currentState);
-			for (IEventListener e : loader.handlers) {
-				e.VoiceStateUpdate(event);
+		guild.updateVoiceState(currentState);
+		if (shouldEmit()) {
+			if (currentState.channel != null && (oldState != null && oldState.channel != null)) {
+				loader.emit(new VoiceSwitchEvent(currentState.member, oldState.channel));
+			} else if (currentState.channel != null) {
+				loader.emit(new VoiceJoinEvent(currentState.member));
+			} else if (oldState != null && oldState.channel != null) {
+				loader.emit(new VoiceLeaveEvent(currentState.member, oldState.channel));
+			}
+
+			if (oldState != null) {
+				VoiceStateUpdateEvent event = new VoiceStateUpdateEvent(oldState, currentState);
+				loader.emit(event);
 			}
 		}
 	}
