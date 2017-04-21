@@ -1,5 +1,6 @@
 package io.discloader.discloader.entity.channel;
 
+import java.io.File;
 import java.util.Collection;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
@@ -115,7 +116,9 @@ public interface ITextChannel extends IChannel {
 	 * @param embed The embed to send
 	 * @return A Future that completes with a {@link Message} if successful,
 	 */
-	<T extends ITextChannel> CompletableFuture<IMessage> sendEmbed(RichEmbed embed);
+	CompletableFuture<IMessage> sendEmbed(RichEmbed embed);
+
+	CompletableFuture<IMessage> sendFile(File file);
 
 	/**
 	 * Sends a {@link Message} to the channel.
@@ -134,6 +137,8 @@ public interface ITextChannel extends IChannel {
 	 *         successful.
 	 */
 	<T extends ITextChannel> CompletableFuture<IMessage> sendMessage(String content, RichEmbed embed);
+
+	CompletableFuture<IMessage> sendMessage(String content, RichEmbed embed, File file);
 
 	/**
 	 * Sets the client as typing in the channel

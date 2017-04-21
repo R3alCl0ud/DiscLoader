@@ -160,17 +160,26 @@ public class TextChannel extends GuildChannel implements IGuildTextChannel {
 
 	@Override
 	public CompletableFuture<IMessage> sendEmbed(RichEmbed embed) {
-		return sendMessage(null, embed);
+		return sendMessage(null, embed, null);
+	}
+
+	@Override
+	public CompletableFuture<IMessage> sendFile(File file) {
+		return sendMessage(null, null, file);
 	}
 
 	@Override
 	public CompletableFuture<IMessage> sendMessage(String content) {
-		return sendMessage(content, null);
+		return sendMessage(content, null, null);
 	}
 
 	@Override
 	public CompletableFuture<IMessage> sendMessage(String content, RichEmbed embed) {
-		File file = null;
+		return sendMessage(content, embed, null);
+	}
+
+	@Override
+	public CompletableFuture<IMessage> sendMessage(String content, RichEmbed embed, File file) {
 		Attachment attachment = null;
 		if (embed != null && embed.thumbnail != null && embed.thumbnail.file != null) {
 			file = embed.thumbnail.file;

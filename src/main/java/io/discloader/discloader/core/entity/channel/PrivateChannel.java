@@ -9,6 +9,7 @@ import java.util.concurrent.CompletableFuture;
 import io.discloader.discloader.common.DiscLoader;
 import io.discloader.discloader.core.entity.RichEmbed;
 import io.discloader.discloader.core.entity.message.MessageFetchOptions;
+import io.discloader.discloader.entity.channel.IGuildTextChannel;
 import io.discloader.discloader.entity.channel.IPrivateChannel;
 import io.discloader.discloader.entity.message.IMessage;
 import io.discloader.discloader.entity.sendable.Attachment;
@@ -99,7 +100,6 @@ public class PrivateChannel extends Channel implements IPrivateChannel {
 		return getMessage(SnowflakeUtil.parse(id));
 	}
 
-
 	@Override
 	public Collection<IMessage> getMessageCollection() {
 		return getMessages().values();
@@ -141,19 +141,29 @@ public class PrivateChannel extends Channel implements IPrivateChannel {
 
 	@Override
 	public CompletableFuture<IMessage> sendEmbed(RichEmbed embed) {
-		return sendMessage(null, embed);
+		return sendMessage(null, embed, null);
+	}
+
+	@Override
+	public CompletableFuture<IMessage> sendFile(File file) {
+		return sendMessage(null, null, file);
 	}
 
 	@Override
 	public CompletableFuture<IMessage> sendMessage(String content) {
-		return sendMessage(content, null);
+		return sendMessage(content, null, null);
 	}
 
 	@Override
 	public CompletableFuture<IMessage> sendMessage(String content, RichEmbed embed) {
-		File file = null;
+		return sendMessage(content, embed, null);
+	}
+
+	@Override
+	public CompletableFuture<IMessage> sendMessage(String content, RichEmbed embed, File file) {
 		Attachment attachment = null;
-		if (embed.thumbnail != null && embed.thumbnail.file != null) {
+		if (file != null) attachment = new Attachment(file.getName());
+		if (embed != null && embed.thumbnail != null && embed.thumbnail.file != null) {
 			file = embed.thumbnail.file;
 			embed.thumbnail.file = null;
 			attachment = new Attachment(file.getName());
