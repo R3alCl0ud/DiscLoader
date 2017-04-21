@@ -13,6 +13,7 @@ import io.discloader.discloader.util.DLUtil;
  * 
  * @author Perry Berman
  */
+@FunctionalInterface
 public interface ICreationTime {
 
 	/**

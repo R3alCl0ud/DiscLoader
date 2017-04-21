@@ -7,8 +7,8 @@ import io.discloader.discloader.client.command.CommandHandler;
 import io.discloader.discloader.common.event.message.GuildMessageCreateEvent;
 import io.discloader.discloader.common.event.message.MessageCreateEvent;
 import io.discloader.discloader.common.event.message.PrivateMessageCreateEvent;
+import io.discloader.discloader.common.registry.EntityBuilder;
 import io.discloader.discloader.common.registry.EntityRegistry;
-import io.discloader.discloader.core.entity.message.Message;
 import io.discloader.discloader.entity.channel.ITextChannel;
 import io.discloader.discloader.entity.message.IMessage;
 import io.discloader.discloader.entity.util.SnowflakeUtil;
@@ -34,7 +34,7 @@ public class MessageCreate extends AbstractHandler {
 			ITextChannel channel = EntityRegistry.getTextChannelByID(channelID);
 			if (channel == null) channel = EntityRegistry.getPrivateChannelByID(channelID);
 			if (channel == null) return;
-			IMessage message = new Message<>(channel, data);
+			IMessage message = EntityBuilder.getChannelFactory().buildMessage(channel, data);
 			channel.getMessages().put(message.getID(), message);
 			if (channel.isTyping(message.getAuthor())) {
 				channel.getTyping().remove(message.getAuthor().getID());

@@ -35,6 +35,9 @@ import io.discloader.discloader.common.event.guild.member.GuildMembersChunkEvent
 import io.discloader.discloader.common.event.guild.role.GuildRoleCreateEvent;
 import io.discloader.discloader.common.event.guild.role.GuildRoleDeleteEvent;
 import io.discloader.discloader.common.event.guild.role.GuildRoleUpdateEvent;
+import io.discloader.discloader.common.event.message.GroupMessageCreateEvent;
+import io.discloader.discloader.common.event.message.GroupMessageDeleteEvent;
+import io.discloader.discloader.common.event.message.GroupMessageUpdateEvent;
 import io.discloader.discloader.common.event.message.GuildMessageCreateEvent;
 import io.discloader.discloader.common.event.message.GuildMessageDeleteEvent;
 import io.discloader.discloader.common.event.message.GuildMessageUpdateEvent;
@@ -87,10 +90,35 @@ public class EventManager {
 				} else if (gme instanceof NicknameUpdateEvent) {
 					handler.GuildMemberNicknameUpdated((NicknameUpdateEvent) gme);
 				}
-				continue;
-			}
+			} else if (event instanceof MessageUpdateEvent) {
+				if (event instanceof GuildMessageUpdateEvent) {
+					handler.GuildMessageUpdate((GuildMessageUpdateEvent) event);
+				} else if (event instanceof GroupMessageUpdateEvent) {
 
-			if (event instanceof DLPreInitEvent) {
+				} else if (event instanceof PrivateMessageUpdateEvent) {
+					handler.PrivateMessageUpdate((PrivateMessageUpdateEvent) event);
+				} else {
+					handler.MessageUpdate((MessageUpdateEvent) event);
+				}
+			} else if (event instanceof MessageCreateEvent) {
+				if (event instanceof GuildMessageCreateEvent) {
+					handler.GuildMessageCreate((GuildMessageCreateEvent) event);
+				} else if (event instanceof GroupMessageCreateEvent) {
+
+				} else if (event instanceof PrivateMessageCreateEvent) {
+					handler.PrivateMessageCreate((PrivateMessageCreateEvent) event);
+				}
+			} else if (event instanceof MessageDeleteEvent) {
+				if (event instanceof GuildMessageDeleteEvent) {
+					handler.GuildMessageDelete((GuildMessageDeleteEvent) event);
+				} else if (event instanceof PrivateMessageDeleteEvent) {
+					handler.PrivateMessageDelete((PrivateMessageDeleteEvent) event);
+				} else if (event instanceof GroupMessageDeleteEvent) {
+
+				} else {
+					handler.MessageDelete((MessageDeleteEvent) event);
+				}
+			} else if (event instanceof DLPreInitEvent) {
 				handler.PreInit((DLPreInitEvent) event);
 			} else if (event instanceof RawEvent) {
 				handler.RawPacket((RawEvent) event);
@@ -140,24 +168,6 @@ public class EventManager {
 				handler.GuildRoleUpdate((GuildRoleUpdateEvent) event);
 			} else if (event instanceof GuildSyncEvent) {
 				handler.GuildSync((GuildSyncEvent) event);
-			} else if (event instanceof GuildMessageCreateEvent) {
-				handler.GuildMessageCreate((GuildMessageCreateEvent) event);
-			} else if (event instanceof GuildMessageDeleteEvent) {
-				handler.GuildMessageDelete((GuildMessageDeleteEvent) event);
-			} else if (event instanceof GuildMessageUpdateEvent) {
-				handler.GuildMessageUpdate((GuildMessageUpdateEvent) event);
-			} else if (event instanceof PrivateMessageCreateEvent) {
-				handler.PrivateMessageCreate((PrivateMessageCreateEvent) event);
-			} else if (event instanceof GuildMessageDeleteEvent) {
-				handler.PrivateMessageDelete((PrivateMessageDeleteEvent) event);
-			} else if (event instanceof PrivateMessageUpdateEvent) {
-				handler.PrivateMessageUpdate((PrivateMessageUpdateEvent) event);
-			} else if (event instanceof MessageCreateEvent) {
-				handler.MessageCreate((MessageCreateEvent) event);
-			} else if (event instanceof MessageDeleteEvent) {
-				handler.MessageDelete((MessageDeleteEvent) event);
-			} else if (event instanceof MessageUpdateEvent) {
-				handler.MessageUpdate((MessageUpdateEvent) event);
 			} else if (event instanceof TypingStartEvent) {
 				handler.TypingStart((TypingStartEvent) event);
 			} else if (event instanceof UserUpdateEvent) {

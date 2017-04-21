@@ -4,7 +4,7 @@ import io.discloader.discloader.common.discovery.Mod.EventHandler;
 import io.discloader.discloader.common.event.IEventListener;
 import io.discloader.discloader.common.event.guild.role.GuildRoleCreateEvent;
 import io.discloader.discloader.common.registry.EntityRegistry;
-import io.discloader.discloader.common.registry.FactoryManager;
+import io.discloader.discloader.common.registry.EntityBuilder;
 import io.discloader.discloader.common.registry.factory.GuildFactory;
 import io.discloader.discloader.core.entity.guild.Guild;
 import io.discloader.discloader.core.entity.guild.Role;
@@ -24,7 +24,7 @@ import io.discloader.discloader.util.DLUtil;
  */
 public class RoleCreate extends AbstractHandler {
 
-	private GuildFactory gfac = FactoryManager.instance.getGuildFactory();
+	private GuildFactory gfac = EntityBuilder.getGuildFactory();
 
 	public RoleCreate(DiscSocket socket) {
 		super(socket);

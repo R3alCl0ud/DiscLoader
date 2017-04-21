@@ -14,6 +14,7 @@ import io.discloader.discloader.util.DLUtil.ChannelType;
  * @author Perry Berman
  * @see ISnowflake
  */
+// @FunctionalInterface
 public interface IChannel extends ISnowflake, ICreationTime {
 
 	/**

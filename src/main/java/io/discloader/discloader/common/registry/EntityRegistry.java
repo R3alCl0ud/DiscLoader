@@ -35,7 +35,7 @@ public class EntityRegistry {
 	}
 
 	public static IChannel addChannel(ChannelJSON data, IGuild guild) {
-		IChannel channel = FactoryManager.instance.getChannelFactory().buildChannel(data, guild);
+		IChannel channel = EntityBuilder.instance.getChannelFactory().buildChannel(data, guild);
 		if (channel != null) {
 			channels.put(channel.getID(), channel);
 			if (channel instanceof ITextChannel) textChannels.put(channel.getID(), (ITextChannel) channel);
@@ -48,14 +48,14 @@ public class EntityRegistry {
 	}
 
 	public static IGuild addGuild(GuildJSON data) {
-		IGuild guild = FactoryManager.instance.getGuildFactory().buildGuild(data);
+		IGuild guild = EntityBuilder.instance.getGuildFactory().buildGuild(data);
 		guilds.put(guild.getID(), guild);
 		return guild;
 	}
 
 	public static IUser addUser(UserJSON data) {
 		if (userExists(data.id == null ? "0" : data.id)) return getUserByID(data.id == null ? "0" : data.id);
-		IUser user = FactoryManager.instance.getUserFactory().buildUser(data);
+		IUser user = EntityBuilder.instance.getUserFactory().buildUser(data);
 		users.put(user.getID(), user);
 		return user;
 	}

@@ -17,7 +17,7 @@ import com.sedmelluq.discord.lavaplayer.source.AudioSourceManagers;
 import com.sedmelluq.discord.lavaplayer.track.AudioTrack;
 
 import io.discloader.discloader.common.DiscLoader;
-import io.discloader.discloader.core.entity.channel.VoiceChannel;
+import io.discloader.discloader.entity.channel.IGuildVoiceChannel;
 import io.discloader.discloader.entity.channel.IVoiceChannel;
 import io.discloader.discloader.entity.guild.IGuild;
 import io.discloader.discloader.entity.sendable.Packet;
@@ -85,9 +85,10 @@ public class VoiceConnection {
 
 	private Gson gson = new GsonBuilder().serializeNulls().create();
 
-	public VoiceConnection(VoiceChannel channel, CompletableFuture<VoiceConnection> future) {
+	public VoiceConnection(IVoiceChannel channel, CompletableFuture<VoiceConnection> future) {
 		this.channel = channel;
-		this.guild = channel.getGuild();
+		if (channel instanceof IGuildVoiceChannel) guild = ((IGuildVoiceChannel) channel).getGuild();
+		else guild = null;
 		this.loader = channel.getLoader();
 		this.future = future;
 		this.udpClient = new UDPVoiceClient(this);
@@ -136,7 +137,7 @@ public class VoiceConnection {
 				return;
 			}
 		}
-//		udpClient.bindConnection();
+		// udpClient.bindConnection();
 		String payload = DLUtil.gson.toJson(new VoicePacket(1, new VoiceUDPBegin(new VoiceData(externalAddress.getHostString(), externalAddress.getPort()))));
 		this.ws.send(payload);
 		this.ws.startHeartbeat(data.heartbeat_interval);

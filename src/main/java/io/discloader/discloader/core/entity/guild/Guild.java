@@ -29,7 +29,7 @@ import io.discloader.discloader.common.exceptions.MissmatchException;
 import io.discloader.discloader.common.exceptions.PermissionsException;
 import io.discloader.discloader.common.exceptions.UnauthorizedException;
 import io.discloader.discloader.common.registry.EntityRegistry;
-import io.discloader.discloader.common.registry.FactoryManager;
+import io.discloader.discloader.common.registry.EntityBuilder;
 import io.discloader.discloader.common.registry.factory.GuildFactory;
 import io.discloader.discloader.core.entity.Presence;
 import io.discloader.discloader.core.entity.channel.Channel;
@@ -203,7 +203,7 @@ public class Guild implements IGuild {
 	 */
 	private VoiceRegion voiceRegion;
 
-	private GuildFactory gfac = FactoryManager.instance.getGuildFactory();
+	private GuildFactory gfac = EntityBuilder.instance.getGuildFactory();
 
 	/**
 	 * Creates a new guild
@@ -595,7 +595,7 @@ public class Guild implements IGuild {
 		List<IInvite> invites = new ArrayList<>();
 		loader.rest.getInvites(this).thenAcceptAsync(action -> {
 			for (InviteJSON data : action) {
-				invites.add(FactoryManager.instance.getInviteFactory().buildInvite(data));
+				invites.add(EntityBuilder.instance.getInviteFactory().buildInvite(data));
 			}
 			future.complete(invites);
 		});

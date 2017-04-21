@@ -5,7 +5,7 @@ import java.util.Map;
 
 import io.discloader.discloader.common.event.guild.member.GuildMembersChunkEvent;
 import io.discloader.discloader.common.registry.EntityRegistry;
-import io.discloader.discloader.common.registry.FactoryManager;
+import io.discloader.discloader.common.registry.EntityBuilder;
 import io.discloader.discloader.entity.guild.IGuild;
 import io.discloader.discloader.entity.guild.IGuildMember;
 import io.discloader.discloader.network.gateway.DiscSocket;
@@ -29,7 +29,7 @@ public class GuildMembersChunk extends AbstractHandler {
 		if (guild == null) return;
 		Map<Long, IGuildMember> members = new HashMap<>();
 		for (MemberJSON m : data.members) {
-			IGuildMember member = FactoryManager.instance.getGuildFactory().buildMember(guild, EntityRegistry.addUser(m.user), new String[] {}, false, false, null);
+			IGuildMember member = EntityBuilder.getGuildFactory().buildMember(guild, EntityRegistry.addUser(m.user), new String[] {}, false, false, null);
 			guild.addMember(member);
 			members.put(member.getID(), member);
 		}

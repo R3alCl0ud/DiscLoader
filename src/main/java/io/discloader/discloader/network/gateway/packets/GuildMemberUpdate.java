@@ -3,7 +3,7 @@ package io.discloader.discloader.network.gateway.packets;
 import io.discloader.discloader.common.event.guild.member.GuildMemberNicknameUpdateEvent;
 import io.discloader.discloader.common.event.guild.member.GuildMemberUpdateEvent;
 import io.discloader.discloader.common.registry.EntityRegistry;
-import io.discloader.discloader.common.registry.FactoryManager;
+import io.discloader.discloader.common.registry.EntityBuilder;
 import io.discloader.discloader.common.registry.factory.GuildFactory;
 import io.discloader.discloader.entity.guild.IGuild;
 import io.discloader.discloader.entity.guild.IGuildMember;
@@ -16,7 +16,7 @@ import io.discloader.discloader.util.DLUtil.Events;
  */
 public class GuildMemberUpdate extends AbstractHandler {
 
-	private GuildFactory gfac = FactoryManager.instance.getGuildFactory();
+	private GuildFactory gfac = EntityBuilder.getGuildFactory();
 
 	public GuildMemberUpdate(DiscSocket socket) {
 		super(socket);

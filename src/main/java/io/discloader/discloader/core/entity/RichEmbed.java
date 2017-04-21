@@ -2,6 +2,7 @@ package io.discloader.discloader.core.entity;
 
 import java.io.File;
 import java.time.LocalDateTime;
+import java.time.ZoneOffset;
 import java.time.temporal.TemporalAccessor;
 import java.util.ArrayList;
 
@@ -207,7 +208,8 @@ public class RichEmbed {
 
 	public RichEmbed setTimestamp(TemporalAccessor time) {
 		LocalDateTime ldt = LocalDateTime.from(time);
-		timestamp = ldt.toString();
+		timestamp = ldt.atOffset(ZoneOffset.UTC).toString();
+		// System.out.println(timestamp);
 		return this;
 	}
 

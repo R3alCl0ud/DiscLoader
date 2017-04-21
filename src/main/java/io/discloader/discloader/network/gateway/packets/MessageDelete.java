@@ -26,9 +26,7 @@ public class MessageDelete extends AbstractHandler {
 		ITextChannel channel = EntityRegistry.getTextChannelByID(channelID);
 		if (channel == null) channel = EntityRegistry.getPrivateChannelByID(channelID);
 		if (channel == null) return;
-		
 		IMessage message = channel.getMessage(data.id);
-		System.out.println(message != null);
 		if (message == null) return;
 		MessageDeleteEvent event = new MessageDeleteEvent(message);
 		loader.emit(Events.MESSAGE_DELETE, event);

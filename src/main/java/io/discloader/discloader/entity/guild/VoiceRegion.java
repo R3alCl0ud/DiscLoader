@@ -18,12 +18,9 @@ public class VoiceRegion {
 	}
 
 	public String getName() {
-		return "";
+		return name;
 	}
 
-	/**
-	 * @return the deprecated
-	 */
 	public boolean isDeprecated() {
 		return deprecated;
 	}

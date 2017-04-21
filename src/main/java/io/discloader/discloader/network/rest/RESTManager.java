@@ -13,7 +13,7 @@ import org.json.JSONObject;
 import com.google.gson.Gson;
 
 import io.discloader.discloader.common.DiscLoader;
-import io.discloader.discloader.common.registry.FactoryManager;
+import io.discloader.discloader.common.registry.EntityBuilder;
 import io.discloader.discloader.common.registry.factory.GuildFactory;
 import io.discloader.discloader.core.entity.channel.GuildChannel;
 import io.discloader.discloader.core.entity.channel.TextChannel;
@@ -53,7 +53,7 @@ public class RESTManager {
 	public HashMap<String, RESTQueue> queues;
 	public DiscLoader loader;
 
-	private GuildFactory gfac = FactoryManager.instance.getGuildFactory();
+	private GuildFactory gfac = EntityBuilder.instance.getGuildFactory();
 
 	// private Map<String, Route> routes;
 

@@ -1,13 +1,17 @@
 package io.discloader.discloader.common.registry.factory;
 
 import io.discloader.discloader.common.DiscLoader;
+import io.discloader.discloader.common.registry.EntityRegistry;
+import io.discloader.discloader.core.entity.channel.GuildChannel;
 import io.discloader.discloader.core.entity.guild.Guild;
 import io.discloader.discloader.core.entity.guild.GuildMember;
 import io.discloader.discloader.core.entity.guild.Role;
+import io.discloader.discloader.entity.channel.IGuildChannel;
 import io.discloader.discloader.entity.guild.IGuild;
 import io.discloader.discloader.entity.guild.IGuildMember;
 import io.discloader.discloader.entity.guild.IRole;
 import io.discloader.discloader.entity.user.IUser;
+import io.discloader.discloader.network.json.ChannelJSON;
 import io.discloader.discloader.network.json.GuildJSON;
 import io.discloader.discloader.network.json.MemberJSON;
 import io.discloader.discloader.network.json.RoleJSON;
@@ -36,5 +40,9 @@ public class GuildFactory {
 
 	public IGuildMember buildMember(IGuild guild, IUser user, String[] roles, boolean deaf, boolean mute, String nick) {
 		return new GuildMember(guild, user, roles, deaf, mute, nick);
+	}
+	
+	public IGuildChannel buildChannel(ChannelJSON data) {
+		return new GuildChannel(EntityRegistry.getGuildByID(data.guild_id), data);
 	}
 }

@@ -26,6 +26,7 @@ import io.discloader.discloader.entity.message.IMessage;
  * 
  * @author Perry Berman
  */
+@FunctionalInterface
 public interface ISnowflake {
 
 	/**

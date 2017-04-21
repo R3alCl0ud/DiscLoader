@@ -5,15 +5,23 @@ import java.util.concurrent.CompletableFuture;
 import io.discloader.discloader.entity.voice.VoiceConnection;
 
 public interface IVoiceChannel extends IChannel {
+
 	/**
 	 * Joins a voice channel.
+	 * 
 	 * @return A future that completes with the voice connection, if successful.
 	 */
-	CompletableFuture<VoiceConnection> join();
+	public default CompletableFuture<VoiceConnection> join() {
+		return null;
+	}
 
 	/**
 	 * Leaves a voice channel
-	 * @return A future completes with the leave voice connection, if successful.
+	 * 
+	 * @return A future completes with the leave voice connection, if
+	 *         successful.
 	 */
-	CompletableFuture<VoiceConnection> leave();
+	public default CompletableFuture<VoiceConnection> leave() {
+		return null;
+	}
 }
