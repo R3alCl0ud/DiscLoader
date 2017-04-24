@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import io.discloader.discloader.entity.embed.EmbedAuthor;
 import io.discloader.discloader.entity.embed.EmbedField;
 import io.discloader.discloader.entity.embed.EmbedFooter;
+import io.discloader.discloader.entity.embed.EmbedImage;
 import io.discloader.discloader.entity.embed.EmbedThumbnail;
 
 /**
@@ -40,6 +41,8 @@ public class RichEmbed {
 	 * The color of the RichEmbed color bar
 	 */
 	public int color;
+
+	private EmbedImage image;
 
 	/**
 	 * An {@link ArrayList} of {@link EmbedField EmbedFields}.
@@ -93,6 +96,13 @@ public class RichEmbed {
 			this.fields.add(new EmbedField(name, value, inline));
 		}
 		return this;
+	}
+
+	/**
+	 * @return the image
+	 */
+	public EmbedImage getImage() {
+		return image;
 	}
 
 	/**
@@ -152,6 +162,10 @@ public class RichEmbed {
 		return this;
 	}
 
+	public RichEmbed setFooter(String text) {
+		return setFooter(text, null);
+	}
+
 	/**
 	 * Sets the RichEmbed's footer
 	 * 
@@ -164,10 +178,20 @@ public class RichEmbed {
 		return this;
 	}
 
-	public RichEmbed setFooter(String text) {
-		return setFooter(text, null);
+	/**
+	 * @param image the image to set
+	 */
+	public RichEmbed setImage(String url) {
+		image = new EmbedImage(url);
+		return this;
 	}
 
+	public RichEmbed setImage(File img) {
+		image = new EmbedImage(img);
+		return this;
+	}
+
+	
 	/**
 	 * Sets the RichEmbed's {@link #thumbnail}
 	 * 
@@ -190,6 +214,13 @@ public class RichEmbed {
 		return this;
 	}
 
+	public RichEmbed setTimestamp(TemporalAccessor time) {
+		LocalDateTime ldt = LocalDateTime.from(time);
+		timestamp = ldt.atOffset(ZoneOffset.UTC).toString();
+		// System.out.println(timestamp);
+		return this;
+	}
+
 	/**
 	 * Sets the RichEmbed's title
 	 * 
@@ -203,13 +234,6 @@ public class RichEmbed {
 
 	public RichEmbed setURL(String url) {
 		this.url = url;
-		return this;
-	}
-
-	public RichEmbed setTimestamp(TemporalAccessor time) {
-		LocalDateTime ldt = LocalDateTime.from(time);
-		timestamp = ldt.atOffset(ZoneOffset.UTC).toString();
-		// System.out.println(timestamp);
 		return this;
 	}
 
