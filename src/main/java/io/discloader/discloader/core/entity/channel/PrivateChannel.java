@@ -9,7 +9,6 @@ import java.util.concurrent.CompletableFuture;
 import io.discloader.discloader.common.DiscLoader;
 import io.discloader.discloader.core.entity.RichEmbed;
 import io.discloader.discloader.core.entity.message.MessageFetchOptions;
-import io.discloader.discloader.entity.channel.IGuildTextChannel;
 import io.discloader.discloader.entity.channel.IPrivateChannel;
 import io.discloader.discloader.entity.message.IMessage;
 import io.discloader.discloader.entity.sendable.Attachment;

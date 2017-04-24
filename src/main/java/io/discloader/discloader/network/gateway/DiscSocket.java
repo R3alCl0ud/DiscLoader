@@ -75,7 +75,7 @@ public class DiscSocket {
 		ws = new WebSocketFactory().setConnectionTimeout(15000).createSocket(gateway).addHeader("Accept-Encoding", "gzip");
 		ws.addListener(socketListener);
 		ws.connect();
-		resetRemaining = new Thread("RemaingResetter") {
+		resetRemaining = new Thread("Gateway - RateLimit Resetter") {
 
 			public void run() {
 				while (ws.isOpen() && !resetRemaining.isInterrupted()) {
@@ -114,7 +114,7 @@ public class DiscSocket {
 	}
 
 	public void keepAlive(final int interval) {
-		heartbeatThread = new Thread("HeartbeatThread") {
+		heartbeatThread = new Thread("Main - HeartbeatThread") {
 
 			@Override
 			public void run() {
@@ -122,7 +122,6 @@ public class DiscSocket {
 				try {
 					Thread.sleep(interval);
 				} catch (InterruptedException e) {
-					// e.printStackTrace();
 				}
 
 				while (ws.isOpen() && !heartbeatThread.isInterrupted()) {
@@ -130,7 +129,6 @@ public class DiscSocket {
 					try {
 						Thread.sleep(interval);
 					} catch (InterruptedException e) {
-						// e.printStackTrace();
 					}
 				}
 

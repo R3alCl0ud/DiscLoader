@@ -3,7 +3,6 @@ package io.discloader.discloader.common;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Timer;
 import java.util.concurrent.CompletableFuture;
 import java.util.function.Consumer;
 import java.util.function.Function;
@@ -197,9 +196,11 @@ public class DiscLoader {
 	 */
 	public DLUser user;
 
-	public Timer timer;
+	// public Timer timer;
 
 	private boolean started = false;
+
+	private DLOptions options;
 
 	/**
 	 * The DiscLoader client object <br>
@@ -298,12 +299,11 @@ public class DiscLoader {
 		voiceConnections = new HashMap<>();
 		guilds = new HashMap<>();
 		syncingGuilds = new HashMap<>();
-		timer = new Timer();
 		ready = false;
 		eventManager = new EventManager();
 		handlers = eventManager.getHandlers();
 		ModRegistry.loader = this;
-
+		options = new DLOptions();
 	}
 
 	public IChannel addChannel(ChannelJSON data) {
@@ -541,6 +541,7 @@ public class DiscLoader {
 		Main.usegui = options.useWindow;
 		Command.defaultCommands = options.defaultCommands;
 		CommandHandler.prefix = options.prefix;
+		this.options = options;
 		return this;
 	}
 
@@ -614,6 +615,13 @@ public class DiscLoader {
 
 		Packet packet = new Packet(12, guildIDs);
 		socket.send(packet, true);
+	}
+
+	/**
+	 * @return the options
+	 */
+	public DLOptions getOptions() {
+		return options;
 	}
 
 }

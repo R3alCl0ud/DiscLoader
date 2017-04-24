@@ -13,17 +13,16 @@ public class StreamSender {
 	private final StreamProvider provider;
 	public DatagramSocket udpSocket;
 	private Thread packetThread;
-	// private VoiceWebSocket ws;
 	private final VoiceConnection connection;
 
 	public StreamSender(StreamProvider streamer) {
-		this.provider = streamer;
-		this.connection = provider.connection;
+		provider = streamer;
+		connection = provider.connection;
 	}
 
 	public void sendPackets() {
 		udpSocket = connection.getUdpClient().udpSocket;
-		packetThread = new Thread("Some stream") {
+		packetThread = new Thread("VoiceUDPSender - Guild: " + connection.guild.getID()) {
 
 			@Override
 			public void run() {

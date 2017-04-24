@@ -27,11 +27,6 @@ public class UDPVoiceClient {
 
 	public UDPVoiceClient(VoiceConnection connection) {
 		this.connection = connection;
-		// try {
-		// this.udpSocket = new DatagramSocket();
-		// } catch (SocketException e) {
-		// e.printStackTrace();
-		// }
 	}
 
 	public void bindConnection() {

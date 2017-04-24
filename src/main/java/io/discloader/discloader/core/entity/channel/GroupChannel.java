@@ -11,7 +11,6 @@ import io.discloader.discloader.core.entity.RichEmbed;
 import io.discloader.discloader.core.entity.message.MessageFetchOptions;
 import io.discloader.discloader.core.entity.user.User;
 import io.discloader.discloader.entity.channel.IGroupChannel;
-import io.discloader.discloader.entity.channel.IGuildTextChannel;
 import io.discloader.discloader.entity.channel.ITextChannel;
 import io.discloader.discloader.entity.channel.IVoiceChannel;
 import io.discloader.discloader.entity.message.IMessage;
