@@ -23,6 +23,8 @@ public class TypingStart extends AbstractHandler {
 		String d = gson.toJson(packet.d);
 		TypingStartJSON data = gson.fromJson(d, TypingStartJSON.class);
 		ITextChannel channel = EntityRegistry.getTextChannelByID(data.channel_id);
+		if (channel == null) channel = EntityRegistry.getPrivateChannelByID(data.channel_id);
+		if (channel == null) return;
 		IUser user = EntityRegistry.getUserByID(data.user_id);
 		channel.getTyping().put(user.getID(), user);
 

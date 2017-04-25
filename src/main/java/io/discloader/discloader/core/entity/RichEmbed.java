@@ -1,11 +1,13 @@
 package io.discloader.discloader.core.entity;
 
 import java.io.File;
+import java.io.IOException;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
 import java.time.temporal.TemporalAccessor;
 import java.util.ArrayList;
 
+import io.discloader.discloader.client.render.util.Resource;
 import io.discloader.discloader.entity.embed.EmbedAuthor;
 import io.discloader.discloader.entity.embed.EmbedField;
 import io.discloader.discloader.entity.embed.EmbedFooter;
@@ -191,7 +193,11 @@ public class RichEmbed {
 		return this;
 	}
 
-	
+	public RichEmbed setImage(Resource resource) throws IOException {
+		image = new EmbedImage(resource.getFile());
+		return this;
+	}
+
 	/**
 	 * Sets the RichEmbed's {@link #thumbnail}
 	 * 
@@ -200,6 +206,11 @@ public class RichEmbed {
 	 */
 	public RichEmbed setThumbnail(File file) {
 		this.thumbnail = new EmbedThumbnail(file);
+		return this;
+	}
+
+	public RichEmbed setThumbnail(Resource resource) throws IOException {
+		thumbnail = new EmbedThumbnail(resource.getFile());
 		return this;
 	}
 

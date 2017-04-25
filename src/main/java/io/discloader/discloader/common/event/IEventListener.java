@@ -30,6 +30,7 @@ import io.discloader.discloader.common.event.guild.member.GuildMembersChunkEvent
 import io.discloader.discloader.common.event.guild.role.GuildRoleCreateEvent;
 import io.discloader.discloader.common.event.guild.role.GuildRoleDeleteEvent;
 import io.discloader.discloader.common.event.guild.role.GuildRoleUpdateEvent;
+import io.discloader.discloader.common.event.message.GroupMessageCreateEvent;
 import io.discloader.discloader.common.event.message.GuildMessageCreateEvent;
 import io.discloader.discloader.common.event.message.GuildMessageDeleteEvent;
 import io.discloader.discloader.common.event.message.GuildMessageUpdateEvent;
@@ -79,6 +80,8 @@ public interface IEventListener {
 
 	void ChannelUpdate(ChannelUpdateEvent e);
 
+	void GroupMessageCreate(GroupMessageCreateEvent e);
+
 	/**
 	 * Executed when a {@link User} is banned from a guild
 	 * 
@@ -121,8 +124,6 @@ public interface IEventListener {
 
 	void GuildEmojiUpdate(GuildEmojiUpdateEvent event);
 
-	void GuildMemberEvent(GuildMemberEvent event);
-
 	/**
 	 * Executed when a {@link GuildMember} joins a guild
 	 * 
@@ -137,6 +138,8 @@ public interface IEventListener {
 	 */
 	void GuildMemberAvailable(GuildMember member);
 
+	void GuildMemberEvent(GuildMemberEvent event);
+
 	void GuildMemberNicknameUpdated(NicknameUpdateEvent event);
 
 	/**
@@ -149,12 +152,6 @@ public interface IEventListener {
 	void GuildMemberRoleAdd();
 
 	void GuildMemberRoleRemove();
-
-	void GuildMemberVoiceJoin(VoiceJoinEvent event);
-
-	void GuildMemberVoiceLeave(VoiceLeaveEvent event);
-
-	void GuildMemberVoiceSwitch(VoiceSwitchEvent event);
 
 	/**
 	 * Executed when a GuildMembersChunk event is sent to the client
@@ -169,6 +166,12 @@ public interface IEventListener {
 	 * @param e A GuildMemberUpdateEvent object
 	 */
 	void GuildMemberUpdate(GuildMemberUpdateEvent e);
+
+	void GuildMemberVoiceJoin(VoiceJoinEvent event);
+
+	void GuildMemberVoiceLeave(VoiceLeaveEvent event);
+
+	void GuildMemberVoiceSwitch(VoiceSwitchEvent event);
 
 	void GuildMessageCreate(GuildMessageCreateEvent event);
 
@@ -205,7 +208,7 @@ public interface IEventListener {
 	 * @param e A GuildUpdateEvent object
 	 */
 	void GuildUpdate(GuildUpdateEvent e);
-
+	
 	void MessageCreate(MessageCreateEvent e);
 
 	void MessageDelete(MessageDeleteEvent e);

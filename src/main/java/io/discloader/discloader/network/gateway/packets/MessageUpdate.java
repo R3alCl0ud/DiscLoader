@@ -11,7 +11,6 @@ import io.discloader.discloader.common.registry.EntityBuilder;
 import io.discloader.discloader.common.registry.EntityRegistry;
 import io.discloader.discloader.entity.channel.ITextChannel;
 import io.discloader.discloader.entity.message.IMessage;
-import io.discloader.discloader.entity.util.SnowflakeUtil;
 import io.discloader.discloader.network.gateway.DiscSocket;
 import io.discloader.discloader.network.json.MessageJSON;
 import io.discloader.discloader.util.DLUtil.ChannelType;
@@ -26,12 +25,11 @@ public class MessageUpdate extends AbstractHandler {
 		super(socket);
 	}
 
-	public void handler(SocketPacket packet) {
+	@Override
+	public void handle(SocketPacket packet) {
 		MessageJSON data = gson.fromJson(gson.toJson(packet.d), MessageJSON.class);
-
-		long channelID = SnowflakeUtil.parse(data.channel_id);
-		ITextChannel channel = EntityRegistry.getTextChannelByID(channelID);
-		if (channel == null) channel = EntityRegistry.getPrivateChannelByID(channelID);
+		ITextChannel channel = EntityRegistry.getTextChannelByID(data.channel_id);
+		if (channel == null) channel = EntityRegistry.getPrivateChannelByID(data.channel_id);
 		if (channel == null) return;
 
 		IMessage oldMessage = channel.getMessage(data.id), message = EntityBuilder.getChannelFactory().buildMessage(channel, data);

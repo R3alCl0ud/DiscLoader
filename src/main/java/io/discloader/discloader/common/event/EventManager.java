@@ -94,7 +94,7 @@ public class EventManager {
 				if (event instanceof GuildMessageUpdateEvent) {
 					handler.GuildMessageUpdate((GuildMessageUpdateEvent) event);
 				} else if (event instanceof GroupMessageUpdateEvent) {
-
+					// handler.g
 				} else if (event instanceof PrivateMessageUpdateEvent) {
 					handler.PrivateMessageUpdate((PrivateMessageUpdateEvent) event);
 				} else {

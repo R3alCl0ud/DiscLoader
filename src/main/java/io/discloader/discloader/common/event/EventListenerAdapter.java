@@ -29,6 +29,7 @@ import io.discloader.discloader.common.event.guild.member.GuildMembersChunkEvent
 import io.discloader.discloader.common.event.guild.role.GuildRoleCreateEvent;
 import io.discloader.discloader.common.event.guild.role.GuildRoleDeleteEvent;
 import io.discloader.discloader.common.event.guild.role.GuildRoleUpdateEvent;
+import io.discloader.discloader.common.event.message.GroupMessageCreateEvent;
 import io.discloader.discloader.common.event.message.GuildMessageCreateEvent;
 import io.discloader.discloader.common.event.message.GuildMessageDeleteEvent;
 import io.discloader.discloader.common.event.message.GuildMessageUpdateEvent;
@@ -64,6 +65,10 @@ public abstract class EventListenerAdapter implements IEventListener {
 
 	@Override
 	public void ChannelUpdate(ChannelUpdateEvent e) {
+	}
+
+	@Override
+	public void GroupMessageCreate(GroupMessageCreateEvent e) {
 	}
 
 	@Override
@@ -119,7 +124,23 @@ public abstract class EventListenerAdapter implements IEventListener {
 	}
 
 	@Override
+	public void GuildMemberEvent(io.discloader.discloader.common.event.guild.member.GuildMemberEvent event) {
+	}
+
+	@Override
+	public void GuildMemberNicknameUpdated(GuildMemberEvent.NicknameUpdateEvent event) {
+	}
+
+	@Override
 	public void GuildMemberRemove(GuildMemberRemoveEvent e) {
+	}
+
+	@Override
+	public void GuildMemberRoleAdd() {
+	}
+
+	@Override
+	public void GuildMemberRoleRemove() {
 	}
 
 	@Override
@@ -128,6 +149,18 @@ public abstract class EventListenerAdapter implements IEventListener {
 
 	@Override
 	public void GuildMemberUpdate(GuildMemberUpdateEvent e) {
+	}
+
+	@Override
+	public void GuildMemberVoiceJoin(VoiceJoinEvent event) {
+	}
+
+	@Override
+	public void GuildMemberVoiceLeave(VoiceLeaveEvent event) {
+	}
+
+	@Override
+	public void GuildMemberVoiceSwitch(VoiceSwitchEvent event) {
 	}
 
 	@Override
@@ -216,34 +249,6 @@ public abstract class EventListenerAdapter implements IEventListener {
 
 	@Override
 	public void VoiceStateUpdate(VoiceStateUpdateEvent e) {
-	}
-
-	@Override
-	public void GuildMemberNicknameUpdated(GuildMemberEvent.NicknameUpdateEvent event) {
-	}
-
-	@Override
-	public void GuildMemberRoleAdd() {
-	}
-
-	@Override
-	public void GuildMemberRoleRemove() {
-	}
-
-	@Override
-	public void GuildMemberVoiceJoin(VoiceJoinEvent event) {
-	}
-
-	@Override
-	public void GuildMemberVoiceLeave(VoiceLeaveEvent event) {
-	}
-
-	@Override
-	public void GuildMemberVoiceSwitch(VoiceSwitchEvent event) {
-	}
-
-	@Override
-	public void GuildMemberEvent(io.discloader.discloader.common.event.guild.member.GuildMemberEvent event) {
 	}
 
 }

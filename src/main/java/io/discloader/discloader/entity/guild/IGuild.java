@@ -50,6 +50,8 @@ public interface IGuild extends ISnowflake, ICreationTime {
 
 	IGuildMember addMember(MemberJSON data);
 
+	IGuildMember addMember(MemberJSON data, boolean emit);
+
 	IRole addRole(IRole role);
 
 	IRole addRole(RoleJSON role);
