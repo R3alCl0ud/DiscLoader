@@ -22,7 +22,7 @@ public class GuildMemberAdd extends AbstractHandler {
 		String d = this.gson.toJson(packet.d);
 		MemberJSON data = this.gson.fromJson(d, MemberJSON.class);
 		IGuild guild = EntityRegistry.getGuildByID(data.guild_id);
-		guild.addMember(data);
+		guild.addMember(data, true);
 	}
 
 }
