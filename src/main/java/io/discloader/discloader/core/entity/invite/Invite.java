@@ -1,13 +1,16 @@
-package io.discloader.discloader.entity.invite;
+package io.discloader.discloader.core.entity.invite;
+
+import java.time.OffsetDateTime;
+import java.util.concurrent.CompletableFuture;
 
 import io.discloader.discloader.common.DiscLoader;
-import io.discloader.discloader.entity.IInvite;
-import io.discloader.discloader.entity.channel.IGuildChannel;
-import io.discloader.discloader.entity.guild.IGuild;
+import io.discloader.discloader.entity.invite.IInvite;
+import io.discloader.discloader.entity.invite.IInviteChannel;
+import io.discloader.discloader.entity.invite.IInviteGuild;
 import io.discloader.discloader.entity.user.IUser;
-import io.discloader.discloader.entity.util.SnowflakeUtil;
 import io.discloader.discloader.network.json.InviteJSON;
-import io.discloader.discloader.util.DLUtil.ChannelTypes;
+import io.discloader.discloader.network.rest.actions.InviteAction;
+import io.discloader.discloader.util.DLUtil.Methods;
 
 /**
  * Represents an invite object in Discord's API
@@ -25,22 +28,22 @@ public class Invite implements IInvite {
 	/**
 	 * The guild this invite is for
 	 */
-	public final IGuild guild;
+	private IInviteGuild guild;
 
 	/**
 	 * The channel this invite is for.
 	 */
-	public final IGuildChannel channel;
+	private IInviteChannel channel;
 
 	/**
 	 * The user who created the invite
 	 */
-	public final IUser inviter;
+	private IUser inviter;
 
 	/**
 	 * The number of times this invite has been used.
 	 */
-	public int uses;
+	private int uses;
 
 	/**
 	 * The max number of times this invite can be used.
@@ -61,38 +64,36 @@ public class Invite implements IInvite {
 	 */
 	public boolean revoked;
 
+	private String createdAt;
+
 	public Invite(InviteJSON data, DiscLoader loader) {
-		this.code = data.code;
-		this.guild = loader.guilds.get(data.guild.id);
-		if (data.channel.type == ChannelTypes.voice) {
-			this.channel = guild.getVoiceChannels().get(data.channel.id);
-		} else {
-			this.channel = guild.getTextChannels().get(data.channel.id);
-		}
-		if (!loader.users.containsKey(data.inviter.id)) {
-			this.inviter = loader.addUser(data.inviter);
-		} else {
-			this.inviter = loader.users.get(data.inviter.id);
-		}
-
-		this.maxAge = data.max_age;
-		this.maxUses = data.max_uses;
-		this.temporary = data.temporary;
-		this.revoked = data.revoked;
+		code = data.code;
+		maxAge = data.max_age;
+		maxUses = data.max_uses;
+		temporary = data.temporary;
+		revoked = data.revoked;
+		createdAt = data.created_at;
+		channel = new InviteChannel(data.channel);
+		guild = new InviteGuild(data.guild);
 	}
 
 	@Override
-	public long getID() {
-		return SnowflakeUtil.parse(code);
-	}
-
-	@Override
-	public IGuildChannel getChannel() {
+	public IInviteChannel getChannel() {
 		return channel;
 	}
 
 	@Override
-	public IGuild getGuild() {
+	public String getCode() {
+		return code;
+	}
+
+	@Override
+	public OffsetDateTime getCreatedAt() {
+		return OffsetDateTime.parse(createdAt);
+	}
+
+	@Override
+	public IInviteGuild getGuild() {
 		return guild;
 	}
 
@@ -126,5 +127,14 @@ public class Invite implements IInvite {
 		return !revoked;
 	}
 
- 
+	@Override
+	public CompletableFuture<IInvite> accept() {
+		return new InviteAction(this, Methods.POST).execute();
+	}
+
+	@Override
+	public CompletableFuture<IInvite> delete() {
+		return new InviteAction(this, Methods.DELETE).execute();
+	}
+
 }

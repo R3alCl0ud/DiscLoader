@@ -35,8 +35,8 @@ import io.discloader.discloader.core.entity.Presence;
 import io.discloader.discloader.core.entity.channel.Channel;
 import io.discloader.discloader.core.entity.channel.TextChannel;
 import io.discloader.discloader.core.entity.channel.VoiceChannel;
+import io.discloader.discloader.core.entity.invite.Invite;
 import io.discloader.discloader.core.entity.user.User;
-import io.discloader.discloader.entity.IInvite;
 import io.discloader.discloader.entity.IPresence;
 import io.discloader.discloader.entity.channel.IGuildChannel;
 import io.discloader.discloader.entity.channel.IGuildTextChannel;
@@ -48,7 +48,7 @@ import io.discloader.discloader.entity.guild.IGuildMember;
 import io.discloader.discloader.entity.guild.IIntegration;
 import io.discloader.discloader.entity.guild.IRole;
 import io.discloader.discloader.entity.guild.VoiceRegion;
-import io.discloader.discloader.entity.invite.Invite;
+import io.discloader.discloader.entity.invite.IInvite;
 import io.discloader.discloader.entity.sendable.Packet;
 import io.discloader.discloader.entity.user.IUser;
 import io.discloader.discloader.entity.util.Permissions;
@@ -683,6 +683,18 @@ public class Guild implements IGuild {
 	}
 
 	@Override
+	public IGuildTextChannel getTextChannelByID(String channelID) {
+		return getTextChannelByID(SnowflakeUtil.parse(channelID));
+	}
+
+	@Override
+	public IGuildTextChannel getTextChannelByName(String channelName) {
+		for (IGuildTextChannel channel : textChannels.values())
+			if (channel.getName().equals(channelName)) return channel;
+		return null;
+	}
+
+	@Override
 	public Map<Long, IGuildTextChannel> getTextChannels() {
 		return textChannels;
 	}
@@ -692,10 +704,18 @@ public class Guild implements IGuild {
 		return voiceChannels.get(channelID);
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * @see io.discloader.discloader.entity.guild.IGuild#getVoiceChannels()
-	 */
+	@Override
+	public IGuildVoiceChannel getVoiceChannelByID(String channelID) {
+		return getVoiceChannelByID(SnowflakeUtil.parse(channelID));
+	}
+
+	@Override
+	public IGuildVoiceChannel getVoiceChannelByName(String channelName) {
+		for (IGuildVoiceChannel channel : voiceChannels.values())
+			if (channel.getName().equals(channelName)) return channel;
+		return null;
+	}
+
 	@Override
 	public Map<Long, IGuildVoiceChannel> getVoiceChannels() {
 		return voiceChannels;
@@ -714,14 +734,8 @@ public class Guild implements IGuild {
 		return new CompletableFuture<>();
 	}
 
-	/**
-	 * returns a HashMap of the guild's members' voice states. Indexed by
-	 * {@link GuildMember#id}
-	 * 
-	 * @return A HashMap of {@link VoiceState VoiceStates}
-	 */
 	@Override
-	public HashMap<Long, VoiceState> getVoiceStates() {
+	public Map<Long, VoiceState> getVoiceStates() {
 		return rawStates;
 	}
 
@@ -749,22 +763,12 @@ public class Guild implements IGuild {
 		return isOwner(getCurrentMember());
 	}
 
-	/**
-	 * @param iGuildMember The member to check if their the {@link Guild
-	 *            guild's} owner
-	 * @return {@code true} if {@link GuildMember#id} is equal to
-	 *         {@link #ownerID}, false otherwise.
-	 */
 	@Override
 	public boolean isOwner(IGuildMember iGuildMember) {
 		return getOwner().getID() == iGuildMember.getID();
 	}
 
-	/**
-	 * Checks if the guild is currently being synced with discord
-	 * 
-	 * @return {@code true} if syncing, false otherwise.
-	 */
+	@Override
 	public boolean isSyncing() {
 		return loader.isGuildSyncing(this);
 	}
@@ -775,13 +779,9 @@ public class Guild implements IGuild {
 		return loader.rest.removeMember(this, guildMember);
 	}
 
-	/**
-	 * Makes the client leave the guild
-	 * 
-	 * @return A Future that completes with {@code this} if successful.
-	 */
-	public CompletableFuture<Guild> leave() {
-		CompletableFuture<Guild> future = new CompletableFuture<>();
+	@Override
+	public CompletableFuture<IGuild> leave() {
+		CompletableFuture<IGuild> future = new CompletableFuture<>();
 		this.kickMember(getCurrentMember()).thenAcceptAsync(action -> {
 			future.complete(this);
 		});
@@ -794,6 +794,12 @@ public class Guild implements IGuild {
 		members.remove(member.getID());
 		memberCount--;
 		return member;
+	}
+
+	@Override
+	public void removeMember(IUser user) {
+		members.remove(user.getID());
+		memberCount--;
 	}
 
 	@Override
@@ -929,18 +935,6 @@ public class Guild implements IGuild {
 	@Override
 	public void updateVoiceState(VoiceState state) {
 		rawStates.put(state.member.getID(), state);
-	}
-
-	@Override
-	public IGuildTextChannel getTextChannelByID(String channelID) {
-		return getTextChannelByID(SnowflakeUtil.parse(channelID));
-	}
-
-	@Override
-	public IGuildTextChannel getTextChannelByName(String channelName) {
-		for (IGuildTextChannel channel : textChannels.values())
-			if (channel.getName().equals(channelName)) return channel;
-		return null;
 	}
 
 }

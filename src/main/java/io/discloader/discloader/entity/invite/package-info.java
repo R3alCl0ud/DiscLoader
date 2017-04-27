@@ -4,3 +4,5 @@
  * @author Perry Berman
  */
 package io.discloader.discloader.entity.invite;
+
+import io.discloader.discloader.core.entity.invite.Invite;

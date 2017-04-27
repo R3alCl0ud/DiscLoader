@@ -2,7 +2,7 @@ package io.discloader.discloader.entity.user;
 
 import java.util.concurrent.CompletableFuture;
 
-import io.discloader.discloader.client.render.util.IIcon;
+import io.discloader.discloader.client.render.util.IRenderable;
 import io.discloader.discloader.common.DiscLoader;
 import io.discloader.discloader.entity.util.ICreationTime;
 import io.discloader.discloader.entity.util.ISnowflake;
@@ -17,7 +17,7 @@ public interface IUser extends ISnowflake, ICreationTime {
 
 	boolean equals(IUser user);
 
-	IIcon getAvatar();
+	IRenderable getAvatar();
 
 	String getDiscriminator();
 

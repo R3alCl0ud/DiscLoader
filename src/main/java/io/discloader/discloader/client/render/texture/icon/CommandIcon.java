@@ -10,7 +10,7 @@ import javax.swing.ImageIcon;
 import io.discloader.discloader.client.command.Command;
 import io.discloader.discloader.client.render.ResourceManager;
 import io.discloader.discloader.client.render.texture.AbstractTexture;
-import io.discloader.discloader.client.render.util.IIcon;
+import io.discloader.discloader.client.render.util.IRenderable;
 import io.discloader.discloader.client.render.util.Resource;
 import io.discloader.discloader.util.DLUtil;
 
@@ -18,7 +18,7 @@ import io.discloader.discloader.util.DLUtil;
  * @author Perry Berman
  *
  */
-public class CommandIcon extends AbstractTexture implements IIcon {
+public class CommandIcon extends AbstractTexture implements IRenderable {
 	
 	private Command command;
 	

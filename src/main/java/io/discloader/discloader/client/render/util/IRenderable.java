@@ -6,7 +6,7 @@ import java.io.File;
 /**
  * @author Perry Berman
  */
-public interface IIcon {
+public interface IRenderable {
 
 	File getFile();
 

@@ -4,6 +4,8 @@ Created to replace the method daisy chaining confusion of other Java libraries f
 
 [Documentation](http://docs.discloader.io)
 
+{Discord Guild](https://discord.gg/7zfDPhE)
+
 [Example](https://github.com/R3alCl0ud/DiscLoader/blob/master/example/com/example/Example.java)
 
 ```xml

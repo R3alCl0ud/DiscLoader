@@ -5,14 +5,14 @@ import java.io.File;
 
 import javax.swing.ImageIcon;
 
-import io.discloader.discloader.client.render.util.IIcon;
+import io.discloader.discloader.client.render.util.IRenderable;
 
 /**
  * Just a prototype for textures
  * 
  * @author Perry Berman
  */
-public abstract class AbstractTexture implements IIcon {
+public abstract class AbstractTexture implements IRenderable {
 
 	private int iconHeight;
 	private int iconWidth;

@@ -3,7 +3,7 @@ package io.discloader.discloader.client.command;
 import java.util.regex.Pattern;
 
 import io.discloader.discloader.client.registry.TextureRegistry;
-import io.discloader.discloader.client.render.util.IIcon;
+import io.discloader.discloader.client.render.util.IRenderable;
 import io.discloader.discloader.client.render.util.Resource;
 import io.discloader.discloader.common.event.message.MessageCreateEvent;
 import io.discloader.discloader.common.registry.CommandRegistry;
@@ -42,13 +42,13 @@ public class Command {
 	
 	private int id;
 	
-	protected IIcon icon;
+	protected IRenderable renderable;
 	
 	/**
 	 * Creates a new Command
 	 */
 	public Command() {
-		this.icon = null;
+		this.renderable = null;
 	}
 	
 	/**
@@ -84,11 +84,11 @@ public class Command {
 		return this.description;
 	}
 	
-	public IIcon getIcon() {
-		if (this.icon == null) {
-			this.icon = TextureRegistry.registerCommandIcon(this);
+	public IRenderable getIcon() {
+		if (this.renderable == null) {
+			this.renderable = TextureRegistry.registerCommandIcon(this);
 		}
-		return this.icon;
+		return this.renderable;
 	}
 	
 	/**

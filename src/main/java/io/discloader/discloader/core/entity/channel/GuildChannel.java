@@ -2,6 +2,7 @@ package io.discloader.discloader.core.entity.channel;
 
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.List;
 import java.util.concurrent.CompletableFuture;
 
 import io.discloader.discloader.core.entity.Overwrite;
@@ -14,8 +15,10 @@ import io.discloader.discloader.entity.channel.IGuildChannel;
 import io.discloader.discloader.entity.guild.IGuild;
 import io.discloader.discloader.entity.guild.IGuildMember;
 import io.discloader.discloader.entity.guild.IRole;
+import io.discloader.discloader.entity.invite.IInvite;
 import io.discloader.discloader.entity.util.Permissions;
 import io.discloader.discloader.network.json.ChannelJSON;
+import io.discloader.discloader.network.rest.actions.channel.FetchInvites;
 import io.discloader.discloader.network.rest.actions.channel.SetOverwrite;
 import io.discloader.discloader.network.rest.actions.channel.close.CloseGuildChannel;
 
@@ -183,6 +186,11 @@ public class GuildChannel extends Channel implements IGuildChannel {
 	@Override
 	public int getPosition() {
 		return position;
+	}
+
+	@Override
+	public CompletableFuture<List<IInvite>> getInvites() {
+		return new FetchInvites(this).execute();
 	}
 
 }

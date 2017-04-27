@@ -2,7 +2,6 @@ package io.discloader.discloader.entity.guild;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
@@ -19,11 +18,11 @@ import io.discloader.discloader.core.entity.channel.VoiceChannel;
 import io.discloader.discloader.core.entity.guild.Guild;
 import io.discloader.discloader.core.entity.guild.GuildMember;
 import io.discloader.discloader.core.entity.user.User;
-import io.discloader.discloader.entity.IInvite;
 import io.discloader.discloader.entity.IPresence;
 import io.discloader.discloader.entity.channel.IGuildChannel;
 import io.discloader.discloader.entity.channel.IGuildTextChannel;
 import io.discloader.discloader.entity.channel.IGuildVoiceChannel;
+import io.discloader.discloader.entity.invite.IInvite;
 import io.discloader.discloader.entity.user.IUser;
 import io.discloader.discloader.entity.util.ICreationTime;
 import io.discloader.discloader.entity.util.ISnowflake;
@@ -236,13 +235,23 @@ public interface IGuild extends ISnowflake, ICreationTime {
 
 	IGuildVoiceChannel getVoiceChannelByID(long channelID);
 
+	IGuildVoiceChannel getVoiceChannelByID(String channelID);
+
+	IGuildVoiceChannel getVoiceChannelByName(String channelName);
+
 	Map<Long, IGuildVoiceChannel> getVoiceChannels();
 
 	VoiceRegion getVoiceRegion();
 
 	CompletableFuture<List<VoiceRegion>> getVoiceRegions();
 
-	HashMap<Long, VoiceState> getVoiceStates();
+	/**
+	 * returns a Map of the guild's members' voice states. Indexed by
+	 * {@link GuildMember#getID()}
+	 * 
+	 * @return A Map of {@link VoiceState VoiceStates}
+	 */
+	Map<Long, VoiceState> getVoiceStates();
 
 	boolean hasPermission(Permissions permissions);
 
@@ -286,6 +295,13 @@ public interface IGuild extends ISnowflake, ICreationTime {
 	boolean isOwner(IGuildMember member);
 
 	/**
+	 * Checks if the guild is currently being synced with discord
+	 * 
+	 * @return {@code true} if syncing, false otherwise.
+	 */
+	boolean isSyncing();
+
+	/**
 	 * Kicks the member from the {@link IGuild guild} if the {@link DiscLoader
 	 * client} has sufficient permissions
 	 * 
@@ -297,8 +313,16 @@ public interface IGuild extends ISnowflake, ICreationTime {
 	 *             {@link Permissions#KICK_MEMBERS} permission.
 	 */
 	CompletableFuture<IGuildMember> kickMember(IGuildMember guildMember);
+	/**
+	 * Makes the client leave the guild
+	 * 
+	 * @return A Future that completes with {@code this} if successful.
+	 */
+	CompletableFuture<IGuild> leave();
 
 	IGuildMember removeMember(IGuildMember member);
+
+	void removeMember(IUser user);
 
 	IRole removeRole(IRole role);
 

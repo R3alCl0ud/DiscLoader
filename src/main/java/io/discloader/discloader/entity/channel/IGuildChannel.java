@@ -1,7 +1,8 @@
 package io.discloader.discloader.entity.channel;
 
 import java.util.Collection;
-import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 
 import io.discloader.discloader.core.entity.guild.Guild;
@@ -11,6 +12,7 @@ import io.discloader.discloader.entity.IPermission;
 import io.discloader.discloader.entity.guild.IGuild;
 import io.discloader.discloader.entity.guild.IGuildMember;
 import io.discloader.discloader.entity.guild.IRole;
+import io.discloader.discloader.entity.invite.IInvite;
 
 public interface IGuildChannel extends IChannel {
 
@@ -50,7 +52,9 @@ public interface IGuildChannel extends IChannel {
 	 * 
 	 * @return A HashMap of GuildMember with access to view the channel
 	 */
-	HashMap<Long, IGuildMember> getMembers();
+	Map<Long, IGuildMember> getMembers();
+
+	CompletableFuture<List<IInvite>> getInvites();
 
 	String getName();
 

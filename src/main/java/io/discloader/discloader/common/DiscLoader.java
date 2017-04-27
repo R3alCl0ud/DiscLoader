@@ -45,6 +45,7 @@ import io.discloader.discloader.entity.channel.IPrivateChannel;
 import io.discloader.discloader.entity.channel.ITextChannel;
 import io.discloader.discloader.entity.channel.IVoiceChannel;
 import io.discloader.discloader.entity.guild.IGuild;
+import io.discloader.discloader.entity.invite.IInvite;
 import io.discloader.discloader.entity.sendable.Packet;
 import io.discloader.discloader.entity.user.IUser;
 import io.discloader.discloader.entity.util.SnowflakeUtil;
@@ -54,8 +55,10 @@ import io.discloader.discloader.network.json.ChannelJSON;
 import io.discloader.discloader.network.json.GuildJSON;
 import io.discloader.discloader.network.json.UserJSON;
 import io.discloader.discloader.network.rest.RESTManager;
+import io.discloader.discloader.network.rest.actions.InviteAction;
 import io.discloader.discloader.util.DLUtil;
 import io.discloader.discloader.util.DLUtil.Endpoints;
+import io.discloader.discloader.util.DLUtil.Methods;
 import io.discloader.discloader.util.DLUtil.Status;
 
 /**
@@ -461,6 +464,10 @@ public class DiscLoader {
 
 	public IGuild getGuild(String guildID) {
 		return getGuild(SnowflakeUtil.parse(guildID));
+	}
+
+	public CompletableFuture<IInvite> getInvite(String code) {
+		return new InviteAction(code, Methods.GET).execute();
 	}
 
 	public boolean isGuildSyncing(Guild guild) {

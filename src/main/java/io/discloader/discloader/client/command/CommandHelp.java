@@ -3,7 +3,7 @@ package io.discloader.discloader.client.command;
 import java.io.File;
 import java.util.Locale;
 
-import io.discloader.discloader.client.render.util.IIcon;
+import io.discloader.discloader.client.render.util.IRenderable;
 import io.discloader.discloader.client.render.util.Resource;
 import io.discloader.discloader.common.event.message.MessageCreateEvent;
 import io.discloader.discloader.common.language.LanguageRegistry;
@@ -32,7 +32,7 @@ public class CommandHelp extends Command {
 		if (args.length == 1 && (command = CommandHandler.getCommand(args[0], message)) != null) {
 			if (command != null) {
 				File icon = DLUtil.MissingTexture;
-				IIcon iicon = command.getIcon();
+				IRenderable iicon = command.getIcon();
 
 				if (iicon != null && iicon.getFile() != null) {
 					icon = iicon.getFile();

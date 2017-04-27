@@ -24,7 +24,7 @@ import io.discloader.discloader.common.exceptions.AccountTypeException;
 import io.discloader.discloader.common.exceptions.UnauthorizedException;
 import io.discloader.discloader.common.exceptions.UnknownException;
 import io.discloader.discloader.network.json.ExceptionJSON;
-import io.discloader.discloader.util.DLUtil;
+import static io.discloader.discloader.util.DLUtil.gson;
 
 /**
  * @author Perry Berman
@@ -37,7 +37,9 @@ public class RESTQueue {
 
 	public DiscLoader loader;
 
-	public Timer timer;
+	// public Timer timer;
+
+	private final RateLimiter limiter;
 
 	private boolean waiting;
 
@@ -47,21 +49,22 @@ public class RESTQueue {
 
 	public long resetTime;
 
-	public int rateLimit;
+	private int rateLimit;
 
 	public int remaining;
 
-	public RESTQueue(RESTManager restManager) {
+	public RESTQueue(RESTManager restManager, String route) {
 		rest = restManager;
 		loader = rest.loader;
 		waiting = false;
 		timeDifference = 0;
 		queue = new ArrayList<>();
+		limiter = new RateLimiter(this, route);
 	}
 
 	public void handle() {
 		try {
-			if (waiting || queue.size() == 0 || globalLimit) {
+			if (waiting || queue.size() == 0 || limiter.hitGlobalLimit()) {
 				return;
 			}
 
@@ -100,13 +103,17 @@ public class RESTQueue {
 							break;
 						}
 					});
+					RawEvent event = new RawEvent(loader, response);
+					// limiter.
+					if (limiter.shouldRateLimit(response)) {
+						
+					}
 					DateFormat df = new SimpleDateFormat("E, dd MMM yyyy HH:mm:ss z");
 					try {
 						timeDifference = Date.from(Instant.now()).getTime() - df.parse(headers.get("Date").get(0)).getTime();
 					} catch (ParseException e) {
 						e.printStackTrace();
 					}
-					RawEvent event = new RawEvent(loader, response);
 					int code = response.getStatus();
 					if (code == 429) {
 						Thread wait = new Thread("Ratelimit resetting - " + apiRequest.url) {
@@ -134,7 +141,7 @@ public class RESTQueue {
 						queue.remove(apiRequest);
 						loader.emit(event);
 						loader.emit("RawPacket", event);
-						ExceptionJSON data = DLUtil.gson.fromJson(response.getBody(), ExceptionJSON.class);
+						ExceptionJSON data = gson.fromJson(response.getBody(), ExceptionJSON.class);
 						switch (code) {
 						case 401:
 							apiRequest.future.completeExceptionally(new UnauthorizedException(response.getBody()));
@@ -157,14 +164,15 @@ public class RESTQueue {
 						apiRequest.future.complete(response.getBody());
 					}
 					globalLimit = false;
-					long waitTime = ((resetTime - System.currentTimeMillis()) + timeDifference + 500);
-					if (remaining == 0 && waitTime > 0) {
+					// long waitTime = ((resetTime - System.currentTimeMillis())
+					// + timeDifference + 500);
+					if (limiter.shouldWait()) {
 						Thread wait = new Thread("REST Waiting - " + apiRequest.url) {
 
 							@Override
 							public void run() {
 								try {
-									Thread.sleep(waitTime);
+									Thread.sleep(limiter.getWaitTime());
 								} catch (InterruptedException e) {
 									e.printStackTrace();
 								}

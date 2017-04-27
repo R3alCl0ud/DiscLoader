@@ -105,6 +105,10 @@ public final class DLUtil {
 			return String.format("%s/channels/%d", API, channelID);
 		}
 
+		public static String channelInvites(long channelID) {
+			return String.format("%s/invites", channel(channelID));
+		}
+
 		public static final String channelOverwrites(long channelID) {
 			return String.format("%s/permissions", channel(channelID));
 		}
@@ -189,16 +193,16 @@ public final class DLUtil {
 			return String.format("%s/roles", guild(guildID));
 		}
 
-		public static final String guildSlash(long guildID, String splashHash) {
+		public static final String guildSplash(long guildID, String splashHash) {
 			return String.format("%s/splashes/%d/%s.jpg", CDN, guildID, splashHash);
 		}
 
-		public static final String invite(long id) {
-			return String.format("%s/invite/%d", API, id);
+		public static final String invite(String code) {
+			return String.format("%s/invite/%s", API, code);
 		}
 
-		public static final String inviteLink(long id) {
-			return String.format("https://discord.gg/%d", id);
+		public static final String inviteLink(String code) {
+			return String.format("https://discord.gg/%s", code);
 		}
 
 		public static final String message(long channelID, long messageID) {
