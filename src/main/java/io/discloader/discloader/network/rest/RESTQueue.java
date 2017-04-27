@@ -1,5 +1,7 @@
 package io.discloader.discloader.network.rest;
 
+import static io.discloader.discloader.util.DLUtil.gson;
+
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -8,7 +10,6 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
-import java.util.Timer;
 
 import com.mashape.unirest.http.HttpResponse;
 import com.mashape.unirest.http.async.Callback;
@@ -24,7 +25,6 @@ import io.discloader.discloader.common.exceptions.AccountTypeException;
 import io.discloader.discloader.common.exceptions.UnauthorizedException;
 import io.discloader.discloader.common.exceptions.UnknownException;
 import io.discloader.discloader.network.json.ExceptionJSON;
-import static io.discloader.discloader.util.DLUtil.gson;
 
 /**
  * @author Perry Berman
@@ -64,7 +64,7 @@ public class RESTQueue {
 
 	public void handle() {
 		try {
-			if (waiting || queue.size() == 0 || limiter.hitGlobalLimit()) {
+			if (waiting || queue.size() == 0 || globalLimit) {
 				return;
 			}
 
@@ -104,10 +104,10 @@ public class RESTQueue {
 						}
 					});
 					RawEvent event = new RawEvent(loader, response);
-					// limiter.
-					if (limiter.shouldRateLimit(response)) {
-						
-					}
+					// // limiter.
+					// if (limiter.shouldRateLimit(response)) {
+					//
+					// }
 					DateFormat df = new SimpleDateFormat("E, dd MMM yyyy HH:mm:ss z");
 					try {
 						timeDifference = Date.from(Instant.now()).getTime() - df.parse(headers.get("Date").get(0)).getTime();
@@ -164,15 +164,14 @@ public class RESTQueue {
 						apiRequest.future.complete(response.getBody());
 					}
 					globalLimit = false;
-					// long waitTime = ((resetTime - System.currentTimeMillis())
-					// + timeDifference + 500);
-					if (limiter.shouldWait()) {
+					long waitTime = ((resetTime - System.currentTimeMillis()) + timeDifference + 500);
+					if (remaining == 0 && waitTime > 0) {
 						Thread wait = new Thread("REST Waiting - " + apiRequest.url) {
 
 							@Override
 							public void run() {
 								try {
-									Thread.sleep(limiter.getWaitTime());
+									Thread.sleep(waitTime);
 								} catch (InterruptedException e) {
 									e.printStackTrace();
 								}
