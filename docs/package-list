@@ -1,4 +1,3 @@
-io.discloader.client.opengl
 io.discloader.discloader.client.command
 io.discloader.discloader.client.logger
 io.discloader.discloader.client.registry
@@ -9,7 +8,6 @@ io.discloader.discloader.client.render.texture.icon
 io.discloader.discloader.client.render.util
 io.discloader.discloader.common
 io.discloader.discloader.common.discovery
-io.discloader.discloader.common.entity.channel
 io.discloader.discloader.common.event
 io.discloader.discloader.common.event.channel
 io.discloader.discloader.common.event.guild
@@ -22,7 +20,16 @@ io.discloader.discloader.common.exceptions
 io.discloader.discloader.common.language
 io.discloader.discloader.common.logger
 io.discloader.discloader.common.registry
+io.discloader.discloader.common.registry.factory
 io.discloader.discloader.common.start
+io.discloader.discloader.core.entity
+io.discloader.discloader.core.entity.channel
+io.discloader.discloader.core.entity.guild
+io.discloader.discloader.core.entity.invite
+io.discloader.discloader.core.entity.message
+io.discloader.discloader.core.entity.message.embed
+io.discloader.discloader.core.entity.user
+io.discloader.discloader.core.entity.util
 io.discloader.discloader.entity
 io.discloader.discloader.entity.channel
 io.discloader.discloader.entity.embed
@@ -32,6 +39,7 @@ io.discloader.discloader.entity.message
 io.discloader.discloader.entity.message.embed
 io.discloader.discloader.entity.sendable
 io.discloader.discloader.entity.user
+io.discloader.discloader.entity.util
 io.discloader.discloader.entity.voice
 io.discloader.discloader.network.gateway
 io.discloader.discloader.network.gateway.packets
@@ -43,6 +51,7 @@ io.discloader.discloader.network.rest.actions.channel
 io.discloader.discloader.network.rest.actions.channel.close
 io.discloader.discloader.network.rest.actions.channel.pin
 io.discloader.discloader.network.rest.actions.guild
+io.discloader.discloader.network.rest.actions.message
 io.discloader.discloader.network.util
 io.discloader.discloader.network.voice
 io.discloader.discloader.network.voice.payloads
