@@ -33,12 +33,6 @@
 
 	<dependencies>
 		<dependency>
-			<groupId>junit</groupId>
-			<artifactId>junit</artifactId>
-			<version>3.8.1</version>
-			<scope>test</scope>
-		</dependency>
-		<dependency>
 			<groupId>com.neovisionaries</groupId>
 			<artifactId>nv-websocket-client</artifactId>
 			<version>1.31</version>
@@ -61,7 +55,7 @@
 		<dependency>
 			<groupId>com.sedmelluq</groupId>
 			<artifactId>lavaplayer</artifactId>
-			<version>LATEST</version>
+			<version>1.2.36</version>
 		</dependency>
 		<dependency>
 			<groupId>commons-codec</groupId>
@@ -158,6 +152,7 @@
 				</executions>
 				<configuration>
 					<finalName>${project.artifactId}-v${project.version}_${git.commit.id.describe}-${maven.build.timestamp}</finalName>
+					
 				</configuration>
 			</plugin>
 			<plugin>

@@ -3,7 +3,7 @@ package io.discloader.discloader.network.rest;
 import java.util.List;
 import java.util.Map;
 
-import org.joda.time.DateTime;
+// import java.
 
 import com.mashape.unirest.http.HttpResponse;
 
@@ -54,7 +54,7 @@ public class RateLimiter {
 				globalLimit = Boolean.parseBoolean(value.get(0));
 				break;
 			case "Date":
-				timeDifference = DateTime.now().toDate().getTime() - DateTime.parse(value.get(0)).toDate().getTime();
+					// timeDifference = DateTime.now().toDate().getTime() - DateTime.parse(value.get(0)).toDate().getTime();
 				break;
 			case "retry after":
 				resetAfter = (Long.parseLong(value.get(0), 10) + 500);

@@ -84,7 +84,12 @@ public class APIRequest {
 					try {
 						byte[] bytes = DLUtil.readAllBytes(file);
 						MultipartBody body = ((HttpRequestWithBody) request).fields(null);
-						body.field("file", bytes, file.getName()).field("payload_json", DLUtil.gson.toJson(data));
+						// String[] path = file.getPath().split("!");
+						String loc = file.getPath().replace("!", "");
+						// System.out.println(loc);
+						// String loc = path.length == 2 ? path[1].replace('\\', '/').substring(1) : path[0];
+						// FileInputStream()
+						body.field("file", bytes, loc).field("payload_json", DLUtil.gson.toJson(data));
 					} catch (IOException e) {
 						e.printStackTrace();
 					}

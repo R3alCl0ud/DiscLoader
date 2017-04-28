@@ -28,11 +28,16 @@ public class Resource {
 	}
 	
 	public String getPath() {
-		return "assets/" + location + "/" + name;
+		return "/assets/" + location + "/" + name;
 	}
 	
 	public File getFile() throws IOException {
-		URL url = ClassLoader.getSystemResource(getPath());
+		// ClassLoader
+		URL url = ClassLoader.getSystemClassLoader().getResource(getPath());
+		// try from the class it's self
+		if (url == null)
+			url = Resource.class.getResource(getPath());
+		// since we still can't find it, throw the exception
 		if (url == null)
 			throw new FileNotFoundException(getPath());
 		File file = new File(url.getFile());
