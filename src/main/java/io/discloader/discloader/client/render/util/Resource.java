@@ -28,7 +28,9 @@ public class Resource {
 	}
 
 	public String getFileName() {
-		String[] l = name.split("/");
+		String[] l = getPath().split("/");
+
+		System.out.println(l[l.length - 1]);
 		return l[l.length - 1];
 	}
 
@@ -50,6 +52,10 @@ public class Resource {
 	public InputStream getResourceAsStream() {
 		InputStream is = Resource.class.getResourceAsStream(getPath());
 		return is == null ? ClassLoader.getSystemResourceAsStream(getPath()) : is;
+	}
+	
+	public URL toURL() {
+		return Resource.class.getResource(getPath());
 	}
 
 }

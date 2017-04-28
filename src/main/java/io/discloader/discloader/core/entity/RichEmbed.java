@@ -194,7 +194,7 @@ public class RichEmbed {
 	}
 
 	public RichEmbed setImage(Resource resource) throws IOException {
-		image = new EmbedImage(resource.getFile());
+		image = new EmbedImage(resource);
 		return this;
 	}
 

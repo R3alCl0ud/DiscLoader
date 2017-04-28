@@ -6,14 +6,14 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.nio.ByteBuffer;
 import java.time.Instant;
 import java.time.OffsetDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
-import java.util.List;
 import java.util.Locale;
+
+import org.apache.commons.io.IOUtils;
 
 import com.google.gson.Gson;
 
@@ -624,80 +624,74 @@ public final class DLUtil {
 	 * @return A byte array containing the file's data
 	 * @throws IOException thrown if there is an error reading the file
 	 */
-	@SuppressWarnings("resource")
+	// @SuppressWarnings("resource")
 	public static final byte[] readAllBytes(File file) throws IOException {
-		InputStream is = null;
-		try {
-			is = new FileInputStream(file);
-		} catch (IOException e) {
-			String[] path = file.getPath().split("!");
-			String loc = path[path.length - 1];
-			loc = loc.replace('\\', '/').substring(1);
-			System.out.println(loc);
-			// is = DLUtil.class.getResourceAsStream(loc);
-			is = DLUtil.class.getClassLoader().getResourceAsStream(loc);
-			System.out.println(is != null && is.available() != 0);
+		try (InputStream is = new FileInputStream(file)) {
+
+			// Get the size of the file
+			long length = file.length();
+
+			// You cannot create an array using a long type.
+			// It needs to be an int type.
+			// Before converting to an int type, check
+			// to ensure that file is not larger than Integer.MAX_VALUE.
+			if (length > Integer.MAX_VALUE) {
+				throw new IOException("Cannot read the file into memory completely due to it being too large!");
+				// File is too large
+			}
+
+			// Create the byte array to hold the data
+			byte[] bytes = new byte[(int) length];
+
+			// Read in the bytes
+			int offset = 0;
+			int numRead = 0;
+			while (offset < bytes.length && (numRead = is.read(bytes, offset, bytes.length - offset)) >= 0) {
+				offset += numRead;
+			}
+			// is.r
+			// Ensure all the bytes have been read in
+			if (offset < bytes.length) {
+				throw new IOException("Could not completely read file " + file.getName());
+			}
+
+			// Close the input stream and return bytes
+			is.close();
+			return bytes;
+
+			// try to bs it because it's prolly inside the jar
 		}
-		if (is == null) throw new IOException("Some thing went wrong reading the file");
-		// Get the size of the file
-		long length = file.length();
-
-		// You cannot create an array using a long type.
-		// It needs to be an int type.
-		// Before converting to an int type, check
-		// to ensure that file is not larger than Integer.MAX_VALUE.
-		if (length > Integer.MAX_VALUE) {
-			throw new IOException("Cannot read the file into memory completely due to it being too large!");
-			// File is too large
-		}
-
-		// Create the byte array to hold the data
-		byte[] bytes = new byte[(int) length];
-
-		// Read in the bytes
-		int offset = 0;
-		int numRead = 0;
-		while (offset < bytes.length && (numRead = is.read(bytes, offset, bytes.length - offset)) >= 0) {
-			offset += numRead;
-		}
-		// is.r
-		// Ensure all the bytes have been read in
-		if (offset < bytes.length) {
-			throw new IOException("Could not completely read file " + file.getName());
-		}
-
-		// Close the input stream and return bytes
-		is.close();
-		return bytes;
-
-		// try to bs it because it's prolly inside the jar
 	}
 
 	public static byte[] readAllBytes(Resource resource) throws IOException {
-		InputStream is = new FileInputStream(resource.getFile());
-		File file = resource.getFile();
-		long length = file.length();
-		if (length > Integer.MAX_VALUE) {
-			is.close();
-			throw new IOException("Cannot read the file into memory completely due to it being too large!");
-		}
-
-		// Create the byte array to hold the data
-		byte[] bytes = new byte[(int) length];
-
-		// Read in the bytes
-		int offset = 0;
-		int numRead = 0;
-		while (offset < bytes.length && (numRead = is.read(bytes, offset, bytes.length - offset)) >= 0) {
-			offset += numRead;
-		}
-		// Ensure all the bytes have been read in
-		if (offset < bytes.length) {
-			is.close();
-			throw new IOException("Could not completely read file " + file.getName());
-		}
-		is.close();
-		return bytes;
+		InputStream is = resource.getResourceAsStream();
+		// File file = resource.getFile();
+		return IOUtils.toByteArray(is);
+		// long length = file.length();
+		// if (length > Integer.MAX_VALUE) {
+		// is.close();
+		// throw new IOException("Cannot read the file into memory completely
+		// due to it being too large!");
+		// }
+		//
+		// // Create the byte array to hold the data
+		// byte[] bytes = new byte[(int) length];
+		//
+		// // Read in the bytes
+		// int offset = 0;
+		// int numRead = 0;
+		// while (offset < bytes.length && (numRead = is.read(bytes, offset,
+		// bytes.length - offset)) >= 0) {
+		// offset += numRead;
+		// }
+		// // Ensure all the bytes have been read in
+		// if (offset < bytes.length) {
+		// is.close();
+		// throw new IOException("Could not completely read file " +
+		// file.getName());
+		// }
+		// is.close();
+		// return bytes;
 	}
 
 	public static OffsetDateTime creationTime(ISnowflake snowflake) {

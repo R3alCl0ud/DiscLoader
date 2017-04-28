@@ -81,29 +81,19 @@ public class APIRequest {
 			break;
 		case Methods.POST:
 			request = Unirest.post(this.route);
-			if (this.multi && data instanceof SendableMessage) {
-				SendableMessage sdata = (SendableMessage) this.data;
-				File file = sdata.file;
-				Resource resource = sdata.resource;
+			if (multi) {
 				try {
+					SendableMessage sdata = (SendableMessage) this.data;
+					File file = sdata.file;
+					Resource resource = sdata.resource;
 					byte[] bytes = new byte[0];
 					if (file != null) bytes = DLUtil.readAllBytes(file);
-					else if (resource != null) bytes = DLUtil.readAllBytes(resource);
+					if (resource != null) bytes = DLUtil.readAllBytes(resource);
 					MultipartBody body = ((HttpRequestWithBody) request).fields(null);
 					String loc = "";
 					if (file != null) loc = file.getName();
 					if (resource != null) loc = resource.getFileName();
-					System.out.println(loc);
-					// System.out.println(gson.toJson(data));
 					body.field("Content-type", "multipart/form-data").field("file", bytes, loc).field("payload_json", gson.toJson(sdata));
-					// body.mode("form-data");
-					// InputStream is =
-					// body.getHttpRequest().getBody().getEntity().getContent();
-					// Scanner sc = new Scanner(is);
-					// while (sc.hasNext()) {
-					// System.out.println(sc.next());
-					// }
-					// sc.close();
 				} catch (Exception e) {
 					e.printStackTrace();
 				}

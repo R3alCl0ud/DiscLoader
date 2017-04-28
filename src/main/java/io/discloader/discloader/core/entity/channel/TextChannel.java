@@ -161,7 +161,8 @@ public class TextChannel extends GuildChannel implements IGuildTextChannel {
 
 	@Override
 	public CompletableFuture<IMessage> sendEmbed(RichEmbed embed) {
-		if ((embed.getImage() != null && embed.getImage().resource != null) || (embed.thumbnail != null && embed.thumbnail.resource != null)) return sendMessage(null, embed, (Resource) null);
+		if (embed.thumbnail != null && embed.thumbnail.resource != null) return sendMessage(null, embed, (Resource) null);
+		if (embed.getImage() != null && embed.getImage().resource != null) return sendMessage(null, embed, (Resource) null);
 		return sendMessage(null, embed, (File) null);
 	}
 
@@ -208,8 +209,10 @@ public class TextChannel extends GuildChannel implements IGuildTextChannel {
 		Attachment attachment = null;
 		if (embed != null) {
 			if (embed.thumbnail != null && embed.thumbnail.resource != null) {
+				resource = embed.thumbnail.resource;
 				attachment = new Attachment(embed.thumbnail.resource.getFileName());
 			} else if (embed.getImage() != null && embed.getImage().resource != null) {
+				resource = embed.getImage().resource;
 				attachment = new Attachment(embed.getImage().resource.getFileName());
 			}
 		}

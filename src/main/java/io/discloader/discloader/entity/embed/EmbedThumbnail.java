@@ -29,11 +29,11 @@ public class EmbedThumbnail {
 
 	public EmbedThumbnail(String url) {
 		this.url = url;
-
-		this.file = null;
+		file = null;
+		resource = null;
 	}
 
 	public String toString() {
-		return String.format("{\"url\":\"%s\"}", this.url);
+		return String.format("{\"url\":\"%s\"}", url);
 	}
 }
