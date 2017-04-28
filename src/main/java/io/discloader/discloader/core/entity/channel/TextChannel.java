@@ -6,6 +6,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 
+import io.discloader.discloader.client.render.util.Resource;
 import io.discloader.discloader.core.entity.RichEmbed;
 import io.discloader.discloader.core.entity.guild.GuildMember;
 import io.discloader.discloader.core.entity.message.Message;
@@ -160,7 +161,8 @@ public class TextChannel extends GuildChannel implements IGuildTextChannel {
 
 	@Override
 	public CompletableFuture<IMessage> sendEmbed(RichEmbed embed) {
-		return sendMessage(null, embed, null);
+		if ((embed.getImage() != null && embed.getImage().resource != null) || (embed.thumbnail != null && embed.thumbnail.resource != null)) return sendMessage(null, embed, (Resource) null);
+		return sendMessage(null, embed, (File) null);
 	}
 
 	@Override
@@ -169,13 +171,20 @@ public class TextChannel extends GuildChannel implements IGuildTextChannel {
 	}
 
 	@Override
+	public CompletableFuture<IMessage> sendFile(Resource resource) {
+		return sendMessage(null, null, resource);
+	}
+
+	@Override
 	public CompletableFuture<IMessage> sendMessage(String content) {
-		return sendMessage(content, null, null);
+		return sendMessage(content, null, (File) null);
 	}
 
 	@Override
 	public CompletableFuture<IMessage> sendMessage(String content, RichEmbed embed) {
-		return sendMessage(content, embed, null);
+		if ((embed.getImage() != null && embed.getImage().resource != null) || (embed.thumbnail != null && embed.thumbnail.resource != null)) return sendMessage(content, embed, (Resource) null);
+
+		return sendMessage(content, embed, (File) null);
 	}
 
 	@Override
@@ -192,6 +201,19 @@ public class TextChannel extends GuildChannel implements IGuildTextChannel {
 			}
 		}
 		return new SendMessage<IGuildTextChannel>(this, content, embed, attachment, file).execute();
+	}
+
+	@Override
+	public CompletableFuture<IMessage> sendMessage(String content, RichEmbed embed, Resource resource) {
+		Attachment attachment = null;
+		if (embed != null) {
+			if (embed.thumbnail != null && embed.thumbnail.resource != null) {
+				attachment = new Attachment(embed.thumbnail.resource.getFileName());
+			} else if (embed.getImage() != null && embed.getImage().resource != null) {
+				attachment = new Attachment(embed.getImage().resource.getFileName());
+			}
+		}
+		return new SendMessage<IGuildTextChannel>(this, content, embed, attachment, resource).execute();
 	}
 
 	/**

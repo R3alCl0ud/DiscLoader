@@ -210,7 +210,7 @@ public class RichEmbed {
 	}
 
 	public RichEmbed setThumbnail(Resource resource) throws IOException {
-		thumbnail = new EmbedThumbnail(resource.getFile());
+		thumbnail = new EmbedThumbnail(resource);
 		return this;
 	}
 

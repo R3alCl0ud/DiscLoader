@@ -5,6 +5,7 @@ import java.util.Collection;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 
+import io.discloader.discloader.client.render.util.Resource;
 import io.discloader.discloader.core.entity.RichEmbed;
 import io.discloader.discloader.core.entity.message.Message;
 import io.discloader.discloader.core.entity.message.MessageFetchOptions;
@@ -62,13 +63,13 @@ public interface ITextChannel extends IChannel {
 	 */
 	<T extends ITextChannel> CompletableFuture<Map<Long, IMessage>> fetchPinnedMessages();
 
+	IMessage getMessage(long messageID);
+
 	/**
 	 * @param id The Snowflake ID of the message
 	 * @return The cached message, or null if no message was found
 	 */
 	<T extends ITextChannel> IMessage getMessage(String id);
-
-	IMessage getMessage(long messageID);
 
 	Collection<IMessage> getMessageCollection();
 
@@ -120,6 +121,8 @@ public interface ITextChannel extends IChannel {
 
 	CompletableFuture<IMessage> sendFile(File file);
 
+	CompletableFuture<IMessage> sendFile(Resource resource);
+
 	/**
 	 * Sends a {@link Message} to the channel.
 	 * 
@@ -139,6 +142,8 @@ public interface ITextChannel extends IChannel {
 	<T extends ITextChannel> CompletableFuture<IMessage> sendMessage(String content, RichEmbed embed);
 
 	CompletableFuture<IMessage> sendMessage(String content, RichEmbed embed, File file);
+
+	CompletableFuture<IMessage> sendMessage(String content, RichEmbed embed, Resource resource);
 
 	/**
 	 * Sets the client as typing in the channel

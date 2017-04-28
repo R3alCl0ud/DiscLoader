@@ -6,6 +6,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 
+import io.discloader.discloader.client.render.util.Resource;
 import io.discloader.discloader.common.DiscLoader;
 import io.discloader.discloader.core.entity.RichEmbed;
 import io.discloader.discloader.core.entity.message.MessageFetchOptions;
@@ -140,7 +141,7 @@ public class PrivateChannel extends Channel implements IPrivateChannel {
 
 	@Override
 	public CompletableFuture<IMessage> sendEmbed(RichEmbed embed) {
-		return sendMessage(null, embed, null);
+		return sendMessage(null, embed, (File) null);
 	}
 
 	@Override
@@ -149,13 +150,18 @@ public class PrivateChannel extends Channel implements IPrivateChannel {
 	}
 
 	@Override
+	public CompletableFuture<IMessage> sendFile(Resource resource) {
+		return sendMessage(null, null, resource);
+	}
+
+	@Override
 	public CompletableFuture<IMessage> sendMessage(String content) {
-		return sendMessage(content, null, null);
+		return sendMessage(content, null, (File) null);
 	}
 
 	@Override
 	public CompletableFuture<IMessage> sendMessage(String content, RichEmbed embed) {
-		return sendMessage(content, embed, null);
+		return sendMessage(content, embed, (File) null);
 	}
 
 	@Override
@@ -168,6 +174,17 @@ public class PrivateChannel extends Channel implements IPrivateChannel {
 			attachment = new Attachment(file.getName());
 		}
 		return new SendMessage<IPrivateChannel>(this, content, embed, attachment, file).execute();
+	}
+
+	@Override
+	public CompletableFuture<IMessage> sendMessage(String content, RichEmbed embed, Resource resource) {
+		Attachment attachment = null;
+		if (embed.thumbnail != null && embed.thumbnail.resource != null) {
+			attachment = new Attachment(embed.thumbnail.resource.getFileName());
+		} else if (embed.getImage() != null && embed.getImage().resource != null) {
+			attachment = new Attachment(embed.getImage().resource.getFileName());
+		}
+		return new SendMessage<IPrivateChannel>(this, content, embed, attachment, resource).execute();
 	}
 
 	@Override
