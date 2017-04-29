@@ -7,10 +7,10 @@ import javax.swing.Box;
 import javax.swing.JLabel;
 
 import io.discloader.discloader.common.discovery.ModContainer;
-import io.discloader.discloader.util.DLUtil;
+import io.discloader.guimod.GUIMod;
 
 public class ModInfo<T extends ModContainer> extends AbstractInfo<T> {
-
+	
 	private static final long serialVersionUID = -7096114819622461589L;
 	public JLabel modId;
 	public JLabel modName;
@@ -18,7 +18,7 @@ public class ModInfo<T extends ModContainer> extends AbstractInfo<T> {
 	public JLabel modVersion;
 	public JLabel modDesc;
 	public JLabel modAuthor;
-
+	
 	public ModInfo() {
 		super();
 		this.add(Box.createRigidArea(new Dimension(0, 40)));
@@ -28,7 +28,7 @@ public class ModInfo<T extends ModContainer> extends AbstractInfo<T> {
 		this.add(this.modVersion = new JLabel("Version: "));
 		this.add(this.modDesc = new JLabel("Description: "));
 		this.add(this.modAuthor = new JLabel("Author(s): "));
-		this.add(new Box.Filler(new Dimension(0, 300), new Dimension(0, 400), new Dimension(0, (int) DLUtil.screenSize.getHeight())));
+		this.add(new Box.Filler(new Dimension(0, 300), new Dimension(0, 400), new Dimension(0, (int) GUIMod.screenSize.getHeight())));
 		this.modId.setForeground(new Color(0xFFFFFF));
 		this.modIcon.setForeground(new Color(0xFFFFFF));
 		this.modVersion.setForeground(new Color(0xFFFFFF));
@@ -37,11 +37,11 @@ public class ModInfo<T extends ModContainer> extends AbstractInfo<T> {
 		this.modAuthor.setForeground(new Color(0xFFFFFF));
 		this.validate();
 	}
-
+	
 	protected void createRigid() {
 		this.add(Box.createRigidArea(new Dimension(400, 0)));
 	}
-
+	
 	@Override
 	public void update(ModContainer object) {
 		ModContainer mc = (ModContainer) object;
@@ -51,5 +51,5 @@ public class ModInfo<T extends ModContainer> extends AbstractInfo<T> {
 		this.modDesc.setText(String.format("Description: %s", mc.modInfo.desc()));
 		this.modAuthor.setText(String.format("Author(s): %s", mc.modInfo.author()));
 	}
-
+	
 }

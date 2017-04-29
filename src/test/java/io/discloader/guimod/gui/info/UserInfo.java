@@ -7,7 +7,7 @@ import javax.swing.Box;
 import javax.swing.JLabel;
 
 import io.discloader.discloader.core.entity.user.User;
-import io.discloader.discloader.util.DLUtil;
+import io.discloader.guimod.GUIMod;
 
 public class UserInfo<T extends User> extends AbstractInfo<T> {
 	
@@ -27,7 +27,7 @@ public class UserInfo<T extends User> extends AbstractInfo<T> {
 		this.add(this.id = new JLabel("ID: "));
 		this.add(this.avatarHash = new JLabel("Avatar: "));
 		this.add(this.avatarURL = new JLabel("AvatarURL: "));
-		this.add(new Box.Filler(new Dimension(0, 300), new Dimension(0, 400), new Dimension(0, (int) DLUtil.screenSize.getHeight())));
+		this.add(new Box.Filler(new Dimension(0, 300), new Dimension(0, 400), new Dimension(0, (int) GUIMod.screenSize.getHeight())));
 		this.username.setForeground(new Color(0xFFFFFF));
 		this.id.setForeground(new Color(0xFFFFFF));
 		this.avatar.setForeground(new Color(0xFFFFFF));

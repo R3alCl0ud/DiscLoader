@@ -40,7 +40,7 @@ public class CommandMods extends Command {
 				for (ModContainer mcs : ModRegistry.mods.values()) {
 					modList.add(String.format("%s", mcs.modInfo.name()));
 				}
-				embed.setThumbnail(this.getIcon().getFile());
+				embed.setThumbnail(getResourceLocation());
 				String mods = Arrays.toString(modList.toArray());
 				mods = mods.substring(1, mods.length() - 1);
 				embed.addField("Mods", mods);

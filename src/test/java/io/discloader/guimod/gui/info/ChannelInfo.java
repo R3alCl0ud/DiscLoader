@@ -15,21 +15,21 @@ import io.discloader.discloader.core.entity.channel.TextChannel;
 import io.discloader.discloader.core.entity.channel.VoiceChannel;
 import io.discloader.discloader.entity.channel.IPrivateChannel;
 import io.discloader.discloader.entity.channel.ITextChannel;
-import io.discloader.discloader.util.DLUtil;
+import io.discloader.guimod.GUIMod;
 import io.discloader.guimod.gui.TabbedPanel;
 import io.discloader.guimod.gui.tab.MessagesTab;
 
 public class ChannelInfo<T extends Channel> extends AbstractInfo<T> implements ActionListener {
-
+	
 	private static final long serialVersionUID = -1685574314217673112L;
-
+	
 	private boolean messages = false;
 	private ITextChannel textChannel;
-
+	
 	public ChannelInfo() {
-
+		
 	}
-
+	
 	@Override
 	public void update(Channel channel) {
 		removeAll();
@@ -58,11 +58,11 @@ public class ChannelInfo<T extends Channel> extends AbstractInfo<T> implements A
 			textChannel = pc;
 		}
 		add(new JLabel(String.format("Type: %s", channel.getType())));
-		add(new Box.Filler(new Dimension(0, 300), new Dimension(0, 400), new Dimension(0, (int) DLUtil.screenSize.getHeight())));
+		add(new Box.Filler(new Dimension(0, 300), new Dimension(0, 400), new Dimension(0, (int) GUIMod.screenSize.getHeight())));
 		revalidate();
 		repaint();
 	}
-
+	
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		if (e.getActionCommand().equals("CLOSE") && messages) {
@@ -76,5 +76,5 @@ public class ChannelInfo<T extends Channel> extends AbstractInfo<T> implements A
 			}
 		}
 	}
-
+	
 }

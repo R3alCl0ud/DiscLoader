@@ -7,12 +7,12 @@ import javax.swing.Box;
 import javax.swing.JLabel;
 
 import io.discloader.discloader.core.entity.guild.Guild;
-import io.discloader.discloader.util.DLUtil;
+import io.discloader.guimod.GUIMod;
 
 public class GuildInfo<T> extends AbstractInfo<T> {
-
+	
 	private static final long serialVersionUID = 8299016955635658254L;
-
+	
 	public final JLabel id;
 	public final JLabel name;
 	public final JLabel icon;
@@ -25,10 +25,10 @@ public class GuildInfo<T> extends AbstractInfo<T> {
 		this.add(this.name = new JLabel("Name: "));
 		this.add(this.id = new JLabel("ID: "));
 		this.add(this.region = new JLabel("Region: "));
-		this.add(new Box.Filler(new Dimension(0, 300), new Dimension(0, 400), new Dimension(0, (int) DLUtil.screenSize.getHeight())));
+		this.add(new Box.Filler(new Dimension(0, 300), new Dimension(0, 400), new Dimension(0, (int) GUIMod.screenSize.getHeight())));
 		this.id.setForeground(new Color(0xFFFFFF));
 		this.name.setForeground(new Color(0xFFFFFF));
-
+		
 	}
 	
 	@Override
@@ -38,5 +38,5 @@ public class GuildInfo<T> extends AbstractInfo<T> {
 		this.name.setText(String.format("Name: %s", guild.name));
 		this.region.setText(String.format("Region: %s", guild.getVoiceRegion().id));
 	}
-
+	
 }

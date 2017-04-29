@@ -8,7 +8,7 @@ import javax.swing.JLabel;
 
 import io.discloader.discloader.client.command.Command;
 import io.discloader.discloader.common.language.LanguageRegistry;
-import io.discloader.discloader.util.DLUtil;
+import io.discloader.guimod.GUIMod;
 
 public class CommandInfo<T extends Command> extends AbstractInfo<T> {
 
@@ -27,7 +27,7 @@ public class CommandInfo<T extends Command> extends AbstractInfo<T> {
 		this.add(this.id = new JLabel("id: "));
 		this.add(this.usage = new JLabel("Usage: "));
 		this.add(this.desc = new JLabel("Description: "));
-		this.add(new Box.Filler(new Dimension(0, 300), new Dimension(0, 400), new Dimension(0, (int) DLUtil.screenSize.getHeight())));
+		this.add(new Box.Filler(new Dimension(0, 300), new Dimension(0, 400), new Dimension(0, (int) GUIMod.screenSize.getHeight())));
 	}
 
 	public void update(Command command) {

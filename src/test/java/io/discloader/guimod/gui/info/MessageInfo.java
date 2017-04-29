@@ -7,12 +7,12 @@ import javax.swing.Box;
 import javax.swing.JLabel;
 
 import io.discloader.discloader.entity.message.IMessage;
-import io.discloader.discloader.util.DLUtil;
+import io.discloader.guimod.GUIMod;
 
 public class MessageInfo extends AbstractInfo<IMessage> {
-
+	
 	private static final long serialVersionUID = -4309829696960633630L;
-
+	
 	private JLabel id;
 	private JLabel content;
 	private JLabel author;
@@ -20,7 +20,7 @@ public class MessageInfo extends AbstractInfo<IMessage> {
 	private JLabel edited;
 	private JLabel type;
 	private MentionInfo mentions;
-
+	
 	public MessageInfo() {
 		super();
 		add(Box.createRigidArea(new Dimension(0, 40)));
@@ -31,9 +31,9 @@ public class MessageInfo extends AbstractInfo<IMessage> {
 		add(edited = new JLabel("Edited: "));
 		add(type = new JLabel("Type: "));
 		add(mentions = new MentionInfo());
-		add(new Box.Filler(new Dimension(0, 300), new Dimension(0, 400), new Dimension(0, (int) DLUtil.screenSize.getHeight())));
+		add(new Box.Filler(new Dimension(0, 300), new Dimension(0, 400), new Dimension(0, (int) GUIMod.screenSize.getHeight())));
 	}
-
+	
 	public void update(IMessage message) {
 		id.setText(format("ID", message.getID()));
 		content.setText(format("Content", message.getContent()));
@@ -43,9 +43,9 @@ public class MessageInfo extends AbstractInfo<IMessage> {
 		type.setText(format("Type", message.isSystem()));
 		mentions.update(message.getMentions());
 	}
-
+	
 	public String format(String place, Object data) {
 		return String.format("<html>%s: %s</html>", place, data.toString());
 	}
-
+	
 }
