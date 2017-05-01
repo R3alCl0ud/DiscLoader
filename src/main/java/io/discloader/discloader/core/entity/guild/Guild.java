@@ -641,7 +641,7 @@ public class Guild implements IGuild {
 	 * @return A {@link GuildMember} object
 	 */
 	public IGuildMember getOwner() {
-		return members.get(ownerID);
+		return getMember(ownerID);
 	}
 
 	@Override
