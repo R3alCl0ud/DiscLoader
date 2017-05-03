@@ -68,7 +68,7 @@ public class DiscSocketListener extends WebSocketAdapter {
 
 	private long timeout = 5000;
 
-	private final Logger logger = new DLLogger("GatewayListener").getLogger();
+	private final Logger logger;
 
 	public HashMap<String, AbstractHandler> handlers;
 
@@ -83,7 +83,8 @@ public class DiscSocketListener extends WebSocketAdapter {
 		this.loader = this.socket.loader;
 		this.handlers = new HashMap<String, AbstractHandler>();
 		this.queue = new ArrayList<SocketPacket>();
-
+		if (loader.shards > 1) logger = new DLLogger("GatewayListener - Shard: " + loader.shard).getLogger();
+		else logger = new DLLogger("GatewayListener").getLogger();
 		this.register(WSEvents.HELLO, new Hello(this.socket));
 		this.register(WSEvents.READY, new Ready(this.socket));
 		this.register(WSEvents.RESUMED, new Resumed(this.socket));

@@ -201,7 +201,7 @@ public class DiscLoader {
 
 	// public Timer timer;
 
-	private boolean started = false;
+	private static boolean started = false;
 
 	private DLOptions options;
 
@@ -287,7 +287,7 @@ public class DiscLoader {
 	 * @author Perry Berman
 	 * @since 0.0.3
 	 */
-	public DiscLoader(int shards, int shard) {
+	public DiscLoader(int shard, int shards) {
 		this.shards = shards;
 		this.shard = shard;
 		socket = new DiscSocket(this);
@@ -503,19 +503,19 @@ public class DiscLoader {
 		this.token = token;
 
 		CompletableFuture<DiscLoader> future2 = new CompletableFuture<>();
-		try {
-			rest.makeRequest(Endpoints.gateway, DLUtil.Methods.GET, true).thenAcceptAsync(text -> {
-				Gson gson = new Gson();
-				Gateway gateway = gson.fromJson(text, Gateway.class);
-				try {
-					socket.connectSocket(gateway.url + "?v=6&encoding=json");
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
-			});
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
+		rest.makeRequest(Endpoints.gateway, DLUtil.Methods.GET, true).thenAcceptAsync(text -> {
+			Gson gson = new Gson();
+			Gateway gateway = gson.fromJson(text, Gateway.class);
+			try {
+				socket.connectSocket(gateway.url + "?v=6&encoding=json");
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		}).exceptionally(tr -> {
+			LOG.info(tr.getCause().getClass().getName());
+			return (Void) null;
+		});
+
 		return future2;
 	}
 
@@ -570,8 +570,9 @@ public class DiscLoader {
 			doneLoading();
 			return "ready";
 		}
-		System.setOut(new DLPrintStream(System.out, LOG));
-		System.setErr(new DLErrorStream(System.err, LOG));
+		// System.err
+		if (!(System.out instanceof DLPrintStream)) System.setOut(new DLPrintStream(System.out, LOG));
+		if (!(System.err instanceof DLErrorStream)) System.setErr(new DLErrorStream(System.err, LOG));
 		System.setProperty("http.agent", "DiscLoader");
 		if (Main.usegui == true) {
 			Main.window = new WindowFrame(this);

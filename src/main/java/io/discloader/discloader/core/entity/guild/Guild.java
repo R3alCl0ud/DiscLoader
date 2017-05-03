@@ -865,7 +865,7 @@ public class Guild implements IGuild {
 			memberCount = data.member_count;
 			voiceRegion = new VoiceRegion(data.region);
 			splashHash = data.splash;
-			ProgressLogger.step(1, 7, "Caching Roles");
+			// ProgressLogger.step(1, 7, "Caching Roles");
 			if (data.roles.length > 0) {
 				roles.clear();
 				for (RoleJSON role : data.roles) {
@@ -873,7 +873,7 @@ public class Guild implements IGuild {
 					roles.put(r.getID(), r);
 				}
 			}
-			ProgressLogger.step(2, 7, "Caching Members");
+			// ProgressLogger.step(2, 7, "Caching Members");
 			if (data.members != null && data.members.length > 0) {
 				members.clear();
 				for (MemberJSON member : data.members) {
@@ -881,7 +881,7 @@ public class Guild implements IGuild {
 					members.put(m.getID(), m);
 				}
 			}
-			ProgressLogger.step(3, 7, "Caching Channels");
+			// ProgressLogger.step(3, 7, "Caching Channels");
 			if (data.channels != null && data.channels.length > 0) {
 				for (ChannelJSON channelData : data.channels) {
 					IGuildChannel chan = (IGuildChannel) EntityRegistry.addChannel(channelData, this);
@@ -889,21 +889,21 @@ public class Guild implements IGuild {
 					else if (chan instanceof IGuildVoiceChannel) voiceChannels.put(chan.getID(), (IGuildVoiceChannel) chan);
 				}
 			}
-			ProgressLogger.step(4, 7, "Caching Presences");
+			// ProgressLogger.step(4, 7, "Caching Presences");
 			if (data.presences != null && data.presences.length > 0) {
 				presences.clear();
 				for (PresenceJSON presence : data.presences) {
 					this.setPresence(presence);
 				}
 			}
-			ProgressLogger.step(5, 7, "Caching Emojis");
+			// ProgressLogger.step(5, 7, "Caching Emojis");
 			if (data.emojis != null && data.emojis.length > 0) {
 				this.emojis.clear();
 				for (EmojiJSON e : data.emojis) {
 					this.emojis.put(SnowflakeUtil.parse(e.id), new Emoji(e, this));
 				}
 			}
-			ProgressLogger.step(6, 7, "Caching Voice States");
+			// ProgressLogger.step(6, 7, "Caching Voice States");
 			if (data.voice_states != null && data.voice_states.length > 0) {
 				this.rawStates.clear();
 				for (VoiceStateJSON v : data.voice_states) {
@@ -911,7 +911,7 @@ public class Guild implements IGuild {
 				}
 			}
 
-			ProgressLogger.step(7, 7, "Registering Icon");
+			// ProgressLogger.step(7, 7, "Registering Icon");
 			try {
 				TextureRegistry.registerGuildIcon(new GuildIcon(this));
 			} catch (Exception e) {

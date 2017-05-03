@@ -58,11 +58,13 @@ public class DiscSocket {
 
 	private ArrayList<Object> queue;
 
-	private final Logger logger = new DLLogger("Gateway").getLogger();
+	private final Logger logger;
 
 	public DiscSocket(DiscLoader loader) {
 		this.loader = loader;
-
+		System.out.printf("s: " + loader.shard + ", st: " + loader.shards);
+		if (loader.shards > 1) logger = new DLLogger("Gateway - Shard: " + loader.shard).getLogger();
+		else logger = new DLLogger("Gateway").getLogger();
 		socketListener = new DiscSocketListener(this);
 
 		status = Status.IDLE;

@@ -10,14 +10,13 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import com.google.gson.Gson;
-import com.neovisionaries.ws.client.WebSocketFrame;
 
 import io.discloader.discloader.client.render.WindowFrame;
 import io.discloader.discloader.common.DLOptions;
 import io.discloader.discloader.common.DiscLoader;
-import io.discloader.discloader.common.event.EventListenerAdapter;
-import io.discloader.discloader.common.event.RawEvent;
-import io.discloader.discloader.common.event.ReadyEvent;
+import io.discloader.discloader.common.Shard;
+import io.discloader.discloader.common.ShardManager;
+import io.discloader.discloader.common.event.sharding.ShardingListenerAdapter;
 import io.discloader.discloader.common.logger.DLErrorStream;
 import io.discloader.discloader.common.logger.DLPrintStream;
 
@@ -43,7 +42,7 @@ public class Main {
 
 	private static Logger LOGGER;
 
-	private static final String tokenRegex = "-t=(.*+)", prefixRegex = "-p=(.*+)", shardRegex = "-s=(\\d+):(\\d+)";
+	private static final String tokenRegex = "-t=(.*+)", prefixRegex = "-p=(.*+)", shardRegex = "-s=(\\d+)\\:(\\d+)";
 	private static final Pattern tokenPat = Pattern.compile(tokenRegex), prefixPat = Pattern.compile(prefixRegex), shardPat = Pattern.compile(shardRegex);
 
 	public static DiscLoader getLoader() {
@@ -70,25 +69,15 @@ public class Main {
 			options options = gson.fromJson(content, options.class);
 			token = options.auth.token;
 		}
-		loader = new DiscLoader(parseArgs(args));
-		loader.addEventHandler(new EventListenerAdapter() {
+		ShardManager manager = new ShardManager(parseArgs(args));
+		manager.addShardingListener(new ShardingListenerAdapter() {
 
-			@Override
-			public void RawPacket(RawEvent data) {
-				if (data.isGateway()) {
-					WebSocketFrame frame = data.getFrame();
-					if (frame.isTextFrame()) System.out.println(frame.getPayloadText());
-				}
+			public void ShardLaunched(Shard shard) {
+				LOGGER.info(String.format("Shard #%d: Launched", shard.getShardID()));
 			}
-
-			@Override
-			public void Ready(ReadyEvent event) {
-				System.out.printf("Ready as user: %s", loader.user);
-			}
-
 		});
-		loader.login();
-
+		manager.launchShards();
+		System.out.println("wtf...");
 	}
 
 	public static DLOptions parseArgs(String... args) {
@@ -96,15 +85,15 @@ public class Main {
 		for (String arg : args) {
 			if (arg.startsWith("-") && !arg.startsWith("--")) {
 				if (arg.contains("d")) {
-					options = new DLOptions(true, options.useWindow);
+					options = new DLOptions(options.token, options.prefix, true, options.useWindow, options.shard, options.shards);
 				}
 				if (arg.contains("g")) {
-					options = new DLOptions(options.defaultCommands, true);
+					options = new DLOptions(options.token, options.prefix, options.defaultCommands, true, options.shard, options.shards);
 				}
 			} else if (arg.equals("usegui")) {
-				options = new DLOptions(options.defaultCommands, true);
+				options = new DLOptions(options.token, options.prefix, options.defaultCommands, true, options.shard, options.shards);
 			} else if (arg.equalsIgnoreCase("--defaultcmd")) {
-				options = new DLOptions(true, options.useWindow);
+				options = new DLOptions(options.token, options.prefix, true, options.useWindow, options.shard, options.shards);
 			}
 			Matcher tokenMatcher = tokenPat.matcher(arg), prefixMatcher = prefixPat.matcher(arg), shardMatcher = shardPat.matcher(arg);
 			if (tokenMatcher.find()) {
@@ -112,11 +101,13 @@ public class Main {
 			} else if (prefixMatcher.find()) {
 				options.setPrefix(prefixMatcher.group(1));
 			} else if (shardMatcher.find()) {
-				if (shardMatcher.groupCount() != 3) {
+				if (shardMatcher.groupCount() != 2) {
 					LOGGER.severe("Sharding option usage: -s=shard:totalshards");
 					continue;
 				}
-				options.setSharding(Integer.parseInt(shardMatcher.group(1)), Integer.parseInt(shardMatcher.group(3)));
+
+				options.setSharding(Integer.parseInt(shardMatcher.group(1)), Integer.parseInt(shardMatcher.group(2)));
+				System.out.println();
 			}
 		}
 		return options;

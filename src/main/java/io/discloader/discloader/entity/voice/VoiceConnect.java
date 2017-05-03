@@ -14,76 +14,72 @@ import io.discloader.discloader.network.voice.VoiceWebSocket;
 
 /**
  * @author Perry Berman
- *
  */
 public class VoiceConnect {
-	
+
 	private IVoiceChannel channel;
 	private VoiceWebSocket ws;
 	private UDPVoiceClient udpClient;
-	
+
 	private final Logger logger;
-	
+
 	// private String endpoint;
 	private String token;
 	private String userID;
 	private String sessionID;
-	
+
 	private boolean speaking;
-	
+
 	public VoiceConnect(IVoiceChannel voiceChannel) {
 		channel = voiceChannel;
 		// ws = new VoiceWebSocket();
-		if (getGuild() != null)
-			logger = new DLLogger("VoiceConnection - Guild: " + getGuild().getID()).getLogger();
-		else
-			logger = new DLLogger("VoiceConnection - Channel: " + channel.getID()).getLogger();
+		if (getGuild() != null) logger = new DLLogger("VoiceConnection - Guild: " + getGuild().getID()).getLogger();
+		else logger = new DLLogger("VoiceConnection - Channel: " + channel.getID()).getLogger();
 	}
-	
+
 	public IVoiceChannel getChannel() {
 		return channel;
 	}
-	
+
 	public IGuild getGuild() {
-		if (channel instanceof IGuildVoiceChannel)
-			return ((IGuildVoiceChannel) channel).getGuild();
+		if (channel instanceof IGuildVoiceChannel) return ((IGuildVoiceChannel) channel).getGuild();
 		return null;
 	}
-	
+
 	public DiscLoader getLoader() {
 		return channel.getLoader();
 	}
-	
+
 	/**
 	 * @return the udpClient
 	 */
-	public UDPVoiceClient getUdpClient() {
+	public UDPVoiceClient getUDPClient() {
 		return this.udpClient;
 	}
-	
+
 	/**
 	 * @return the ws
 	 */
-	public VoiceWebSocket getWs() {
+	public VoiceWebSocket getWebSocket() {
 		return this.ws;
 	}
-	
+
 	/**
 	 * @return the speaking
 	 */
 	public boolean isSpeaking() {
 		return this.speaking;
 	}
-	
+
 	private void sendStateUpdate(IVoiceChannel channel) {
 		getLoader().socket.send(new Packet(4, new VoiceStateUpdate(getGuild(), channel, false, false)));
 	}
-	
+
 	/**
 	 * @param speaking the speaking to set
 	 */
 	public void setSpeaking(boolean speaking) {
 		this.speaking = speaking;
 	}
-	
+
 }

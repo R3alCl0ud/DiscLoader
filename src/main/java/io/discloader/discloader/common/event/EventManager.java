@@ -65,10 +65,9 @@ public class EventManager {
 	}
 
 	public void emit(DLEvent event) {
-		for (Consumer<DLEvent> consumer : consumers)
+		for (Consumer<DLEvent> consumer : consumers) {
 			if (event instanceof GuildMembersChunkEvent && guildTest.get(consumer) != null) {
 				boolean b = guildTest.get(consumer).apply(((GuildMembersChunkEvent) event).guild);
-				System.out.println(b);
 				if (b) {
 					consumer.accept(event);
 					guildTest.remove(consumer);
@@ -76,7 +75,7 @@ public class EventManager {
 			} else {
 				consumer.accept(event);
 			}
-
+		}
 		for (IEventListener handler : handlers) {
 			if (event instanceof GuildMemberEvent) {
 				GuildMemberEvent gme = (GuildMemberEvent) event;
@@ -95,6 +94,7 @@ public class EventManager {
 					handler.GuildMessageUpdate((GuildMessageUpdateEvent) event);
 				} else if (event instanceof GroupMessageUpdateEvent) {
 					// handler.g
+					// handler.
 				} else if (event instanceof PrivateMessageUpdateEvent) {
 					handler.PrivateMessageUpdate((PrivateMessageUpdateEvent) event);
 				} else {
@@ -104,7 +104,7 @@ public class EventManager {
 				if (event instanceof GuildMessageCreateEvent) {
 					handler.GuildMessageCreate((GuildMessageCreateEvent) event);
 				} else if (event instanceof GroupMessageCreateEvent) {
-
+					handler.GroupMessageCreate((GroupMessageCreateEvent) event);
 				} else if (event instanceof PrivateMessageCreateEvent) {
 					handler.PrivateMessageCreate((PrivateMessageCreateEvent) event);
 				}

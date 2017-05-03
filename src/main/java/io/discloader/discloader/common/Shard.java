@@ -3,34 +3,51 @@
  */
 package io.discloader.discloader.common;
 
-import java.io.IOException;
-
-import io.discloader.discloader.client.command.CommandHandler;
-import io.discloader.discloader.common.start.Main;
+import java.util.concurrent.CompletableFuture;
 
 /**
  * @author Perry Berman
- *
  */
 public class Shard {
-    public final int shardID;
 
-    public final int shardCount;
+	private final DLOptions options;
 
-    public Process process;
+	private DiscLoader loader;
 
-    public Shard(int shardID, int shardCount) {
-        this.shardID = shardID;
-        this.shardCount = shardCount;
-    }
+	private final ShardManager manager;
 
-    public void execute() {
-        System.out.println(Shard.class.getProtectionDomain().getCodeSource().getLocation().toString());
-        try {
-            this.process = Runtime.getRuntime().exec(String.format("java -jar DiscLoader.jar -s %d/%d -t %s -p %s", this.shardID, this.shardCount, Main.token, CommandHandler.prefix));
-            // this.process.
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
+	public Shard(DLOptions options, ShardManager manager) {
+		this.options = options;
+		this.manager = manager;
+	}
+
+	/**
+	 * @return the shardID
+	 */
+	public int getShardID() {
+		return options.shard;
+	}
+
+	public CompletableFuture<Shard> launch() {
+		CompletableFuture<Shard> future = new CompletableFuture<>();
+		loader = new DiscLoader(options);
+		loader.login().thenAcceptAsync(dl -> future.complete(this));
+		future.thenAccept(action -> manager.fireEvent(this));
+		return future;
+	}
+
+	/**
+	 * @return The shard's {@link DiscLoader} instance.
+	 */
+	public DiscLoader getLoader() {
+		return loader;
+	}
+
+	/**
+	 * @return the manager
+	 */
+	public ShardManager getManager() {
+		return manager;
+	}
+
 }
