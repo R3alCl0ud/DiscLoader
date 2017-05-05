@@ -30,7 +30,7 @@ import io.discloader.discloader.util.DLUtil;
  * @see ITextChannel#sendMessage(String, RichEmbed)
  * @see ISnowflake
  */
-public interface IMessage extends ISnowflake {
+public interface IMessage extends ISnowflake, Comparable<IMessage> {
 
 	/**
 	 * Checks if the user you are logged in as is able to delete the

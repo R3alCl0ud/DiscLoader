@@ -60,11 +60,12 @@ public class DiscSocket {
 
 	private final Logger logger;
 
+	private final String logname;
+
 	public DiscSocket(DiscLoader loader) {
 		this.loader = loader;
-		System.out.printf("s: " + loader.shard + ", st: " + loader.shards);
-		if (loader.shards > 1) logger = new DLLogger("Gateway - Shard: " + loader.shard).getLogger();
-		else logger = new DLLogger("Gateway").getLogger();
+		logname = loader.shards > 1 ? "Gateway (Shard: #" + loader.shard + ")" : "Gateway";
+		logger = new DLLogger(logname).getLogger();
 		socketListener = new DiscSocketListener(this);
 
 		status = Status.IDLE;
@@ -77,7 +78,7 @@ public class DiscSocket {
 		ws = new WebSocketFactory().setConnectionTimeout(15000).createSocket(gateway).addHeader("Accept-Encoding", "gzip");
 		ws.addListener(socketListener);
 		ws.connect();
-		resetRemaining = new Thread("Gateway - RateLimit Resetter") {
+		resetRemaining = new Thread(logname + " - RateLimit Resetter") {
 
 			public void run() {
 				while (ws.isOpen() && !resetRemaining.isInterrupted()) {
@@ -116,7 +117,7 @@ public class DiscSocket {
 	}
 
 	public void keepAlive(final int interval) {
-		heartbeatThread = new Thread("Main - HeartbeatThread") {
+		heartbeatThread = new Thread(logname + " - HeartbeatThread") {
 
 			@Override
 			public void run() {

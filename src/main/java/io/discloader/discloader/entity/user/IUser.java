@@ -13,14 +13,30 @@ import io.discloader.discloader.network.json.UserJSON;
  */
 public interface IUser extends ISnowflake, ICreationTime {
 
+	/**
+	 * @return A String in discord's mention format
+	 */
 	String asMention();
 
+	/**
+	 * @param user
+	 * @return
+	 */
 	boolean equals(IUser user);
 
+	/**
+	 * @return
+	 */
 	IRenderable getAvatar();
 
+	/**
+	 * @return
+	 */
 	String getDiscriminator();
 
+	/**
+	 * @return
+	 */
 	DiscLoader getLoader();
 
 	CompletableFuture<IUserProfile> getProfile();
@@ -34,7 +50,15 @@ public interface IUser extends ISnowflake, ICreationTime {
 	boolean MFAEnabled();
 
 	void setup(UserJSON data);
-
+	/**
+	 * returns a String in the format of
+	 * 
+	 * <pre>
+	 * username + "#" + discriminator
+	 * </pre>
+	 * 
+	 * @return {@link #getUsername()}{@literal #}{@link #getDiscriminator()}
+	 */
 	String toString();
 
 }

@@ -3,40 +3,25 @@ package io.discloader.discloader.network.rest;
 import java.util.List;
 import java.util.Map;
 
-// import java.
-
-import com.mashape.unirest.http.HttpResponse;
-
 public class RateLimiter {
 
-	private boolean globalLimit = false;
+	private static boolean globalLimit = false;
 	private long resetTime;
 	private int remaining;
 	private int rateLimit;
 	private long resetAfter;
 	private long timeDifference;
-	private String route;
-	private RESTQueue queue;
+	private Route route;
 
-	public RateLimiter(RESTQueue restQueue, String url) {
-		queue = restQueue;
-		route = url;
+	public RateLimiter() {
+		resetTime = 0;
+		remaining = 0;
+		rateLimit = 0;
+		resetAfter = 0l;
+		timeDifference = 0l;
 	}
 
-	public boolean shouldRateLimit(HttpResponse<String> response) {
-		checkHeaders(response.getHeaders());
-		return globalLimit || shouldWait() || response.getStatus() == 429;
-	}
-
-	public boolean hitGlobalLimit() {
-		return globalLimit;
-	}
-
-	public boolean shouldWait() {
-		return (remaining == 0 && getWaitTime() > 0);
-	}
-
-	public void checkHeaders(Map<String, List<String>> headers) {
+	public void readHeaders(Map<String, List<String>> headers) {
 		resetAfter = 0;
 		headers.forEach((name, value) -> {
 			switch (name) {
@@ -46,7 +31,6 @@ public class RateLimiter {
 			case "X-RateLimit-Remaining":
 				remaining = Integer.parseInt(value.get(0), 10);
 				break;
-			case "x-ratelimit-reset":
 			case "X-RateLimit-Reset":
 				resetTime = (Long.parseLong(value.get(0), 10) * 1000L);
 				break;
@@ -54,21 +38,42 @@ public class RateLimiter {
 				globalLimit = Boolean.parseBoolean(value.get(0));
 				break;
 			case "Date":
-					// timeDifference = DateTime.now().toDate().getTime() - DateTime.parse(value.get(0)).toDate().getTime();
 				break;
-			case "retry after":
+			case "Retry-After":
 				resetAfter = (Long.parseLong(value.get(0), 10) + 500);
 				break;
 			}
 		});
 	}
 
-	public long getWaitTime() {
-		return ((resetTime - System.currentTimeMillis()) + timeDifference + 500);
+	/**
+	 * @return the globalLimit
+	 */
+	public boolean hitGlobalLimit() {
+		return globalLimit;
 	}
 
-	public void limitRoute() {
+	public boolean hitLimit() {
+		return globalLimit || !hasRemaining();
+	}
 
+	public int getLimit() {
+		return rateLimit;
+	}
+
+	public boolean hasRemaining() {
+		return remaining >= 1;
+	}
+
+	public long retryIn() {
+		if (globalLimit) return resetAfter;
+		return resetTime - System.currentTimeMillis() + 500;
+	}
+
+	public void limitRoute(boolean resetGlobal) {
+		Thread limit = new Thread(String.format("Limiting %s", route.getRoute())) {
+			
+		};
 	}
 
 }

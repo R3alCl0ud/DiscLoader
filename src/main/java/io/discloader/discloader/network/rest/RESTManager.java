@@ -52,16 +52,16 @@ public class RESTManager {
 	public Gson gson;
 	public HashMap<String, RESTQueue> queues;
 	public DiscLoader loader;
+	public Map<String, Route> routes;
 
-	private GuildFactory gfac = EntityBuilder.instance.getGuildFactory();
-
-	// private Map<String, Route> routes;
+	private GuildFactory gfac = EntityBuilder.getGuildFactory();
 
 	public RESTManager(DiscLoader loader) {
 		this.loader = loader;
 		gson = new Gson();
-		// routes = new HashMap<>();
 		queues = new HashMap<>();
+		routes = new HashMap<>();
+
 	}
 
 	public CompletableFuture<IGuildMember> banMember(Guild guild, IGuildMember member) {

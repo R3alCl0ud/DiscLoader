@@ -71,11 +71,10 @@ public class ShardManager {
 					shards.add(shard);
 					shard.launch();
 					try {
-						sleep(5000L);
+						sleep(5500L);
 					} catch (InterruptedException e) {
 						e.printStackTrace();
 					}
-					System.out.println("hmm");
 				}
 			}
 		};

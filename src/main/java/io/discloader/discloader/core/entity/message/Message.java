@@ -354,4 +354,9 @@ public class Message<T extends ITextChannel> implements IMessage {
 	public void setAttachments(List<IMessageAttachment> attachments) {
 		this.attachments = attachments;
 	}
+
+	@Override
+	public int compareTo(IMessage o) {
+		return 0;
+	}
 }

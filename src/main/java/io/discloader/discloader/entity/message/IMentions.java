@@ -3,6 +3,9 @@ package io.discloader.discloader.entity.message;
 import io.discloader.discloader.entity.guild.IGuildMember;
 import io.discloader.discloader.entity.user.IUser;
 
+/**
+ * @author Perry Berman
+ */
 public interface IMentions {
 
 	IMessage getMessage();
@@ -14,8 +17,17 @@ public interface IMentions {
 	 */
 	boolean isMentioned();
 
+	/**
+	 * @param member
+	 * @return {@code true} if the member was mentioned, {@code false}
+	 *         otherwise.
+	 */
 	boolean isMentioned(IGuildMember member);
 
+	/**
+	 * @param user
+	 * @return {@code true} if the user was mentioned, {@code false} otherwise.
+	 */
 	boolean isMentioned(IUser user);
 
 	/**

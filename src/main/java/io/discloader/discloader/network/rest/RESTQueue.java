@@ -39,7 +39,7 @@ public class RESTQueue {
 
 	// public Timer timer;
 
-	private final RateLimiter limiter;
+	private RateLimiter limiter;
 
 	private boolean waiting;
 
@@ -59,7 +59,7 @@ public class RESTQueue {
 		waiting = false;
 		timeDifference = 0;
 		queue = new ArrayList<>();
-		limiter = new RateLimiter(this, route);
+		// limiter = new RateLimiter(this, route);
 	}
 
 	public void handle() {

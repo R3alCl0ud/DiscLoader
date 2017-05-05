@@ -36,7 +36,7 @@ public class User implements IUser {
 	/**
 	 * The hash of the user's avatar
 	 */
-	private String avatar;
+	protected String avatar;
 
 	/**
 	 * The user's four digit discriminator
@@ -162,15 +162,6 @@ public class User implements IUser {
 		if (data.bot == true || data.bot == false) bot = data.bot;
 	}
 
-	/**
-	 * returns a String in the format of
-	 * 
-	 * <pre>
-	 * username + "#" + discriminator
-	 * </pre>
-	 * 
-	 * @return {@link #username}{@literal #}{@link #discriminator}
-	 */
 	@Override
 	public String toString() {
 		return String.format("%s#%s", username, discriminator);

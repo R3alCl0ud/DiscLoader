@@ -503,17 +503,17 @@ public class DiscLoader {
 		this.token = token;
 
 		CompletableFuture<DiscLoader> future2 = new CompletableFuture<>();
-		rest.makeRequest(Endpoints.gateway, DLUtil.Methods.GET, true).thenAcceptAsync(text -> {
+		rest.makeRequest(Endpoints.gateway, DLUtil.Methods.GET, true).handle((text, ex) -> {
 			Gson gson = new Gson();
 			Gateway gateway = gson.fromJson(text, Gateway.class);
 			try {
-				socket.connectSocket(gateway.url + "?v=6&encoding=json");
+				socket.connectSocket(gateway.url + "?v=7&encoding=json");
 			} catch (Exception e) {
+				future.completeExceptionally(e);
 				e.printStackTrace();
 			}
-		}).exceptionally(tr -> {
-			LOG.info(tr.getCause().getClass().getName());
-			return (Void) null;
+			future2.complete(DiscLoader.this);
+			return null;
 		});
 
 		return future2;
@@ -631,5 +631,9 @@ public class DiscLoader {
 	public DLOptions getOptions() {
 		return options;
 	}
+
+	// public static String getToken() {
+	// return token;
+	// }
 
 }

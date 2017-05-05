@@ -30,9 +30,9 @@ public class Shard {
 
 	public CompletableFuture<Shard> launch() {
 		CompletableFuture<Shard> future = new CompletableFuture<>();
+		future.thenAcceptAsync(action -> manager.fireEvent(this));
 		loader = new DiscLoader(options);
-		loader.login().thenAcceptAsync(dl -> future.complete(this));
-		future.thenAccept(action -> manager.fireEvent(this));
+		loader.login().thenAcceptAsync(l -> future.complete(this));
 		return future;
 	}
 

@@ -1,12 +1,19 @@
 package io.discloader.discloader.core.entity.user;
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.concurrent.CompletableFuture;
+
+import org.apache.commons.codec.binary.Base64;
+import org.json.JSONObject;
 
 import io.discloader.discloader.core.entity.Game;
 import io.discloader.discloader.core.entity.Presence;
 import io.discloader.discloader.entity.sendable.Packet;
 import io.discloader.discloader.entity.sendable.SendablePresenceUpdate;
 import io.discloader.discloader.entity.user.IUser;
+import io.discloader.discloader.network.rest.actions.ModifyUser;
 
 /**
  * Represents the user that you are currently logged in as.
@@ -19,11 +26,11 @@ public class DLUser extends User {
 	 * The currently loggedin user's email address. Only applies to user
 	 * accounts
 	 */
-	public String email;
+	private String email;
 	/**
 	 * The currently loggedin user's password. Only applies to user accounts
 	 */
-	public String password;
+	private String password;
 
 	private boolean afk;
 
@@ -75,8 +82,16 @@ public class DLUser extends User {
 	 *         successfull, or the error response if failed. Returns null if
 	 *         {@code this.id != this.loader.user.id}
 	 */
-	public CompletableFuture<DLUser> setAvatar(String avatarLocation) {
-		return this.loader.rest.setAvatar(avatarLocation);
+	public CompletableFuture<DLUser> setAvatar(String avatarLocation) throws IOException {
+		CompletableFuture<DLUser> future = new CompletableFuture<>();
+		String base64 = new String("data:image/jpg;base64," + Base64.encodeBase64String(Files.readAllBytes(Paths.get(avatarLocation))));
+		CompletableFuture<DLUser> fm = new ModifyUser(this, new JSONObject().put("avatar", base64)).execute();
+		fm.handleAsync((dlu, ex) -> {
+			if (ex != null) future.completeExceptionally(ex.getCause());
+			future.complete(dlu);
+			return null;
+		});
+		return future;
 	}
 
 	/**
@@ -123,7 +138,28 @@ public class DLUser extends User {
 	 * @return A Future that completes with a {@link User} Object if successful
 	 */
 	public CompletableFuture<DLUser> setUsername(String username) {
-		return this.loader.rest.setUsername(username);
+		CompletableFuture<DLUser> future = new CompletableFuture<>();
+		CompletableFuture<DLUser> fm = new ModifyUser(this, new JSONObject().put("username", username)).execute();
+		fm.handleAsync((dlu, ex) -> {
+			if (ex != null) future.completeExceptionally(ex.getCause());
+			future.complete(dlu);
+			return null;
+		});
+		return future;
+	}
+
+	/**
+	 * @return the password
+	 */
+	public String getPassword() {
+		return password;
+	}
+
+	/**
+	 * @return the email
+	 */
+	public String getEmail() {
+		return email;
 	}
 
 }

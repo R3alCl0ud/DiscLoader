@@ -18,10 +18,8 @@ public class Request<T> {
 	private Methods method;
 	private Object data;
 
-	public Request(String endpoint, Methods method, Object data) {
+	public Request(Object data) {
 		future = new CompletableFuture<>();
-		this.endpoint = endpoint;
-		this.method = method;
 		this.data = data;
 	}
 
@@ -49,6 +47,13 @@ public class Request<T> {
 
 	public void complete(String response) {
 
+	}
+
+	/**
+	 * @return the future
+	 */
+	public CompletableFuture<T> getFuture() {
+		return future;
 	}
 
 }

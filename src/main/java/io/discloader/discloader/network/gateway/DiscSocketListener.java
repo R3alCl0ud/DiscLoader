@@ -75,16 +75,18 @@ public class DiscSocketListener extends WebSocketAdapter {
 	public List<SocketPacket> queue;
 
 	private String token;
-
+	private final String logname;
+	
 	private Thread reconnection = null;
 
+	
 	public DiscSocketListener(DiscSocket socket) {
 		this.socket = socket;
 		this.loader = this.socket.loader;
 		this.handlers = new HashMap<String, AbstractHandler>();
 		this.queue = new ArrayList<SocketPacket>();
-		if (loader.shards > 1) logger = new DLLogger("GatewayListener - Shard: " + loader.shard).getLogger();
-		else logger = new DLLogger("GatewayListener").getLogger();
+		logname = loader.shards > 1 ? "Gateway Listener (Shard: #" + loader.shard + ")" : "Gateway Listener";
+		logger = new DLLogger(logname).getLogger();
 		this.register(WSEvents.HELLO, new Hello(this.socket));
 		this.register(WSEvents.READY, new Ready(this.socket));
 		this.register(WSEvents.RESUMED, new Resumed(this.socket));

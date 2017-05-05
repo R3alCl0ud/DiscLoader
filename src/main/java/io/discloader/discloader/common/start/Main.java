@@ -10,12 +10,15 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import com.google.gson.Gson;
+import com.neovisionaries.ws.client.WebSocketFrame;
 
 import io.discloader.discloader.client.render.WindowFrame;
 import io.discloader.discloader.common.DLOptions;
 import io.discloader.discloader.common.DiscLoader;
 import io.discloader.discloader.common.Shard;
 import io.discloader.discloader.common.ShardManager;
+import io.discloader.discloader.common.event.EventListenerAdapter;
+import io.discloader.discloader.common.event.RawEvent;
 import io.discloader.discloader.common.event.sharding.ShardingListenerAdapter;
 import io.discloader.discloader.common.logger.DLErrorStream;
 import io.discloader.discloader.common.logger.DLPrintStream;
@@ -74,10 +77,19 @@ public class Main {
 
 			public void ShardLaunched(Shard shard) {
 				LOGGER.info(String.format("Shard #%d: Launched", shard.getShardID()));
+				shard.getLoader().addEventHandler(new EventListenerAdapter() {
+
+					@Override
+					public void RawPacket(RawEvent data) {
+						WebSocketFrame frame = data.getFrame();
+						if (data.isGateway() && frame.isTextFrame()) {
+							if (!frame.getPayloadText().contains("PRESENCE_UPDATE")) LOGGER.fine(frame.getPayloadText());
+						}
+					}
+				});
 			}
 		});
 		manager.launchShards();
-		System.out.println("wtf...");
 	}
 
 	public static DLOptions parseArgs(String... args) {

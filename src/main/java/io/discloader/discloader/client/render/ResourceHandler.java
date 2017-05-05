@@ -1,6 +1,7 @@
 package io.discloader.discloader.client.render;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -11,15 +12,15 @@ import java.util.zip.ZipEntry;
 import io.discloader.discloader.common.language.LanguageParser;
 
 public class ResourceHandler {
-	
+
 	public static ResourceHandler instance = new ResourceHandler();
-	
+
 	public final HashMap<String, File> resources = new HashMap<>();
-	
+
 	public void addResource(File resource) {
 		this.resources.put(resource.getName(), resource);
 	}
-	
+
 	public void addResource(InputStream resourceIS, ZipEntry resource) {
 		File f;
 		try {
@@ -37,9 +38,9 @@ public class ResourceHandler {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		
+
 	}
-	
+
 	public void addResource(JarEntry resource) {
 		try {
 			File f = File.createTempFile(resource.getName(), null);
@@ -59,19 +60,19 @@ public class ResourceHandler {
 			resourceOS.close();
 			this.resources.put(resource.getName(), f);
 			if (this.isLanguage(f)) {
-				LanguageParser.parseLang(f);
+				LanguageParser.parseLang(new FileInputStream(f));
 			}
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
 	}
-	
+
 	private boolean isLanguage(File f) {
 		if (!f.getName().endsWith(".lang")) {
 			return false;
 		}
-		
+
 		return true;
 	}
-	
+
 }
