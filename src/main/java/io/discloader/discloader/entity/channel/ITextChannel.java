@@ -129,7 +129,7 @@ public interface ITextChannel extends IChannel {
 	 * @param content The message's content
 	 * @return A Future that completes with a {@link Message} if successful,
 	 */
-	<T extends ITextChannel> CompletableFuture<IMessage> sendMessage(String content);
+	CompletableFuture<IMessage> sendMessage(String content);
 
 	/**
 	 * Sends a {@link Message} to the channel.
@@ -139,7 +139,7 @@ public interface ITextChannel extends IChannel {
 	 * @return A Future that completes with the pinned {@link Message} if
 	 *         successful.
 	 */
-	<T extends ITextChannel> CompletableFuture<IMessage> sendMessage(String content, RichEmbed embed);
+	CompletableFuture<IMessage> sendMessage(String content, RichEmbed embed);
 
 	CompletableFuture<IMessage> sendMessage(String content, RichEmbed embed, File file);
 

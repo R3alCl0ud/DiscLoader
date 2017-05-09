@@ -74,28 +74,10 @@ public class DiscSocket {
 	}
 
 	public void connectSocket(String gateway) throws WebSocketException, IOException {
-		logger.info(String.format("Connecting use gateway: %s", gateway));
+		logger.info(String.format("Connecting using Gateway URL: %s", gateway));
 		ws = new WebSocketFactory().setConnectionTimeout(15000).createSocket(gateway).addHeader("Accept-Encoding", "gzip");
 		ws.addListener(socketListener);
 		ws.connect();
-		resetRemaining = new Thread(logname + " - RateLimit Resetter") {
-
-			public void run() {
-				while (ws.isOpen() && !resetRemaining.isInterrupted()) {
-					remaining = 120;
-					handleQueue();
-					try {
-						Thread.sleep(60000);
-					} catch (InterruptedException e) {
-						e.printStackTrace();
-					}
-
-				}
-			}
-		};
-		resetRemaining.setPriority((Thread.NORM_PRIORITY + Thread.MAX_PRIORITY) / 2);
-		resetRemaining.setDaemon(true);
-		resetRemaining.start();
 	}
 
 	public void handleQueue() {
@@ -137,6 +119,24 @@ public class DiscSocket {
 
 			}
 		};
+		resetRemaining = new Thread(logname + " - RateLimit Resetter") {
+
+			public void run() {
+				while (ws.isOpen() && !resetRemaining.isInterrupted()) {
+					remaining = 115;
+					handleQueue();
+					try {
+						Thread.sleep(60000);
+					} catch (InterruptedException e) {
+						e.printStackTrace();
+					}
+
+				}
+			}
+		};
+		resetRemaining.setPriority((Thread.NORM_PRIORITY + Thread.MAX_PRIORITY) / 2);
+		resetRemaining.setDaemon(true);
+		resetRemaining.start();
 		heartbeatThread.setPriority((Thread.NORM_PRIORITY + Thread.MAX_PRIORITY) / 2);
 		heartbeatThread.setDaemon(true);
 		heartbeatThread.start();
@@ -158,7 +158,8 @@ public class DiscSocket {
 	}
 
 	public void send(Object payload, boolean force) {
-		if (force) {
+		if (force && remaining != 0) {
+			remaining--;
 			if (payload instanceof Packet && ((Packet) payload).d instanceof VoiceStateUpdate) {
 				ws.sendText(gson.toJson(payload));
 			} else {
@@ -175,7 +176,8 @@ public class DiscSocket {
 	}
 
 	public void send(JSONObject payload, boolean force) {
-		if (force) {
+		if (force && remaining != 0) {
+			remaining--;
 			ws.sendText(payload.toString());
 			return;
 		}

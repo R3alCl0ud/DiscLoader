@@ -52,6 +52,8 @@ public interface IMessage extends ISnowflake, Comparable<IMessage> {
 	 */
 	boolean canEdit();
 
+	OffsetDateTime createdAt();
+
 	/**
 	 * Deletes the message if the loader has suficient permissions
 	 * 
@@ -122,10 +124,11 @@ public interface IMessage extends ISnowflake, Comparable<IMessage> {
 
 	String getNonce();
 
+	
 	List<IReaction> getReactions();
 
-	OffsetDateTime createdAt();
-
+	boolean isEdited();
+	
 	/**
 	 * @return {@code true} if pinned, otherwise {@code false}.
 	 * @see ITextChannel#getPinnedMessages()

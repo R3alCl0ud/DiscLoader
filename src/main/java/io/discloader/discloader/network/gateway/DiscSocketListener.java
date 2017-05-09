@@ -76,10 +76,9 @@ public class DiscSocketListener extends WebSocketAdapter {
 
 	private String token;
 	private final String logname;
-	
+
 	private Thread reconnection = null;
 
-	
 	public DiscSocketListener(DiscSocket socket) {
 		this.socket = socket;
 		this.loader = this.socket.loader;
@@ -239,20 +238,19 @@ public class DiscSocketListener extends WebSocketAdapter {
 	}
 
 	public void sendResume() {
+		System.out.println(retries);
 		if (retries > 3) {
 			sendNewIdentify();
 			return;
 		}
-		System.out.println(socket.sessionID != null);
 		Packet d = new Packet(OPCodes.RESUME, new GatewayResume(socket.sessionID, token, socket.s));
-		System.out.println(gson.toJson(d));
 		socket.send(d, true);
 		retries++;
 	}
 
 	public void tryReconnecting() {
 		this.socket.status = Status.RECONNECTING;
-		logger.info("Attempting to reconnect to the gateway");
+		logger.info("Waiting to reconnect to the gateway");
 		if (reconnection == null) {
 			reconnection = new Thread("GatewayReconnector") {
 
@@ -260,15 +258,9 @@ public class DiscSocketListener extends WebSocketAdapter {
 					if (socket.status == Status.RECONNECTING && !interrupted()) {
 						try {
 							Thread.sleep(timeout * retries);
-						} catch (InterruptedException ignored) {
-
-						}
-
-						try {
+							logger.info("Attempting to reconnect to the gateway");
 							socket.ws = socket.ws.recreate().connect();
-						} catch (WebSocketException e) {
-							e.printStackTrace();
-						} catch (IOException e) {
+						} catch (InterruptedException | WebSocketException | IOException e) {
 							e.printStackTrace();
 						}
 					}

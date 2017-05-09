@@ -15,7 +15,6 @@ public class Ready extends AbstractHandler {
 
 	@Override
 	public void handle(SocketPacket packet) {
-		// Gson gson = new Gson();
 		String d = gson.toJson(packet.d);
 		ReadyJSON readyJSON = gson.fromJson(d, ReadyJSON.class);
 
@@ -24,7 +23,7 @@ public class Ready extends AbstractHandler {
 
 		// setup the Loaders user object
 		try {
-			loader.user = new DLUser(this.loader.addUser(readyJSON.user));
+			loader.user = new DLUser(EntityRegistry.addUser(readyJSON.user));
 			if (loader.user.bot == true) {
 				loader.token = "Bot " + loader.token;
 			}
@@ -42,7 +41,6 @@ public class Ready extends AbstractHandler {
 			e.printStackTrace();
 		}
 
-		// System.out.println("/");
 		// check if the loader is ready to rock & roll
 		loader.checkReady();
 	}

@@ -23,7 +23,6 @@ import io.discloader.discloader.common.event.DLEvent;
 import io.discloader.discloader.common.event.EventManager;
 import io.discloader.discloader.common.event.IEventListener;
 import io.discloader.discloader.common.event.ReadyEvent;
-import io.discloader.discloader.common.event.guild.GuildCreateEvent;
 import io.discloader.discloader.common.exceptions.AccountTypeException;
 import io.discloader.discloader.common.exceptions.GuildSyncException;
 import io.discloader.discloader.common.logger.DLErrorStream;
@@ -31,29 +30,12 @@ import io.discloader.discloader.common.logger.DLPrintStream;
 import io.discloader.discloader.common.registry.EntityRegistry;
 import io.discloader.discloader.common.registry.ModRegistry;
 import io.discloader.discloader.common.start.Main;
-import io.discloader.discloader.core.entity.channel.Channel;
-import io.discloader.discloader.core.entity.channel.PrivateChannel;
-import io.discloader.discloader.core.entity.channel.TextChannel;
-import io.discloader.discloader.core.entity.channel.VoiceChannel;
 import io.discloader.discloader.core.entity.guild.Guild;
 import io.discloader.discloader.core.entity.user.DLUser;
-import io.discloader.discloader.core.entity.user.User;
-import io.discloader.discloader.entity.channel.IChannel;
-import io.discloader.discloader.entity.channel.IGroupChannel;
-import io.discloader.discloader.entity.channel.IGuildChannel;
-import io.discloader.discloader.entity.channel.IPrivateChannel;
-import io.discloader.discloader.entity.channel.ITextChannel;
-import io.discloader.discloader.entity.channel.IVoiceChannel;
 import io.discloader.discloader.entity.guild.IGuild;
 import io.discloader.discloader.entity.invite.IInvite;
 import io.discloader.discloader.entity.sendable.Packet;
-import io.discloader.discloader.entity.user.IUser;
-import io.discloader.discloader.entity.util.SnowflakeUtil;
-import io.discloader.discloader.entity.voice.VoiceConnection;
 import io.discloader.discloader.network.gateway.DiscSocket;
-import io.discloader.discloader.network.json.ChannelJSON;
-import io.discloader.discloader.network.json.GuildJSON;
-import io.discloader.discloader.network.json.UserJSON;
 import io.discloader.discloader.network.rest.RESTManager;
 import io.discloader.discloader.network.rest.actions.InviteAction;
 import io.discloader.discloader.util.DLUtil;
@@ -88,6 +70,8 @@ public class DiscLoader {
 
 	public static final Logger LOG = new DLLogger("DiscLoader").getLogger();
 
+	private static boolean started = false;
+
 	public static DiscLoader getDiscLoader() {
 		return ModRegistry.loader;
 	}
@@ -110,8 +94,6 @@ public class DiscLoader {
 
 	public int shard;
 
-	private CompletableFuture<String> future;
-
 	/**
 	 * A HashMap of the client's cached users. Indexed by {@link User#id}.
 	 * 
@@ -119,7 +101,7 @@ public class DiscLoader {
 	 * @see User
 	 * @see HashMap
 	 */
-	public HashMap<Long, IUser> users;
+	// public HashMap<Long, IUser> users;
 
 	/**
 	 * A HashMap of the client's cached channels. Indexed by {@link Channel#id}.
@@ -128,7 +110,7 @@ public class DiscLoader {
 	 * @see Channel
 	 * @see HashMap
 	 */
-	public HashMap<Long, IChannel> channels;
+	// public HashMap<Long, IChannel> channels;
 
 	/**
 	 * A HashMap of the client's cached groupDM channels. Indexed by
@@ -136,9 +118,9 @@ public class DiscLoader {
 	 * 
 	 * @author Perry Berman
 	 */
-	public HashMap<Long, IGroupChannel> groupChannels;
-
-	public HashMap<Long, IGuildChannel> guildChannels;
+	// public HashMap<Long, IGroupChannel> groupChannels;
+	//
+	// public HashMap<Long, IGuildChannel> guildChannels;
 
 	/**
 	 * A HashMap of the client's cached PrivateChannels. Indexed by
@@ -149,7 +131,7 @@ public class DiscLoader {
 	 * @see HashMap
 	 * @author Perry Berman
 	 */
-	public HashMap<Long, IPrivateChannel> privateChannels;
+	// public HashMap<Long, IPrivateChannel> privateChannels;
 
 	/**
 	 * A HashMap of the client's cached TextChannels. Indexed by
@@ -160,7 +142,7 @@ public class DiscLoader {
 	 * @see HashMap
 	 * @author Perry Berman
 	 */
-	public HashMap<Long, ITextChannel> textChannels;
+	// public HashMap<Long, ITextChannel> textChannels;
 
 	/**
 	 * A HashMap of the client's cached VoiceChannels. Indexed by
@@ -171,7 +153,9 @@ public class DiscLoader {
 	 * @see HashMap
 	 * @author Perry Berman
 	 */
-	public HashMap<Long, IVoiceChannel> voiceChannels;
+	// public HashMap<Long, IVoiceChannel> voiceChannels;
+
+	private CompletableFuture<String> future;
 
 	/**
 	 * A HashMap of the client's voice connections. Indexed by {@link Guild#id}.
@@ -179,18 +163,11 @@ public class DiscLoader {
 	 * @author Perry Berman
 	 * @since 0.0.3
 	 */
-	public HashMap<Long, VoiceConnection> voiceConnections;
-
-	/**
-	 * A HashMap of the client's cached Guilds. Indexed by {@link Guild#id}
-	 * 
-	 * @see Guild
-	 * @see HashMap
-	 * @author Perry Berman
-	 */
-	public HashMap<Long, IGuild> guilds;
+	// public HashMap<Long, VoiceConnection> voiceConnections;
 
 	private HashMap<Long, IGuild> syncingGuilds;
+
+	// public Timer timer;
 
 	/**
 	 * The User we are currently logged in as.
@@ -198,10 +175,6 @@ public class DiscLoader {
 	 * @author Perry Berman
 	 */
 	public DLUser user;
-
-	// public Timer timer;
-
-	private static boolean started = false;
 
 	private DLOptions options;
 
@@ -293,14 +266,6 @@ public class DiscLoader {
 		socket = new DiscSocket(this);
 		rest = new RESTManager(this);
 		clientRegistry = new ClientRegistry();
-		users = new HashMap<>();
-		channels = new HashMap<>();
-		groupChannels = new HashMap<>();
-		privateChannels = new HashMap<>();
-		textChannels = new HashMap<>();
-		voiceChannels = new HashMap<>();
-		voiceConnections = new HashMap<>();
-		guilds = new HashMap<>();
 		syncingGuilds = new HashMap<>();
 		ready = false;
 		eventManager = new EventManager();
@@ -309,79 +274,8 @@ public class DiscLoader {
 		options = new DLOptions();
 	}
 
-	public IChannel addChannel(ChannelJSON data) {
-		return this.addChannel(data, null);
-	}
-
-	public IChannel addChannel(ChannelJSON data, IGuild guild) {
-		boolean exists = this.channels.containsKey(data.id);
-		IChannel channel = null;
-		if (data.type == DLUtil.ChannelTypes.DM) {
-			channel = new PrivateChannel(this, data);
-		} else if (data.type == DLUtil.ChannelTypes.groupDM) {
-			channel = new Channel(this, data);
-		} else {
-			if (guild != null) {
-				if (data.type == DLUtil.ChannelTypes.text) {
-					channel = new TextChannel(guild, data);
-					guild.getTextChannels().put(channel.getID(), (TextChannel) channel);
-				} else if (data.type == DLUtil.ChannelTypes.voice) {
-					channel = new VoiceChannel(guild, data);
-					guild.getVoiceChannels().put(channel.getID(), (VoiceChannel) channel);
-				}
-			}
-		}
-
-		if (channel != null) {
-			switch (channel.getType()) {
-			case TEXT:
-				this.textChannels.put(channel.getID(), (TextChannel) channel);
-				break;
-			case DM:
-				this.privateChannels.put(channel.getID(), (PrivateChannel) channel);
-				break;
-			case VOICE:
-				this.voiceChannels.put(channel.getID(), (VoiceChannel) channel);
-				break;
-			default:
-				this.channels.put(channel.getID(), channel);
-			}
-			this.channels.put(channel.getID(), channel);
-			if (!exists && this.ready) {
-				this.emit(DLUtil.Events.CHANNEL_CREATE, channel);
-			}
-			return channel;
-		}
-
-		return null;
-	}
-
 	public void addEventHandler(IEventListener e) {
 		eventManager.addEventHandler(e);
-	}
-
-	public IGuild addGuild(GuildJSON guild) {
-		IGuild newGuild = new Guild(this, guild);
-
-		boolean exists = guilds.containsKey(newGuild.getID());
-		try {
-			guilds.put(newGuild.getID(), newGuild);
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		if (!exists && socket.status == DLUtil.Status.READY) {
-			GuildCreateEvent event = new GuildCreateEvent(newGuild);
-			emit(event);
-			emit(DLUtil.Events.GUILD_CREATE, event);
-		}
-		return newGuild;
-	}
-
-	public IUser addUser(UserJSON data) {
-		if (this.users.containsKey(data.id)) return this.users.get(data.id);
-		User user = new User(this, data);
-		this.users.put(user.getID(), user);
-		return user;
 	}
 
 	public void checkReady() {
@@ -458,16 +352,15 @@ public class DiscLoader {
 		emit(event);
 	}
 
-	public IGuild getGuild(long guildID) {
-		return guilds.get(guildID);
-	}
-
-	public IGuild getGuild(String guildID) {
-		return getGuild(SnowflakeUtil.parse(guildID));
-	}
-
 	public CompletableFuture<IInvite> getInvite(String code) {
 		return new InviteAction(code, Methods.GET).execute();
+	}
+
+	/**
+	 * @return the options
+	 */
+	public DLOptions getOptions() {
+		return options;
 	}
 
 	public boolean isGuildSyncing(Guild guild) {
@@ -519,12 +412,12 @@ public class DiscLoader {
 		return future2;
 	}
 
-	public void onceEvent(Consumer<DLEvent> consumer, Function<IGuild, Boolean> checker) {
-		eventManager.onceEvent(consumer, checker);
-	}
-
 	public void onceEvent(Consumer<DLEvent> consumer) {
 		eventManager.onceEvent(consumer);
+	}
+
+	public void onceEvent(Consumer<DLEvent> consumer, Function<IGuild, Boolean> checker) {
+		eventManager.onceEvent(consumer, checker);
 	}
 
 	public void onEvent(Consumer<DLEvent> consumer) {
@@ -624,16 +517,5 @@ public class DiscLoader {
 		Packet packet = new Packet(12, guildIDs);
 		socket.send(packet, true);
 	}
-
-	/**
-	 * @return the options
-	 */
-	public DLOptions getOptions() {
-		return options;
-	}
-
-	// public static String getToken() {
-	// return token;
-	// }
 
 }

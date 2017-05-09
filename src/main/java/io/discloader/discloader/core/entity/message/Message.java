@@ -151,6 +151,16 @@ public class Message<T extends ITextChannel> implements IMessage {
 	}
 
 	@Override
+	public int compareTo(IMessage message) {
+		return message.createdAt().compareTo(createdAt());
+	}
+
+	@Override
+	public OffsetDateTime createdAt() {
+		return OffsetDateTime.parse(timestamp);
+	}
+
+	@Override
 	public CompletableFuture<IMessage> delete() {
 		return new DeleteMessage<T>(this.channel, this).execute();
 	}
@@ -257,11 +267,6 @@ public class Message<T extends ITextChannel> implements IMessage {
 		return null;
 	}
 
-	@Override
-	public OffsetDateTime createdAt() {
-		return OffsetDateTime.parse(timestamp);
-	}
-
 	/**
 	 * Whether or not you can edit the message.
 	 * 
@@ -317,6 +322,13 @@ public class Message<T extends ITextChannel> implements IMessage {
 		return future;
 	}
 
+	/**
+	 * @param attachments the attachments to set
+	 */
+	public void setAttachments(List<IMessageAttachment> attachments) {
+		this.attachments = attachments;
+	}
+
 	@Override
 	public void setup(MessageJSON data) {
 
@@ -348,15 +360,8 @@ public class Message<T extends ITextChannel> implements IMessage {
 		return future;
 	}
 
-	/**
-	 * @param attachments the attachments to set
-	 */
-	public void setAttachments(List<IMessageAttachment> attachments) {
-		this.attachments = attachments;
-	}
-
 	@Override
-	public int compareTo(IMessage o) {
-		return 0;
+	public boolean isEdited() {
+		return edited_timestamp != null;
 	}
 }

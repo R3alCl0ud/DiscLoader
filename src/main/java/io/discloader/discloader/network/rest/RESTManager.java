@@ -14,6 +14,7 @@ import com.google.gson.Gson;
 
 import io.discloader.discloader.common.DiscLoader;
 import io.discloader.discloader.common.registry.EntityBuilder;
+import io.discloader.discloader.common.registry.EntityRegistry;
 import io.discloader.discloader.common.registry.factory.GuildFactory;
 import io.discloader.discloader.core.entity.channel.GuildChannel;
 import io.discloader.discloader.core.entity.channel.TextChannel;
@@ -93,7 +94,7 @@ public class RESTManager {
 	public CompletableFuture<TextChannel> createTextChannel(Guild guild, JSONObject data) {
 		CompletableFuture<TextChannel> future = new CompletableFuture<TextChannel>();
 		this.makeRequest(DLUtil.Endpoints.guildChannels(guild.getID()), DLUtil.Methods.POST, true, data.put("type", "text")).thenAcceptAsync(action -> {
-			future.complete((TextChannel) this.loader.addChannel(this.gson.fromJson(action, ChannelJSON.class), guild));
+			future.complete((TextChannel) EntityRegistry.addChannel(this.gson.fromJson(action, ChannelJSON.class), guild));
 		});
 		return future;
 	}
@@ -101,7 +102,7 @@ public class RESTManager {
 	public CompletableFuture<VoiceChannel> createVoiceChannel(Guild guild, JSONObject data) {
 		CompletableFuture<VoiceChannel> future = new CompletableFuture<VoiceChannel>();
 		this.makeRequest(DLUtil.Endpoints.guildChannels(guild.getID()), DLUtil.Methods.POST, true, data.put("type", "voice")).thenAcceptAsync(action -> {
-			future.complete((VoiceChannel) this.loader.addChannel(this.gson.fromJson(action, ChannelJSON.class), guild));
+			future.complete((VoiceChannel) EntityRegistry.addChannel(this.gson.fromJson(action, ChannelJSON.class), guild));
 		});
 		return future;
 	}
@@ -126,7 +127,7 @@ public class RESTManager {
 		CompletableFuture<OAuth2Application> future = new CompletableFuture<OAuth2Application>();
 		this.makeRequest(DLUtil.Endpoints.currentOAuthApplication, DLUtil.Methods.GET, true).thenAcceptAsync(data -> {
 			OAuthApplicationJSON appData = this.gson.fromJson(data, OAuthApplicationJSON.class);
-			IUser owner = this.loader.addUser(appData.owner);
+			IUser owner = EntityRegistry.addUser(appData.owner);
 			future.complete(new OAuth2Application(appData, owner));
 		});
 

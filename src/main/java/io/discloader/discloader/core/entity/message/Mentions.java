@@ -112,8 +112,8 @@ public class Mentions implements IMentions {
 		users.clear();
 		roles.clear();
 		for (UserJSON data : mentions) {
-			IUser user = loader.users.get(data.id);
-			if (user == null) user = loader.addUser(data);
+			IUser user = EntityRegistry.getUserByID(data.id);
+			if (user == null) user = EntityRegistry.addUser(data);
 			users.put(SnowflakeUtil.parse(data.id), user);
 		}
 		if (guild != null) {

@@ -8,6 +8,7 @@ import java.util.concurrent.CompletableFuture;
 
 import io.discloader.discloader.client.render.util.Resource;
 import io.discloader.discloader.common.DiscLoader;
+import io.discloader.discloader.common.registry.EntityRegistry;
 import io.discloader.discloader.core.entity.RichEmbed;
 import io.discloader.discloader.core.entity.message.MessageFetchOptions;
 import io.discloader.discloader.entity.channel.IPrivateChannel;
@@ -191,9 +192,9 @@ public class PrivateChannel extends Channel implements IPrivateChannel {
 	public void setup(ChannelJSON data) {
 		super.setup(data);
 		if (data.recipients[0] != null) {
-			recipient = loader.users.get(data.recipients[0].id);
+			recipient = EntityRegistry.getUserByID(data.recipients[0].id);
 			if (recipient == null) {
-				recipient = loader.addUser(data.recipients[0]);
+				recipient = EntityRegistry.addUser(data.recipients[0]);
 			}
 		}
 	}

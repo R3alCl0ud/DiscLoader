@@ -3,6 +3,7 @@ package io.discloader.discloader.core.entity.user;
 import java.util.HashMap;
 
 import io.discloader.discloader.common.DiscLoader;
+import io.discloader.discloader.common.registry.EntityRegistry;
 import io.discloader.discloader.entity.guild.IGuild;
 import io.discloader.discloader.entity.user.IUser;
 import io.discloader.discloader.entity.user.IUserConnection;
@@ -35,22 +36,29 @@ public class UserProfile implements IUserProfile {
 
 	@Override
 	public IUser getUser() {
-		if (!loader.users.containsKey(data.user.id)) {
-			return loader.addUser(data.user);
+		if (!EntityRegistry.userExists(data.user.id)) {
+			return EntityRegistry.addUser(data.user);
 		} else {
-			return loader.users.get(data.user.id);
+			return EntityRegistry.getUserByID(data.user.id);
 		}
 	}
 
 	public HashMap<String, IGuild> getMutualGuilds() {
 		HashMap<String, IGuild> guilds = new HashMap<>();
 		for (MutualGuildJSON d : data.mutual_guilds) {
-			guilds.put(d.id, loader.guilds.get(d.id));
+			guilds.put(d.id, EntityRegistry.getGuildByID(d.id));
 		}
 		return guilds;
 	}
 
 	public boolean isNitro() {
 		return data.premium_since != null;
+	}
+
+	/**
+	 * @return the loader
+	 */
+	public DiscLoader getLoader() {
+		return loader;
 	}
 }

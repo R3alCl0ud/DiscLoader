@@ -19,9 +19,11 @@ import io.discloader.discloader.common.Shard;
 import io.discloader.discloader.common.ShardManager;
 import io.discloader.discloader.common.event.EventListenerAdapter;
 import io.discloader.discloader.common.event.RawEvent;
+import io.discloader.discloader.common.event.ReadyEvent;
 import io.discloader.discloader.common.event.sharding.ShardingListenerAdapter;
 import io.discloader.discloader.common.logger.DLErrorStream;
 import io.discloader.discloader.common.logger.DLPrintStream;
+import io.discloader.discloader.common.registry.EntityRegistry;
 
 /**
  * DiscLoader client entry point
@@ -79,11 +81,15 @@ public class Main {
 				LOGGER.info(String.format("Shard #%d: Launched", shard.getShardID()));
 				shard.getLoader().addEventHandler(new EventListenerAdapter() {
 
+					public void Ready(ReadyEvent e) {
+						System.out.printf("Users: %d\n", EntityRegistry.getUsers().size());
+					}
+
 					@Override
 					public void RawPacket(RawEvent data) {
 						WebSocketFrame frame = data.getFrame();
-						if (data.isGateway() && frame.isTextFrame()) {
-							if (!frame.getPayloadText().contains("PRESENCE_UPDATE")) LOGGER.fine(frame.getPayloadText());
+						if (data.isGateway() && frame.isTextFrame() && !frame.getPayloadText().contains("PRESENCE_UPDATE")) {
+							// LOGGER.fine(frame.getPayloadText());
 						}
 					}
 				});
@@ -93,7 +99,7 @@ public class Main {
 	}
 
 	public static DLOptions parseArgs(String... args) {
-		DLOptions options = new DLOptions(true, false);
+		DLOptions options = new DLOptions(false, false);
 		for (String arg : args) {
 			if (arg.startsWith("-") && !arg.startsWith("--")) {
 				if (arg.contains("d")) {

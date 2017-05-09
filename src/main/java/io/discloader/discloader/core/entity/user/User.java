@@ -1,15 +1,24 @@
 package io.discloader.discloader.core.entity.user;
 
+import java.io.File;
 import java.time.OffsetDateTime;
 import java.util.concurrent.CompletableFuture;
 
-import io.discloader.discloader.client.render.texture.icon.UserIcon;
+import io.discloader.discloader.client.render.util.Resource;
 import io.discloader.discloader.common.DiscLoader;
+import io.discloader.discloader.common.registry.EntityRegistry;
+import io.discloader.discloader.core.entity.RichEmbed;
+import io.discloader.discloader.entity.IIcon;
+import io.discloader.discloader.entity.channel.IPrivateChannel;
+import io.discloader.discloader.entity.message.IMessage;
+import io.discloader.discloader.entity.sendable.Attachment;
 import io.discloader.discloader.entity.user.IUser;
 import io.discloader.discloader.entity.user.IUserProfile;
 import io.discloader.discloader.entity.util.SnowflakeUtil;
 import io.discloader.discloader.network.json.UserJSON;
 import io.discloader.discloader.network.rest.actions.FetchUserProfile;
+import io.discloader.discloader.network.rest.actions.channel.CreateDMChannel;
+import io.discloader.discloader.network.rest.actions.channel.SendMessage;
 
 /**
  * Represents a user on discord
@@ -77,7 +86,7 @@ public class User implements IUser {
 
 		this.discriminator = user.getDiscriminator();
 
-		this.avatar = user.getAvatar().toHash();
+		this.avatar = user.getAvatar().getHash();
 
 		this.bot = user.isBot();
 	}
@@ -93,8 +102,18 @@ public class User implements IUser {
 	}
 
 	@Override
-	public UserIcon getAvatar() {
-		return new UserIcon(this, avatar);
+	public OffsetDateTime createdAt() {
+		return SnowflakeUtil.creationTime(this);
+	}
+
+	@Override
+	public boolean equals(IUser user) {
+		return this == user && id == user.getID() && username.equals(user.getUsername()) && discriminator.equals(user.getDiscriminator());
+	}
+
+	@Override
+	public IIcon getAvatar() {
+		return new UserAvatar(avatar, id);
 	}
 
 	@Override
@@ -113,6 +132,11 @@ public class User implements IUser {
 	@Override
 	public DiscLoader getLoader() {
 		return loader;
+	}
+
+	@Override
+	public IPrivateChannel getPrivateChannel() {
+		return EntityRegistry.getPrivateChannelByUser(this);
 	}
 
 	/**
@@ -142,13 +166,14 @@ public class User implements IUser {
 	}
 
 	@Override
-	public OffsetDateTime createdAt() {
-		return SnowflakeUtil.creationTime(this);
+	public boolean MFAEnabled() {
+		return mfa;
 	}
 
 	@Override
-	public boolean MFAEnabled() {
-		return mfa;
+	public CompletableFuture<IPrivateChannel> openPrivateChannel() {
+		if (getPrivateChannel() != null) return CompletableFuture.completedFuture(getPrivateChannel());
+		return new CreateDMChannel(this).execute();
 	}
 
 	@Override
@@ -168,8 +193,50 @@ public class User implements IUser {
 	}
 
 	@Override
-	public boolean equals(IUser user) {
-		return this == user && id == user.getID() && username.equals(user.getUsername()) && discriminator.equals(user.getDiscriminator());
+	public CompletableFuture<IMessage> sendEmbed(RichEmbed embed) {
+		return null;
+	}
+
+	@Override
+	public CompletableFuture<IMessage> sendFile(File file) {
+		return null;
+	}
+
+	@Override
+	public CompletableFuture<IMessage> sendFile(Resource resource) {
+		return null;
+	}
+
+	@Override
+	public CompletableFuture<IMessage> sendMessage(String content) {
+		return null;
+	}
+
+	@Override
+	public CompletableFuture<IMessage> sendMessage(String content, RichEmbed embed) {
+		return null;
+	}
+
+	@Override
+	public CompletableFuture<IMessage> sendMessage(String content, RichEmbed embed, File file) {
+		Attachment attachment = null;
+		if (embed != null) {
+			if (embed.thumbnail != null && embed.thumbnail.file != null) {
+				file = embed.thumbnail.file;
+				embed.thumbnail.file = null;
+				attachment = new Attachment(file.getName());
+			} else if (embed.getImage() != null && embed.getImage().file != null) {
+				file = embed.getImage().file;
+				attachment = new Attachment(file.getName());
+			}
+		}
+
+		return new SendMessage<IPrivateChannel>(getPrivateChannel(), content, embed, attachment, file).execute();
+	}
+
+	@Override
+	public CompletableFuture<IMessage> sendMessage(String content, RichEmbed embed, Resource resource) {
+		return null;
 	}
 
 }

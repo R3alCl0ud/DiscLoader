@@ -2,16 +2,18 @@ package io.discloader.discloader.network.rest.actions.channel;
 
 import java.util.concurrent.CompletableFuture;
 
-import io.discloader.discloader.core.entity.channel.PrivateChannel;
+import io.discloader.discloader.common.registry.EntityRegistry;
 import io.discloader.discloader.core.entity.user.User;
+import io.discloader.discloader.entity.channel.IPrivateChannel;
+import io.discloader.discloader.entity.user.IUser;
 import io.discloader.discloader.network.json.ChannelJSON;
 import io.discloader.discloader.network.rest.actions.RESTAction;
 import io.discloader.discloader.util.DLUtil.Endpoints;
 import io.discloader.discloader.util.DLUtil.Methods;
 
-public class CreateDMChannel extends RESTAction<PrivateChannel> {
+public class CreateDMChannel extends RESTAction<IPrivateChannel> {
 
-	private User user;
+	private IUser user;
 
 	public class dm {
 
@@ -22,11 +24,11 @@ public class CreateDMChannel extends RESTAction<PrivateChannel> {
 		}
 	}
 
-	public CreateDMChannel(User user) {
-		super(user.loader);
+	public CreateDMChannel(IUser user) {
+		super(user.getLoader());
 	}
 
-	public CompletableFuture<PrivateChannel> execute() {
+	public CompletableFuture<IPrivateChannel> execute() {
 		return super.execute(loader.rest.makeRequest(Endpoints.currentUserChannels, Methods.POST, true, new dm(Long.toUnsignedString(user.getID()))));
 	}
 
@@ -37,7 +39,7 @@ public class CreateDMChannel extends RESTAction<PrivateChannel> {
 		}
 
 		ChannelJSON data = gson.fromJson(packet, ChannelJSON.class);
-		future.complete((PrivateChannel) loader.addChannel(data));
+		future.complete((IPrivateChannel) EntityRegistry.addChannel(data));
 	}
 
 }

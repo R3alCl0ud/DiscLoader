@@ -37,7 +37,7 @@ public class ChannelDelete extends AbstractHandler {
 			guild.getVoiceChannels().remove(channel.getID());
 			break;
 		default:
-			loader.channels.remove(channel.getID());
+			EntityRegistry.removeChannel(channel);
 			break;
 		}
 		ChannelDeleteEvent event = new ChannelDeleteEvent(channel);
