@@ -18,8 +18,9 @@ import io.discloader.discloader.core.entity.channel.VoiceChannel;
 import io.discloader.discloader.core.entity.guild.Guild;
 import io.discloader.discloader.core.entity.guild.GuildMember;
 import io.discloader.discloader.core.entity.user.User;
+import io.discloader.discloader.entity.IIcon;
+import io.discloader.discloader.entity.IOverwrite;
 import io.discloader.discloader.entity.IPresence;
-import io.discloader.discloader.entity.channel.IGuildChannel;
 import io.discloader.discloader.entity.channel.IGuildTextChannel;
 import io.discloader.discloader.entity.channel.IGuildVoiceChannel;
 import io.discloader.discloader.entity.invite.IInvite;
@@ -83,12 +84,13 @@ public interface IGuild extends ISnowflake, ICreationTime {
 	 */
 	CompletableFuture<Integer> beginPrune(int days);
 
-	/**
-	 * @param name
-	 * @param name2
-	 * @return
-	 */
-	CompletableFuture<IGuildChannel> createChannel(String name, String name2);
+	// /**
+	// * @param name
+	// * @param name2
+	// * @return
+	// */
+	// CompletableFuture<IGuildChannel> createChannel(String name, String
+	// name2);
 
 	/**
 	 * Creates a new custom emoji
@@ -107,6 +109,32 @@ public interface IGuild extends ISnowflake, ICreationTime {
 	 * @return A Future the completes with the created Emoji if successful.
 	 */
 	CompletableFuture<IGuildEmoji> createEmoji(String name, String image);
+
+	CompletableFuture<IGuildTextChannel> createTextChannel(String name);
+
+	CompletableFuture<IGuildTextChannel> createTextChannel(String name, IOverwrite... overwrites);
+
+	CompletableFuture<IGuildVoiceChannel> createVoiceChannel(String name);
+
+	CompletableFuture<IGuildTextChannel> createVoiceChannel(String name, int bitRate, IOverwrite... overwrites);
+
+	CompletableFuture<IGuildTextChannel> createVoiceChannel(String name, IOverwrite... overwrites);
+
+	CompletableFuture<IRole> createRole(String name);
+
+	/**
+	 * Creates a new {@link IRole}.
+	 * 
+	 * @param name The name of the role
+	 * @param permissions The 53bit Permissions integer to assign to the role
+	 * @param color The color of the role
+	 * @param hoist Display role members separately from online members
+	 * @param mentionable Allow anyone to mention this role
+	 * @return A future that completes with a new {@link IRole} Object if
+	 *         successful.
+	 * @since 0.0.3
+	 */
+	CompletableFuture<IRole> createRole(String name, int permissions, int color, boolean hoist, boolean mentionable);
 
 	/**
 	 * Deletes the Guild if the user you have logged in as is the owner of the
@@ -171,9 +199,11 @@ public interface IGuild extends ISnowflake, ICreationTime {
 
 	Map<Long, IGuildEmoji> getEmojis();
 
-	String getIconHash();
+	IIcon getIcon();
 
-	String getIconURL();
+	// String getIconHash();
+	//
+	// String getIconURL();
 
 	CompletableFuture<List<IIntegration>> getIntegrations();
 
@@ -313,6 +343,7 @@ public interface IGuild extends ISnowflake, ICreationTime {
 	 *             {@link Permissions#KICK_MEMBERS} permission.
 	 */
 	CompletableFuture<IGuildMember> kickMember(IGuildMember guildMember);
+
 	/**
 	 * Makes the client leave the guild
 	 * 

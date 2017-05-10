@@ -66,10 +66,10 @@ public class GuildChannel extends Channel implements IGuildChannel {
 		overwrites = new HashMap<>();
 	}
 
-	@Override
-	public CompletableFuture<IGuildChannel> clone() {
-		return guild.createChannel(name, type.name());
-	}
+	// @Override
+	// public CompletableFuture<IGuildChannel> clone() {
+	// return guild.createTextChannel(name);
+	// }
 
 	@Override
 	public CompletableFuture<IGuildChannel> delete() {

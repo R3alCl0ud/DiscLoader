@@ -1,9 +1,12 @@
 package io.discloader.discloader.common.registry;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
+import io.discloader.discloader.common.Shard;
 import io.discloader.discloader.entity.channel.IChannel;
 import io.discloader.discloader.entity.channel.IGroupChannel;
 import io.discloader.discloader.entity.channel.IGuildChannel;
@@ -99,6 +102,14 @@ public class EntityRegistry {
 	 */
 	public static Collection<IGuild> getGuilds() {
 		return guilds.values();
+	}
+
+	public static List<IGuild> getGuildsOnShard(Shard shard) {
+		List<IGuild> sgs = new ArrayList<>();
+		for (IGuild guild : getGuilds()) {
+			if ((guild.getID() >> 22) % shard.getShardCount() == shard.getShardID()) sgs.add(guild);
+		}
+		return sgs;
 	}
 
 	public static IPrivateChannel getPrivateChannelByID(long channelID) {

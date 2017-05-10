@@ -15,8 +15,6 @@ import java.util.function.Consumer;
 import org.apache.commons.codec.binary.Base64;
 import org.json.JSONObject;
 
-import io.discloader.discloader.client.logger.ProgressLogger;
-import io.discloader.discloader.client.registry.TextureRegistry;
 import io.discloader.discloader.client.render.texture.icon.GuildIcon;
 import io.discloader.discloader.client.render.texture.icon.GuildSplash;
 import io.discloader.discloader.common.DiscLoader;
@@ -37,6 +35,8 @@ import io.discloader.discloader.core.entity.channel.TextChannel;
 import io.discloader.discloader.core.entity.channel.VoiceChannel;
 import io.discloader.discloader.core.entity.invite.Invite;
 import io.discloader.discloader.core.entity.user.User;
+import io.discloader.discloader.entity.IIcon;
+import io.discloader.discloader.entity.IOverwrite;
 import io.discloader.discloader.entity.IPresence;
 import io.discloader.discloader.entity.channel.IGuildChannel;
 import io.discloader.discloader.entity.channel.IGuildTextChannel;
@@ -50,6 +50,7 @@ import io.discloader.discloader.entity.guild.IRole;
 import io.discloader.discloader.entity.guild.VoiceRegion;
 import io.discloader.discloader.entity.invite.IInvite;
 import io.discloader.discloader.entity.sendable.Packet;
+import io.discloader.discloader.entity.sendable.SendableRole;
 import io.discloader.discloader.entity.user.IUser;
 import io.discloader.discloader.entity.util.Permissions;
 import io.discloader.discloader.entity.util.SnowflakeUtil;
@@ -62,6 +63,7 @@ import io.discloader.discloader.network.json.MemberJSON;
 import io.discloader.discloader.network.json.PresenceJSON;
 import io.discloader.discloader.network.json.RoleJSON;
 import io.discloader.discloader.network.json.VoiceStateJSON;
+import io.discloader.discloader.network.rest.actions.guild.CreateRole;
 import io.discloader.discloader.network.rest.actions.guild.ModifyGuild;
 import io.discloader.discloader.util.DLUtil;
 import io.discloader.discloader.util.DLUtil.Endpoints;
@@ -341,10 +343,11 @@ public class Guild implements IGuild {
 		return loader.rest.beginPrune(this, days);
 	}
 
-	@Override
-	public CompletableFuture<IGuildChannel> createChannel(String name, String type) {
-		return null;
-	}
+	// @Override
+	// public CompletableFuture<IGuildChannel> createChannel(String name, String
+	// type) {
+	// return null;
+	// }
 
 	@Override
 	public OffsetDateTime createdAt() {
@@ -372,22 +375,13 @@ public class Guild implements IGuild {
 	 *         successful.
 	 * @since 0.0.3
 	 */
-	public CompletableFuture<Role> createRole() {
+	public CompletableFuture<IRole> createRole() {
 		return this.createRole(null, 0, 0, false, false);
 	}
 
-	/**
-	 * Creates a new {@link Role}.
-	 * 
-	 * @param name The name of the role
-	 * @param permissions The 53bit Permissions integer to assign to the role
-	 * @param color The color of the role
-	 * @return A future that completes with a new {@link Role} Object if
-	 *         successful.
-	 * @since 0.0.3
-	 */
-	public CompletableFuture<Role> createRole(String name, int permissions, int color) {
-		return this.createRole(name, permissions, color, false, false);
+	@Override
+	public CompletableFuture<IRole> createRole(String name) {
+		return new CreateRole(this, new SendableRole(name, 0, 0, false, false)).execute();
 	}
 
 	/**
@@ -396,14 +390,18 @@ public class Guild implements IGuild {
 	 * @param name The name of the role
 	 * @param permissions The 53bit Permissions integer to assign to the role
 	 * @param color The color of the role
-	 * @param hoist Display role members separately from online members
-	 * @param mentionable Allow anyone to @mention this role
 	 * @return A future that completes with a new {@link Role} Object if
 	 *         successful.
 	 * @since 0.0.3
 	 */
-	public CompletableFuture<Role> createRole(String name, int permissions, int color, boolean hoist, boolean mentionable) {
-		return loader.rest.createRole(this, name, permissions, color, hoist, mentionable);
+	public CompletableFuture<IRole> createRole(String name, int permissions, int color) {
+		return this.createRole(name, permissions, color, false, false);
+	}
+
+	public CompletableFuture<IRole> createRole(String name, int permissions, int color, boolean hoist, boolean mentionable) {
+		return null;
+		// loader.rest.createRole(this, name, permissions, color, hoist,
+		// mentionable);
 	}
 
 	/**
@@ -412,8 +410,15 @@ public class Guild implements IGuild {
 	 * @param name The name of the channel
 	 * @return A Future that completes with a {@link TextChannel} if successful.
 	 */
-	public CompletableFuture<TextChannel> createTextChannel(String name) {
-		return this.loader.rest.createTextChannel(this, new JSONObject().put("name", name));
+	public CompletableFuture<IGuildTextChannel> createTextChannel(String name) {
+		return null;
+		// this.loader.rest.createTextChannel(this, new JSONObject().put("name",
+		// name));
+	}
+
+	@Override
+	public CompletableFuture<IGuildTextChannel> createTextChannel(String name, IOverwrite... overwrites) {
+		return null;
 	}
 
 	/**
@@ -423,8 +428,10 @@ public class Guild implements IGuild {
 	 * @return A future that completes with a new {@link VoiceChannel} Object if
 	 *         successful.
 	 */
-	public CompletableFuture<VoiceChannel> createVoiceChannel(String name) {
-		return this.loader.rest.createVoiceChannel(this, new JSONObject().put("name", name));
+	public CompletableFuture<IGuildVoiceChannel> createVoiceChannel(String name) {
+		return null;
+		// this.loader.rest.createVoiceChannel(this, new
+		// JSONObject().put("name", name));
 	}
 
 	/**
@@ -450,6 +457,16 @@ public class Guild implements IGuild {
 	 */
 	public CompletableFuture<VoiceChannel> createVoiceChannel(String name, int bitrate, int userLimit) {
 		return this.loader.rest.createVoiceChannel(this, new JSONObject().put("name", name).put("bitrate", bitrate).put("user_limit", userLimit));
+	}
+
+	@Override
+	public CompletableFuture<IGuildTextChannel> createVoiceChannel(String name, int bitRate, IOverwrite... overwrites) {
+		return null;
+	}
+
+	@Override
+	public CompletableFuture<IGuildTextChannel> createVoiceChannel(String name, IOverwrite... overwrites) {
+		return null;
 	}
 
 	public CompletableFuture<IGuild> delete() {
@@ -487,7 +504,7 @@ public class Guild implements IGuild {
 	}
 
 	public CompletableFuture<Map<Long, IGuildMember>> fetchMembers() {
-		return fetchMembers(0);
+		return fetchMembers((int) 0);
 	}
 
 	@Override
@@ -565,11 +582,14 @@ public class Guild implements IGuild {
 	}
 
 	@Override
+	public IIcon getIcon() {
+		return new GuildIcon(this, icon);
+	}
+
 	public String getIconHash() {
 		return icon;
 	}
 
-	@Override
 	public String getIconURL() {
 		return iconURL;
 	}
@@ -909,13 +929,6 @@ public class Guild implements IGuild {
 				for (VoiceStateJSON v : data.voice_states) {
 					this.rawStates.put(SnowflakeUtil.parse(v.user_id), new VoiceState(v, this));
 				}
-			}
-
-			// ProgressLogger.step(7, 7, "Registering Icon");
-			try {
-				TextureRegistry.registerGuildIcon(new GuildIcon(this));
-			} catch (Exception e) {
-				e.printStackTrace();
 			}
 			this.available = data.unavailable == true ? false : true;
 		} catch (Exception e) {

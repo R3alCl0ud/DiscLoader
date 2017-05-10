@@ -57,6 +57,7 @@ public class InviteGuild implements IInviteGuild {
 		public InviteIcon(String hash, long guildID) {
 			this.hash = hash;
 			this.guildID = guildID;
+			
 		}
 
 		@Override

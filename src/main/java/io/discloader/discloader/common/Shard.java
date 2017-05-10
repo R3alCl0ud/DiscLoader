@@ -28,6 +28,10 @@ public class Shard {
 		return options.shard;
 	}
 
+	public int getShardCount() {
+		return manager.shardCount;
+	}
+	
 	public CompletableFuture<Shard> launch() {
 		CompletableFuture<Shard> future = new CompletableFuture<>();
 		future.thenAcceptAsync(action -> manager.fireEvent(this));

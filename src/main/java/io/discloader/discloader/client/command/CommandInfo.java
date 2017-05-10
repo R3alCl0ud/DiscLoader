@@ -28,7 +28,7 @@ public class CommandInfo extends Command {
 		embed.addField("Members", String.format("%d/%d", guild.getMembers().size(), guild.getMemberCount()), true);
 		embed.addField("Text Channels", "" + guild.getTextChannels().size(), true).addField("Voice Channels", "" + guild.getVoiceChannels().size(), true);
 		embed.setTimestamp(ZonedDateTime.now());
-		embed.setThumbnail(guild.getIconURL());
+		embed.setThumbnail(guild.getIcon().toString());
 		embed.setFooter(String.format("Guild ID: %d", guild.getID()));
 		channel.sendEmbed(embed);
 

@@ -16,12 +16,12 @@ import io.discloader.discloader.entity.invite.IInvite;
 
 public interface IGuildChannel extends IChannel {
 
-	/**
-	 * Creates a channel with the same information as this channel.
-	 * 
-	 * @return A Future that completes with the new channel, if successful.
-	 */
-	CompletableFuture<? extends IGuildChannel> clone();
+//	/**
+//	 * Creates a channel with the same information as this channel.
+//	 * 
+//	 * @return A Future that completes with the new channel, if successful.
+//	 */
+//	CompletableFuture<? extends IGuildChannel> clone();
 
 	/**
 	 * Deletes the channel from the guild
@@ -31,7 +31,7 @@ public interface IGuildChannel extends IChannel {
 	CompletableFuture<? extends IGuildChannel> delete();
 
 	/**
-	 * Changes the channels settings
+	 * Changes the channels settings	
 	 * 
 	 * @param name The new name for the channel
 	 * @param topic The new topic

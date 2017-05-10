@@ -22,6 +22,7 @@ import com.mashape.unirest.request.body.MultipartBody;
 import io.discloader.discloader.common.DiscLoader;
 import io.discloader.discloader.common.event.RawEvent;
 import io.discloader.discloader.common.exceptions.AccountTypeException;
+import io.discloader.discloader.common.exceptions.PermissionsException;
 import io.discloader.discloader.common.exceptions.UnauthorizedException;
 import io.discloader.discloader.common.exceptions.UnknownException;
 import io.discloader.discloader.network.json.ExceptionJSON;
@@ -150,6 +151,13 @@ public class RESTQueue {
 							switch (data.code) {
 							case 20002:
 								apiRequest.future.completeExceptionally(new AccountTypeException(data));
+								break;
+							case 50013:
+								System.out.println("hmmm");
+								apiRequest.future.completeExceptionally(new PermissionsException(data));
+								break;
+							default:
+								apiRequest.future.completeExceptionally(new UnauthorizedException(response.getBody()));
 								break;
 							}
 							break;

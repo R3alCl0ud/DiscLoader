@@ -3,6 +3,7 @@ package io.discloader.discloader.core.entity.user;
 import java.io.File;
 import java.time.OffsetDateTime;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutionException;
 
 import io.discloader.discloader.client.render.util.Resource;
 import io.discloader.discloader.common.DiscLoader;
@@ -11,14 +12,12 @@ import io.discloader.discloader.core.entity.RichEmbed;
 import io.discloader.discloader.entity.IIcon;
 import io.discloader.discloader.entity.channel.IPrivateChannel;
 import io.discloader.discloader.entity.message.IMessage;
-import io.discloader.discloader.entity.sendable.Attachment;
 import io.discloader.discloader.entity.user.IUser;
 import io.discloader.discloader.entity.user.IUserProfile;
 import io.discloader.discloader.entity.util.SnowflakeUtil;
 import io.discloader.discloader.network.json.UserJSON;
 import io.discloader.discloader.network.rest.actions.FetchUserProfile;
 import io.discloader.discloader.network.rest.actions.channel.CreateDMChannel;
-import io.discloader.discloader.network.rest.actions.channel.SendMessage;
 
 /**
  * Represents a user on discord
@@ -194,49 +193,63 @@ public class User implements IUser {
 
 	@Override
 	public CompletableFuture<IMessage> sendEmbed(RichEmbed embed) {
-		return null;
+		if (embed.thumbnail != null && embed.thumbnail.resource != null) return sendMessage(null, embed, (Resource) null);
+		if (embed.getImage() != null && embed.getImage().resource != null) return sendMessage(null, embed, (Resource) null);
+		return sendMessage(null, embed, (File) null);
 	}
 
 	@Override
 	public CompletableFuture<IMessage> sendFile(File file) {
-		return null;
+		return sendMessage(null, null, file);
 	}
 
 	@Override
 	public CompletableFuture<IMessage> sendFile(Resource resource) {
-		return null;
+		return sendMessage(null, null, resource);
 	}
 
 	@Override
 	public CompletableFuture<IMessage> sendMessage(String content) {
-		return null;
+		return sendMessage(content, null, (File) null);
 	}
 
 	@Override
 	public CompletableFuture<IMessage> sendMessage(String content, RichEmbed embed) {
-		return null;
+		if ((embed.thumbnail != null && embed.thumbnail.resource != null)) return sendMessage(content, embed, (Resource) null);
+		if ((embed.getImage() != null && embed.getImage().resource != null)) return sendMessage(content, embed, (Resource) null);
+		return sendMessage(content, embed, (File) null);
 	}
 
 	@Override
 	public CompletableFuture<IMessage> sendMessage(String content, RichEmbed embed, File file) {
-		Attachment attachment = null;
-		if (embed != null) {
-			if (embed.thumbnail != null && embed.thumbnail.file != null) {
-				file = embed.thumbnail.file;
-				embed.thumbnail.file = null;
-				attachment = new Attachment(file.getName());
-			} else if (embed.getImage() != null && embed.getImage().file != null) {
-				file = embed.getImage().file;
-				attachment = new Attachment(file.getName());
+		CompletableFuture<IMessage> future = new CompletableFuture<>();
+		IPrivateChannel channel = getPrivateChannel();
+		if (channel == null) {
+			try {
+				channel = openPrivateChannel().get();
+				return channel.sendMessage(content, embed, file);
+			} catch (ExecutionException | InterruptedException e) {
+				future.completeExceptionally(e.getCause());
 			}
+			return future;
 		}
-
-		return new SendMessage<IPrivateChannel>(getPrivateChannel(), content, embed, attachment, file).execute();
+		return channel.sendMessage(content, embed, file);
 	}
 
 	@Override
 	public CompletableFuture<IMessage> sendMessage(String content, RichEmbed embed, Resource resource) {
-		return null;
+		CompletableFuture<IMessage> future = new CompletableFuture<>();
+		IPrivateChannel channel = getPrivateChannel();
+		if (channel == null) {
+			try {
+				channel = openPrivateChannel().get();
+				return channel.sendMessage(content, embed, resource);
+			} catch (ExecutionException | InterruptedException e) {
+				future.completeExceptionally(e.getCause());
+			}
+			return future;
+		}
+		return channel.sendMessage(content, embed, resource);
 	}
 
 }

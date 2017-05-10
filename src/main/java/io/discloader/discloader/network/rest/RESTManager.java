@@ -32,9 +32,9 @@ import io.discloader.discloader.entity.guild.IGuildMember;
 import io.discloader.discloader.entity.guild.IRole;
 import io.discloader.discloader.entity.message.IMessage;
 import io.discloader.discloader.entity.sendable.CreateEmoji;
-import io.discloader.discloader.entity.sendable.CreateRole;
 import io.discloader.discloader.entity.sendable.EditChannel;
 import io.discloader.discloader.entity.sendable.FetchMembers;
+import io.discloader.discloader.entity.sendable.SendableRole;
 import io.discloader.discloader.entity.user.IUser;
 import io.discloader.discloader.entity.util.SnowflakeUtil;
 import io.discloader.discloader.network.json.ChannelJSON;
@@ -261,7 +261,7 @@ public class RESTManager {
 
 	public CompletableFuture<Role> createRole(Guild guild, String name, int permissions, int color, boolean hoist, boolean mentionable) {
 		CompletableFuture<Role> future = new CompletableFuture<Role>();
-		CreateRole payload = new CreateRole(name, permissions, color, hoist, mentionable);
+		SendableRole payload = new SendableRole(name, permissions, color, hoist, mentionable);
 		this.makeRequest(Endpoints.guildRoles(guild.getID()), Methods.POST, true, payload).thenAcceptAsync(action -> {
 			RoleJSON data = gson.fromJson(action, RoleJSON.class);
 			future.complete(guild.addRole(data));
