@@ -18,7 +18,9 @@ import com.neovisionaries.ws.client.WebSocketFrame;
 import io.discloader.discloader.client.logger.DLLogger;
 import io.discloader.discloader.client.logger.ProgressLogger;
 import io.discloader.discloader.common.DiscLoader;
+import io.discloader.discloader.common.event.DisconnectEvent;
 import io.discloader.discloader.common.event.RawEvent;
+import io.discloader.discloader.common.event.ReconnectEvent;
 import io.discloader.discloader.entity.sendable.Packet;
 import io.discloader.discloader.network.gateway.packets.AbstractHandler;
 import io.discloader.discloader.network.gateway.packets.ChannelCreate;
@@ -184,12 +186,16 @@ public class DiscSocketListener extends WebSocketAdapter {
 			if (frame_1.getCloseCode() != 1000) {
 				// if connection wasn't closed properly try to reconnect
 				tryReconnecting();
+			} else {
+				loader.emit(new DisconnectEvent(loader));
 			}
 		} else {
 			logger.severe(String.format("Client was disconnected from the gateway, Code: %d", frame_2.getCloseCode()));
 			if (frame_2.getCloseCode() != 1000) {
 				// if connection wasn't closed properly try to reconnect
 				tryReconnecting();
+			} else {
+				loader.emit(new DisconnectEvent(loader));
 			}
 		}
 
@@ -259,6 +265,7 @@ public class DiscSocketListener extends WebSocketAdapter {
 						try {
 							Thread.sleep(timeout * retries);
 							logger.info("Attempting to reconnect to the gateway");
+							loader.emit(new ReconnectEvent(loader, retries));
 							socket.ws = socket.ws.recreate().connect();
 						} catch (InterruptedException | WebSocketException | IOException e) {
 							e.printStackTrace();

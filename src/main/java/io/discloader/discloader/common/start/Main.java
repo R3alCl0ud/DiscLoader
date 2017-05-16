@@ -4,8 +4,6 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.util.concurrent.CompletableFuture;
-import java.util.function.BiFunction;
 // import java.util.concurrent.ExecutionException;
 import java.util.logging.Logger;
 import java.util.regex.Matcher;
@@ -26,8 +24,8 @@ import io.discloader.discloader.common.event.sharding.ShardingListenerAdapter;
 import io.discloader.discloader.common.logger.DLErrorStream;
 import io.discloader.discloader.common.logger.DLPrintStream;
 import io.discloader.discloader.common.registry.EntityRegistry;
-import io.discloader.discloader.entity.guild.IGuild;
-import io.discloader.discloader.entity.guild.IRole;
+import io.discloader.discloader.entity.channel.ITextChannel;
+import io.discloader.discloader.entity.message.IReaction;
 
 /**
  * DiscLoader client entry point
@@ -78,63 +76,69 @@ public class Main {
 			options options = gson.fromJson(content, options.class);
 			token = options.auth.token;
 		}
-		ShardManager manager = new ShardManager(parseArgs(args));
-		manager.addShardingListener(new ShardingListenerAdapter() {
+		DLOptions options = parseArgs(args);
+		if (options.shards > 1) {
+			ShardManager manager = new ShardManager(options);
+			manager.addShardingListener(new ShardingListenerAdapter() {
 
-			public void ShardLaunched(Shard shard) {
-				LOGGER.info(String.format("Shard #%d: Launched", shard.getShardID()));
-				shard.getLoader().addEventHandler(new EventListenerAdapter() {
+				public void ShardLaunched(Shard shard) {
+					LOGGER.info(String.format("Shard #%d: Launched", shard.getShardID()));
+					shard.getLoader().addEventHandler(new EventListenerAdapter() {
 
-					public void Ready(ReadyEvent e) {
-						// System.out.printf("Users: %d\n",
-						// EntityRegistry.getUsers().size());
-						// if (EntityRegistry.userExists(104063667351322624l)) {
-						// IUser perry =
-						// EntityRegistry.getUserByID(104063667351322624l);
-						// if (perry != null)
-						// perry.sendMessage(String.format("Shard #%d is ready",
-						// shard.getShardID()));
-						// }
-						if ((282226852616077312l >> 22) % shard.getShardCount() == shard.getShardID() && EntityRegistry.guildExists(282226852616077312l)) {
-							IGuild dl = EntityRegistry.getGuildByID(282226852616077312l);
-							if (dl == null) return;
-							CompletableFuture<IRole> f = dl.createRole("Testing 123...");
-							f.handleAsync((IRole r, Throwable ex) -> {
-								if (ex != null) {
-									ex.getCause().printStackTrace();
-								} else if (r != null) {
-									LOGGER.info(String.format("Successfully created a role with the ID %d\n", r.getID()));
-								}
-								return null;
-							});
-							// f.exceptionally((Throwable ex) -> {
-							// System.out.println(ex != null);
-							// ex.printStackTrace();
-							// return null;
-							// });
+						public void Ready(ReadyEvent e) {
+
 						}
-					}
 
-					@Override
-					public void RawPacket(RawEvent data) {
-						WebSocketFrame frame = data.getFrame();
-						if (data.isGateway() && frame.isTextFrame() && !frame.getPayloadText().contains("PRESENCE_UPDATE")) {
-							// LOGGER.fine(frame.getPayloadText());
-						} else if (data.isREST()) {
-							LOGGER.info(data.getHttpResponse().getBody());
-							LOGGER.info("" + data.getHttpResponse().getStatus());
+						@Override
+						public void RawPacket(RawEvent data) {
+							WebSocketFrame frame = data.getFrame();
+							if (data.isGateway() && frame.isTextFrame() && !frame.getPayloadText().contains("PRESENCE_UPDATE")) {
+								// LOGGER.fine(frame.getPayloadText());
+							} else if (data.isREST()) {
+								LOGGER.info(data.getHttpResponse().getBody());
+								LOGGER.info("" + data.getHttpResponse().getStatus());
+							}
 						}
+					});
+				}
+			});
+			manager.launchShards();
+		} else {
+			loader = new DiscLoader(options);
+			loader.addEventHandler(new EventListenerAdapter() {
+
+				public void Ready(ReadyEvent e) {
+					ITextChannel channel = EntityRegistry.getTextChannelByID(282230026869669888l);
+					if (channel == null) return;
+					channel.fetchMessage(308619315442089997l).thenAcceptAsync(message -> {
+						message.addReaction("🇹").thenAccept(v -> {							
+							for (IReaction reaction : message.getReactions()) {
+								System.out.println(reaction.getEmoji());
+							}
+						});
+						
+					});
+				}
+
+				@Override
+				public void RawPacket(RawEvent data) {
+					WebSocketFrame frame = data.getFrame();
+					if (data.isGateway() && frame.isTextFrame() && !frame.getPayloadText().contains("PRESENCE_UPDATE")) {
+						// LOGGER.fine(frame.getPayloadText());
+					} else if (data.isREST() && data.getHttpResponse() != null) {
+						LOGGER.info(data.getHttpResponse().getBody());
+						LOGGER.info("" + data.getHttpResponse().getStatus());
 					}
-				});
-			}
-		});
-		manager.launchShards();
+				}
+			});
+			loader.login();
+		}
 	}
 
 	public static DLOptions parseArgs(String... args) {
 		DLOptions options = new DLOptions(false, false);
 		for (String arg : args) {
-			if (arg.startsWith("-") && !arg.startsWith("--")) {
+			if (arg.startsWith("-") && !arg.startsWith("--") && !arg.contains("=")) {
 				if (arg.contains("d")) {
 					options = new DLOptions(options.token, options.prefix, true, options.useWindow, options.shard, options.shards);
 				}

@@ -133,7 +133,7 @@ public class GuildChannel extends Channel implements IGuildChannel {
 		int raw = 0;
 		if (guild.isOwner(member)) return new Permission(member, this, 2146958463);
 		for (IRole role : member.getRoles().values())
-			raw |= role.getPermissions().toInt();
+			raw |= role.getPermissions().asInt();
 		for (IOverwrite overwrite : overwritesOf(member)) {
 			raw |= overwrite.getAllowed();
 			raw &= ~overwrite.getDenied();

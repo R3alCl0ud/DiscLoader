@@ -6,7 +6,7 @@ import io.discloader.discloader.common.event.guild.emoji.GuildEmojiCreateEvent;
 import io.discloader.discloader.common.event.guild.emoji.GuildEmojiDeleteEvent;
 import io.discloader.discloader.common.event.guild.emoji.GuildEmojiUpdateEvent;
 import io.discloader.discloader.common.registry.EntityRegistry;
-import io.discloader.discloader.core.entity.guild.Emoji;
+import io.discloader.discloader.core.entity.guild.GuildEmoji;
 import io.discloader.discloader.entity.guild.IGuild;
 import io.discloader.discloader.entity.guild.IGuildEmoji;
 import io.discloader.discloader.network.gateway.DiscSocket;
@@ -28,7 +28,7 @@ public class EmojiUpdate extends AbstractHandler {
 
 		HashMap<String, IGuildEmoji> emojis = new HashMap<>();
 		for (EmojiJSON e : data.emojis) {
-			IGuildEmoji emoji = new Emoji(e, guild);
+			IGuildEmoji emoji = new GuildEmoji(e, guild);
 			emojis.put(e.id, emoji);
 		}
 

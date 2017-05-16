@@ -11,6 +11,7 @@ import io.discloader.discloader.common.event.sharding.IShardingListener;
 /**
  * @author Perry Berman
  * @since 0.0.3
+ * @version
  */
 public class ShardManager {
 

@@ -18,7 +18,7 @@ import io.discloader.discloader.network.json.EmojiJSON;
  * @since Mar 7, 2017
  * @version 0.1.0
  */
-public class Emoji implements IGuildEmoji {
+public class GuildEmoji implements IGuildEmoji {
 
 	/**
 	 * The guild the Emoji belongs to.
@@ -55,7 +55,7 @@ public class Emoji implements IGuildEmoji {
 	 */
 	private String[] roleIDs;
 
-	public Emoji(EmojiJSON data, IGuild guild) {
+	public GuildEmoji(EmojiJSON data, IGuild guild) {
 		id = data.id;
 
 		name = data.name;
@@ -84,15 +84,15 @@ public class Emoji implements IGuildEmoji {
 	/**
 	 * Checks if an emoji is equivalent to {@code this}
 	 * 
-	 * @param emoji The emoji to check to see if it is the same as {@code this}
+	 * @param guildEmoji The emoji to check to see if it is the same as {@code this}
 	 * @return {@code true} if all fields match, {@code false} otherwise
 	 */
-	public boolean equals(Emoji emoji) {
-		for (IRole role : emoji.getRoles().values()) {
+	public boolean equals(GuildEmoji guildEmoji) {
+		for (IRole role : guildEmoji.getRoles().values()) {
 			// no need to continue if roles don't match up
 			if (!getRoles().containsKey(role.getID())) return false;
 		}
-		return id.equals(emoji.id) && guild.getID() == emoji.guild.getID() && name.equals(emoji.name) && managed == emoji.managed;
+		return id.equals(guildEmoji.id) && guild.getID() == guildEmoji.guild.getID() && name.equals(guildEmoji.name) && managed == guildEmoji.managed;
 	}
 
 	@Override

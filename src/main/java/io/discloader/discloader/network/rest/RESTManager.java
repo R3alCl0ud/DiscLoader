@@ -19,7 +19,7 @@ import io.discloader.discloader.common.registry.factory.GuildFactory;
 import io.discloader.discloader.core.entity.channel.GuildChannel;
 import io.discloader.discloader.core.entity.channel.TextChannel;
 import io.discloader.discloader.core.entity.channel.VoiceChannel;
-import io.discloader.discloader.core.entity.guild.Emoji;
+import io.discloader.discloader.core.entity.guild.GuildEmoji;
 import io.discloader.discloader.core.entity.guild.Guild;
 import io.discloader.discloader.core.entity.guild.GuildMember;
 import io.discloader.discloader.core.entity.guild.Role;
@@ -107,10 +107,10 @@ public class RESTManager {
 		return future;
 	}
 
-	public CompletableFuture<IGuildEmoji> deleteEmoji(Emoji emoji) {
+	public CompletableFuture<IGuildEmoji> deleteEmoji(GuildEmoji guildEmoji) {
 		CompletableFuture<IGuildEmoji> future = new CompletableFuture<>();
-		this.makeRequest(Endpoints.guildEmoji(emoji.getGuild().getID(), emoji.getID()), Methods.DELETE, true).thenAcceptAsync(action -> {
-			future.complete(emoji);
+		this.makeRequest(Endpoints.guildEmoji(guildEmoji.getGuild().getID(), guildEmoji.getID()), Methods.DELETE, true).thenAcceptAsync(action -> {
+			future.complete(guildEmoji);
 		});
 		return future;
 	}

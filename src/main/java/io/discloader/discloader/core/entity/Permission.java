@@ -107,26 +107,31 @@ public class Permission implements IPermission {
 	 * @see io.discloader.discloader.entity.IPermission#toInt()
 	 */
 	@Override
-	public int toInt() {
-		return 0;
+	public int asInt() {
+		return raw;
 	}
-	
+
 	/*
 	 * (non-Javadoc)
-	 * @see io.discloader.discloader.entity.IPermission#hasPermission(io.discloader.discloader.entity.Permissions)
+	 * @see
+	 * io.discloader.discloader.entity.IPermission#hasPermission(io.discloader.
+	 * discloader.entity.Permissions)
 	 */
 	@Override
 	public boolean hasPermission(Permissions permission) {
-		return false;
+		return hasPermission(permission, false);
 	}
-	
+
 	/*
 	 * (non-Javadoc)
-	 * @see io.discloader.discloader.entity.IPermission#hasPermission(io.discloader.discloader.entity.Permissions, boolean)
+	 * @see
+	 * io.discloader.discloader.entity.IPermission#hasPermission(io.discloader.
+	 * discloader.entity.Permissions, boolean)
 	 */
 	@Override
 	public boolean hasPermission(Permissions permission, boolean explicit) {
-		return false;
+		if (!explicit && (this.raw & Permissions.ADMINISTRATOR.getValue()) > 0) return true;
+		return (this.raw & permission.getValue()) > 0;
 	}
-	
+
 }

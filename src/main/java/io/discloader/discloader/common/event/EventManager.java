@@ -124,6 +124,10 @@ public class EventManager {
 				handler.RawPacket((RawEvent) event);
 			} else if (event instanceof ReadyEvent) {
 				handler.Ready((ReadyEvent) event);
+			} else if (event instanceof ReconnectEvent) {
+				handler.Reconnect((ReconnectEvent) event);
+			} else if (event instanceof DisconnectEvent) {
+				handler.Disconnected((DisconnectEvent) event);
 			} else if (event instanceof GuildChannelCreateEvent) {
 				handler.GuildChannelCreate((GuildChannelCreateEvent) event);
 			} else if (event instanceof ChannelCreateEvent) {

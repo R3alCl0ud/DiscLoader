@@ -6,6 +6,7 @@ import java.util.concurrent.CompletableFuture;
 
 import io.discloader.discloader.common.DiscLoader;
 import io.discloader.discloader.core.entity.RichEmbed;
+import io.discloader.discloader.entity.IEmoji;
 import io.discloader.discloader.entity.channel.IGuildTextChannel;
 import io.discloader.discloader.entity.channel.ITextChannel;
 import io.discloader.discloader.entity.guild.IGuild;
@@ -31,6 +32,12 @@ import io.discloader.discloader.util.DLUtil;
  * @see ISnowflake
  */
 public interface IMessage extends ISnowflake, Comparable<IMessage> {
+
+	CompletableFuture<Void> addReaction(IReaction reaction);
+
+	CompletableFuture<Void> addReaction(String unicode);
+
+	CompletableFuture<Void> addReaction(IEmoji emoji);
 
 	/**
 	 * Checks if the user you are logged in as is able to delete the
@@ -124,11 +131,10 @@ public interface IMessage extends ISnowflake, Comparable<IMessage> {
 
 	String getNonce();
 
-	
 	List<IReaction> getReactions();
 
 	boolean isEdited();
-	
+
 	/**
 	 * @return {@code true} if pinned, otherwise {@code false}.
 	 * @see ITextChannel#getPinnedMessages()

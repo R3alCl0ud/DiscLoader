@@ -9,6 +9,7 @@ import io.discloader.discloader.common.DiscLoader;
 import io.discloader.discloader.common.registry.EntityRegistry;
 import io.discloader.discloader.core.entity.RichEmbed;
 import io.discloader.discloader.core.entity.channel.Channel;
+import io.discloader.discloader.entity.IEmoji;
 import io.discloader.discloader.entity.channel.IGuildTextChannel;
 import io.discloader.discloader.entity.channel.ITextChannel;
 import io.discloader.discloader.entity.guild.IGuild;
@@ -22,9 +23,11 @@ import io.discloader.discloader.entity.user.IUser;
 import io.discloader.discloader.entity.util.ISnowflake;
 import io.discloader.discloader.entity.util.SnowflakeUtil;
 import io.discloader.discloader.network.json.MessageJSON;
+import io.discloader.discloader.network.json.ReactionJSON;
 import io.discloader.discloader.network.json.UserJSON;
 import io.discloader.discloader.network.rest.actions.channel.pin.PinMessage;
 import io.discloader.discloader.network.rest.actions.channel.pin.UnpinMessage;
+import io.discloader.discloader.network.rest.actions.message.CreateReaction;
 import io.discloader.discloader.network.rest.actions.message.DeleteMessage;
 import io.discloader.discloader.network.rest.actions.message.EditMessage;
 
@@ -106,6 +109,8 @@ public class Message<T extends ITextChannel> implements IMessage {
 
 	public ArrayList<IMessageEmbed> embeds;
 
+	private List<IReaction> reactions;
+
 	/**
 	 * Creates a new message object
 	 * 
@@ -135,6 +140,7 @@ public class Message<T extends ITextChannel> implements IMessage {
 		}
 		embeds = new ArrayList<>();
 		attachments = new ArrayList<>();
+		reactions = new ArrayList<>();
 		content = data.content;
 
 		setup(data);
@@ -264,7 +270,7 @@ public class Message<T extends ITextChannel> implements IMessage {
 
 	@Override
 	public List<IReaction> getReactions() {
-		return null;
+		return reactions;
 	}
 
 	/**
@@ -345,7 +351,11 @@ public class Message<T extends ITextChannel> implements IMessage {
 		nonce = data.nonce;
 
 		type = data.type;
-
+		if (data.reactions != null) {
+			for (ReactionJSON r : data.reactions) {
+				reactions.add(new Reaction(r, this));
+			}
+		}
 	}
 
 	/**
@@ -363,5 +373,20 @@ public class Message<T extends ITextChannel> implements IMessage {
 	@Override
 	public boolean isEdited() {
 		return edited_timestamp != null;
+	}
+
+	@Override
+	public CompletableFuture<Void> addReaction(IReaction reaction) {
+		return addReaction(reaction.getEmoji());
+	}
+
+	@Override
+	public CompletableFuture<Void> addReaction(String unicode) {
+		return new CreateReaction(this, unicode).execute();
+	}
+
+	@Override
+	public CompletableFuture<Void> addReaction(IEmoji emoji) {
+		return addReaction(SnowflakeUtil.asString(emoji));
 	}
 }

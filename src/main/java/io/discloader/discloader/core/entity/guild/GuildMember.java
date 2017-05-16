@@ -206,7 +206,7 @@ public class GuildMember implements IGuildMember {
 	public IPermission getPermissions() {
 		int r = 0;
 		for (IRole role : getRoles().values()) {
-			r |= role.getPermissions().toInt();
+			r |= role.getPermissions().asInt();
 		}
 		return new Permission(this, r);
 	}
@@ -235,10 +235,6 @@ public class GuildMember implements IGuildMember {
 		return roles;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * @see io.discloader.discloader.entity.guild.IGuildMember#getUser()
-	 */
 	@Override
 	public IUser getUser() {
 		return user;
@@ -442,5 +438,5 @@ public class GuildMember implements IGuildMember {
 	public OffsetDateTime getJoinTime() {
 		return joinedAt;
 	}
-	
+
 }

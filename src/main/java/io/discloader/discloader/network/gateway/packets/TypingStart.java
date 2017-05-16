@@ -26,6 +26,8 @@ public class TypingStart extends AbstractHandler {
 		if (channel == null) channel = EntityRegistry.getPrivateChannelByID(data.channel_id);
 		if (channel == null) return;
 		IUser user = EntityRegistry.getUserByID(data.user_id);
+		if (user == null || channel.getTyping() == null) return;
+
 		channel.getTyping().put(user.getID(), user);
 
 		// loader.emit("");

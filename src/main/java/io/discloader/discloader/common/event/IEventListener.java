@@ -80,6 +80,14 @@ public interface IEventListener {
 
 	void ChannelUpdate(ChannelUpdateEvent e);
 
+	/**
+	 * Fired when the {@link DiscLoader client} has successfully disconnected
+	 * from the Gateway as intended
+	 * 
+	 * @param e A {@link DisconnectEvent} object.
+	 */
+	void Disconnected(DisconnectEvent e);
+
 	void GroupMessageCreate(GroupMessageCreateEvent e);
 
 	/**
@@ -208,7 +216,7 @@ public interface IEventListener {
 	 * @param e A GuildUpdateEvent object
 	 */
 	void GuildUpdate(GuildUpdateEvent e);
-	
+
 	void MessageCreate(MessageCreateEvent e);
 
 	void MessageDelete(MessageDeleteEvent e);
@@ -254,6 +262,14 @@ public interface IEventListener {
 	 * @param event A {@link ReadyEvent} object
 	 */
 	void Ready(ReadyEvent event);
+
+	/**
+	 * Fired when the {@link DiscLoader client} attempts to reconnect to a
+	 * Gateway connection that was abnormally closed
+	 * 
+	 * @param e A {@link ReconnectEvent} object
+	 */
+	void Reconnect(ReconnectEvent e);
 
 	/**
 	 * Emitted when a user starts typing in an {@link ITextChannel}

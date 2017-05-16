@@ -186,11 +186,11 @@ public class Guild implements IGuild {
 	public Map<Long, IPresence> presences;
 
 	/**
-	 * A HashMap of the guild's custom emojis. Indexed by {@link Emoji#id}
+	 * A HashMap of the guild's custom emojis. Indexed by {@link GuildEmoji#id}
 	 * 
 	 * @author Perry Berman
 	 */
-	public Map<Long, IGuildEmoji> emojis;
+	public Map<Long, IGuildEmoji> guildEmojis;
 
 	/**
 	 * A Private HashMap of the guild's raw voice states. Indexed by
@@ -221,7 +221,7 @@ public class Guild implements IGuild {
 		this.voiceChannels = new HashMap<>();
 		this.roles = new HashMap<>();
 		this.presences = new HashMap<>();
-		this.emojis = new HashMap<>();
+		this.guildEmojis = new HashMap<>();
 		this.rawStates = new HashMap<>();
 		this.voiceRegion = new VoiceRegion("us-central");
 
@@ -578,7 +578,7 @@ public class Guild implements IGuild {
 
 	@Override
 	public Map<Long, IGuildEmoji> getEmojis() {
-		return emojis;
+		return guildEmojis;
 	}
 
 	@Override
@@ -918,9 +918,9 @@ public class Guild implements IGuild {
 			}
 			// ProgressLogger.step(5, 7, "Caching Emojis");
 			if (data.emojis != null && data.emojis.length > 0) {
-				this.emojis.clear();
+				this.guildEmojis.clear();
 				for (EmojiJSON e : data.emojis) {
-					this.emojis.put(SnowflakeUtil.parse(e.id), new Emoji(e, this));
+					this.guildEmojis.put(SnowflakeUtil.parse(e.id), new GuildEmoji(e, this));
 				}
 			}
 			// ProgressLogger.step(6, 7, "Caching Voice States");
