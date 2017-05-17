@@ -182,14 +182,14 @@ public class RESTManager {
 
 	public CompletableFuture<String> makeRequest(String url, int method, boolean auth, Object data) {
 		APIRequest request = new APIRequest(url, method, auth, data);
-		CompletableFuture<String> future = new CompletableFuture<String>();
+		CompletableFuture<String> future = new CompletableFuture<>();
 		if (!this.queues.containsKey(url)) {
 			this.queues.put(url, new RESTQueue(this, url));
 		}
 
 		request.setFuture(future);
-		this.queues.get(url).addToQueue(request);
-		this.handleQueue(url);
+		queues.get(url).addToQueue(request);
+		handleQueue(url);
 		return future;
 	}
 

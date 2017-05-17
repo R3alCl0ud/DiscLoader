@@ -2,7 +2,6 @@ package io.discloader.discloader.core.entity.message;
 
 import io.discloader.discloader.common.DiscLoader;
 import io.discloader.discloader.entity.IEmoji;
-import io.discloader.discloader.entity.message.IReaction;
 import io.discloader.discloader.network.json.EmojiJSON;
 
 public class Emoji implements IEmoji {
@@ -10,8 +9,8 @@ public class Emoji implements IEmoji {
 	private DiscLoader loader;
 	private String name;
 
-	public Emoji(EmojiJSON data, IReaction reaction) {
-		loader = reaction.getMessage().getLoader();
+	public Emoji(EmojiJSON data, DiscLoader loader) {
+		this.loader = loader;
 		name = data.name;
 	}
 

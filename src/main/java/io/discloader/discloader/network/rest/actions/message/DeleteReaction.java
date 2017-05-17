@@ -7,27 +7,27 @@ import io.discloader.discloader.network.rest.actions.RESTAction;
 import io.discloader.discloader.util.DLUtil.Endpoints;
 import io.discloader.discloader.util.DLUtil.Methods;
 
-public class CreateReaction extends RESTAction<Void> {
+public class DeleteReaction extends RESTAction<IMessage> {
 
 	private String emoji;
 	private IMessage message;
 
-	public CreateReaction(IMessage message, String emoji) {
+	public DeleteReaction(IMessage message, String emoji) {
 		super(message.getLoader());
 		this.message = message;
 		this.emoji = emoji;
 	}
 
-	public CompletableFuture<Void> execute() {
-		return super.execute(loader.rest.makeRequest(Endpoints.currentUserReaction(message.getChannel().getID(), message.getID(), emoji), Methods.PUT, true));
+	public CompletableFuture<IMessage> execute() {
+		return super.execute(loader.rest.makeRequest(Endpoints.currentUserReaction(message.getChannel().getID(), message.getID(), emoji), Methods.DELETE, true));
 	}
 
 	public void complete(String r, Throwable ex) {
 		if (ex != null) {
-			future.completeExceptionally(ex);
+			future.completeExceptionally(ex.getCause());
 			return;
 		}
-		future.complete(null);
+		future.complete(message);
 	}
 
 }

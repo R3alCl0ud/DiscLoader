@@ -18,7 +18,7 @@ public class Reaction implements IReaction {
 		me = data.me;
 		count = data.count;
 		if (data.emoji.id != null) emoji = new GuildEmoji(data.emoji, message.getGuild());
-		else emoji = new Emoji(data.emoji, this);
+		else emoji = new Emoji(data.emoji, message.getLoader());
 	}
 
 	/**

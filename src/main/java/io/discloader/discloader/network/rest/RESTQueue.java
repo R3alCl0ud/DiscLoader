@@ -105,10 +105,6 @@ public class RESTQueue {
 						}
 					});
 					RawEvent event = new RawEvent(loader, response);
-					// // limiter.
-					// if (limiter.shouldRateLimit(response)) {
-					//
-					// }
 					DateFormat df = new SimpleDateFormat("E, dd MMM yyyy HH:mm:ss z");
 					try {
 						timeDifference = Date.from(Instant.now()).getTime() - df.parse(headers.get("Date").get(0)).getTime();
@@ -153,7 +149,6 @@ public class RESTQueue {
 								apiRequest.future.completeExceptionally(new AccountTypeException(data));
 								break;
 							case 50013:
-								System.out.println("hmmm");
 								apiRequest.future.completeExceptionally(new PermissionsException(data));
 								break;
 							default:

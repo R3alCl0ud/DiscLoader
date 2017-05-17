@@ -22,6 +22,10 @@ public class DLErrorStream extends PrintStream {
 		this.logger.severe(string.trim());
 	}
 
+	public void println(Object object) {
+		logger.severe(object.toString().trim());
+	}
+
 	public PrintStream printf(String template, Object... args) {
 		for (Object o : args) {
 			template = String.format(template, o);

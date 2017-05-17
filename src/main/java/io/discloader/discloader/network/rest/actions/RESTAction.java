@@ -7,11 +7,12 @@ import com.google.gson.Gson;
 import io.discloader.discloader.common.DiscLoader;
 
 public abstract class RESTAction<T> {
+
 	protected CompletableFuture<String> request;
 	protected CompletableFuture<T> future;
 	protected DiscLoader loader;
 	protected Gson gson;
-	
+
 	public RESTAction(DiscLoader loader) {
 		this.loader = loader;
 		request = new CompletableFuture<>();
@@ -19,15 +20,22 @@ public abstract class RESTAction<T> {
 		gson = new Gson();
 	}
 
+	public abstract CompletableFuture<T> execute();
+
 	public CompletableFuture<T> execute(CompletableFuture<String> r) {
 		request = r;
+		request.exceptionally(ex -> {
+			future.completeExceptionally(ex);
+			return "";
+		});
 		request.whenCompleteAsync(this::complete);
 		return future;
 	}
 
 	public void complete(String data, Throwable ex) {
 		if (ex != null) {
-			future.completeExceptionally(ex.getCause());
+			System.out.println("hmmmmsssss");
+			future.completeExceptionally(ex);
 			return;
 		}
 	}

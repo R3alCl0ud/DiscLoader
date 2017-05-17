@@ -6,10 +6,12 @@ import java.util.List;
 import java.util.concurrent.CompletableFuture;
 
 import io.discloader.discloader.common.DiscLoader;
+import io.discloader.discloader.common.exceptions.PermissionsException;
 import io.discloader.discloader.common.registry.EntityRegistry;
 import io.discloader.discloader.core.entity.RichEmbed;
 import io.discloader.discloader.core.entity.channel.Channel;
 import io.discloader.discloader.entity.IEmoji;
+import io.discloader.discloader.entity.channel.IGuildChannel;
 import io.discloader.discloader.entity.channel.IGuildTextChannel;
 import io.discloader.discloader.entity.channel.ITextChannel;
 import io.discloader.discloader.entity.guild.IGuild;
@@ -21,6 +23,7 @@ import io.discloader.discloader.entity.message.IMessageEmbed;
 import io.discloader.discloader.entity.message.IReaction;
 import io.discloader.discloader.entity.user.IUser;
 import io.discloader.discloader.entity.util.ISnowflake;
+import io.discloader.discloader.entity.util.Permissions;
 import io.discloader.discloader.entity.util.SnowflakeUtil;
 import io.discloader.discloader.network.json.MessageJSON;
 import io.discloader.discloader.network.json.ReactionJSON;
@@ -29,7 +32,10 @@ import io.discloader.discloader.network.rest.actions.channel.pin.PinMessage;
 import io.discloader.discloader.network.rest.actions.channel.pin.UnpinMessage;
 import io.discloader.discloader.network.rest.actions.message.CreateReaction;
 import io.discloader.discloader.network.rest.actions.message.DeleteMessage;
+import io.discloader.discloader.network.rest.actions.message.DeleteReaction;
 import io.discloader.discloader.network.rest.actions.message.EditMessage;
+import io.discloader.discloader.util.DLUtil.Endpoints;
+import io.discloader.discloader.util.DLUtil.Methods;
 
 public class Message<T extends ITextChannel> implements IMessage {
 
@@ -147,6 +153,21 @@ public class Message<T extends ITextChannel> implements IMessage {
 	}
 
 	@Override
+	public CompletableFuture<Void> addReaction(IEmoji emoji) {
+		return addReaction(SnowflakeUtil.asString(emoji));
+	}
+
+	@Override
+	public CompletableFuture<Void> addReaction(IReaction reaction) {
+		return addReaction(reaction.getEmoji());
+	}
+
+	@Override
+	public CompletableFuture<Void> addReaction(String unicode) {
+		return new CreateReaction(this, unicode).execute();
+	}
+
+	@Override
 	public boolean canDelete() {
 		return canEdit();
 	}
@@ -169,6 +190,22 @@ public class Message<T extends ITextChannel> implements IMessage {
 	@Override
 	public CompletableFuture<IMessage> delete() {
 		return new DeleteMessage<T>(this.channel, this).execute();
+	}
+
+	@Override
+	public CompletableFuture<IMessage> deleteAllReactions() {
+		CompletableFuture<IMessage> future = new CompletableFuture<>();
+		if (channel instanceof IGuildChannel) {
+			if (!((IGuildChannel) channel).permissionsFor(guild.getCurrentMember()).hasPermission(Permissions.MANAGE_MESSAGES)) {
+				future.completeExceptionally(new PermissionsException());
+				return future;
+			}
+		}
+		loader.rest.makeRequest(Endpoints.messageReactions(channel.getID(), id), Methods.DELETE, true).thenAcceptAsync(data -> {
+			future.complete(this);
+			reactions.clear();
+		});
+		return future;
 	}
 
 	/**
@@ -284,6 +321,11 @@ public class Message<T extends ITextChannel> implements IMessage {
 		return loader.user.getID() == author.getID();
 	}
 
+	@Override
+	public boolean isEdited() {
+		return edited_timestamp != null;
+	}
+
 	/**
 	 * Is the messaged pinned in the {@link #channel}
 	 * 
@@ -328,11 +370,19 @@ public class Message<T extends ITextChannel> implements IMessage {
 		return future;
 	}
 
-	/**
-	 * @param attachments the attachments to set
-	 */
-	public void setAttachments(List<IMessageAttachment> attachments) {
-		this.attachments = attachments;
+	@Override
+	public CompletableFuture<IMessage> removeReaction(IEmoji emoji) {
+		return removeReaction(SnowflakeUtil.asString(emoji));
+	}
+
+	@Override
+	public CompletableFuture<IMessage> removeReaction(IReaction reaction) {
+		return removeReaction(reaction.getEmoji());
+	}
+
+	@Override
+	public CompletableFuture<IMessage> removeReaction(String unicode) {
+		return new DeleteReaction(this, unicode).execute();
 	}
 
 	@Override
@@ -368,25 +418,5 @@ public class Message<T extends ITextChannel> implements IMessage {
 		CompletableFuture<IMessage> future = new UnpinMessage<T>(this).execute();
 		future.thenAcceptAsync(action -> this.pinned = false);
 		return future;
-	}
-
-	@Override
-	public boolean isEdited() {
-		return edited_timestamp != null;
-	}
-
-	@Override
-	public CompletableFuture<Void> addReaction(IReaction reaction) {
-		return addReaction(reaction.getEmoji());
-	}
-
-	@Override
-	public CompletableFuture<Void> addReaction(String unicode) {
-		return new CreateReaction(this, unicode).execute();
-	}
-
-	@Override
-	public CompletableFuture<Void> addReaction(IEmoji emoji) {
-		return addReaction(SnowflakeUtil.asString(emoji));
 	}
 }

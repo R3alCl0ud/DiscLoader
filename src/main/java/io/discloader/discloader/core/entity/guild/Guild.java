@@ -404,12 +404,12 @@ public class Guild implements IGuild {
 		// mentionable);
 	}
 
-	/**
-	 * Creates a new {@link TextChannel}.
-	 * 
-	 * @param name The name of the channel
-	 * @return A Future that completes with a {@link TextChannel} if successful.
-	 */
+//	/**
+//	 * Creates a new {@link TextChannel}.
+//	 * 
+//	 * @param name The name of the channel
+//	 * @return A Future that completes with a {@link TextChannel} if successful.
+//	 */
 	public CompletableFuture<IGuildTextChannel> createTextChannel(String name) {
 		return null;
 		// this.loader.rest.createTextChannel(this, new JSONObject().put("name",

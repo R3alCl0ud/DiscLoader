@@ -122,7 +122,7 @@ public class GuildChannel extends Channel implements IGuildChannel {
 	public Collection<IOverwrite> overwritesOf(IGuildMember member) {
 		HashMap<Long, IOverwrite> Overwrites = new HashMap<>();
 		for (IRole role : member.getRoles().values()) {
-			if (overwrites.get(role.getID()) != null) Overwrites.put(role.getID(), overwrites.get(role.getID()));
+			if (role != null && overwrites.get(role.getID()) != null) Overwrites.put(role.getID(), overwrites.get(role.getID()));
 		}
 		if (overwrites.get(member.getID()) != null) Overwrites.put(member.getID(), overwrites.get(member.getID()));
 		return Overwrites.values();
@@ -132,8 +132,9 @@ public class GuildChannel extends Channel implements IGuildChannel {
 	public IPermission permissionsFor(IGuildMember member) {
 		int raw = 0;
 		if (guild.isOwner(member)) return new Permission(member, this, 2146958463);
-		for (IRole role : member.getRoles().values())
-			raw |= role.getPermissions().asInt();
+		for (IRole role : member.getRoles().values()) {
+			if (role != null) raw |= role.getPermissions().asInt();
+		}
 		for (IOverwrite overwrite : overwritesOf(member)) {
 			raw |= overwrite.getAllowed();
 			raw &= ~overwrite.getDenied();

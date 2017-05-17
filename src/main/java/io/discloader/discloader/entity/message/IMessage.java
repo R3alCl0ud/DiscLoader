@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.concurrent.CompletableFuture;
 
 import io.discloader.discloader.common.DiscLoader;
+import io.discloader.discloader.common.exceptions.PermissionsException;
 import io.discloader.discloader.core.entity.RichEmbed;
 import io.discloader.discloader.entity.IEmoji;
 import io.discloader.discloader.entity.channel.IGuildTextChannel;
@@ -62,12 +63,22 @@ public interface IMessage extends ISnowflake, Comparable<IMessage> {
 	OffsetDateTime createdAt();
 
 	/**
-	 * Deletes the message if the loader has suficient permissions
+	 * Deletes the message if the loader has sufficient permissions
 	 * 
 	 * @see DLUtil.PermissionFlags
-	 * @return A Future that completes with {@literal this} when sucessfull
+	 * @return A Future that completes with {@literal this} when successful
 	 */
 	CompletableFuture<IMessage> delete();
+
+	/**
+	 * Removes all {@link IReaction reactions} from {@link IMessage this}
+	 * message.<br>
+	 * Requires the {@link Permissions#MANAGE_MESSAGES} permission.
+	 * @throws PermissionsException Thrown if the current user doesn't have the
+	 *             {@link Permissions#MANAGE_MESSAGES} permission.
+	 * @return A Future that completes with {@literal this} when successful
+	 */
+	CompletableFuture<IMessage> deleteAllReactions();
 
 	/**
 	 * @param embed
@@ -149,6 +160,12 @@ public interface IMessage extends ISnowflake, Comparable<IMessage> {
 	boolean isTTS();
 
 	CompletableFuture<IMessage> pin();
+
+	CompletableFuture<IMessage> removeReaction(IReaction reaction);
+
+	CompletableFuture<IMessage> removeReaction(IEmoji emoji);
+
+	CompletableFuture<IMessage> removeReaction(String unicode);
 
 	void setup(MessageJSON data);
 

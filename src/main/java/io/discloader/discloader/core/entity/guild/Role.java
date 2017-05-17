@@ -4,6 +4,7 @@ import java.math.BigDecimal;
 
 import io.discloader.discloader.common.DiscLoader;
 import io.discloader.discloader.core.entity.Permission;
+import io.discloader.discloader.entity.IPermission;
 import io.discloader.discloader.entity.guild.IGuild;
 import io.discloader.discloader.entity.guild.IRole;
 import io.discloader.discloader.entity.util.SnowflakeUtil;
@@ -15,7 +16,7 @@ import io.discloader.discloader.network.json.RoleJSON;
  * @author Perry Berman
  */
 public class Role implements IRole {
-	
+
 	/**
 	 * The role's Snowflake ID.
 	 */
@@ -24,47 +25,47 @@ public class Role implements IRole {
 	 * The role's name
 	 */
 	private String name;
-	
+
 	/**
 	 * The 53bit permissions integer for the role
 	 */
 	private int permissions;
-	
+
 	/**
 	 * The color users with this role should display as
 	 */
 	private int color;
-	
+
 	/**
 	 * The role's position in the role hiarchy
 	 */
 	private int position;
-	
+
 	/**
 	 * Whether or not online users are displayed seperately
 	 */
 	private boolean hoist;
-	
+
 	/**
 	 * Something to do with bots
 	 */
 	private final boolean managed;
-	
+
 	/**
 	 * Can everyone mention this role
 	 */
 	private boolean mentionable;
-	
+
 	/**
 	 * The {@link Guild} the role belongs to.
 	 */
 	private final IGuild guild;
-	
+
 	/**
 	 * The current instance of DiscLoader
 	 */
 	private final DiscLoader loader;
-	
+
 	/**
 	 * Creates a new role object
 	 * 
@@ -83,47 +84,47 @@ public class Role implements IRole {
 		mentionable = role.mentionable;
 		managed = role.managed;
 	}
-	
+
 	@Override
 	public int getColor() {
 		return color;
 	}
-	
+
 	@Override
 	public IGuild getGuild() {
 		return guild;
 	}
-	
+
 	@Override
 	public long getID() {
 		return SnowflakeUtil.parse(id);
 	}
-	
+
 	@Override
 	public DiscLoader getLoader() {
 		return loader;
 	}
-	
+
 	@Override
 	public String getName() {
 		return name;
 	}
-	
+
 	@Override
-	public Permission getPermissions() {
+	public IPermission getPermissions() {
 		return new Permission(this, permissions);
 	}
-	
+
 	@Override
 	public int getPosition() {
 		return position;
 	}
-	
+
 	@Override
 	public boolean isHoisted() {
 		return hoist;
 	}
-	
+
 	/**
 	 * @return the managed
 	 */
@@ -131,7 +132,7 @@ public class Role implements IRole {
 	public boolean isManaged() {
 		return managed;
 	}
-	
+
 	/**
 	 * @return the mentionable
 	 */
@@ -139,7 +140,7 @@ public class Role implements IRole {
 	public boolean isMentionable() {
 		return mentionable;
 	}
-	
+
 	/**
 	 * @param color the color to set
 	 */
@@ -147,7 +148,7 @@ public class Role implements IRole {
 	public void setColor(int color) {
 		this.color = color;
 	}
-	
+
 	/**
 	 * @param hoist the hoist to set
 	 */
@@ -155,7 +156,7 @@ public class Role implements IRole {
 	public void setHoist(boolean hoist) {
 		this.hoist = hoist;
 	}
-	
+
 	/**
 	 * @param mentionable the mentionable to set
 	 */
@@ -163,7 +164,7 @@ public class Role implements IRole {
 	public void setMentionable(boolean mentionable) {
 		this.mentionable = mentionable;
 	}
-	
+
 	/**
 	 * @param name the name to set
 	 */
@@ -171,7 +172,7 @@ public class Role implements IRole {
 	public void setName(String name) {
 		this.name = name;
 	}
-	
+
 	/**
 	 * @param permissions the permissions to set
 	 */
@@ -179,7 +180,7 @@ public class Role implements IRole {
 	public void setPermissions(int permissions) {
 		this.permissions = permissions;
 	}
-	
+
 	/**
 	 * @param position the position to set
 	 */
@@ -187,10 +188,14 @@ public class Role implements IRole {
 	public void setPosition(int position) {
 		this.position = position;
 	}
-	
+
 	@Override
 	public String toMention() {
 		return String.format("<@&%s>", id);
 	}
-	
+
+	@Override
+	public String toString() {
+		return getName();
+	}
 }

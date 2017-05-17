@@ -24,8 +24,7 @@ import io.discloader.discloader.common.event.sharding.ShardingListenerAdapter;
 import io.discloader.discloader.common.logger.DLErrorStream;
 import io.discloader.discloader.common.logger.DLPrintStream;
 import io.discloader.discloader.common.registry.EntityRegistry;
-import io.discloader.discloader.entity.channel.ITextChannel;
-import io.discloader.discloader.entity.message.IReaction;
+import io.discloader.discloader.entity.guild.IGuild;
 
 /**
  * DiscLoader client entry point
@@ -108,16 +107,19 @@ public class Main {
 			loader.addEventHandler(new EventListenerAdapter() {
 
 				public void Ready(ReadyEvent e) {
-					ITextChannel channel = EntityRegistry.getTextChannelByID(282230026869669888l);
-					if (channel == null) return;
-					channel.fetchMessage(308619315442089997l).thenAcceptAsync(message -> {
-						message.addReaction("🇹").thenAccept(v -> {							
-							for (IReaction reaction : message.getReactions()) {
-								System.out.println(reaction.getEmoji());
+					IGuild guild = EntityRegistry.getGuildByID(282226852616077312l);
+					if (guild == null) return;
+					try {
+						guild.createRole("An awesome role").whenCompleteAsync((role, ex) -> {
+							if (ex != null) {
+								ex.printStackTrace();
+							} else {
+								System.out.println(role);
 							}
 						});
-						
-					});
+					} catch (Exception ex) {
+						ex.printStackTrace();
+					}
 				}
 
 				@Override
@@ -127,7 +129,7 @@ public class Main {
 						// LOGGER.fine(frame.getPayloadText());
 					} else if (data.isREST() && data.getHttpResponse() != null) {
 						LOGGER.info(data.getHttpResponse().getBody());
-						LOGGER.info("" + data.getHttpResponse().getStatus());
+						// LOGGER.info("" + data.getHttpResponse().getStatus());
 					}
 				}
 			});

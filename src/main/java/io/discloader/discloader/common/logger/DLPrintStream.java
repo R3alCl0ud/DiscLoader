@@ -15,7 +15,7 @@ public class DLPrintStream extends PrintStream {
 	}
 
 	public void print(Object object) {
-		logger.info(object.toString());
+		logger.info(object.toString().trim());
 	}
 
 	public void print(int integer) {
@@ -42,4 +42,8 @@ public class DLPrintStream extends PrintStream {
 		this.logger.info(string);
 	}
 
+	public void println(Object object) {
+		logger.info(object.toString().trim());
+	}
+	
 }
