@@ -49,7 +49,7 @@ public class User implements IUser {
 	/**
 	 * The user's four digit discriminator
 	 */
-	private String discriminator;
+	private int discriminator;
 
 	/**
 	 * Whether or not the user is a bot account
@@ -106,17 +106,22 @@ public class User implements IUser {
 	}
 
 	@Override
-	public boolean equals(IUser user) {
-		return this == user && id == user.getID() && username.equals(user.getUsername()) && discriminator.equals(user.getDiscriminator());
+	public boolean equals(Object object) {
+		if (!(object instanceof User)) return false;
+		User user = (User) object;
+		if (this == user) {
+			return true;
+		}
+		return id == user.id && username.equals(user.username) && discriminator == user.discriminator && mfa == user.mfa && verified == user.verified;
 	}
 
 	@Override
 	public IIcon getAvatar() {
-		return new UserAvatar(avatar, id);
+		return new UserAvatar(avatar, id, discriminator);
 	}
 
 	@Override
-	public String getDiscriminator() {
+	public int getDiscriminator() {
 		return discriminator;
 	}
 
@@ -179,11 +184,11 @@ public class User implements IUser {
 	public void setup(UserJSON data) {
 		if (data.username != null) username = data.username;
 
-		if (data.discriminator != null) discriminator = data.discriminator;
+		discriminator = data.discriminator == null ? 0000 : Integer.parseInt( data.discriminator, 10);
 
-		if (data.avatar != null) avatar = data.avatar;
+		avatar = data.avatar;
 
-		if (data.bot == true || data.bot == false) bot = data.bot;
+		bot = data.bot;
 	}
 
 	@Override

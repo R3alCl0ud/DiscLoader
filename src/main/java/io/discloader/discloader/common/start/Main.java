@@ -24,7 +24,7 @@ import io.discloader.discloader.common.event.sharding.ShardingListenerAdapter;
 import io.discloader.discloader.common.logger.DLErrorStream;
 import io.discloader.discloader.common.logger.DLPrintStream;
 import io.discloader.discloader.common.registry.EntityRegistry;
-import io.discloader.discloader.entity.guild.IGuild;
+import io.discloader.discloader.entity.channel.IVoiceChannel;
 
 /**
  * DiscLoader client entry point
@@ -107,19 +107,12 @@ public class Main {
 			loader.addEventHandler(new EventListenerAdapter() {
 
 				public void Ready(ReadyEvent e) {
-					IGuild guild = EntityRegistry.getGuildByID(282226852616077312l);
-					if (guild == null) return;
-					try {
-						guild.createRole("An awesome role").whenCompleteAsync((role, ex) -> {
-							if (ex != null) {
-								ex.printStackTrace();
-							} else {
-								System.out.println(role);
-							}
-						});
-					} catch (Exception ex) {
-						ex.printStackTrace();
-					}
+					IVoiceChannel channel = EntityRegistry.getVoiceChannelByID(245275468201328644l);
+					if (channel == null) return;
+					channel.join().thenAccept(connection -> {
+						LOGGER.info("Connection joined");
+						connection.play("https://soundcloud.com/mstrancy/persona-5-08-fight-theme");
+					});
 				}
 
 				@Override

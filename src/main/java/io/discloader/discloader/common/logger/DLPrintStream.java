@@ -19,31 +19,85 @@ public class DLPrintStream extends PrintStream {
 	}
 
 	public void print(int integer) {
-		this.logger.info(Integer.toString(integer));
+		logger.info(Integer.toString(integer).trim());
+	}
+
+	public void print(char character) {
+		logger.info(Character.toString(character).trim());
+	}
+
+	public void print(byte bite) {
+		logger.info(Byte.toString(bite).trim());
+	}
+
+	public void print(short small) {
+		logger.info(Short.toString(small).trim());
+	}
+
+	public void print(float floating) {
+		logger.info(Float.toString(floating).trim());
+	}
+
+	public void print(double decimal) {
+		logger.info(Double.toString(decimal).trim());
+	}
+
+	public void print(long int64) {
+		logger.info(Long.toString(int64, 10).trim());
+	}
+
+	public void print(boolean bool) {
+		logger.info(Boolean.toString(bool).trim());
 	}
 
 	public void print(String string) {
-		this.logger.info(string.trim());
+		logger.info(string.trim());
 	}
 
 	public PrintStream printf(String template, Object... args) {
-		for (Object o : args) {
-			template = String.format(template, o);
-		}
-		this.logger.info(template);
-		return (PrintStream) this.out;
+		for (String l : String.format(template, args).split("\n"))
+			logger.info(l);
+		return (PrintStream) out;
 	}
 
 	public void println(int integer) {
-		this.logger.info(Integer.toString(integer));
+		logger.info(Integer.toString(integer));
+	}
+
+	public void println(char character) {
+		logger.info(Character.toString(character));
+	}
+
+	public void println(byte bite) {
+		logger.info(Byte.toString(bite));
+	}
+
+	public void println(short small) {
+		logger.info(Short.toString(small));
+	}
+
+	public void println(float f) {
+		logger.info(Float.toString(f));
+	}
+
+	public void println(double d) {
+		logger.info(Double.toString(d));
+	}
+
+	public void println(long int64) {
+		logger.info(Long.toString(int64, 10));
+	}
+
+	public void println(boolean bool) {
+		logger.info(Boolean.toString(bool));
 	}
 
 	public void println(String string) {
-		this.logger.info(string);
+		logger.info(string);
 	}
 
 	public void println(Object object) {
-		logger.info(object.toString().trim());
+		logger.info(object.toString());
 	}
-	
+
 }

@@ -97,6 +97,10 @@ public final class DLUtil {
 			return String.format("%s/avatars/%d/%s%s", CDN, id, avatar, avatar.startsWith("a_") ? ".gif" : ".jpg");
 		}
 
+		public static final String defaultAvatar(int num) {
+			return String.format("%s/embed/avatar/%d.png", CDN, num);
+		}
+		
 		public static final String bulkDelete(long channelID) {
 			return String.format("%s/bulk-delete", messages(channelID));
 		}

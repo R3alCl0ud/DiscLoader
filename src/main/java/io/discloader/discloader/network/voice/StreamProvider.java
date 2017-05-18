@@ -31,7 +31,7 @@ public class StreamProvider implements AudioOutputHook {
 	public VoiceWebSocket ws;
 	public UDPVoiceClient udpClient;
 
-	public SecretBox nacl;
+
 
 	public StreamProvider(VoiceConnection connection) {
 		this.connection = connection;
@@ -48,7 +48,6 @@ public class StreamProvider implements AudioOutputHook {
 	}
 
 	public void createNaCl(int[] secretKey) {
-		nacl = new SecretBox(getBytes(secretKey));
 	}
 
 	// converts array of one byte ints to a byte array
@@ -70,10 +69,10 @@ public class StreamProvider implements AudioOutputHook {
 		try {
 			AudioFrame frame = this.connection.player.provide();
 			if (frame != null && ws != null) {
-				byte[] rawAudio = frame.data;
+				rawAudio = frame.data;
 				if (rawAudio != null && rawAudio.length != 0) {
 					StreamPacket packet = new StreamPacket(sequence, timestamp, connection.getSSRC(), rawAudio);
-					nextPacket = packet.toEncryptedPacket(udpClient.voice_gateway, ws.getSecretKey());
+					nextPacket = packet.toEncryptedPacket(udpClient.getVoice_gateway(), ws.getSecretKey());
 					if (sequence + 1 > Character.MAX_VALUE) {
 						sequence = 0;
 					} else {

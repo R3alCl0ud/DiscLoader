@@ -10,7 +10,7 @@ import io.discloader.discloader.common.event.voice.VoiceStateUpdateEvent;
 import io.discloader.discloader.common.registry.EntityRegistry;
 import io.discloader.discloader.entity.guild.IGuild;
 import io.discloader.discloader.entity.util.SnowflakeUtil;
-import io.discloader.discloader.entity.voice.VoiceConnection;
+import io.discloader.discloader.entity.voice.VoiceConnect;
 import io.discloader.discloader.entity.voice.VoiceState;
 import io.discloader.discloader.network.gateway.DiscSocket;
 import io.discloader.discloader.network.json.VoiceStateJSON;
@@ -30,8 +30,8 @@ public class VoiceStateUpdate extends AbstractHandler {
 		VoiceStateJSON data = this.gson.fromJson(d, VoiceStateJSON.class);
 		IGuild guild = EntityRegistry.getGuildByID(data.guild_id);
 		if (guild.getMember(data.user_id) == null) return;
-		VoiceConnection connection = EntityRegistry.getVoiceConnectionByID(guild.getID());
-		if (connection != null && connection.getUserID().equals(data.user_id)) {
+		VoiceConnect connection = EntityRegistry.getVoiceConnectionByID(guild.getID());
+		if (connection != null && SnowflakeUtil.asString(loader.user).equals(data.user_id)) {
 			connection.setSessionID(data.session_id);
 			connection.setStateUpdated(true);
 		}

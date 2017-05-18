@@ -59,7 +59,7 @@ public class StreamSender {
 		};
 
 		packetThread.setPriority((Thread.NORM_PRIORITY + Thread.MAX_PRIORITY) / 2);
-		packetThread.setDaemon(true);
+		// packetThread.setDaemon(tr);
 		packetThread.start();
 
 	}

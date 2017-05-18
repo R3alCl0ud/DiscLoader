@@ -54,7 +54,7 @@ public class StreamPacket {
 		this.ssrc = ssrc;
 		int len = encodedAudio != null ? encodedAudio.length : 0;
 		ByteBuffer buffer = ByteBuffer.allocate(len + NONCE_LENGTH);
-
+//		System.out.println(ssrc);
 		buffer.put(TypeIndex, TYPE);
 		buffer.put(VersionIndex, VERSION);
 		buffer.putChar(SequenceIndex, sequence);

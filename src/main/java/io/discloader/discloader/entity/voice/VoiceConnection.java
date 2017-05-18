@@ -89,7 +89,7 @@ public class VoiceConnection {
 		else guild = null;
 		this.loader = channel.getLoader();
 		this.future = future;
-		this.udpClient = new UDPVoiceClient(this);
+		this.udpClient = new UDPVoiceClient();
 		this.ws = new VoiceWebSocket(this);
 		this.provider = new StreamProvider(this);
 		this.SSRCs = new HashMap<>();
@@ -156,7 +156,7 @@ public class VoiceConnection {
 	}
 
 	public void disconnected(String reason) {
-		disconnection.complete(EntityRegistry.removeVoiceConnection(guild.getID()));
+		// disconnection.complete(EntityRegistry.removeVoiceConnection(guild.getID()));
 		for (IVoiceConnectionListener e : this.listeners) {
 			e.disconnected(reason);
 		}
@@ -318,10 +318,8 @@ public class VoiceConnection {
 
 	private void socketReady() {
 		try {
-			this.ws.connect(this.endpoint, this.token);
-		} catch (IOException e) {
-			e.printStackTrace();
-		} catch (WebSocketException e) {
+			ws.connect(endpoint, token);
+		} catch (WebSocketException | IOException e) {
 			e.printStackTrace();
 		}
 	}

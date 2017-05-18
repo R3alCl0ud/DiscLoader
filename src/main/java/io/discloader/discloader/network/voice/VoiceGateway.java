@@ -1,8 +1,10 @@
 package io.discloader.discloader.network.voice;
 
 import java.io.IOException;
+import java.net.InetSocketAddress;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.CompletableFuture;
 import java.util.logging.Logger;
 
 import com.google.gson.Gson;
@@ -13,18 +15,20 @@ import com.neovisionaries.ws.client.WebSocketFactory;
 import com.neovisionaries.ws.client.WebSocketFrame;
 
 import io.discloader.discloader.client.logger.DLLogger;
-import io.discloader.discloader.entity.voice.VoiceConnection;
+import io.discloader.discloader.common.event.voice.VoiceConnectionReadyEvent;
+import io.discloader.discloader.entity.util.SnowflakeUtil;
+import io.discloader.discloader.entity.voice.VoiceConnect;
 import io.discloader.discloader.network.gateway.packets.SocketPacket;
+import io.discloader.discloader.network.json.HelloJSON;
 import io.discloader.discloader.network.voice.payloads.SessionDescription;
+import io.discloader.discloader.network.voice.payloads.VoiceData;
 import io.discloader.discloader.network.voice.payloads.VoiceIdentify;
 import io.discloader.discloader.network.voice.payloads.VoicePacket;
 import io.discloader.discloader.network.voice.payloads.VoiceReady;
+import io.discloader.discloader.network.voice.payloads.VoiceUDPBegin;
+import io.discloader.discloader.util.DLUtil;
 
-/**
- * @author Perry Berman
- * @since 0.0.3
- */
-public class VoiceWebSocket extends WebSocketAdapter {
+public class VoiceGateway extends WebSocketAdapter {
 
 	// VoiceConnection OP codes
 	public static final int IDENTIFY = 0;
@@ -33,26 +37,24 @@ public class VoiceWebSocket extends WebSocketAdapter {
 	public static final int HEARTBEAT = 3;
 	public static final int SESSION_DESCRIPTION = 4;
 	public static final int SPEAKING = 5;
-
-	@SuppressWarnings("unused")
-	private String mode;
-
+	public static final int HELLO = 8;
+	public String sessionID;
 	private int sequence = 0;
-	public int[] secretKey;
+	private int[] secretKey;
 
 	private WebSocket ws;
 
-	private VoiceConnection connection;
+	private VoiceConnect connection;
 
-	protected Gson gson;
+	private Gson gson;
 
 	private Thread heartbeatThread = null;
 
 	private final Logger logger;
 
-	public VoiceWebSocket(VoiceConnection connection) {
+	public VoiceGateway(VoiceConnect connection) {
 		this.connection = connection;
-		logger = new DLLogger("Voice Gateway - Guild: " + connection.guild.getID()).getLogger();
+		logger = new DLLogger("VoiceGateway" + (connection.getGuild() == null ? " - Channel: " + connection.getChannel().getID() : " - Guild: " + connection.getGuild().getID())).getLogger();
 		gson = new Gson();
 	}
 
@@ -63,72 +65,77 @@ public class VoiceWebSocket extends WebSocketAdapter {
 		ws.connect();
 	}
 
-	public void disconnect() {
-		if (ws != null && ws.isOpen()) ws.disconnect();
-	}
-
-	public int getSequence() {
-		return sequence;
-	}
-
-	public byte[] getSecretKey() {
-		byte[] secret = new byte[secretKey.length];
-		for (int key = 0; key < secretKey.length; key++) {
-			secret[key] = (byte) secretKey[key];
-		}
-		return secret;
-	}
-
 	public void onConnected(WebSocket ws, Map<String, List<String>> arg1) throws Exception {
 		this.sendIdentify();
 	}
 
 	public void onDisconnected(WebSocket ws, WebSocketFrame frame, WebSocketFrame frame2, boolean isServer) throws Exception {
-		System.err.print(String.format("Reason: %s, Code: %d, isServer: %b", frame.getCloseReason(), frame.getCloseCode(), isServer));
-		this.connection.disconnected(frame.getCloseReason());
+		logger.severe(String.format("Reason: %s, Code: %d, isServer: %b", frame.getCloseReason(), frame.getCloseCode(), isServer));
+		// this.connection.disconnected(frame.getCloseReason());
 	}
 
 	public void onTextMessage(WebSocket ws, String text) throws Exception {
-		SocketPacket packet = this.gson.fromJson(text, SocketPacket.class);
+		SocketPacket packet = gson.fromJson(text, SocketPacket.class);
+		if (packet.op == HELLO) {
+			HelloJSON hello = gson.fromJson(gson.toJson(packet.d), HelloJSON.class);
+		}
+
+		if (packet.op == HEARTBEAT) {
+			VoicePacket vpacket = new VoicePacket(HEARTBEAT, sequence);
+			// System.out.println(gson.toJson(vpacket));
+			send(gson.toJson(vpacket));
+			return;
+		}
+		logger.info(text);
 		setSequence(packet.s);
 		switch (packet.op) {
 		case READY:
-			VoiceReady data = this.gson.fromJson(this.gson.toJson(packet.d), VoiceReady.class);
-			this.connection.setSSRC(data.ssrc);
+			VoiceReady data = gson.fromJson(gson.toJson(packet.d), VoiceReady.class);
+			connection.setSSRC(data.ssrc);
 			this.connection.connectUDP(data);
 			break;
 		case SESSION_DESCRIPTION:
-			SessionDescription data2 = this.gson.fromJson(this.gson.toJson(packet.d), SessionDescription.class);
+			SessionDescription data2 = gson.fromJson(gson.toJson(packet.d), SessionDescription.class);
 			secretKey = data2.secret_key;
-			connection.provider.createNaCl(this.secretKey);
-			mode = data2.mode;
-			connection.getFuture().complete(this.connection);
-			connection.ready();
+			connection.getSendHandler().setSecretKey(secretKey);
+			connection.fireEvent(new VoiceConnectionReadyEvent(connection));
 			break;
 		case SPEAKING:
 			break;
 		}
+
 	}
 
 	public void send(String payload) {
+		System.out.println(payload);
 		ws.sendText(payload);
 	}
 
 	public void sendIdentify() {
-		VoiceIdentify payload = new VoiceIdentify(Long.toUnsignedString(connection.guild.getID()), Long.toUnsignedString(connection.loader.user.getID()), connection.getSessionID(), connection.getToken());
+		System.out.println(connection.getToken());
+		VoiceIdentify payload = new VoiceIdentify(SnowflakeUtil.asString(connection.getGuild()), SnowflakeUtil.asString(connection.getLoader().user), sessionID, connection.getToken());
 		VoicePacket packet = new VoicePacket(IDENTIFY, payload);
-		ws.sendText(gson.toJson(packet));
+		send(gson.toJson(packet));
 	}
 
+	public void selectProtocol(String ip, int port) {
+		String payload = DLUtil.gson.toJson(new VoicePacket(1, new VoiceUDPBegin(new VoiceData(ip, port))));
+		send(payload);
+	}
+	
 	public void setSequence(int s) {
 		if (s > sequence) sequence = s;
 	}
 
 	public void setSpeaking(boolean isSpeaking) {
+		System.out.println(gson.toJson(new VoicePacket(SPEAKING, new Speaking(isSpeaking, 0))));
 		send(gson.toJson(new VoicePacket(SPEAKING, new Speaking(isSpeaking, 0))));
 	}
 
-	public void startHeartbeat(int interval) {
+	public void startHeartbeat(long interval) {
+		System.out.println(interval);
+		System.out.println(connection.getSSRC());
+		if (heartbeatThread != null) return;
 		heartbeatThread = new Thread(logger.getName()) {
 
 			@Override
@@ -138,20 +145,24 @@ public class VoiceWebSocket extends WebSocketAdapter {
 				} catch (InterruptedException e) {
 				}
 
-				while (ws.isOpen() && !connection.getUdpClient().udpSocket.isClosed()) {
+				while (ws.isOpen() && !connection.getUDPClient().udpSocket.isClosed()) {
 					VoicePacket packet = new VoicePacket(HEARTBEAT, sequence);
-					ws.sendText(gson.toJson(packet));
+					send(gson.toJson(packet));
 					try {
 						Thread.sleep(interval);
 					} catch (InterruptedException e) {
 					}
 				}
-				logger.info("Ended: ws.isOpen(): " + ws.isOpen() + ", udp.isClosed(): " + connection.getUdpClient().udpSocket.isClosed());
+				logger.info("Ended: ws.isOpen(): " + ws.isOpen() + ", udp.isClosed(): " + connection.getUDPClient().udpSocket.isClosed());
 			}
 		};
 		heartbeatThread.setPriority((Thread.NORM_PRIORITY + Thread.MAX_PRIORITY) / 2);
 		heartbeatThread.setDaemon(true);
 		heartbeatThread.start();
+	}
+
+	public CompletableFuture<VoiceConnect> disconnect() {
+		return new CompletableFuture<>();
 	}
 
 }

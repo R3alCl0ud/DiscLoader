@@ -25,12 +25,6 @@ public interface IUser extends ISnowflake, ICreationTime {
 	String asMention();
 
 	/**
-	 * @param user
-	 * @return
-	 */
-	boolean equals(IUser user);
-
-	/**
 	 * @return
 	 */
 	IIcon getAvatar();
@@ -38,7 +32,7 @@ public interface IUser extends ISnowflake, ICreationTime {
 	/**
 	 * @return
 	 */
-	String getDiscriminator();
+	int getDiscriminator();
 
 	/**
 	 * @return

@@ -10,14 +10,16 @@ public class UserAvatar implements IIcon {
 
 	private String hash;
 	private long userID;
+	private int discrim;
 
-	public UserAvatar(String hash, long userID) {
+	public UserAvatar(String hash, long userID, int discrim) {
 		this.hash = hash;
 		this.userID = userID;
 	}
 
 	@Override
 	public URL toURL() throws MalformedURLException {
+		if (hash == null) return new URL(Endpoints.defaultAvatar(discrim % 5));
 		return new URL(Endpoints.avatar(userID, hash));
 	}
 

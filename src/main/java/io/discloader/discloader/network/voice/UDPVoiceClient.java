@@ -7,8 +7,6 @@ import java.net.InetSocketAddress;
 import java.net.SocketException;
 import java.nio.ByteBuffer;
 
-import io.discloader.discloader.entity.voice.VoiceConnection;
-
 public class UDPVoiceClient {
 
 	public static final int IDENTIFY = 0;
@@ -20,30 +18,25 @@ public class UDPVoiceClient {
 
 	public DatagramSocket udpSocket = null;
 
-	@SuppressWarnings("unused")
-	private final VoiceConnection connection;
+	private InetSocketAddress voice_gateway;
 
-	protected InetSocketAddress voice_gateway;
-
-	public UDPVoiceClient(VoiceConnection connection) {
-		this.connection = connection;
-	}
-
-	public void bindConnection() {
+	public void bindConnection(InetSocketAddress gateway) {
 		try {
-			this.udpSocket.bind(voice_gateway);
+			voice_gateway = gateway;
+			udpSocket.bind(voice_gateway);
 		} catch (SocketException e) {
 			e.printStackTrace();
 		}
 	}
 
 	public InetSocketAddress discoverAddress(InetSocketAddress endpoint, int ssrc) {
+		voice_gateway = endpoint;
 		try {
 			if (udpSocket == null) udpSocket = new DatagramSocket();
 			ByteBuffer buffer = ByteBuffer.allocate(70);
 			buffer.putInt(ssrc);
 			DatagramPacket discovery = new DatagramPacket(buffer.array(), buffer.array().length, endpoint);
-			this.udpSocket.send(discovery);
+			udpSocket.send(discovery);
 			DatagramPacket receive = new DatagramPacket(new byte[70], 70);
 			udpSocket.setSoTimeout(1000);
 			udpSocket.receive(receive);
@@ -62,16 +55,25 @@ public class UDPVoiceClient {
 			int second = (0x000000FF & ((int) ports[1]));
 			int port = (first << 8) | second;
 
-			this.voice_gateway = endpoint;
-
 			return new InetSocketAddress(ip, port);
-		} catch (SocketException e) {
-			e.printStackTrace();
-			return null;
 		} catch (IOException e) {
 			e.printStackTrace();
 			return null;
 		}
+	}
+
+	/**
+	 * @return the voice_gateway
+	 */
+	public InetSocketAddress getVoice_gateway() {
+		return voice_gateway;
+	}
+
+	/**
+	 * @param voice_gateway the voice_gateway to set
+	 */
+	public void setVoice_gateway(InetSocketAddress voice_gateway) {
+		this.voice_gateway = voice_gateway;
 	}
 
 }
