@@ -6,7 +6,6 @@ package io.discloader.discloader.network.voice;
 import java.net.DatagramPacket;
 import java.util.Arrays;
 
-import com.iwebpp.crypto.TweetNaclFast.SecretBox;
 import com.sedmelluq.discord.lavaplayer.player.AudioPlayer;
 import com.sedmelluq.discord.lavaplayer.player.hook.AudioOutputHook;
 import com.sedmelluq.discord.lavaplayer.track.playback.AudioFrame;
@@ -30,8 +29,6 @@ public class StreamProvider implements AudioOutputHook {
 
 	public VoiceWebSocket ws;
 	public UDPVoiceClient udpClient;
-
-
 
 	public StreamProvider(VoiceConnection connection) {
 		this.connection = connection;
@@ -72,7 +69,7 @@ public class StreamProvider implements AudioOutputHook {
 				rawAudio = frame.data;
 				if (rawAudio != null && rawAudio.length != 0) {
 					StreamPacket packet = new StreamPacket(sequence, timestamp, connection.getSSRC(), rawAudio);
-					nextPacket = packet.toEncryptedPacket(udpClient.getVoice_gateway(), ws.getSecretKey());
+					nextPacket = packet.toEncryptedPacket(udpClient.getVoiceGateway(), ws.getSecretKey());
 					if (sequence + 1 > Character.MAX_VALUE) {
 						sequence = 0;
 					} else {

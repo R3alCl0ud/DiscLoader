@@ -75,7 +75,7 @@ public class VoiceConnect {
 			// A track started playing
 			System.out.println("Do we ever start playing?");
 			setSpeaking(true);
-			sendHandler.sendPackets(udpClient.udpSocket);
+			if (!sendHandler.isOpen()) sendHandler.sendPackets(udpClient.udpSocket);
 		}
 
 		@Override
@@ -140,6 +140,7 @@ public class VoiceConnect {
 					return;
 				}
 			}
+			System.out.println(externalAddress);
 			ws.selectProtocol(externalAddress.getHostString(), externalAddress.getPort());
 		} catch (Exception e) {
 			e.printStackTrace();

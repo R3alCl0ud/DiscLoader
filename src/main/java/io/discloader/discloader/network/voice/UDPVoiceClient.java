@@ -37,11 +37,10 @@ public class UDPVoiceClient {
 	}
 
 	public InetSocketAddress discoverAddress(InetSocketAddress endpoint, int ssrc) {
-		voice_gateway = endpoint;
 //		bindConnection();
 		try {
-			// if (udpSocket == null) udpSocket = new DatagramSocket();
-			udpSocket = new DatagramSocket();
+			 if (udpSocket == null) udpSocket = new DatagramSocket();
+//			udpSocket = new DatagramSocket();
 			ByteBuffer buffer = ByteBuffer.allocate(70);
 			buffer.putInt(ssrc);
 			DatagramPacket discovery = new DatagramPacket(buffer.array(), buffer.array().length, endpoint);
@@ -63,7 +62,10 @@ public class UDPVoiceClient {
 			int first = (0x000000FF & ((int) ports[0]));
 			int second = (0x000000FF & ((int) ports[1]));
 			int port = (first << 8) | second;
-//			socket.close();
+
+			voice_gateway = endpoint;
+			System.out.println(endpoint);
+			
 			return new InetSocketAddress(ip, port);
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -74,7 +76,7 @@ public class UDPVoiceClient {
 	/**
 	 * @return the voice_gateway
 	 */
-	public InetSocketAddress getVoice_gateway() {
+	public InetSocketAddress getVoiceGateway() {
 		return voice_gateway;
 	}
 

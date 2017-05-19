@@ -111,7 +111,7 @@ public class Main {
 					if (channel == null) return;
 					channel.join().thenAccept(connection -> {
 						LOGGER.info("Connection joined");
-						connection.play("https://cdn.discordapp.com/attachments/245265524009861131/314138356625965056/Toby_Fox_-_Undertale_R3alCl0ud_DnB_remix.mp3");
+						connection.play("https://soundcloud.com/65daysofstatic/illuminaire-65daysofstatic");
 					});
 				}
 

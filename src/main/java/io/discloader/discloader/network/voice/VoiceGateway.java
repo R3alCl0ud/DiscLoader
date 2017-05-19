@@ -54,12 +54,24 @@ public class VoiceGateway extends WebSocketAdapter {
 		logger = new DLLogger("VoiceGateway" + (connection.getGuild() == null ? " - Channel: " + connection.getChannel().getID() : " - Guild: " + connection.getGuild().getID())).getLogger();
 		gson = new Gson();
 	}
-
+	
 	public void connect(String gateway, String token) throws IOException, WebSocketException {
 		gateway = "wss://" + gateway;
 		WebSocketFactory factory = new WebSocketFactory().setConnectionTimeout(15000);
 		ws = factory.createSocket(gateway).addListener(this);
 		ws.connect();
+	}
+
+	public CompletableFuture<VoiceConnect> disconnect() {
+		return new CompletableFuture<>();
+	}
+
+	public byte[] getSecretKey() {
+		byte[] secret = new byte[secretKey.length];
+		for (int key = 0; key < secretKey.length; key++) {
+			secret[key] = (byte) secretKey[key];
+		}
+		return secret;
 	}
 
 	public void onConnected(WebSocket ws, Map<String, List<String>> arg1) throws Exception {
@@ -105,6 +117,11 @@ public class VoiceGateway extends WebSocketAdapter {
 
 	}
 
+	public void selectProtocol(String ip, int port) {
+		String payload = gson.toJson(new VoicePacket(SELECT_PROTOCOL, new VoiceUDPBegin(new VoiceData(ip, port))));
+		send(payload);
+	}
+
 	public void send(String payload) {
 		System.out.println(payload);
 		ws.sendText(payload);
@@ -115,11 +132,6 @@ public class VoiceGateway extends WebSocketAdapter {
 		VoiceIdentify payload = new VoiceIdentify(SnowflakeUtil.asString(connection.getGuild()), SnowflakeUtil.asString(connection.getLoader().user), sessionID, connection.getToken());
 		VoicePacket packet = new VoicePacket(IDENTIFY, payload);
 		send(gson.toJson(packet));
-	}
-
-	public void selectProtocol(String ip, int port) {
-		String payload = gson.toJson(new VoicePacket(SELECT_PROTOCOL, new VoiceUDPBegin(new VoiceData(ip, port))));
-		send(payload);
 	}
 
 	public void setSequence(int s) {
@@ -157,10 +169,6 @@ public class VoiceGateway extends WebSocketAdapter {
 		heartbeatThread.setPriority((Thread.NORM_PRIORITY + Thread.MAX_PRIORITY) / 2);
 		heartbeatThread.setDaemon(true);
 		heartbeatThread.start();
-	}
-
-	public CompletableFuture<VoiceConnect> disconnect() {
-		return new CompletableFuture<>();
 	}
 
 }

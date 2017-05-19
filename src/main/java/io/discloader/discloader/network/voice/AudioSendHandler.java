@@ -51,7 +51,10 @@ public class AudioSendHandler implements AudioOutputHook {
 			public void run() {
 				boolean test = false;
 				long lastSent = System.currentTimeMillis();
-//				if (!udpSocket.isConnected() udpSocket.)
+				if (!udpSocket.isConnected()) {
+					System.out.println("connecting!?!?!");
+					udpSocket.connect(connection.getUDPClient().getVoiceGateway().getAddress(), connection.getUDPClient().getVoiceGateway().getPort());
+				}
 				while (!udpSocket.isClosed() && !packetThread.isInterrupted()) {
 					try {
 						DatagramPacket packet = getNextPacket();
@@ -59,7 +62,7 @@ public class AudioSendHandler implements AudioOutputHook {
 							if (!test) {
 								test = true;
 								System.out.println("hm hm");
-								connection.setSpeaking(true);
+								// connection.setSpeaking(true);
 							}
 							udpSocket.send(packet);
 						}
@@ -117,13 +120,10 @@ public class AudioSendHandler implements AudioOutputHook {
 
 		try {
 			if (canProvide()) {
-				rawAudio = provide20MsAudio();
+				byte[] rawAudio = provide20MsAudio();
 				if (rawAudio != null && rawAudio.length != 0) {
 					StreamPacket packet = new StreamPacket(sequence, timestamp, connection.getSSRC(), rawAudio);
-					nextPacket = packet.toEncryptedPacket(connection.getUDPClient().getVoice_gateway(), secretKey);
-					// packet.
-					// System.out.println(0l + sequence);
-					// System.out.println(timestamp);
+					nextPacket = packet.toEncryptedPacket(connection.getUDPClient().getVoiceGateway(), connection.getWebSocket().getSecretKey());
 					if (sequence + 1 > Character.MAX_VALUE) {
 						sequence = 0;
 					} else {
@@ -155,6 +155,10 @@ public class AudioSendHandler implements AudioOutputHook {
 	 */
 	public byte[] getRawPacket() {
 		return Arrays.copyOf(this.rawPacket, this.rawPacket.length);
+	}
+
+	public boolean isOpen() {
+		return packetThread != null && !packetThread.isInterrupted();
 	}
 
 	@Override
