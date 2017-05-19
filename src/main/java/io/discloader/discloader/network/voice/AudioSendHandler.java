@@ -44,16 +44,24 @@ public class AudioSendHandler implements AudioOutputHook {
 
 	public void sendPackets(DatagramSocket udpSocket) {
 		// connection.setSpeaking(true);
-//		if (udpSocket == null) udpSocket = 
+		// if (udpSocket == null) udpSocket =
 		packetThread = new Thread("VoiceUDPSender - Guild: " + connection.getGuild().getID()) {
 
 			@Override
 			public void run() {
+				boolean test = false;
 				long lastSent = System.currentTimeMillis();
 				while (!udpSocket.isClosed() && !packetThread.isInterrupted()) {
 					try {
 						DatagramPacket packet = getNextPacket();
-						if (packet != null) udpSocket.send(packet);
+						if (packet != null) {
+							if (!test) {
+								test = true;
+								System.out.println("hm hm");
+								connection.setSpeaking(true);
+							}
+							udpSocket.send(packet);
+						}
 
 					} catch (Exception e) {
 						e.printStackTrace();
@@ -113,8 +121,8 @@ public class AudioSendHandler implements AudioOutputHook {
 					StreamPacket packet = new StreamPacket(sequence, timestamp, connection.getSSRC(), rawAudio);
 					nextPacket = packet.toEncryptedPacket(connection.getUDPClient().getVoice_gateway(), secretKey);
 					// packet.
-//					System.out.println(0l + sequence);
-//					System.out.println(timestamp);
+					// System.out.println(0l + sequence);
+					// System.out.println(timestamp);
 					if (sequence + 1 > Character.MAX_VALUE) {
 						sequence = 0;
 					} else {

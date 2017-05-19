@@ -129,21 +129,23 @@ public class VoiceConnect {
 
 		InetSocketAddress externalAddress = null;
 		int tries = 0;
-		if (data.ip == null) {
+		// if (data.ip == null) {
+		try {
+			InetSocketAddress gg = new InetSocketAddress(endpoint + "", data.port);
 			while (externalAddress == null) {
-				externalAddress = this.udpClient.discoverAddress(new InetSocketAddress(endpoint, data.port), data.ssrc);
+				externalAddress = this.udpClient.discoverAddress(gg, data.ssrc);
 				tries++;
 				if (externalAddress == null && tries > 5) {
 					logger.severe("IP discovery failed!");
 					return;
 				}
 			}
-			ws.selectProtocol(externalAddress.getHostName(), externalAddress.getPort());
-		} else {
-			udpClient.setVoice_gateway(new InetSocketAddress(endpoint, data.port));
-			ws.selectProtocol(data.ip, data.port);
+			ws.selectProtocol(externalAddress.getHostString(), externalAddress.getPort());
+		} catch (Exception e) {
+			e.printStackTrace();
 		}
-		System.out.println(data.heartbeat_interval);
+		// }
+		System.out.println("CCTV: " + data.heartbeat_interval);
 		ws.startHeartbeat(data.heartbeat_interval);
 	}
 
@@ -156,6 +158,7 @@ public class VoiceConnect {
 	}
 
 	public void endpointReceived(String endpoint, String token) {
+		System.out.println(endpoint);
 		this.endpoint = endpoint.substring(0, endpoint.length() - 3);
 		this.token = token;
 		if (stateUpdated) {
@@ -233,7 +236,7 @@ public class VoiceConnect {
 	}
 
 	public void play(AudioTrack track) {
-		setSpeaking(true);
+		// setSpeaking(true);
 		player.playTrack(track);
 	}
 

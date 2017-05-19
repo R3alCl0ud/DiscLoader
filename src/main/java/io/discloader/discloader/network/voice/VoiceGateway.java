@@ -1,7 +1,6 @@
 package io.discloader.discloader.network.voice;
 
 import java.io.IOException;
-import java.net.InetSocketAddress;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
@@ -19,20 +18,18 @@ import io.discloader.discloader.common.event.voice.VoiceConnectionReadyEvent;
 import io.discloader.discloader.entity.util.SnowflakeUtil;
 import io.discloader.discloader.entity.voice.VoiceConnect;
 import io.discloader.discloader.network.gateway.packets.SocketPacket;
-import io.discloader.discloader.network.json.HelloJSON;
 import io.discloader.discloader.network.voice.payloads.SessionDescription;
 import io.discloader.discloader.network.voice.payloads.VoiceData;
 import io.discloader.discloader.network.voice.payloads.VoiceIdentify;
 import io.discloader.discloader.network.voice.payloads.VoicePacket;
 import io.discloader.discloader.network.voice.payloads.VoiceReady;
 import io.discloader.discloader.network.voice.payloads.VoiceUDPBegin;
-import io.discloader.discloader.util.DLUtil;
 
 public class VoiceGateway extends WebSocketAdapter {
 
 	// VoiceConnection OP codes
 	public static final int IDENTIFY = 0;
-	public static final int SELECT_PROTOCAL = 1;
+	public static final int SELECT_PROTOCOL = 1;
 	public static final int READY = 2;
 	public static final int HEARTBEAT = 3;
 	public static final int SESSION_DESCRIPTION = 4;
@@ -77,22 +74,24 @@ public class VoiceGateway extends WebSocketAdapter {
 	public void onTextMessage(WebSocket ws, String text) throws Exception {
 		SocketPacket packet = gson.fromJson(text, SocketPacket.class);
 		if (packet.op == HELLO) {
-			HelloJSON hello = gson.fromJson(gson.toJson(packet.d), HelloJSON.class);
+			System.out.println("HELLO?!?!?!?");
+			// HelloJSON hello = gson.fromJson(gson.toJson(packet.d),
+			// HelloJSON.class);
 		}
 
-		if (packet.op == HEARTBEAT) {
-			VoicePacket vpacket = new VoicePacket(HEARTBEAT, sequence);
-			// System.out.println(gson.toJson(vpacket));
-			send(gson.toJson(vpacket));
-			return;
-		}
+		// if (packet.op == HEARTBEAT) {
+		// VoicePacket vpacket = new VoicePacket(HEARTBEAT, sequence);
+		// // System.out.println(gson.toJson(vpacket));
+		// send(gson.toJson(vpacket));
+		// return;
+		// }
 		logger.info(text);
 		setSequence(packet.s);
 		switch (packet.op) {
 		case READY:
 			VoiceReady data = gson.fromJson(gson.toJson(packet.d), VoiceReady.class);
 			connection.setSSRC(data.ssrc);
-			this.connection.connectUDP(data);
+			connection.connectUDP(data);
 			break;
 		case SESSION_DESCRIPTION:
 			SessionDescription data2 = gson.fromJson(gson.toJson(packet.d), SessionDescription.class);
@@ -112,29 +111,28 @@ public class VoiceGateway extends WebSocketAdapter {
 	}
 
 	public void sendIdentify() {
-		System.out.println(connection.getToken());
+		// System.out.println(connection.getToken());
 		VoiceIdentify payload = new VoiceIdentify(SnowflakeUtil.asString(connection.getGuild()), SnowflakeUtil.asString(connection.getLoader().user), sessionID, connection.getToken());
 		VoicePacket packet = new VoicePacket(IDENTIFY, payload);
 		send(gson.toJson(packet));
 	}
 
 	public void selectProtocol(String ip, int port) {
-		String payload = DLUtil.gson.toJson(new VoicePacket(1, new VoiceUDPBegin(new VoiceData(ip, port))));
+		String payload = gson.toJson(new VoicePacket(SELECT_PROTOCOL, new VoiceUDPBegin(new VoiceData(ip, port))));
 		send(payload);
 	}
-	
+
 	public void setSequence(int s) {
 		if (s > sequence) sequence = s;
 	}
 
 	public void setSpeaking(boolean isSpeaking) {
-		System.out.println(gson.toJson(new VoicePacket(SPEAKING, new Speaking(isSpeaking, 0))));
 		send(gson.toJson(new VoicePacket(SPEAKING, new Speaking(isSpeaking, 0))));
 	}
 
 	public void startHeartbeat(long interval) {
-		System.out.println(interval);
-		System.out.println(connection.getSSRC());
+		// System.out.println(interval);
+		// System.out.println(connection.getSSRC());
 		if (heartbeatThread != null) return;
 		heartbeatThread = new Thread(logger.getName()) {
 

@@ -4,7 +4,6 @@ import java.io.IOException;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetSocketAddress;
-import java.net.SocketException;
 import java.nio.ByteBuffer;
 
 public class UDPVoiceClient {
@@ -20,19 +19,29 @@ public class UDPVoiceClient {
 
 	private InetSocketAddress voice_gateway;
 
-	public void bindConnection(InetSocketAddress gateway) {
+	public void bindConnection() {
 		try {
-			voice_gateway = gateway;
-			udpSocket.bind(voice_gateway);
-		} catch (SocketException e) {
+			System.out.println("trying to bind to address: " + voice_gateway.toString());
+
+			if (udpSocket == null) {
+				udpSocket = new DatagramSocket();
+				udpSocket.bind(voice_gateway);
+			} else {
+				if (udpSocket.getRemoteSocketAddress() != null) {
+					System.out.println(udpSocket.getRemoteSocketAddress());
+				}
+			}
+		} catch (Exception e) {
 			e.printStackTrace();
 		}
 	}
 
 	public InetSocketAddress discoverAddress(InetSocketAddress endpoint, int ssrc) {
 		voice_gateway = endpoint;
+//		bindConnection();
 		try {
-			if (udpSocket == null) udpSocket = new DatagramSocket();
+			// if (udpSocket == null) udpSocket = new DatagramSocket();
+			udpSocket = new DatagramSocket();
 			ByteBuffer buffer = ByteBuffer.allocate(70);
 			buffer.putInt(ssrc);
 			DatagramPacket discovery = new DatagramPacket(buffer.array(), buffer.array().length, endpoint);
@@ -54,7 +63,7 @@ public class UDPVoiceClient {
 			int first = (0x000000FF & ((int) ports[0]));
 			int second = (0x000000FF & ((int) ports[1]));
 			int port = (first << 8) | second;
-
+//			socket.close();
 			return new InetSocketAddress(ip, port);
 		} catch (IOException e) {
 			e.printStackTrace();
