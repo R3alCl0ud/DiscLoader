@@ -43,6 +43,8 @@ import io.discloader.discloader.common.event.message.GuildMessageDeleteEvent;
 import io.discloader.discloader.common.event.message.GuildMessageUpdateEvent;
 import io.discloader.discloader.common.event.message.MessageCreateEvent;
 import io.discloader.discloader.common.event.message.MessageDeleteEvent;
+import io.discloader.discloader.common.event.message.MessageReactionAddEvent;
+import io.discloader.discloader.common.event.message.MessageReactionRemoveEvent;
 import io.discloader.discloader.common.event.message.MessageUpdateEvent;
 import io.discloader.discloader.common.event.message.PrivateMessageCreateEvent;
 import io.discloader.discloader.common.event.message.PrivateMessageDeleteEvent;
@@ -118,6 +120,10 @@ public class EventManager {
 				} else {
 					handler.MessageDelete((MessageDeleteEvent) event);
 				}
+			} else if (event instanceof MessageReactionAddEvent) {
+				handler.MessageReactionAdd((MessageReactionAddEvent) event);
+			} else if (event instanceof MessageReactionRemoveEvent) {
+				handler.MessageReactionRemove((MessageReactionRemoveEvent) event);
 			} else if (event instanceof DLPreInitEvent) {
 				handler.PreInit((DLPreInitEvent) event);
 			} else if (event instanceof RawEvent) {

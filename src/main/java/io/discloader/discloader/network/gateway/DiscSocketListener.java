@@ -41,6 +41,8 @@ import io.discloader.discloader.network.gateway.packets.MessageCreate;
 import io.discloader.discloader.network.gateway.packets.MessageDelete;
 import io.discloader.discloader.network.gateway.packets.MessageUpdate;
 import io.discloader.discloader.network.gateway.packets.PresenceUpdate;
+import io.discloader.discloader.network.gateway.packets.ReactionAdd;
+import io.discloader.discloader.network.gateway.packets.ReactionRemove;
 import io.discloader.discloader.network.gateway.packets.Ready;
 import io.discloader.discloader.network.gateway.packets.Resumed;
 import io.discloader.discloader.network.gateway.packets.RoleCreate;
@@ -109,11 +111,14 @@ public class DiscSocketListener extends WebSocketAdapter {
 		this.register(WSEvents.CHANNEL_UPDATE, new ChannelUpdate(this.socket));
 		this.register(WSEvents.PRESENCE_UPDATE, new PresenceUpdate(this.socket));
 		this.register(WSEvents.MESSAGE_CREATE, new MessageCreate(this.socket));
-		this.register(WSEvents.MESSAGE_UPDATE, new MessageUpdate(this.socket));
 		this.register(WSEvents.MESSAGE_DELETE, new MessageDelete(this.socket));
+		this.register(WSEvents.MESSAGE_REACTION_ADD, new ReactionAdd(this.socket));
+		this.register(WSEvents.MESSAGE_REACTION_REMOVE, new ReactionRemove(this.socket));
+		this.register(WSEvents.MESSAGE_UPDATE, new MessageUpdate(this.socket));
 		this.register(WSEvents.TYPING_START, new TypingStart(this.socket));
 		this.register(WSEvents.VOICE_STATE_UPDATE, new VoiceStateUpdate(this.socket));
 		this.register(WSEvents.VOICE_SERVER_UPDATE, new VoiceServerUpdate(this.socket));
+
 	}
 
 	public void handle(SocketPacket packet) {

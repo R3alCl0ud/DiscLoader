@@ -227,7 +227,7 @@ public interface IEventListener {
 	
 	void MessageReactionAdd(MessageReactionAddEvent e);
 
-	void MessageReactionRemoveEvent(MessageReactionRemoveEvent e);
+	void MessageReactionRemove(MessageReactionRemoveEvent e);
 
 	/**
 	 * Gets emitted during startup, when the current startup phase changes

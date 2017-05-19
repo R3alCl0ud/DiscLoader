@@ -8,6 +8,7 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 
 import io.discloader.discloader.network.gateway.packets.SocketPacket;
+import io.discloader.discloader.util.DLUtil;
 
 public class PacketsTab extends JPanel {
 
@@ -36,6 +37,9 @@ public class PacketsTab extends JPanel {
 			l.setForeground(new Color(0xFFFFFF));
 			labels.put(t, l);
 			instance.add(l);
+		}
+		if (t.equals("MESSAGE_REACTION_ADD") ||t.equals("MESSAGE_REACTION_REMOVE")) {
+			System.out.println(DLUtil.gson.toJson(packet));
 		}
 		counts.put(t, counts.get(t) + 1);
 		labels.get(t).setText(String.format("%s: %d", t, counts.get(t)));

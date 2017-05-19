@@ -100,7 +100,7 @@ public final class DLUtil {
 		public static final String defaultAvatar(int num) {
 			return String.format("%s/embed/avatar/%d.png", CDN, num);
 		}
-		
+
 		public static final String bulkDelete(long channelID) {
 			return String.format("%s/bulk-delete", messages(channelID));
 		}
@@ -578,9 +578,13 @@ public final class DLUtil {
 
 		public static final String MESSAGE_CREATE = "MESSAGE_CREATE";
 
-		public static final String MESSAGE_UPDATE = "MESSAGE_UPDATE";
-
 		public static final String MESSAGE_DELETE = "MESSAGE_DELETE";
+
+		public static final String MESSAGE_REACTION_ADD = "MESSAGE_REACTION_ADD";
+
+		public static final String MESSAGE_REACTION_REMOVE = "MESSAGE_REACTION_REMOVE";
+
+		public static final String MESSAGE_UPDATE = "MESSAGE_UPDATE";
 
 		public static final String PRESENCE_UPDATE = "PRESENCE_UPDATE";
 

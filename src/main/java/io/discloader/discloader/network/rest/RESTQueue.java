@@ -118,7 +118,7 @@ public class RESTQueue {
 							@Override
 							public void run() {
 								try {
-									Thread.sleep(Integer.parseInt(headers.get("retry-after").get(0), 10) + 500);
+									Thread.sleep(Integer.parseInt(headers.get("Retry-After").get(0), 10) + 500);
 								} catch (NumberFormatException e) {
 									e.printStackTrace();
 								} catch (InterruptedException e) {

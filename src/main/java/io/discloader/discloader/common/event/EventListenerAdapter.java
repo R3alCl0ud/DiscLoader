@@ -266,7 +266,7 @@ public abstract class EventListenerAdapter implements IEventListener {
 	}
 
 	@Override
-	public void MessageReactionRemoveEvent(MessageReactionRemoveEvent e) {
+	public void MessageReactionRemove(MessageReactionRemoveEvent e) {
 	}
 
 }
