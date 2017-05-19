@@ -51,6 +51,7 @@ public class AudioSendHandler implements AudioOutputHook {
 			public void run() {
 				boolean test = false;
 				long lastSent = System.currentTimeMillis();
+//				if (!udpSocket.isConnected() udpSocket.)
 				while (!udpSocket.isClosed() && !packetThread.isInterrupted()) {
 					try {
 						DatagramPacket packet = getNextPacket();
