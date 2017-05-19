@@ -111,7 +111,7 @@ public class Main {
 					if (channel == null) return;
 					channel.join().thenAccept(connection -> {
 						LOGGER.info("Connection joined");
-						connection.play("https://soundcloud.com/65daysofstatic/illuminaire-65daysofstatic");
+						connection.play("https://soundcloud.com/r3alcl0ud/likes");
 					});
 				}
 

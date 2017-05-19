@@ -2,6 +2,7 @@ package io.discloader.discloader.common.event;
 
 import java.util.Map;
 
+import io.discloader.discloader.common.DiscLoader;
 import io.discloader.discloader.common.event.channel.ChannelCreateEvent;
 import io.discloader.discloader.common.event.channel.ChannelDeleteEvent;
 import io.discloader.discloader.common.event.channel.ChannelUpdateEvent;
@@ -48,7 +49,6 @@ import io.discloader.discloader.core.entity.guild.Role;
 import io.discloader.discloader.core.entity.user.User;
 import io.discloader.discloader.entity.channel.ITextChannel;
 import io.discloader.discloader.entity.guild.IGuildEmoji;
-import io.discloader.discloader.entity.voice.VoiceConnection;
 
 /**
  * Interface for DiscLoader events
