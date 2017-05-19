@@ -6,6 +6,7 @@ import java.time.LocalDateTime;
 import java.time.ZoneOffset;
 import java.time.temporal.TemporalAccessor;
 import java.util.ArrayList;
+import java.util.List;
 
 import io.discloader.discloader.client.render.util.Resource;
 import io.discloader.discloader.entity.embed.EmbedAuthor;
@@ -18,52 +19,52 @@ import io.discloader.discloader.entity.embed.EmbedThumbnail;
  * @author Perry Berman
  */
 public class RichEmbed {
-	
+
 	/**
 	 * title of embed
 	 */
 	public String title;
-	
+
 	/**
 	 * description of RichEmbed
 	 */
 	public String description;
-	
+
 	/**
 	 * url of embed
 	 */
 	public String url;
-	
+
 	/**
 	 * timestamp of embed content
 	 */
 	public String timestamp;
-	
+
 	/**
 	 * The color of the RichEmbed color bar
 	 */
-	public int color;
-	
+	private int color;
+
 	private EmbedImage image;
-	
+
 	/**
 	 * An {@link ArrayList} of {@link EmbedField EmbedFields}.
 	 * 
 	 * @author Perry Berman
 	 */
-	public ArrayList<EmbedField> fields;
-	
-	public EmbedFooter footer;
-	public EmbedThumbnail thumbnail;
-	public EmbedAuthor author;
-	
+	private List<EmbedField> fields;
+
+	private EmbedFooter footer;
+	private EmbedThumbnail thumbnail;
+	private EmbedAuthor author;
+
 	/**
 	 * Creates a new RichEmbed
 	 */
 	public RichEmbed() {
 		this(null);
 	}
-	
+
 	/**
 	 * Creates a new RichEmbed
 	 * 
@@ -73,7 +74,7 @@ public class RichEmbed {
 		this.title = title;
 		this.fields = new ArrayList<EmbedField>();
 	}
-	
+
 	/**
 	 * Adds a new field to the embed
 	 * 
@@ -84,7 +85,7 @@ public class RichEmbed {
 	public RichEmbed addField(String name, String value) {
 		return this.addField(name, value, false);
 	}
-	
+
 	/**
 	 * Adds a new field to the embed
 	 * 
@@ -99,18 +100,50 @@ public class RichEmbed {
 		}
 		return this;
 	}
-	
+
+	/**
+	 * @return the author
+	 */
+	public EmbedAuthor getAuthor() {
+		return author;
+	}
+
+	/**
+	 * @return the color
+	 */
+	public int getColor() {
+		return color;
+	}
+
+	public List<EmbedField> getFields() {
+		return fields;
+	}
+
+	/**
+	 * @return the footer
+	 */
+	public EmbedFooter getFooter() {
+		return footer;
+	}
+
 	/**
 	 * @return the image
 	 */
 	public EmbedImage getImage() {
 		return image;
 	}
-	
+
 	public EmbedThumbnail getThumbnail() {
 		return thumbnail;
 	}
-	
+
+	/**
+	 * @param author the author to set
+	 */
+	public void setAuthor(EmbedAuthor author) {
+		this.author = author;
+	}
+
 	/**
 	 * Sets the author of the RichEmbed
 	 * 
@@ -120,7 +153,7 @@ public class RichEmbed {
 	public RichEmbed setAuthor(String name) {
 		return this.setAuthor(name, null);
 	}
-	
+
 	/**
 	 * Set's the author of the RichEmbed
 	 * 
@@ -131,7 +164,7 @@ public class RichEmbed {
 	public RichEmbed setAuthor(String name, String url) {
 		return this.setAuthor(name, url, null);
 	}
-	
+
 	/**
 	 * Set's the author of the RichEmbed
 	 * 
@@ -144,18 +177,19 @@ public class RichEmbed {
 		this.author = new EmbedAuthor(name, url, icon);
 		return this;
 	}
-	
+
 	/**
 	 * Sets the RichEmbed's color bar's color
 	 * 
-	 * @param color The integer representation of the color bars color. Ex: {@code 0xFFFFFF} is the integer value for white
+	 * @param color The integer representation of the color bars color. Ex:
+	 *            {@code 0xFFFFFF} is the integer value for white
 	 * @return this
 	 */
 	public RichEmbed setColor(int color) {
 		this.color = color;
 		return this;
 	}
-	
+
 	/**
 	 * Sets the RichEmbed's {@link #description}
 	 * 
@@ -166,11 +200,18 @@ public class RichEmbed {
 		this.description = description;
 		return this;
 	}
-	
+
+	/**
+	 * @param footer the footer to set
+	 */
+	public void setFooter(EmbedFooter footer) {
+		this.footer = footer;
+	}
+
 	public RichEmbed setFooter(String text) {
 		return setFooter(text, null);
 	}
-	
+
 	/**
 	 * Sets the RichEmbed's footer
 	 * 
@@ -182,7 +223,17 @@ public class RichEmbed {
 		this.footer = new EmbedFooter(text, iconURL);
 		return this;
 	}
-	
+
+	public RichEmbed setImage(File img) {
+		image = new EmbedImage(img);
+		return this;
+	}
+
+	public RichEmbed setImage(Resource resource) throws IOException {
+		image = new EmbedImage(resource);
+		return this;
+	}
+
 	/**
 	 * @param image the image to set
 	 */
@@ -190,17 +241,7 @@ public class RichEmbed {
 		image = new EmbedImage(url);
 		return this;
 	}
-	
-	public RichEmbed setImage(File img) {
-		image = new EmbedImage(img);
-		return this;
-	}
-	
-	public RichEmbed setImage(Resource resource) throws IOException {
-		image = new EmbedImage(resource);
-		return this;
-	}
-	
+
 	/**
 	 * Sets the RichEmbed's {@link #thumbnail}
 	 * 
@@ -211,12 +252,12 @@ public class RichEmbed {
 		this.thumbnail = new EmbedThumbnail(file);
 		return this;
 	}
-	
-	public RichEmbed setThumbnail(Resource resource) throws IOException {
-		thumbnail = new EmbedThumbnail(resource);
+
+	public RichEmbed setThumbnail(Resource resource) {
+		if (resource != null) thumbnail = new EmbedThumbnail(resource);
 		return this;
 	}
-	
+
 	/**
 	 * Sets the RichEmbed's {@link #thumbnail}
 	 * 
@@ -227,13 +268,13 @@ public class RichEmbed {
 		this.thumbnail = new EmbedThumbnail(URL);
 		return this;
 	}
-	
+
 	public RichEmbed setTimestamp(TemporalAccessor time) {
 		LocalDateTime ldt = LocalDateTime.from(time);
 		timestamp = ldt.atOffset(ZoneOffset.UTC).toString();
 		return this;
 	}
-	
+
 	/**
 	 * Sets the RichEmbed's title
 	 * 
@@ -244,10 +285,10 @@ public class RichEmbed {
 		this.title = title;
 		return this;
 	}
-	
+
 	public RichEmbed setURL(String url) {
 		this.url = url;
 		return this;
 	}
-	
+
 }

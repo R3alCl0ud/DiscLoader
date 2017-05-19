@@ -161,7 +161,7 @@ public class TextChannel extends GuildChannel implements IGuildTextChannel {
 
 	@Override
 	public CompletableFuture<IMessage> sendEmbed(RichEmbed embed) {
-		if (embed.thumbnail != null && embed.thumbnail.resource != null) return sendMessage(null, embed, (Resource) null);
+		if (embed.getThumbnail() != null && embed.getThumbnail().resource != null) return sendMessage(null, embed, (Resource) null);
 		if (embed.getImage() != null && embed.getImage().resource != null) return sendMessage(null, embed, (Resource) null);
 		return sendMessage(null, embed, (File) null);
 	}
@@ -183,7 +183,7 @@ public class TextChannel extends GuildChannel implements IGuildTextChannel {
 
 	@Override
 	public CompletableFuture<IMessage> sendMessage(String content, RichEmbed embed) {
-		if ((embed.thumbnail != null && embed.thumbnail.resource != null)) return sendMessage(content, embed, (Resource) null);
+		if ((embed.getThumbnail() != null && embed.getThumbnail().resource != null)) return sendMessage(content, embed, (Resource) null);
 		if ((embed.getImage() != null && embed.getImage().resource != null)) return sendMessage(content, embed, (Resource) null);
 		return sendMessage(content, embed, (File) null);
 	}
@@ -192,9 +192,8 @@ public class TextChannel extends GuildChannel implements IGuildTextChannel {
 	public CompletableFuture<IMessage> sendMessage(String content, RichEmbed embed, File file) {
 		Attachment attachment = null;
 		if (embed != null) {
-			if (embed.thumbnail != null && embed.thumbnail.file != null) {
-				file = embed.thumbnail.file;
-				embed.thumbnail.file = null;
+			if (embed.getThumbnail() != null && embed.getThumbnail().file != null) {
+				file = embed.getThumbnail().file;
 				attachment = new Attachment(file.getName());
 			} else if (embed.getImage() != null && embed.getImage().file != null) {
 				file = embed.getImage().file;
@@ -208,9 +207,9 @@ public class TextChannel extends GuildChannel implements IGuildTextChannel {
 	public CompletableFuture<IMessage> sendMessage(String content, RichEmbed embed, Resource resource) {
 		Attachment attachment = null;
 		if (embed != null) {
-			if (embed.thumbnail != null && embed.thumbnail.resource != null) {
-				resource = embed.thumbnail.resource;
-				attachment = new Attachment(embed.thumbnail.resource.getFileName());
+			if (embed.getThumbnail() != null && embed.getThumbnail().resource != null) {
+				resource = embed.getThumbnail().resource;
+				attachment = new Attachment(embed.getThumbnail().resource.getFileName());
 			} else if (embed.getImage() != null && embed.getImage().resource != null) {
 				resource = embed.getImage().resource;
 				attachment = new Attachment(embed.getImage().resource.getFileName());

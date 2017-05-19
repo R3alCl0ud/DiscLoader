@@ -26,7 +26,7 @@ public class FieldList extends JPanel implements ActionListener {
 		this.setBackground(new Color(0x2C2F33));
 		this.embed = embed;
 		fields = new ArrayList<>();
-		for (EmbedField f : embed.fields) {
+		for (EmbedField f : embed.getFields()) {
 			FieldBuilder fb = new FieldBuilder(f);
 			fields.add(fb);
 			add(fb);
@@ -36,9 +36,9 @@ public class FieldList extends JPanel implements ActionListener {
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		if (ADD_FIELD.equals(e.getActionCommand())) {
-			int i = embed.fields.size();
+			int i = embed.getFields().size();
 			embed.addField("", "", false);
-			FieldBuilder fb = new FieldBuilder(embed.fields.get(i));
+			FieldBuilder fb = new FieldBuilder(embed.getFields().get(i));
 			fields.add(fb);
 			add(fb);
 		}

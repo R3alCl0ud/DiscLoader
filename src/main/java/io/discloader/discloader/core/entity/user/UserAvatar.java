@@ -23,6 +23,11 @@ public class UserAvatar implements IIcon {
 		return new URL(Endpoints.avatar(userID, hash));
 	}
 
+	public String toString() {
+		if (hash == null) return Endpoints.defaultAvatar(discrim % 5);
+		return Endpoints.avatar(userID, hash);
+	}
+
 	@Override
 	public String getHash() {
 		return hash;

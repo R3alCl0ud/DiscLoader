@@ -105,6 +105,7 @@ public class EntityRegistry {
 	}
 
 	public static List<IGuild> getGuildsOnShard(Shard shard) {
+		if (shard == null) return new ArrayList<>();
 		List<IGuild> sgs = new ArrayList<>();
 		for (IGuild guild : getGuilds()) {
 			if ((guild.getID() >> 22) % shard.getShardCount() == shard.getShardID()) sgs.add(guild);
@@ -121,6 +122,7 @@ public class EntityRegistry {
 	}
 
 	public static IPrivateChannel getPrivateChannelByUser(IUser user) {
+		if (user == null) return null;
 		return getPrivateChannelByUserID(user.getID());
 	}
 
@@ -175,6 +177,7 @@ public class EntityRegistry {
 	}
 
 	public static VoiceConnect getVoiceConnectionByGuild(IGuild guild) {
+		if (guild == null) return null;
 		return getVoiceConnectionByID(guild.getID());
 	}
 
@@ -187,6 +190,7 @@ public class EntityRegistry {
 	}
 
 	public static boolean guildExists(IGuild guild) {
+		if (guild == null) return false;
 		return guilds.containsValue(guild);
 	}
 
@@ -202,11 +206,17 @@ public class EntityRegistry {
 		return voiceConnections.containsKey(guildID);
 	}
 
+	public static boolean hasVoiceConnection(IGuild guild) {
+		if (guild == null) return false;
+		return voiceConnections.containsKey(guild.getID());
+	}
+
 	public static void putVoiceConnection(VoiceConnect connection) {
 		voiceConnections.put(connection.getGuild().getID(), connection);
 	}
 
 	public static void removeChannel(IChannel channel) {
+		if (channel == null) return;
 		channels.remove(channel.getID());
 		if (channel.getType() == ChannelType.TEXT) {
 			textChannels.remove(channel.getID());
@@ -220,6 +230,7 @@ public class EntityRegistry {
 	}
 
 	public static void removeGuild(IGuild guild) {
+		if (guild == null) return;
 		guilds.remove(guild.getID());
 	}
 

@@ -35,6 +35,8 @@ import io.discloader.discloader.common.event.message.GuildMessageDeleteEvent;
 import io.discloader.discloader.common.event.message.GuildMessageUpdateEvent;
 import io.discloader.discloader.common.event.message.MessageCreateEvent;
 import io.discloader.discloader.common.event.message.MessageDeleteEvent;
+import io.discloader.discloader.common.event.message.MessageReactionAddEvent;
+import io.discloader.discloader.common.event.message.MessageReactionRemoveEvent;
 import io.discloader.discloader.common.event.message.MessageUpdateEvent;
 import io.discloader.discloader.common.event.message.PrivateMessageCreateEvent;
 import io.discloader.discloader.common.event.message.PrivateMessageDeleteEvent;
@@ -257,6 +259,14 @@ public abstract class EventListenerAdapter implements IEventListener {
 
 	@Override
 	public void VoiceStateUpdate(VoiceStateUpdateEvent e) {
+	}
+
+	@Override
+	public void MessageReactionAdd(MessageReactionAddEvent e) {
+	}
+
+	@Override
+	public void MessageReactionRemoveEvent(MessageReactionRemoveEvent e) {
 	}
 
 }

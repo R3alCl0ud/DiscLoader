@@ -46,7 +46,6 @@ public class AudioSendHandler implements AudioOutputHook {
 			
 			@Override
 			public void run() {
-				System.out.println("SEND!!!");
 				long lastSent = System.currentTimeMillis();
 				if (!udpSocket.isConnected()) {
 					udpSocket.connect(connection.getUDPClient().getVoiceGateway().getAddress(), connection.getUDPClient().getVoiceGateway().getPort());
@@ -81,7 +80,6 @@ public class AudioSendHandler implements AudioOutputHook {
 		// }
 		
 		packetThread.setPriority((Thread.NORM_PRIORITY + Thread.MAX_PRIORITY) / 2);
-		// packetThread.setDaemon(true);
 		packetThread.start();
 		
 	}

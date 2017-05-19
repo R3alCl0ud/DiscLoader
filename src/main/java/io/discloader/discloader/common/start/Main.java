@@ -107,12 +107,7 @@ public class Main {
 			loader.addEventHandler(new EventListenerAdapter() {
 
 				public void Ready(ReadyEvent e) {
-					IVoiceChannel channel = EntityRegistry.getVoiceChannelByID(245275468201328644l);
-					if (channel == null) return;
-					channel.join().thenAccept(connection -> {
-						LOGGER.info("Connection joined");
-						connection.play("https://soundcloud.com/r3alcl0ud/likes");
-					});
+
 				}
 
 				@Override

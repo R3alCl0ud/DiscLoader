@@ -19,6 +19,7 @@ import io.discloader.discloader.entity.util.SnowflakeUtil;
 import io.discloader.discloader.entity.voice.VoiceConnect;
 import io.discloader.discloader.network.gateway.packets.SocketPacket;
 import io.discloader.discloader.network.voice.payloads.SessionDescription;
+import io.discloader.discloader.network.voice.payloads.Speaking;
 import io.discloader.discloader.network.voice.payloads.VoiceData;
 import io.discloader.discloader.network.voice.payloads.VoiceIdentify;
 import io.discloader.discloader.network.voice.payloads.VoicePacket;
@@ -130,7 +131,7 @@ public class VoiceGateway extends WebSocketAdapter {
 	public void startHeartbeat(long interval) {
 		if (heartbeatThread != null)
 			return;
-		heartbeatThread = new Thread(logger.getName()) {
+		heartbeatThread = new Thread(logger.getName().replace("VoiceGateway", "VoiceGateway Heartbeat")) {
 			
 			@Override
 			public void run() {

@@ -106,7 +106,7 @@ public class Command {
 	}
 	
 	public Resource getResourceLocation() {
-		return null;
+		return new Resource("DiscLoader", "texture/commands/missing-texture.png");
 	}
 	
 	/**

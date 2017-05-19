@@ -3,6 +3,7 @@ package io.discloader.discloader.network.rest;
 import static io.discloader.discloader.util.DLUtil.gson;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.concurrent.CompletableFuture;
 
 import com.mashape.unirest.http.Unirest;
@@ -94,8 +95,8 @@ public class APIRequest {
 					if (file != null) loc = file.getName();
 					if (resource != null) loc = resource.getFileName();
 					body.field("Content-type", "multipart/form-data").field("file", bytes, loc).field("payload_json", gson.toJson(sdata));
-				} catch (Exception e) {
-					e.printStackTrace();
+				} catch (IOException ex) {
+					ex.printStackTrace();
 				}
 			} else {
 				((HttpRequestWithBody) request).body(gson.toJson(data));
@@ -116,7 +117,6 @@ public class APIRequest {
 			request = Unirest.get(this.route);
 			break;
 		}
-
 		return request;
 	}
 

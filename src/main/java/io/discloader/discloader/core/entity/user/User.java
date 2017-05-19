@@ -198,7 +198,7 @@ public class User implements IUser {
 
 	@Override
 	public CompletableFuture<IMessage> sendEmbed(RichEmbed embed) {
-		if (embed.thumbnail != null && embed.thumbnail.resource != null) return sendMessage(null, embed, (Resource) null);
+		if (embed.getThumbnail() != null && embed.getThumbnail().resource != null) return sendMessage(null, embed, (Resource) null);
 		if (embed.getImage() != null && embed.getImage().resource != null) return sendMessage(null, embed, (Resource) null);
 		return sendMessage(null, embed, (File) null);
 	}
@@ -220,7 +220,7 @@ public class User implements IUser {
 
 	@Override
 	public CompletableFuture<IMessage> sendMessage(String content, RichEmbed embed) {
-		if ((embed.thumbnail != null && embed.thumbnail.resource != null)) return sendMessage(content, embed, (Resource) null);
+		if ((embed.getThumbnail() != null && embed.getThumbnail().resource != null)) return sendMessage(content, embed, (Resource) null);
 		if ((embed.getImage() != null && embed.getImage().resource != null)) return sendMessage(content, embed, (Resource) null);
 		return sendMessage(content, embed, (File) null);
 	}

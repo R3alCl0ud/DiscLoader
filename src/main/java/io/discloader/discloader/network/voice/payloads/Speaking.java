@@ -1,7 +1,7 @@
 /**
  * 
  */
-package io.discloader.discloader.network.voice;
+package io.discloader.discloader.network.voice.payloads;
 
 /**
  * @author Perry Berman

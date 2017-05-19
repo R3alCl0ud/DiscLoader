@@ -37,6 +37,8 @@ import io.discloader.discloader.common.event.message.GuildMessageDeleteEvent;
 import io.discloader.discloader.common.event.message.GuildMessageUpdateEvent;
 import io.discloader.discloader.common.event.message.MessageCreateEvent;
 import io.discloader.discloader.common.event.message.MessageDeleteEvent;
+import io.discloader.discloader.common.event.message.MessageReactionAddEvent;
+import io.discloader.discloader.common.event.message.MessageReactionRemoveEvent;
 import io.discloader.discloader.common.event.message.MessageUpdateEvent;
 import io.discloader.discloader.common.event.message.PrivateMessageCreateEvent;
 import io.discloader.discloader.common.event.message.PrivateMessageDeleteEvent;
@@ -222,6 +224,10 @@ public interface IEventListener {
 	void MessageDelete(MessageDeleteEvent e);
 
 	void MessageUpdate(MessageUpdateEvent e);
+	
+	void MessageReactionAdd(MessageReactionAddEvent e);
+
+	void MessageReactionRemoveEvent(MessageReactionRemoveEvent e);
 
 	/**
 	 * Gets emitted during startup, when the current startup phase changes

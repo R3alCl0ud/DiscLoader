@@ -211,10 +211,10 @@ public class RESTQueue {
 		HttpRequest request = baseRequest.getHttpRequest();
 
 		if (auth && loader.token != null) request.header("authorization", loader.token);
-		if (!(request instanceof GetRequest) && !(baseRequest instanceof MultipartBody) && !multi) {
-			request.header("Content-Type", "application/json");
-		}
+
 		request.header("user-agent", "DiscordBot (http://discloader.io, v0.1.1)");
+		if (!multi) request.header("content-type", "application/json");
+
 		request.header("Accept-Encoding", "gzip");
 		return baseRequest;
 	}

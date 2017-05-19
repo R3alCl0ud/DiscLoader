@@ -1,7 +1,6 @@
 package io.discloader.discloader.client.command;
 
 import java.io.File;
-import java.io.IOException;
 import java.util.Locale;
 
 import io.discloader.discloader.client.render.util.Resource;
@@ -16,34 +15,24 @@ import io.discloader.discloader.util.DLUtil;
  * @author Perry Berman
  */
 public class CommandHelp extends Command {
-	
+
 	public CommandHelp() {
 		super();
 		setTextureName("discloader:help").setDescription("Displays information about the available commands").setUsage("help [<command>]");
 	}
-	
+
 	@Override
 	public void execute(MessageCreateEvent e, String[] args) {
 		IMessage message = e.getMessage();
 		RichEmbed embed = new RichEmbed().setFooter(String.format("type `%shelp <page>` to tab through the pages", CommandHandler.prefix), e.loader.user.getAvatar().toString())
 				.setAuthor(e.loader.user.getUsername(), "http://discloader.io", e.loader.user.getAvatar().toString()).setColor(0x08a2ff);
 		Command command;
-		try {
-			embed.setThumbnail(getResourceLocation());
-		} catch (IOException e1) {
-			e1.printStackTrace();
-		}
+		embed.setThumbnail(getResourceLocation());
 		if (args.length == 1 && (command = CommandHandler.getCommand(args[0], message)) != null) {
 			if (command != null) {
 				File icon = DLUtil.MissingTexture;
-				try {
-					embed.setThumbnail(command.getResourceLocation());
-				} catch (IOException e1) {
-					e1.printStackTrace();
-				}
-				if (embed.getThumbnail() == null)
-					embed.setThumbnail(icon);
-				
+				embed.setThumbnail(command.getResourceLocation());
+				if (embed.getThumbnail() == null) embed.setThumbnail(icon);
 				embed.setTitle(command.getUnlocalizedName()).addField("Description", this.getCommandDesc(command), true).addField("Usage", command.getUsage(), true);
 			}
 		} else if (args.length == 1 && args[0].length() > 0) {
@@ -70,7 +59,7 @@ public class CommandHelp extends Command {
 		}
 		message.getChannel().sendEmbed(embed);
 	}
-	
+
 	private String getCommandDesc(Command command) {
 		String desc = LanguageRegistry.getLocalized(Locale.US, "command." + command.getUnlocalizedName() + ".desc");
 		if (desc == null || desc.length() < 1) {
@@ -78,9 +67,9 @@ public class CommandHelp extends Command {
 		}
 		return desc;
 	}
-	
+
 	public Resource getResourceLocation() {
 		return new Resource("discloader", "texture/commands/help.png");
 	}
-	
+
 }

@@ -1,17 +1,17 @@
 package io.discloader.discloader.common.event.message;
 
 import io.discloader.discloader.common.event.DLEvent;
-import io.discloader.discloader.core.entity.message.Reaction;
 import io.discloader.discloader.entity.message.IMessage;
+import io.discloader.discloader.entity.message.IReaction;
 import io.discloader.discloader.entity.user.IUser;
 
-public class MessageReactionAdded extends DLEvent {
+public class MessageReactionAddEvent extends DLEvent {
 
 	private final IUser user;
 	private final IMessage message;
-	private final Reaction reaction;
+	private final IReaction reaction;
 
-	public MessageReactionAdded(IMessage message, Reaction reaction, IUser user) {
+	public MessageReactionAddEvent(IMessage message, IReaction reaction, IUser user) {
 		super(message.getLoader());
 		this.message = message;
 		this.reaction = reaction;
@@ -28,7 +28,7 @@ public class MessageReactionAdded extends DLEvent {
 	/**
 	 * @return the reaction
 	 */
-	public Reaction getReaction() {
+	public IReaction getReaction() {
 		return reaction;
 	}
 

@@ -169,9 +169,9 @@ public class PrivateChannel extends Channel implements IPrivateChannel {
 	public CompletableFuture<IMessage> sendMessage(String content, RichEmbed embed, File file) {
 		Attachment attachment = null;
 		if (file != null) attachment = new Attachment(file.getName());
-		if (embed != null && embed.thumbnail != null && embed.thumbnail.file != null) {
-			file = embed.thumbnail.file;
-			embed.thumbnail.file = null;
+		if (embed != null && embed.getThumbnail() != null && embed.getThumbnail().file != null) {
+			file = embed.getThumbnail().file;
+			embed.getThumbnail().file = null;
 			attachment = new Attachment(file.getName());
 		}
 		return new SendMessage<IPrivateChannel>(this, content, embed, attachment, file).execute();
@@ -180,8 +180,8 @@ public class PrivateChannel extends Channel implements IPrivateChannel {
 	@Override
 	public CompletableFuture<IMessage> sendMessage(String content, RichEmbed embed, Resource resource) {
 		Attachment attachment = null;
-		if (embed.thumbnail != null && embed.thumbnail.resource != null) {
-			attachment = new Attachment(embed.thumbnail.resource.getFileName());
+		if (embed.getThumbnail() != null && embed.getThumbnail().resource != null) {
+			attachment = new Attachment(embed.getThumbnail().resource.getFileName());
 		} else if (embed.getImage() != null && embed.getImage().resource != null) {
 			attachment = new Attachment(embed.getImage().resource.getFileName());
 		}
