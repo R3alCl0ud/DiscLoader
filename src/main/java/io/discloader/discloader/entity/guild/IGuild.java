@@ -201,10 +201,6 @@ public interface IGuild extends ISnowflake, ICreationTime {
 
 	IIcon getIcon();
 
-	// String getIconHash();
-	//
-	// String getIconURL();
-
 	CompletableFuture<List<IIntegration>> getIntegrations();
 
 	CompletableFuture<List<IInvite>> getInvites();

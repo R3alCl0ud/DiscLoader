@@ -6,7 +6,7 @@ import io.discloader.discloader.common.registry.EntityRegistry;
 import io.discloader.discloader.entity.channel.IGuildChannel;
 import io.discloader.discloader.entity.channel.IGuildVoiceChannel;
 import io.discloader.discloader.entity.guild.IGuild;
-import io.discloader.discloader.entity.voice.VoiceConnect;
+import io.discloader.discloader.entity.voice.VoiceConnection;
 import io.discloader.discloader.network.json.ChannelJSON;
 import io.discloader.discloader.util.DLUtil.ChannelType;
 
@@ -68,22 +68,22 @@ public class VoiceChannel extends GuildChannel implements IGuildVoiceChannel {
 	}
 
 	@Override
-	public CompletableFuture<VoiceConnect> join() {
-		CompletableFuture<VoiceConnect> future = new CompletableFuture<VoiceConnect>();
+	public CompletableFuture<VoiceConnection> join() {
+		CompletableFuture<VoiceConnection> future = new CompletableFuture<VoiceConnection>();
 		if (EntityRegistry.getVoiceConnectionByID(guild.getID()) != null) {
 			EntityRegistry.getVoiceConnectionByID(guild.getID()).disconnect().thenAcceptAsync(action -> {
-				VoiceConnect connection = new VoiceConnect(this, future);
+				VoiceConnection connection = new VoiceConnection(this, future);
 				EntityRegistry.putVoiceConnection(connection);
 			});
 			return future;
 		}
-		VoiceConnect connection = new VoiceConnect(this, future);
+		VoiceConnection connection = new VoiceConnection(this, future);
 		EntityRegistry.putVoiceConnection(connection);
 		return future;
 	}
 
 	@Override
-	public CompletableFuture<VoiceConnect> leave() {
+	public CompletableFuture<VoiceConnection> leave() {
 		if (EntityRegistry.getVoiceConnectionByID(guild.getID()) != null) {
 			return EntityRegistry.getVoiceConnectionByID(guild.getID()).disconnect();
 		}

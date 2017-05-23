@@ -270,8 +270,8 @@ public class RichEmbed {
 	}
 
 	public RichEmbed setTimestamp(TemporalAccessor time) {
-		LocalDateTime ldt = LocalDateTime.from(time);
-		timestamp = ldt.atOffset(ZoneOffset.UTC).toString();
+//		LocalDateTime ldt = LocalDateTime.from(time).plusHours(7l);
+		timestamp = time.toString();
 		return this;
 	}
 

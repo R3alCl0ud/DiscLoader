@@ -1,5 +1,6 @@
 package io.discloader.discloader.client.command;
 
+import java.time.OffsetDateTime;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Locale;
@@ -27,7 +28,7 @@ public class CommandInfo extends Command {
 		embed.addField("Owner", guild.getOwner().toString(), true);
 		embed.addField("Members", String.format("%d/%d", guild.getMembers().size(), guild.getMemberCount()), true);
 		embed.addField("Text Channels", "" + guild.getTextChannels().size(), true).addField("Voice Channels", "" + guild.getVoiceChannels().size(), true);
-		embed.setTimestamp(ZonedDateTime.now());
+		embed.setTimestamp(OffsetDateTime.now());
 		embed.setThumbnail(guild.getIcon().toString());
 		embed.setFooter(String.format("Guild ID: %d", guild.getID()));
 		channel.sendEmbed(embed);

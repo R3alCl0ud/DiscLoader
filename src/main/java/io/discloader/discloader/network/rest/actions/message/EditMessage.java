@@ -20,7 +20,7 @@ public class EditMessage<T extends ITextChannel> extends RESTAction<IMessage> {
 	public EditMessage(IMessage message, String content, RichEmbed embed, Attachment attachment, File file) {
 		super(message.getLoader());
 		this.message = message;
-		sendable = new SendableMessage(content, embed, attachment, file);
+		sendable = new SendableMessage(content, false, embed, attachment, file);
 	}
 
 	public CompletableFuture<IMessage> execute() {

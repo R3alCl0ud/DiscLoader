@@ -244,4 +244,15 @@ public class TextChannel extends GuildChannel implements IGuildTextChannel {
 		return new UnpinMessage<IGuildTextChannel>(message).execute();
 	}
 
+	@Override
+	public boolean isNSFW() {
+		return getName().startsWith("nsfw-");
+	}
+
+	// @Override
+	// public CompletableFuture<IGuildTextChannel> setNSFW(boolean nsfw) {
+	// if (isNSFW()) return CompletableFuture.completedFuture(this);
+	// return setName("nsfw-" + getName());
+	// }
+
 }

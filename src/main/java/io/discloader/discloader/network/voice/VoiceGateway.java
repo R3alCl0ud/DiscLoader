@@ -16,7 +16,7 @@ import com.neovisionaries.ws.client.WebSocketFrame;
 import io.discloader.discloader.client.logger.DLLogger;
 import io.discloader.discloader.common.event.voice.VoiceConnectionReadyEvent;
 import io.discloader.discloader.entity.util.SnowflakeUtil;
-import io.discloader.discloader.entity.voice.VoiceConnect;
+import io.discloader.discloader.entity.voice.VoiceConnection;
 import io.discloader.discloader.network.gateway.packets.SocketPacket;
 import io.discloader.discloader.network.voice.payloads.SessionDescription;
 import io.discloader.discloader.network.voice.payloads.Speaking;
@@ -42,8 +42,8 @@ public class VoiceGateway extends WebSocketAdapter {
 
 	private WebSocket ws;
 
-	private VoiceConnect connection;
-	private CompletableFuture<VoiceConnect> dc = new CompletableFuture<>();
+	private VoiceConnection connection;
+	private CompletableFuture<VoiceConnection> dc = new CompletableFuture<>();
 
 	private Gson gson;
 
@@ -51,7 +51,7 @@ public class VoiceGateway extends WebSocketAdapter {
 
 	private final Logger logger;
 
-	public VoiceGateway(VoiceConnect connection) {
+	public VoiceGateway(VoiceConnection connection) {
 		this.connection = connection;
 		logger = new DLLogger("VoiceGateway" + (connection.getGuild() == null ? " - Channel: " + connection.getChannel().getID() : " - Guild: " + connection.getGuild().getID())).getLogger();
 		gson = new Gson();
@@ -64,7 +64,7 @@ public class VoiceGateway extends WebSocketAdapter {
 		ws.connect();
 	}
 
-	public CompletableFuture<VoiceConnect> disconnect() {
+	public CompletableFuture<VoiceConnection> disconnect() {
 		ws.disconnect(1000);
 		return dc;
 	}

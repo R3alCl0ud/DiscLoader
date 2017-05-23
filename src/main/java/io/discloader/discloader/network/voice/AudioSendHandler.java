@@ -8,12 +8,12 @@ import com.sedmelluq.discord.lavaplayer.player.AudioPlayer;
 import com.sedmelluq.discord.lavaplayer.player.hook.AudioOutputHook;
 import com.sedmelluq.discord.lavaplayer.track.playback.AudioFrame;
 
-import io.discloader.discloader.entity.voice.VoiceConnect;
+import io.discloader.discloader.entity.voice.VoiceConnection;
 
 public class AudioSendHandler implements AudioOutputHook {
 	
 	private final AudioPlayer audioPlayer;
-	private final VoiceConnect connection;
+	private final VoiceConnection connection;
 	private AudioFrame lastFrame;
 	private Thread packetThread;
 	
@@ -24,7 +24,7 @@ public class AudioSendHandler implements AudioOutputHook {
 	private byte[] rawAudio;
 	private byte[] rawPacket;
 	
-	public AudioSendHandler(AudioPlayer player, VoiceConnect connection) {
+	public AudioSendHandler(AudioPlayer player, VoiceConnection connection) {
 		audioPlayer = player;
 		this.connection = connection;
 	}

@@ -1,6 +1,9 @@
 package io.discloader.discloader.core.entity.guild;
 
 import java.math.BigDecimal;
+import java.util.concurrent.CompletableFuture;
+
+import org.json.JSONObject;
 
 import io.discloader.discloader.common.DiscLoader;
 import io.discloader.discloader.core.entity.Permission;
@@ -9,6 +12,7 @@ import io.discloader.discloader.entity.guild.IGuild;
 import io.discloader.discloader.entity.guild.IRole;
 import io.discloader.discloader.entity.util.SnowflakeUtil;
 import io.discloader.discloader.network.json.RoleJSON;
+import io.discloader.discloader.network.rest.actions.guild.ModifyRole;
 
 /**
  * Represents a role in a guild on Discord
@@ -20,7 +24,7 @@ public class Role implements IRole {
 	/**
 	 * The role's Snowflake ID.
 	 */
-	public final String id;
+	private final String id;
 	/**
 	 * The role's name
 	 */
@@ -143,50 +147,54 @@ public class Role implements IRole {
 
 	/**
 	 * @param color the color to set
+	 * @return
 	 */
 	@Override
-	public void setColor(int color) {
-		this.color = color;
+	public CompletableFuture<IRole> setColor(int color) {
+		return new ModifyRole(this, new JSONObject().put("color", color)).execute();
 	}
 
 	/**
 	 * @param hoist the hoist to set
 	 */
 	@Override
-	public void setHoist(boolean hoist) {
-		this.hoist = hoist;
+	public CompletableFuture<IRole> setHoist(boolean hoist) {
+		return new ModifyRole(this, new JSONObject().put("hoist", hoist)).execute();
 	}
 
 	/**
 	 * @param mentionable the mentionable to set
 	 */
 	@Override
-	public void setMentionable(boolean mentionable) {
+	public CompletableFuture<IRole> setMentionable(boolean mentionable) {
 		this.mentionable = mentionable;
+		return new ModifyRole(this, new JSONObject().put("mentionable", mentionable)).execute();
 	}
 
 	/**
 	 * @param name the name to set
 	 */
 	@Override
-	public void setName(String name) {
-		this.name = name;
+	public CompletableFuture<IRole> setName(String name) {
+		return new ModifyRole(this, new JSONObject().put("name", name)).execute();
 	}
 
 	/**
 	 * @param permissions the permissions to set
 	 */
 	@Override
-	public void setPermissions(int permissions) {
-		this.permissions = permissions;
+	public CompletableFuture<IRole> setPermissions(int permissions) {
+		return new ModifyRole(this, new JSONObject().put("permissions", permissions)).execute();
+
 	}
 
 	/**
 	 * @param position the position to set
 	 */
 	@Override
-	public void setPosition(int position) {
+	public CompletableFuture<IRole> setPosition(int position) {
 		this.position = position;
+		return new CompletableFuture<>();
 	}
 
 	@Override
@@ -197,5 +205,10 @@ public class Role implements IRole {
 	@Override
 	public String toString() {
 		return getName();
+	}
+
+	@Override
+	public CompletableFuture<IRole> clone() {
+		return getGuild().createRole(name, permissions, color, hoist, mentionable);
 	}
 }

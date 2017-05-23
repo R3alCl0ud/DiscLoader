@@ -20,22 +20,22 @@ public class SendableMessage {
 
 	public transient Resource resource;
 
-	public SendableMessage(String content, RichEmbed embed, Attachment attachment, File file) {
+	public final boolean tts;
+
+	public SendableMessage(String content, boolean tts, RichEmbed embed, Attachment attachment, File file) {
 		this.content = content;
 		this.embed = embed;
 		this.attachment = attachment;
 		this.file = file;
+		this.tts = false;
 	}
 
-	public SendableMessage(String content, RichEmbed embed, Attachment attachment, Resource resource) {
+	public SendableMessage(String content, boolean tts, RichEmbed embed, Attachment attachment, Resource resource) {
 		this.content = content;
 		this.embed = embed;
 		this.attachment = attachment;
 		this.resource = resource;
-	}
-
-	public void setFile(File file) {
-		this.file = file;
+		this.tts = false;
 	}
 
 }

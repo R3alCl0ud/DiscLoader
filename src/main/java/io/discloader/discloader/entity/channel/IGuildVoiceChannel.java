@@ -3,23 +3,23 @@ package io.discloader.discloader.entity.channel;
 import java.util.concurrent.CompletableFuture;
 
 import io.discloader.discloader.common.registry.EntityRegistry;
-import io.discloader.discloader.entity.voice.VoiceConnect;
+import io.discloader.discloader.entity.voice.VoiceConnection;
 
 /**
  * @author Perry Berman
  */
 public interface IGuildVoiceChannel extends IGuildChannel, IVoiceChannel {
 
-	public default CompletableFuture<VoiceConnect> join() {
-		CompletableFuture<VoiceConnect> future = new CompletableFuture<>();
+	public default CompletableFuture<VoiceConnection> join() {
+		CompletableFuture<VoiceConnection> future = new CompletableFuture<>();
 		if (EntityRegistry.getVoiceConnectionByID(getGuild().getID()) != null) {
 			EntityRegistry.getVoiceConnectionByID(getGuild().getID()).disconnect().thenAcceptAsync(action -> {
-				VoiceConnect connection = new VoiceConnect(this, future);
+				VoiceConnection connection = new VoiceConnection(this, future);
 				EntityRegistry.putVoiceConnection(connection);
 			});
 			return future;
 		}
-		VoiceConnect connection = new VoiceConnect(this, future);
+		VoiceConnection connection = new VoiceConnection(this, future);
 		EntityRegistry.putVoiceConnection(connection);
 		return future;
 	}

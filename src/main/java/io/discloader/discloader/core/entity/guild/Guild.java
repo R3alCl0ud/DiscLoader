@@ -376,7 +376,7 @@ public class Guild implements IGuild {
 	 * @since 0.0.3
 	 */
 	public CompletableFuture<IRole> createRole() {
-		return this.createRole(null, 0, 0, false, false);
+		return createRole(null, 0, 0, false, false);
 	}
 
 	@Override
@@ -399,21 +399,11 @@ public class Guild implements IGuild {
 	}
 
 	public CompletableFuture<IRole> createRole(String name, int permissions, int color, boolean hoist, boolean mentionable) {
-		return null;
-		// loader.rest.createRole(this, name, permissions, color, hoist,
-		// mentionable);
+		return new CreateRole(this, new SendableRole(name, permissions, color, hoist, mentionable)).execute();
 	}
 
-//	/**
-//	 * Creates a new {@link TextChannel}.
-//	 * 
-//	 * @param name The name of the channel
-//	 * @return A Future that completes with a {@link TextChannel} if successful.
-//	 */
 	public CompletableFuture<IGuildTextChannel> createTextChannel(String name) {
 		return null;
-		// this.loader.rest.createTextChannel(this, new JSONObject().put("name",
-		// name));
 	}
 
 	@Override

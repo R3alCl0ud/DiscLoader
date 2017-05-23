@@ -16,7 +16,7 @@ import io.discloader.discloader.entity.channel.IVoiceChannel;
 import io.discloader.discloader.entity.guild.IGuild;
 import io.discloader.discloader.entity.user.IUser;
 import io.discloader.discloader.entity.util.SnowflakeUtil;
-import io.discloader.discloader.entity.voice.VoiceConnect;
+import io.discloader.discloader.entity.voice.VoiceConnection;
 import io.discloader.discloader.network.json.ChannelJSON;
 import io.discloader.discloader.network.json.GuildJSON;
 import io.discloader.discloader.network.json.UserJSON;
@@ -26,7 +26,7 @@ public class EntityRegistry {
 
 	private static final Map<Long, IGuild> guilds = new HashMap<>();
 	private static final Map<Long, IUser> users = new HashMap<>();
-	private static final Map<Long, VoiceConnect> voiceConnections = new HashMap<>();
+	private static final Map<Long, VoiceConnection> voiceConnections = new HashMap<>();
 	private static final Map<Long, IChannel> channels = new HashMap<>();
 	private static final Map<Long, ITextChannel> textChannels = new HashMap<>();
 	private static final Map<Long, IVoiceChannel> voiceChannels = new HashMap<>();
@@ -176,16 +176,16 @@ public class EntityRegistry {
 		return getVoiceChannelByID(SnowflakeUtil.parse(channelID));
 	}
 
-	public static VoiceConnect getVoiceConnectionByGuild(IGuild guild) {
+	public static VoiceConnection getVoiceConnectionByGuild(IGuild guild) {
 		if (guild == null) return null;
 		return getVoiceConnectionByID(guild.getID());
 	}
 
-	public static VoiceConnect getVoiceConnectionByID(long guildID) {
+	public static VoiceConnection getVoiceConnectionByID(long guildID) {
 		return voiceConnections.get(guildID);
 	}
 
-	public static Collection<VoiceConnect> getVoiceConnections() {
+	public static Collection<VoiceConnection> getVoiceConnections() {
 		return voiceConnections.values();
 	}
 
@@ -211,7 +211,7 @@ public class EntityRegistry {
 		return voiceConnections.containsKey(guild.getID());
 	}
 
-	public static void putVoiceConnection(VoiceConnect connection) {
+	public static void putVoiceConnection(VoiceConnection connection) {
 		voiceConnections.put(connection.getGuild().getID(), connection);
 	}
 
@@ -234,7 +234,7 @@ public class EntityRegistry {
 		guilds.remove(guild.getID());
 	}
 
-	public static VoiceConnect removeVoiceConnection(long guildID) {
+	public static VoiceConnection removeVoiceConnection(long guildID) {
 		return voiceConnections.remove(guildID);
 	}
 

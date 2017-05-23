@@ -22,13 +22,13 @@ public class SendMessage<T extends ITextChannel> extends RESTAction<IMessage> {
 
 	public SendMessage(T channel, String content, RichEmbed embed, Attachment attachment, File file) {
 		super(channel.getLoader());
-		sendable = new SendableMessage(content, embed, attachment, file);
+		sendable = new SendableMessage(content, false, embed, attachment, file);
 		this.channel = channel;
 	}
 
 	public SendMessage(T channel, String content, RichEmbed embed, Attachment attachment, Resource resource) {
 		super(channel.getLoader());
-		sendable = new SendableMessage(content, embed, attachment, resource);
+		sendable = new SendableMessage(content, false, embed, attachment, resource);
 		this.channel = channel;
 	}
 

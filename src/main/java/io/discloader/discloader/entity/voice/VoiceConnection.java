@@ -37,7 +37,7 @@ import io.discloader.discloader.network.voice.payloads.VoiceReady;
 /**
  * @author Perry Berman
  */
-public class VoiceConnect {
+public class VoiceConnection {
 
 	private class TrackScheduler extends AudioEventAdapter {
 
@@ -124,12 +124,12 @@ public class VoiceConnect {
 	private boolean speaking;
 
 	// Startup things
-	private CompletableFuture<VoiceConnect> future;
+	private CompletableFuture<VoiceConnection> future;
 
 	private boolean stateUpdated;
 	protected final TrackScheduler trackSchedule;
 
-	public VoiceConnect(IVoiceChannel voiceChannel, CompletableFuture<VoiceConnect> future) {
+	public VoiceConnection(IVoiceChannel voiceChannel, CompletableFuture<VoiceConnection> future) {
 		channel = voiceChannel;
 		this.future = future;
 		logger = new DLLogger(getGuild() == null ? "VoiceConnection - Channel: " + channel.getID() : "VoiceConnection - Guild: " + getGuild().getID()).getLogger();
@@ -166,7 +166,7 @@ public class VoiceConnect {
 		ws.startHeartbeat(data.heartbeat_interval);
 	}
 
-	public CompletableFuture<VoiceConnect> disconnect() {
+	public CompletableFuture<VoiceConnection> disconnect() {
 		player.destroy();
 		manager.shutdown();
 		sendStateUpdate(null);

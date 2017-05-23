@@ -1,13 +1,13 @@
 package io.discloader.discloader.common.event.voice;
 
 import io.discloader.discloader.common.event.DLEvent;
-import io.discloader.discloader.entity.voice.VoiceConnect;
+import io.discloader.discloader.entity.voice.VoiceConnection;
 
 public class VoiceConnectionEvent extends DLEvent {
 
-	private VoiceConnect connection;
+	private VoiceConnection connection;
 
-	public VoiceConnectionEvent(VoiceConnect connection) {
+	public VoiceConnectionEvent(VoiceConnection connection) {
 		super(connection.getLoader());
 		this.connection = connection;
 	}
@@ -15,7 +15,7 @@ public class VoiceConnectionEvent extends DLEvent {
 	/**
 	 * @return the connection
 	 */
-	public VoiceConnect getConnection() {
+	public VoiceConnection getConnection() {
 		return connection;
 	}
 }

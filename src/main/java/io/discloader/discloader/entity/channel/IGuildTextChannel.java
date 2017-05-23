@@ -8,4 +8,8 @@ import java.util.concurrent.CompletableFuture;
 public interface IGuildTextChannel extends IGuildChannel, ITextChannel {
 
 	CompletableFuture<IGuildTextChannel> setTopic(String topic);
+
+	boolean isNSFW();
+
+	// CompletableFuture<IGuildTextChannel> setNSFW(boolean nsfw);
 }

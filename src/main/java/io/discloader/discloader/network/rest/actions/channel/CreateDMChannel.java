@@ -3,7 +3,6 @@ package io.discloader.discloader.network.rest.actions.channel;
 import java.util.concurrent.CompletableFuture;
 
 import io.discloader.discloader.common.registry.EntityRegistry;
-import io.discloader.discloader.core.entity.user.User;
 import io.discloader.discloader.entity.channel.IPrivateChannel;
 import io.discloader.discloader.entity.user.IUser;
 import io.discloader.discloader.network.json.ChannelJSON;
