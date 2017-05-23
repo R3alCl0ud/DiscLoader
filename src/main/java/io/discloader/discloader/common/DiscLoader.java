@@ -285,7 +285,9 @@ public class DiscLoader {
 				for (IGuild guild : EntityRegistry.getGuilds()) {
 					unavailable += guild.isAvailable() ? 0 : 1;
 				}
-				ProgressLogger.progress(EntityRegistry.getGuilds().size() - unavailable, EntityRegistry.getGuilds().size(), "Guilds Cached");
+				// ProgressLogger.progress(EntityRegistry.getGuilds().size() -
+				// unavailable, EntityRegistry.getGuilds().size(), "Guilds
+				// Cached");
 				if (unavailable == 0) {
 					socket.status = Status.NEARLY;
 					/*
@@ -471,9 +473,11 @@ public class DiscLoader {
 			Main.window = new WindowFrame(this);
 		} else {
 			ProgressLogger.stage(1, 3, "Mod Discovery");
+			LOG.info("Beginning Mod Discovery");
 			ModDiscoverer.checkModDir();
 			ArrayList<ModCandidate> candidates = ModDiscoverer.discoverMods();
 			ProgressLogger.stage(2, 3, "Discovering Mod Containers");
+			LOG.info("Discovering Mod Containers");
 			ModRegistry.checkCandidates(candidates);
 		}
 		started = true;

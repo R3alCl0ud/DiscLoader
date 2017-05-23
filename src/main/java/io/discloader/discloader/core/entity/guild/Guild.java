@@ -54,6 +54,7 @@ import io.discloader.discloader.entity.sendable.SendableRole;
 import io.discloader.discloader.entity.user.IUser;
 import io.discloader.discloader.entity.util.Permissions;
 import io.discloader.discloader.entity.util.SnowflakeUtil;
+import io.discloader.discloader.entity.voice.VoiceConnection;
 import io.discloader.discloader.entity.voice.VoiceState;
 import io.discloader.discloader.network.json.ChannelJSON;
 import io.discloader.discloader.network.json.EmojiJSON;
@@ -81,8 +82,6 @@ public class Guild implements IGuild {
 			this.query = query;
 		}
 	}
-
-	private static int i = 0;
 
 	/**
 	 * The guild's Snowflake ID.
@@ -502,15 +501,12 @@ public class Guild implements IGuild {
 		CompletableFuture<Map<Long, IGuildMember>> future = new CompletableFuture<>();
 		final Consumer<DLEvent> consumer = event -> {
 			if (event instanceof GuildMembersChunkEvent) {
-				i++;
-				System.out.println(getID() + " " + i);
 				GuildMembersChunkEvent gmce = (GuildMembersChunkEvent) event;
 				future.complete(gmce.members);
 			}
 		};
 		loader.onceEvent(consumer, guild -> guild.getID() == getID());
 		Packet payload = new Packet(8, new MemberQuery(limit, ""));
-		System.out.println(DLUtil.gson.toJson(payload));
 		loader.socket.send(payload);
 		return future;
 	}
@@ -875,7 +871,6 @@ public class Guild implements IGuild {
 			memberCount = data.member_count;
 			voiceRegion = new VoiceRegion(data.region);
 			splashHash = data.splash;
-			// ProgressLogger.step(1, 7, "Caching Roles");
 			if (data.roles.length > 0) {
 				roles.clear();
 				for (RoleJSON role : data.roles) {
@@ -883,7 +878,6 @@ public class Guild implements IGuild {
 					roles.put(r.getID(), r);
 				}
 			}
-			// ProgressLogger.step(2, 7, "Caching Members");
 			if (data.members != null && data.members.length > 0) {
 				members.clear();
 				for (MemberJSON member : data.members) {
@@ -891,7 +885,6 @@ public class Guild implements IGuild {
 					members.put(m.getID(), m);
 				}
 			}
-			// ProgressLogger.step(3, 7, "Caching Channels");
 			if (data.channels != null && data.channels.length > 0) {
 				for (ChannelJSON channelData : data.channels) {
 					IGuildChannel chan = (IGuildChannel) EntityRegistry.addChannel(channelData, this);
@@ -899,21 +892,18 @@ public class Guild implements IGuild {
 					else if (chan instanceof IGuildVoiceChannel) voiceChannels.put(chan.getID(), (IGuildVoiceChannel) chan);
 				}
 			}
-			// ProgressLogger.step(4, 7, "Caching Presences");
 			if (data.presences != null && data.presences.length > 0) {
 				presences.clear();
 				for (PresenceJSON presence : data.presences) {
 					this.setPresence(presence);
 				}
 			}
-			// ProgressLogger.step(5, 7, "Caching Emojis");
 			if (data.emojis != null && data.emojis.length > 0) {
 				this.guildEmojis.clear();
 				for (EmojiJSON e : data.emojis) {
 					this.guildEmojis.put(SnowflakeUtil.parse(e.id), new GuildEmoji(e, this));
 				}
 			}
-			// ProgressLogger.step(6, 7, "Caching Voice States");
 			if (data.voice_states != null && data.voice_states.length > 0) {
 				this.rawStates.clear();
 				for (VoiceStateJSON v : data.voice_states) {
@@ -938,6 +928,11 @@ public class Guild implements IGuild {
 	@Override
 	public void updateVoiceState(VoiceState state) {
 		rawStates.put(state.member.getID(), state);
+	}
+
+	@Override
+	public VoiceConnection getVoiceConnection() {
+		return EntityRegistry.getVoiceConnectionByGuild(this);
 	}
 
 }

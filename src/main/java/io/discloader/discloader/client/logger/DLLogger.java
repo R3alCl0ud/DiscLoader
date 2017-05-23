@@ -21,13 +21,17 @@ public class DLLogger {
 	public final Logger LOGGER;
 	private static FileHandler fileHandler = null;
 
+	public DLLogger(Class<?> cls) {
+		this(cls.getSimpleName());
+	}
+
 	public DLLogger(String name) {
 		File logFolder = new File("logs");
 
 		if (!logFolder.exists()) {
 			logFolder.mkdirs();
 		}
-
+		
 		this.LOGGER = Logger.getLogger(name);
 
 		Handler consoleHandler = new Handler() {
@@ -39,7 +43,7 @@ public class DLLogger {
 				}
 
 				try {
-					String message = getFormatter().format(record).trim() + "\n";
+					String message = getFormatter().format(record);
 					if (record.getLevel().intValue() >= Level.WARNING.intValue()) {
 						System.err.write(message.getBytes());
 					} else {

@@ -28,6 +28,7 @@ import io.discloader.discloader.entity.user.IUser;
 import io.discloader.discloader.entity.util.ICreationTime;
 import io.discloader.discloader.entity.util.ISnowflake;
 import io.discloader.discloader.entity.util.Permissions;
+import io.discloader.discloader.entity.voice.VoiceConnection;
 import io.discloader.discloader.entity.voice.VoiceState;
 import io.discloader.discloader.network.json.GuildJSON;
 import io.discloader.discloader.network.json.MemberJSON;
@@ -110,16 +111,6 @@ public interface IGuild extends ISnowflake, ICreationTime {
 	 */
 	CompletableFuture<IGuildEmoji> createEmoji(String name, String image);
 
-	CompletableFuture<IGuildTextChannel> createTextChannel(String name);
-
-	CompletableFuture<IGuildTextChannel> createTextChannel(String name, IOverwrite... overwrites);
-
-	CompletableFuture<IGuildVoiceChannel> createVoiceChannel(String name);
-
-	CompletableFuture<IGuildTextChannel> createVoiceChannel(String name, int bitRate, IOverwrite... overwrites);
-
-	CompletableFuture<IGuildTextChannel> createVoiceChannel(String name, IOverwrite... overwrites);
-
 	CompletableFuture<IRole> createRole(String name);
 
 	/**
@@ -135,6 +126,16 @@ public interface IGuild extends ISnowflake, ICreationTime {
 	 * @since 0.0.3
 	 */
 	CompletableFuture<IRole> createRole(String name, int permissions, int color, boolean hoist, boolean mentionable);
+
+	CompletableFuture<IGuildTextChannel> createTextChannel(String name);
+
+	CompletableFuture<IGuildTextChannel> createTextChannel(String name, IOverwrite... overwrites);
+
+	CompletableFuture<IGuildVoiceChannel> createVoiceChannel(String name);
+
+	CompletableFuture<IGuildTextChannel> createVoiceChannel(String name, int bitRate, IOverwrite... overwrites);
+
+	CompletableFuture<IGuildTextChannel> createVoiceChannel(String name, IOverwrite... overwrites);
 
 	/**
 	 * Deletes the Guild if the user you have logged in as is the owner of the
@@ -258,7 +259,7 @@ public interface IGuild extends ISnowflake, ICreationTime {
 	IGuildTextChannel getTextChannelByName(String channelName);
 
 	Map<Long, IGuildTextChannel> getTextChannels();
-
+	
 	IGuildVoiceChannel getVoiceChannelByID(long channelID);
 
 	IGuildVoiceChannel getVoiceChannelByID(String channelID);
@@ -266,6 +267,8 @@ public interface IGuild extends ISnowflake, ICreationTime {
 	IGuildVoiceChannel getVoiceChannelByName(String channelName);
 
 	Map<Long, IGuildVoiceChannel> getVoiceChannels();
+
+	VoiceConnection getVoiceConnection();
 
 	VoiceRegion getVoiceRegion();
 

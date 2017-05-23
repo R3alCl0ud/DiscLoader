@@ -2,8 +2,10 @@ package io.discloader.discloader.common.registry;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.logging.Logger;
 
 import io.discloader.discloader.client.command.Command;
+import io.discloader.discloader.client.logger.DLLogger;
 import io.discloader.discloader.client.logger.ProgressLogger;
 import io.discloader.discloader.client.render.panel.LoadingPanel;
 import io.discloader.discloader.common.DiscLoader;
@@ -52,50 +54,63 @@ public class ModRegistry {
 	 */
 	private static final HashMap<String, String> loadMod = new HashMap<String, String>();
 
+	private static final Logger logger = new DLLogger(ModRegistry.class).getLogger();
+
 	public static void checkCandidates(ArrayList<ModCandidate> mcs) {
 		ProgressLogger.step(1, 2, "Checking candidates for @Mod annotation");
+		logger.info("Checking candidates for @Mod annotation");
 		ArrayList<ModContainer> containers = new ArrayList<ModContainer>();
 		for (int i = 0; i < mcs.size(); i++) {
 			activeMod = null;
 			ModCandidate candidate = mcs.get(i);
 			Class<?> cls = candidate.getModClass();
 			ProgressLogger.progress(i + 1, mcs.size(), cls.getName());
+			logger.info(cls.getName());
 			boolean isMod = cls.isAnnotationPresent(Mod.class);
 			if (isMod) {
 				ProgressLogger.progress(i + 1, mcs.size(), String.format("Found @Mod Annotation: %s", cls.getName()));
+				logger.info(String.format("Found @Mod Annotation: %s", cls.getName()));
 				ModContainer mc = new ModContainer(candidate);
 				activeMod = mc;
 				containers.add(mc);
 			}
 		}
 		ProgressLogger.step(2, 2, "Registering uninitialized mods");
+		logger.info("Registering uninitialized mods");
 		for (int i = 0; i < containers.size(); i++) {
 			ModContainer mc = containers.get(i);
 			activeMod = mc;
 			ProgressLogger.progress(i + 1, containers.size(), mc.modInfo.modid());
+			logger.info(mc.modInfo.modid());
 			if (preInitMods.containsKey(mc.modInfo.modid())) {
-				Main.getLogger().severe(String.format("Mod with duplicate id found. \nHALTING STARTUP\nDuplicate ID: %s\n", mc.modInfo.modid()));
+				logger.severe(String.format("Mod with duplicate id found. \nHALTING STARTUP\nDuplicate ID: %s\n", mc.modInfo.modid()));
 				System.exit(1);
 			}
 			preInitMods.put(mc.modInfo.modid(), mc);
 		}
 		activeMod = null;
 		ProgressLogger.stage(3, 3, "Registering Mod EventHandlers");
+		logger.info("Registering Mod EventHandlers");
 		int n = 1;
 		for (ModContainer mc : preInitMods.values()) {
 			activeMod = mc;
 			ProgressLogger.step(n, preInitMods.size(), mc.modInfo.modid());
+			logger.info(String.format("Registrying event handlers in: %s", mc.modInfo.modid()));
 			mc.discoverHandlers();
 			n++;
 		}
 
 		activeMod = null;
 		ProgressLogger.phase(2, 3, "PreINIT");
-		ProgressLogger.stage(1, 3, "Begin PreInit");
+		logger.info("PreINIT");
+		ProgressLogger.stage(1, 3, "Begin PreINIT");
+		logger.info("Begin PreINIT");
 		Command.registerCommands();
 		ProgressLogger.stage(2, 3, "Registering Default Language");
+		logger.info("Registering Default Language");
 		LanguageRegistry.registerLanguage(DLUtil.enUS);
-		ProgressLogger.stage(3, 3, "Execute PreInit");
+		ProgressLogger.stage(3, 3, "Execute PreINIT");
+		logger.info("Execute PreINIT");
 		preInit();
 	}
 
@@ -115,7 +130,9 @@ public class ModRegistry {
 			e.PreInit(event);
 		}
 		ProgressLogger.phase(3, 3, "Init");
+		logger.info("Now swiching to the Init phase");
 		ProgressLogger.stage(1, 3, "Waiting to Login");
+		logger.info("Waiting to Login");
 		loader.doneLoading();
 		resetStep();
 	}
@@ -123,13 +140,16 @@ public class ModRegistry {
 	public static void load(String modid) {
 		ModContainer mod = preInitMods.get(modid);
 		ProgressLogger.progress(1, 3, "Checking if another mod is currently active");
+		logger.info("Checking if another mod is currently active");
 		if (activeMod != null) {
 			loadMod.put(mod.modInfo.modid(), activeMod.modInfo.modid());
 		}
 		ProgressLogger.progress(2, 3, "Setting active mod");
+		logger.info("Setting active mod");
 		activeMod = mod;
 
 		ProgressLogger.progress(3, 3, "Executing PreInit handler in: " + mod.modInfo.modid());
+		logger.info("Executing PreInit handler in: " + mod.modInfo.modid());
 		mods.put(mod.modInfo.modid(), mod);
 		DLPreInitEvent event = new DLPreInitEvent(loader);
 		mod.emit("preInit", event);

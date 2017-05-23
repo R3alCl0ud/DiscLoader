@@ -24,7 +24,7 @@ public class Ready extends AbstractHandler {
 		// setup the Loaders user object
 		try {
 			loader.user = new DLUser(EntityRegistry.addUser(readyJSON.user));
-			if (loader.user.bot == true) {
+			if (loader.user.bot) {
 				loader.token = "Bot " + loader.token;
 			}
 

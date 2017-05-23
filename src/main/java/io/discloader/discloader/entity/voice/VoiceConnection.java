@@ -85,7 +85,6 @@ public class VoiceConnection {
 		@Override
 		public void onTrackStart(AudioPlayer player, AudioTrack track) {
 			// A track started playing
-			System.out.println("Do we ever start playing?");
 			setSpeaking(true);
 			sendHandler.sendPackets(udpClient.udpSocket);
 			for (IVoiceEventListener listener : listeners) {
@@ -107,7 +106,7 @@ public class VoiceConnection {
 		}
 	}
 
-	private IVoiceChannel channel;
+	private IGuildVoiceChannel channel;
 	private VoiceGateway ws;
 	private UDPVoiceClient udpClient;
 	private AudioPlayer player;
@@ -129,7 +128,7 @@ public class VoiceConnection {
 	private boolean stateUpdated;
 	protected final TrackScheduler trackSchedule;
 
-	public VoiceConnection(IVoiceChannel voiceChannel, CompletableFuture<VoiceConnection> future) {
+	public VoiceConnection(IGuildVoiceChannel voiceChannel, CompletableFuture<VoiceConnection> future) {
 		channel = voiceChannel;
 		this.future = future;
 		logger = new DLLogger(getGuild() == null ? "VoiceConnection - Channel: " + channel.getID() : "VoiceConnection - Guild: " + getGuild().getID()).getLogger();
@@ -175,7 +174,6 @@ public class VoiceConnection {
 	}
 
 	public void endpointReceived(String endpoint, String token) {
-		System.out.println(endpoint);
 		this.endpoint = endpoint.substring(0, endpoint.length() - 3);
 		this.token = token;
 		if (stateUpdated) {
@@ -193,7 +191,7 @@ public class VoiceConnection {
 		}
 	}
 
-	public IVoiceChannel getChannel() {
+	public IGuildVoiceChannel getChannel() {
 		return channel;
 	}
 

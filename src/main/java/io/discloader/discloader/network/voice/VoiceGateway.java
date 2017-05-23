@@ -58,6 +58,7 @@ public class VoiceGateway extends WebSocketAdapter {
 	}
 
 	public void connect(String gateway, String token) throws IOException, WebSocketException {
+		logger.info(String.format("Connecting to the gateway at: %s\nUsing the token: %s", gateway, token));
 		gateway = "wss://" + gateway;
 		WebSocketFactory factory = new WebSocketFactory().setConnectionTimeout(15000);
 		ws = factory.createSocket(gateway).addListener(this);
@@ -78,6 +79,7 @@ public class VoiceGateway extends WebSocketAdapter {
 	}
 
 	public void onConnected(WebSocket ws, Map<String, List<String>> arg1) throws Exception {
+		logger.info("Successfully connected to the gateway");
 		this.sendIdentify();
 	}
 
@@ -87,8 +89,6 @@ public class VoiceGateway extends WebSocketAdapter {
 			return;
 		}
 		logger.severe(String.format("Reason: %s, Code: %d, isServer: %b", frame.getCloseReason(), frame.getCloseCode(), isServer));
-
-		// this.connection.disconnected(frame.getCloseReason());
 	}
 
 	public void onTextMessage(WebSocket ws, String text) throws Exception {
