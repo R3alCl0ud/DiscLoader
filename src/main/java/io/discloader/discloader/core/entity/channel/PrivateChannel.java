@@ -52,7 +52,6 @@ public class PrivateChannel extends Channel implements IPrivateChannel {
 		messages = new HashMap<>();
 		typing = new HashMap<>();
 	}
-
 	public CompletableFuture<IPrivateChannel> close() {
 		return new CloseChannel<IPrivateChannel>(this).execute();
 	}
@@ -89,6 +88,20 @@ public class PrivateChannel extends Channel implements IPrivateChannel {
 	@Override
 	public CompletableFuture<Map<Long, IMessage>> fetchPinnedMessages() {
 		return new PinnedMessages<IPrivateChannel>(this).execute();
+	}
+
+	@Override
+	public IMessage getLastMessage() {
+		return getMessage(getLastMessageID());
+	}
+
+	@Override
+	public long getLastMessageID() {
+		long lastMsgID = 0l;
+		for (IMessage message : messages.values()) {
+			if ((message.getID() >> 22) > (lastMsgID >> 22)) lastMsgID = message.getID();
+		}
+		return lastMsgID;
 	}
 
 	@Override

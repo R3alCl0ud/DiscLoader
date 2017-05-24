@@ -97,6 +97,20 @@ public class GroupChannel extends Channel implements IGroupChannel, IVoiceChanne
 	}
 
 	@Override
+	public IMessage getLastMessage() {
+		return getMessage(getLastMessageID());
+	}
+
+	@Override
+	public long getLastMessageID() {
+		long lastMsgID = 0l;
+		for (IMessage message : messages.values()) {
+			if ((message.getID() >> 22) > (lastMsgID >> 22)) lastMsgID = message.getID();
+		}
+		return lastMsgID;
+	}
+
+	@Override
 	public IMessage getMessage(long messageID) {
 		return messages.get(messageID);
 	}

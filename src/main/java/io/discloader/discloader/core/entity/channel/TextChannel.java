@@ -98,6 +98,20 @@ public class TextChannel extends GuildChannel implements IGuildTextChannel {
 	}
 
 	@Override
+	public IMessage getLastMessage() {
+		return getMessage(getLastMessageID());
+	}
+
+	@Override
+	public long getLastMessageID() {
+		long lastMsgID = 0l;
+		for (IMessage message : messages.values()) {
+			if ((message.getID() >> 22) > (lastMsgID >> 22)) lastMsgID = message.getID();
+		}
+		return lastMsgID;
+	}
+
+	@Override
 	public IMessage getMessage(long messageID) {
 		return messages.get(messageID);
 	}
@@ -136,6 +150,11 @@ public class TextChannel extends GuildChannel implements IGuildTextChannel {
 	@Override
 	public Map<Long, IUser> getTyping() {
 		return typing;
+	}
+
+	@Override
+	public boolean isNSFW() {
+		return getName().startsWith("nsfw-");
 	}
 
 	/**
@@ -243,16 +262,5 @@ public class TextChannel extends GuildChannel implements IGuildTextChannel {
 	public CompletableFuture<IMessage> unpinMessage(IMessage message) {
 		return new UnpinMessage<IGuildTextChannel>(message).execute();
 	}
-
-	@Override
-	public boolean isNSFW() {
-		return getName().startsWith("nsfw-");
-	}
-
-	// @Override
-	// public CompletableFuture<IGuildTextChannel> setNSFW(boolean nsfw) {
-	// if (isNSFW()) return CompletableFuture.completedFuture(this);
-	// return setName("nsfw-" + getName());
-	// }
 
 }

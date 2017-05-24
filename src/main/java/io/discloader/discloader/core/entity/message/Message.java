@@ -1,5 +1,6 @@
 package io.discloader.discloader.core.entity.message;
 
+import java.io.File;
 import java.time.OffsetDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -7,9 +8,11 @@ import java.util.concurrent.CompletableFuture;
 
 import io.discloader.discloader.common.DiscLoader;
 import io.discloader.discloader.common.exceptions.PermissionsException;
+import io.discloader.discloader.common.registry.EntityBuilder;
 import io.discloader.discloader.common.registry.EntityRegistry;
 import io.discloader.discloader.core.entity.RichEmbed;
 import io.discloader.discloader.core.entity.channel.Channel;
+import io.discloader.discloader.core.entity.message.embed.MessageEmbed;
 import io.discloader.discloader.entity.IEmoji;
 import io.discloader.discloader.entity.channel.IGuildChannel;
 import io.discloader.discloader.entity.channel.IGuildTextChannel;
@@ -21,19 +24,21 @@ import io.discloader.discloader.entity.message.IMessage;
 import io.discloader.discloader.entity.message.IMessageAttachment;
 import io.discloader.discloader.entity.message.IMessageEmbed;
 import io.discloader.discloader.entity.message.IReaction;
+import io.discloader.discloader.entity.sendable.SendableMessage;
 import io.discloader.discloader.entity.user.IUser;
 import io.discloader.discloader.entity.util.ISnowflake;
 import io.discloader.discloader.entity.util.Permissions;
 import io.discloader.discloader.entity.util.SnowflakeUtil;
+import io.discloader.discloader.network.json.EmbedJSON;
 import io.discloader.discloader.network.json.MessageJSON;
 import io.discloader.discloader.network.json.ReactionJSON;
 import io.discloader.discloader.network.json.UserJSON;
+import io.discloader.discloader.network.rest.actions.RESTAction;
 import io.discloader.discloader.network.rest.actions.channel.pin.PinMessage;
 import io.discloader.discloader.network.rest.actions.channel.pin.UnpinMessage;
 import io.discloader.discloader.network.rest.actions.message.CreateReaction;
 import io.discloader.discloader.network.rest.actions.message.DeleteMessage;
 import io.discloader.discloader.network.rest.actions.message.DeleteReaction;
-import io.discloader.discloader.network.rest.actions.message.EditMessage;
 import io.discloader.discloader.util.DLUtil.Endpoints;
 import io.discloader.discloader.util.DLUtil.Methods;
 
@@ -113,7 +118,7 @@ public class Message<T extends ITextChannel> implements IMessage {
 
 	private int type;
 
-	public ArrayList<IMessageEmbed> embeds;
+	private List<IMessageEmbed> embeds;
 
 	private List<IReaction> reactions;
 
@@ -242,7 +247,23 @@ public class Message<T extends ITextChannel> implements IMessage {
 	 */
 	@Override
 	public CompletableFuture<IMessage> edit(String content, RichEmbed embed) {
-		return new EditMessage<T>(this, content, embed, null, null).execute();
+		return new RESTAction<IMessage>(loader) {
+
+			@Override
+			public CompletableFuture<IMessage> execute() {
+				SendableMessage sendable = new SendableMessage(content, false, embed, null, (File) null);
+				return super.execute(loader.rest.makeRequest(Endpoints.message(channel.getID(), id), Methods.PATCH, true, sendable));
+			}
+
+			public void complete(String str, Throwable ex) {
+				if (ex != null) {
+					future.completeExceptionally(ex);
+					return;
+				}
+				future.complete(EntityBuilder.getChannelFactory().buildMessage(channel, gson.fromJson(str, MessageJSON.class)));
+			}
+
+		}.execute();
 	}
 
 	@Override
@@ -399,6 +420,11 @@ public class Message<T extends ITextChannel> implements IMessage {
 		content = data.content;
 
 		nonce = data.nonce;
+		if (data.embeds != null) {
+			for (EmbedJSON em : data.embeds) {
+				embeds.add(new MessageEmbed(em));
+			}
+		}
 
 		type = data.type;
 		if (data.reactions != null) {
@@ -418,5 +444,18 @@ public class Message<T extends ITextChannel> implements IMessage {
 		CompletableFuture<IMessage> future = new UnpinMessage<T>(this).execute();
 		future.thenAcceptAsync(action -> this.pinned = false);
 		return future;
+	}
+
+	@Override
+	public IReaction getReaction(IEmoji emoji) {
+		return getReaction(SnowflakeUtil.asString(emoji));
+	}
+
+	@Override
+	public IReaction getReaction(String unicode) {
+		for (IReaction reaction : reactions) {
+			if (unicode.equals(SnowflakeUtil.asString(reaction.getEmoji()))) return reaction;
+		}
+		return null;
 	}
 }

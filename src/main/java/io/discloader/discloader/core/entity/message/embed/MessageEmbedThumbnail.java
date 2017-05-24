@@ -1,30 +1,40 @@
 package io.discloader.discloader.core.entity.message.embed;
 
-import java.io.File;
+import io.discloader.discloader.entity.message.embed.IEmbedThumbnail;
+import io.discloader.discloader.network.json.EmbedThumbnailJSON;
 
 /**
  * @author Perry Berman
- *
  */
-public class MessageEmbedThumbnail {
+public class MessageEmbedThumbnail implements IEmbedThumbnail {
 
-	public String url;
+	public String url, proxyURL;
+	public int width, height;
 
-	public File file;
-	
-	public MessageEmbedThumbnail(String url) {
-		this.url = url;
-		
-		this.file = null;
-	}
-	
-	public MessageEmbedThumbnail(File file) {
-		this.url = String.format("attachment://%s", file.getName());
-		
-		this.file = file;
+	public MessageEmbedThumbnail(EmbedThumbnailJSON data) {
+		url = data.url;
+		proxyURL = data.proxy_url;
+		width = data.width;
+		height = data.height;
 	}
 
-	public String toString() {
-		return String.format("{\"url\":\"%s\"}", this.url);
+	@Override
+	public int getHeight() {
+		return height;
+	}
+
+	@Override
+	public String getProxyURL() {
+		return proxyURL;
+	}
+
+	@Override
+	public String getURL() {
+		return url;
+	}
+
+	@Override
+	public int getWidth() {
+		return width;
 	}
 }

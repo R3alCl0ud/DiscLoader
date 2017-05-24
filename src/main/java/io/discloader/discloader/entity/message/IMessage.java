@@ -144,6 +144,10 @@ public interface IMessage extends ISnowflake, Comparable<IMessage> {
 
 	List<IReaction> getReactions();
 
+	IReaction getReaction(IEmoji emoji);
+	
+	IReaction getReaction(String unicode);
+	
 	boolean isEdited();
 
 	/**

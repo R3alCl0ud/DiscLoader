@@ -99,7 +99,7 @@ public class DiscSocket {
 	}
 
 	public void keepAlive(final int interval) {
-		heartbeatThread = new Thread(logname + " - HeartbeatThread") {
+		heartbeatThread = new Thread(logname + " - Heartbeat") {
 
 			@Override
 			public void run() {
@@ -114,12 +114,13 @@ public class DiscSocket {
 					try {
 						Thread.sleep(interval);
 					} catch (InterruptedException e) {
+						logger.warning(String.format("The thread: %s - Heartbeat, has been interrupted", logname));
 					}
 				}
 
 			}
 		};
-		resetRemaining = new Thread(logname + " - RateLimit Resetter") {
+		resetRemaining = new Thread(logname + " - Rate Limiter") {
 
 			public void run() {
 				while (ws.isOpen() && !resetRemaining.isInterrupted()) {
@@ -128,7 +129,7 @@ public class DiscSocket {
 					try {
 						Thread.sleep(60000);
 					} catch (InterruptedException e) {
-						e.printStackTrace();
+						logger.warning(String.format("The thread: %s - Rate Limiter, has been interrupted", logname));
 					}
 
 				}

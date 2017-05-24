@@ -34,10 +34,10 @@ public abstract class RESTAction<T> {
 
 	public void complete(String data, Throwable ex) {
 		if (ex != null) {
-			System.out.println("hmmmmsssss");
 			future.completeExceptionally(ex);
 			return;
 		}
+		future.complete((T) null);
 	}
 
 }

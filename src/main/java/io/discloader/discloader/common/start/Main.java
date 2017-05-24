@@ -21,10 +21,6 @@ import io.discloader.discloader.common.event.EventListenerAdapter;
 import io.discloader.discloader.common.event.RawEvent;
 import io.discloader.discloader.common.event.ReadyEvent;
 import io.discloader.discloader.common.event.sharding.ShardingListenerAdapter;
-import io.discloader.discloader.common.logger.DLErrorStream;
-import io.discloader.discloader.common.logger.DLPrintStream;
-import io.discloader.discloader.common.registry.EntityRegistry;
-import io.discloader.discloader.entity.channel.IVoiceChannel;
 
 /**
  * DiscLoader client entry point
@@ -64,8 +60,8 @@ public class Main {
 
 	public static void main(String... args) throws IOException {
 		LOGGER = DiscLoader.LOG;
-//		System.setOut(new DLPrintStream(System.out, LOGGER));
-//		System.setErr(new DLErrorStream(System.err, LOGGER));
+		// System.setOut(new DLPrintStream(System.out, LOGGER));
+		// System.setErr(new DLErrorStream(System.err, LOGGER));
 		System.setProperty("http.agent", "DiscLoader");
 		String content = "";
 		if (new File("options.json").exists()) {
@@ -152,7 +148,7 @@ public class Main {
 				}
 
 				options.setSharding(Integer.parseInt(shardMatcher.group(1)), Integer.parseInt(shardMatcher.group(2)));
-//				System.out.println();
+				// System.out.println();
 			}
 		}
 		return options;

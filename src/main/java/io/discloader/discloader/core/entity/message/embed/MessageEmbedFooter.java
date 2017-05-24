@@ -1,20 +1,21 @@
 package io.discloader.discloader.core.entity.message.embed;
 
+import io.discloader.discloader.entity.message.embed.IEmbedFooter;
+import io.discloader.discloader.network.json.EmbedFooterJSON;
+
 /**
  * Represents an embed's footer
  * 
  * @author Perry Berman
- *
  */
-public class MessageEmbedFooter {
+public class MessageEmbedFooter implements IEmbedFooter {
 
-	private String text;
+	private String text, iconURL, proxyURL;
 
-	private String iconURL;
-
-	public MessageEmbedFooter(String text, String icon_url) {
-		this.text = text;
-		this.iconURL = icon_url;
+	public MessageEmbedFooter(EmbedFooterJSON data) {
+		text = data.text;
+		iconURL = data.icon_url;
+		proxyURL = data.proxy_icon_url;
 	}
 
 	/**
@@ -28,7 +29,12 @@ public class MessageEmbedFooter {
 	 * @return The footer's iconURL
 	 */
 	public String getIconURL() {
-		return this.iconURL;
+		return iconURL;
+	}
+
+	@Override
+	public String getProxyURL() {
+		return proxyURL;
 	}
 
 }

@@ -2,8 +2,6 @@ package io.discloader.discloader.core.entity;
 
 import java.io.File;
 import java.io.IOException;
-import java.time.LocalDateTime;
-import java.time.ZoneOffset;
 import java.time.temporal.TemporalAccessor;
 import java.util.ArrayList;
 import java.util.List;
@@ -14,6 +12,8 @@ import io.discloader.discloader.entity.embed.EmbedField;
 import io.discloader.discloader.entity.embed.EmbedFooter;
 import io.discloader.discloader.entity.embed.EmbedImage;
 import io.discloader.discloader.entity.embed.EmbedThumbnail;
+import io.discloader.discloader.entity.message.IMessageEmbed;
+import io.discloader.discloader.entity.message.embed.IEmbedField;
 
 /**
  * @author Perry Berman
@@ -58,6 +58,23 @@ public class RichEmbed {
 	private EmbedThumbnail thumbnail;
 	private EmbedAuthor author;
 
+	public static RichEmbed from(IMessageEmbed embed) {
+		RichEmbed rich = new RichEmbed();
+		rich.setColor(embed.getColor());
+		if (embed.getTitle() != null) rich.setTitle(embed.getTitle());
+		if (embed.getAuthor() != null) rich.setAuthor(embed.getAuthor().getName(), embed.getAuthor().getURL(), embed.getAuthor().getIconURL());
+		if (embed.getURL() != null) rich.setURL(embed.getURL());
+		if (embed.getDescription() != null) rich.setDescription(embed.getDescription());
+		if (embed.getFooter() != null) rich.setFooter(embed.getFooter().getContent(), embed.getFooter().getIconURL());
+		if (embed.getThumbnail() != null) rich.setThumbnail(embed.getThumbnail().getURL());
+		if (embed.getImage() != null) rich.setImage(embed.getImage().getURL());
+		if (embed.getTimestamp() != null) rich.setTimestamp(embed.getTimestamp());
+		for (IEmbedField field : embed.getFeilds()) {
+			rich.addField(field.getName(), field.getContent(), field.isInline());
+		}
+		return rich;
+	}
+
 	/**
 	 * Creates a new RichEmbed
 	 */
@@ -72,7 +89,7 @@ public class RichEmbed {
 	 */
 	public RichEmbed(String title) {
 		this.title = title;
-		this.fields = new ArrayList<EmbedField>();
+		fields = new ArrayList<EmbedField>();
 	}
 
 	/**
@@ -270,7 +287,7 @@ public class RichEmbed {
 	}
 
 	public RichEmbed setTimestamp(TemporalAccessor time) {
-//		LocalDateTime ldt = LocalDateTime.from(time).plusHours(7l);
+		// LocalDateTime ldt = LocalDateTime.from(time).plusHours(7l);
 		timestamp = time.toString();
 		return this;
 	}

@@ -63,6 +63,10 @@ public interface ITextChannel extends IChannel {
 	 */
 	<T extends ITextChannel> CompletableFuture<Map<Long, IMessage>> fetchPinnedMessages();
 
+	long getLastMessageID();
+
+	IMessage getLastMessage();
+
 	IMessage getMessage(long messageID);
 
 	/**

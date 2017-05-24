@@ -21,6 +21,7 @@ public class SnowflakeUtil {
 	}
 
 	public static String asString(ISnowflake snowflake) {
+		if (snowflake.getID() == 0l) return snowflake.toString();
 		return Long.toUnsignedString(snowflake.getID(), 10);
 	}
 }

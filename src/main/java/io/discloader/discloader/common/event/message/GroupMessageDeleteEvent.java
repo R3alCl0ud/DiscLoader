@@ -1,15 +1,16 @@
 package io.discloader.discloader.common.event.message;
 
-import io.discloader.discloader.core.entity.channel.PrivateChannel;
-import io.discloader.discloader.core.entity.message.Message;
+import io.discloader.discloader.entity.channel.IGroupChannel;
+import io.discloader.discloader.entity.message.IMessage;
 
 public class GroupMessageDeleteEvent extends MessageDeleteEvent {
-	public GroupMessageDeleteEvent(Message message) {
+
+	public GroupMessageDeleteEvent(IMessage message) {
 		super(message);
 	}
 
 	@Override
-	public PrivateChannel getChannel() {
-		return (PrivateChannel) super.getChannel();
+	public IGroupChannel getChannel() {
+		return (IGroupChannel) super.getChannel();
 	}
 }

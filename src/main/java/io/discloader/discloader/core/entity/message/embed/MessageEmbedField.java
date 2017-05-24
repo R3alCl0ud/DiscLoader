@@ -1,12 +1,15 @@
 package io.discloader.discloader.core.entity.message.embed;
 
+import io.discloader.discloader.entity.message.embed.IEmbedField;
+import io.discloader.discloader.network.json.EmbedFieldJSON;
+
 /**
- * Represents a field 
+ * Represents a field
  * 
  * @author Perry Berman
  * @since 0.0.1
  */
-public class MessageEmbedField {
+public class MessageEmbedField implements IEmbedField {
 
 	/**
 	 * Is the field displayed inline
@@ -26,10 +29,10 @@ public class MessageEmbedField {
 	 * @param value The content of the field
 	 * @param inline Should the field be displayed inline
 	 */
-	public MessageEmbedField(String name, String value, boolean inline) {
-		this.name = name;
-		this.value = value;
-		this.inline = inline;
+	public MessageEmbedField(EmbedFieldJSON data) {
+		name = data.name;
+		value = data.value;
+		inline = data.inline;
 	}
 
 	/**
