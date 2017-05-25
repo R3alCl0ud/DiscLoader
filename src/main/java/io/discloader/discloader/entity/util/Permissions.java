@@ -117,19 +117,19 @@ public enum Permissions {
 	 */
 	MANAGE_EMOJIS(0x40000000, 1 << 30);
 
-	private int value;
-	private int flag;
+	private long value;
+	private long flag;
 
-	private Permissions(int value, int flag) {
+	private Permissions(long value, long flag) {
 		this.value = value;
 		this.flag = flag;
 	}
 
-	public int getValue() {
+	public long getValue() {
 		return value;
 	}
 
-	public int getFlag() {
+	public long getFlag() {
 		return flag;
 	}
 }

@@ -393,11 +393,11 @@ public class Guild implements IGuild {
 	 *         successful.
 	 * @since 0.0.3
 	 */
-	public CompletableFuture<IRole> createRole(String name, int permissions, int color) {
+	public CompletableFuture<IRole> createRole(String name, long permissions, int color) {
 		return this.createRole(name, permissions, color, false, false);
 	}
 
-	public CompletableFuture<IRole> createRole(String name, int permissions, int color, boolean hoist, boolean mentionable) {
+	public CompletableFuture<IRole> createRole(String name, long permissions, int color, boolean hoist, boolean mentionable) {
 		return new CreateRole(this, new SendableRole(name, permissions, color, hoist, mentionable)).execute();
 	}
 
@@ -933,6 +933,11 @@ public class Guild implements IGuild {
 	@Override
 	public VoiceConnection getVoiceConnection() {
 		return EntityRegistry.getVoiceConnectionByGuild(this);
+	}
+
+	@Override
+	public IRole getRoleByID(String roleID) {
+		return getRoleByID(SnowflakeUtil.parse(roleID));
 	}
 
 }

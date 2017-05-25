@@ -1,8 +1,9 @@
 package io.discloader.discloader.core.entity.channel;
 
-import java.util.Collection;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 
 import io.discloader.discloader.core.entity.Overwrite;
@@ -56,7 +57,7 @@ public class GuildChannel extends Channel implements IGuildChannel {
 	 * @author Perry Berman
 	 * @since 0.0.1
 	 */
-	private HashMap<Long, IOverwrite> overwrites;
+	private Map<Long, IOverwrite> overwrites;
 
 	public GuildChannel(IGuild guild, ChannelJSON channel) {
 		super(guild.getLoader(), channel);
@@ -96,15 +97,15 @@ public class GuildChannel extends Channel implements IGuildChannel {
 	}
 
 	@Override
-	public HashMap<Long, IGuildMember> getMembers() {
-		HashMap<Long, IGuildMember> members = new HashMap<>();
+	public Map<Long, IGuildMember> getMembers() {
+		Map<Long, IGuildMember> members = new HashMap<>();
 		for (IGuildMember member : guild.getMembers().values()) {
-			if (this.permissionsFor(member).hasPermission(Permissions.READ_MESSAGES, false)) members.put(member.getID(), member);
+			if (permissionsOf(member).hasPermission(Permissions.READ_MESSAGES, false)) members.put(member.getID(), member);
 		}
 		return members;
 	}
 
-	public HashMap<Long, IOverwrite> getOverwrites() {
+	public Map<Long, IOverwrite> getOverwrites() {
 		return overwrites;
 	}
 
@@ -114,26 +115,28 @@ public class GuildChannel extends Channel implements IGuildChannel {
 	}
 
 	@Override
-	public IOverwrite overwriteFor(IRole role) {
+	public IOverwrite overwriteOf(IRole role) {
 		return overwrites.get(role.getID());
 	}
 
 	@Override
-	public Collection<IOverwrite> overwritesOf(IGuildMember member) {
-		HashMap<Long, IOverwrite> Overwrites = new HashMap<>();
-		for (IRole role : member.getRoles().values()) {
-			if (role != null && overwrites.get(role.getID()) != null) Overwrites.put(role.getID(), overwrites.get(role.getID()));
+	public List<IOverwrite> overwritesOf(IGuildMember member) {
+		List<IOverwrite> Overwrites = new ArrayList<>();
+		for (IRole role : member.getRoles()) {
+			if (role != null && overwrites.get(role.getID()) != null) Overwrites.add(overwrites.get(role.getID()));
 		}
-		if (overwrites.get(member.getID()) != null) Overwrites.put(member.getID(), overwrites.get(member.getID()));
-		return Overwrites.values();
+		if (overwrites.get(member.getID()) != null) Overwrites.add(overwrites.get(member.getID()));
+		return Overwrites;
 	}
 
 	@Override
-	public IPermission permissionsFor(IGuildMember member) {
-		int raw = 0;
+	public IPermission permissionsOf(IGuildMember member) {
+		long raw = 0;
 		if (guild.isOwner(member)) return new Permission(member, this, 2146958463);
-		for (IRole role : member.getRoles().values()) {
-			if (role != null) raw |= role.getPermissions().asInt();
+		for (IRole role : member.getRoles()) {
+			if (role != null) {
+				raw |= role.getPermissions().toLong();
+			}
 		}
 		for (IOverwrite overwrite : overwritesOf(member)) {
 			raw |= overwrite.getAllowed();

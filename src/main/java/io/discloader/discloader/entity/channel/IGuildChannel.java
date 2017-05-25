@@ -1,6 +1,5 @@
 package io.discloader.discloader.entity.channel;
 
-import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
@@ -16,13 +15,6 @@ import io.discloader.discloader.entity.invite.IInvite;
 
 public interface IGuildChannel extends IChannel {
 
-//	/**
-//	 * Creates a channel with the same information as this channel.
-//	 * 
-//	 * @return A Future that completes with the new channel, if successful.
-//	 */
-//	CompletableFuture<? extends IGuildChannel> clone();
-
 	/**
 	 * Deletes the channel from the guild
 	 * 
@@ -31,7 +23,7 @@ public interface IGuildChannel extends IChannel {
 	CompletableFuture<? extends IGuildChannel> delete();
 
 	/**
-	 * Changes the channels settings	
+	 * Changes the channels settings
 	 * 
 	 * @param name The new name for the channel
 	 * @param topic The new topic
@@ -60,7 +52,7 @@ public interface IGuildChannel extends IChannel {
 
 	int getPosition();
 
-	IOverwrite overwriteFor(IRole role);
+	IOverwrite overwriteOf(IRole role);
 
 	/**
 	 * Gets all of the channel's {@link IOverwrite overwrites} that applies to a
@@ -69,11 +61,11 @@ public interface IGuildChannel extends IChannel {
 	 * @param member The member of whom we are looking for overwrites that
 	 *            apply.
 	 * @author Perry Berman
-	 * @return A {@link Collection} of {@link IOverwrite} objects.
+	 * @return A {@link List} of {@link IOverwrite} objects.
 	 * @version <strike>0.0.1</strike> Updated in version 0.1.1
 	 * @since April 7, 2017.
 	 */
-	Collection<IOverwrite> overwritesOf(IGuildMember member);
+	List<IOverwrite> overwritesOf(IGuildMember member);
 
 	/**
 	 * Evaluates the permissions for a member in the channel's {@link Guild}
@@ -84,7 +76,7 @@ public interface IGuildChannel extends IChannel {
 	 *         {@link Integer}. <br>
 	 *         null if the channel doesn't belong to a {@link Guild}
 	 */
-	IPermission permissionsFor(IGuildMember iGuildMember);
+	IPermission permissionsOf(IGuildMember iGuildMember);
 
 	/**
 	 * Sets the name of the channel.

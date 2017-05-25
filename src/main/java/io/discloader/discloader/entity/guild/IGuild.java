@@ -125,7 +125,7 @@ public interface IGuild extends ISnowflake, ICreationTime {
 	 *         successful.
 	 * @since 0.0.3
 	 */
-	CompletableFuture<IRole> createRole(String name, int permissions, int color, boolean hoist, boolean mentionable);
+	CompletableFuture<IRole> createRole(String name, long permissions, int color, boolean hoist, boolean mentionable);
 
 	CompletableFuture<IGuildTextChannel> createTextChannel(String name);
 
@@ -250,6 +250,8 @@ public interface IGuild extends ISnowflake, ICreationTime {
 
 	IRole getRoleByID(long roleID);
 
+	IRole getRoleByID(String roleID);
+
 	Map<Long, IRole> getRoles();
 
 	IGuildTextChannel getTextChannelByID(long channelID);
@@ -259,7 +261,7 @@ public interface IGuild extends ISnowflake, ICreationTime {
 	IGuildTextChannel getTextChannelByName(String channelName);
 
 	Map<Long, IGuildTextChannel> getTextChannels();
-	
+
 	IGuildVoiceChannel getVoiceChannelByID(long channelID);
 
 	IGuildVoiceChannel getVoiceChannelByID(String channelID);

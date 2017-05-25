@@ -11,6 +11,6 @@ public class OverwriteJSON {
 	public String id;
 	public String type;
 
-	public int allow;
-	public int deny;
+	public long allow;
+	public long deny;
 }

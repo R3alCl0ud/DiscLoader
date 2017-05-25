@@ -62,7 +62,7 @@ public class VoiceConnection {
 
 		@Override
 		public void onTrackEnd(AudioPlayer player, AudioTrack track, AudioTrackEndReason endReason) {
-			System.out.println("Track ended");
+			logger.info(String.format("The audio track at: %s, has ended with reason: %s", track.getInfo().uri, endReason.toString()));
 			sendHandler.stop();
 			for (IVoiceEventListener listener : listeners) {
 				listener.end(track, endReason);
@@ -166,6 +166,7 @@ public class VoiceConnection {
 	}
 
 	public CompletableFuture<VoiceConnection> disconnect() {
+		logger.info("Attempting to disconnect the VoiceConnection");
 		player.destroy();
 		manager.shutdown();
 		sendStateUpdate(null);

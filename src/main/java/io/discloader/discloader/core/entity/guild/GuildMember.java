@@ -2,8 +2,9 @@ package io.discloader.discloader.core.entity.guild;
 
 import java.time.OffsetDateTime;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
-import java.util.HashMap;
+import java.util.List;
 import java.util.concurrent.CompletableFuture;
 
 import io.discloader.discloader.common.DiscLoader;
@@ -21,6 +22,7 @@ import io.discloader.discloader.entity.guild.IGuildMember;
 import io.discloader.discloader.entity.guild.IRole;
 import io.discloader.discloader.entity.user.IUser;
 import io.discloader.discloader.entity.util.Permissions;
+import io.discloader.discloader.entity.util.SnowflakeUtil;
 import io.discloader.discloader.entity.voice.VoiceState;
 import io.discloader.discloader.network.json.MemberJSON;
 import io.discloader.discloader.network.rest.actions.guild.ModifyMember;
@@ -93,7 +95,7 @@ public class GuildMember implements IGuildMember {
 		this.user = user;
 		this.guild = guild;
 		this.nick = nick != null ? nick : user.getUsername();
-		roleIDs = roles != null ? roles : new String[] {};
+		roleIDs = roles != null ? roles : new String[0];
 		joinedAt = OffsetDateTime.now();
 		this.deaf = deaf;
 		this.mute = deaf || mute;
@@ -103,7 +105,13 @@ public class GuildMember implements IGuildMember {
 		user = member.getUser();
 		guild = member.getGuild();
 		nick = member.getNickname();
-		roleIDs = member.getRoles().keySet().toArray(new String[] {});
+		if (member instanceof GuildMember) roleIDs = Arrays.copyOf(((GuildMember) member).roleIDs, ((GuildMember) member).roleIDs.length);
+		else {
+			roleIDs = new String[member.getRoles().size()];
+			for (int i = 0; i < member.getRoles().size(); i++) {
+				roleIDs[i] = SnowflakeUtil.asString(member.getRoles().get(i));
+			}
+		}
 		joinedAt = member.getJoinTime();
 		deaf = member.isDeaf();
 		mute = deaf || member.isMuted();
@@ -148,8 +156,8 @@ public class GuildMember implements IGuildMember {
 		if (!(obj instanceof GuildMember)) return false;
 		GuildMember member = (GuildMember) obj;
 		if (guild.getID() != member.guild.getID()) return false;
-		for (IRole role : member.getRoles().values()) {
-			if (!getRoles().containsKey(role.getID())) return false;
+		for (IRole role : member.getRoles()) {
+			if (!getRoles().contains(role)) return false;
 		}
 
 		return getID() == member.getID() && nick.equals(member.nick);
@@ -162,14 +170,7 @@ public class GuildMember implements IGuildMember {
 
 	@Override
 	public IRole getHighestRole() {
-		IRole highest = null;
-		for (IRole role : getRoles().values()) {
-			if (highest == null || highest.getPosition() < role.getPosition()) {
-				highest = role;
-				continue;
-			}
-		}
-		return highest;
+		return getRoles().get(getRoles().size() - 1);
 	}
 
 	@Override
@@ -177,10 +178,6 @@ public class GuildMember implements IGuildMember {
 		return user.getID();
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * @see io.discloader.discloader.entity.guild.IGuildMember#getLoader()
-	 */
 	@Override
 	public DiscLoader getLoader() {
 		return guild.getLoader();
@@ -204,9 +201,9 @@ public class GuildMember implements IGuildMember {
 
 	@Override
 	public IPermission getPermissions() {
-		int r = 0;
-		for (IRole role : getRoles().values()) {
-			r |= role.getPermissions().asInt();
+		long r = 0;
+		for (IRole role : getRoles()) {
+			r |= role.getPermissions().toLong();
 		}
 		return new Permission(this, r);
 	}
@@ -227,11 +224,16 @@ public class GuildMember implements IGuildMember {
 	 * @return A HashMap of the member's roles. indexed by {@link Role#id}
 	 */
 	@Override
-	public HashMap<String, IRole> getRoles() {
-		HashMap<String, IRole> roles = new HashMap<>();
+	public List<IRole> getRoles() {
+		List<IRole> roles = new ArrayList<>();
 		for (String id : roleIDs) {
-			roles.put(id, guild.getRoles().get(id));
+			roles.add(guild.getRoleByID(id));
 		}
+		roles.sort((a, b) -> {
+			if (a.getPosition() < b.getPosition()) return -1;
+			if (a.getPosition() > b.getPosition()) return 1;
+			return 0;
+		});
 		return roles;
 	}
 
@@ -347,7 +349,7 @@ public class GuildMember implements IGuildMember {
 	 */
 	@Override
 	public CompletableFuture<IGuildMember> move(IGuildVoiceChannel channel) {
-		if (!guild.isOwner() && !channel.permissionsFor(guild.getCurrentMember()).hasPermission(Permissions.MOVE_MEMBERS)) throw new PermissionsException("Insufficient Permissions");
+		if (!guild.isOwner() && !channel.permissionsOf(guild.getCurrentMember()).hasPermission(Permissions.MOVE_MEMBERS)) throw new PermissionsException("Insufficient Permissions");
 		if (getVoiceChannel() == null) throw new VoiceConnectionException();
 
 		return new ModifyMember(this, channel).execute();

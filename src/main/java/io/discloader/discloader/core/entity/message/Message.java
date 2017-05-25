@@ -201,7 +201,7 @@ public class Message<T extends ITextChannel> implements IMessage {
 	public CompletableFuture<IMessage> deleteAllReactions() {
 		CompletableFuture<IMessage> future = new CompletableFuture<>();
 		if (channel instanceof IGuildChannel) {
-			if (!((IGuildChannel) channel).permissionsFor(guild.getCurrentMember()).hasPermission(Permissions.MANAGE_MESSAGES)) {
+			if (!((IGuildChannel) channel).permissionsOf(guild.getCurrentMember()).hasPermission(Permissions.MANAGE_MESSAGES)) {
 				future.completeExceptionally(new PermissionsException());
 				return future;
 			}

@@ -33,7 +33,7 @@ public class Role implements IRole {
 	/**
 	 * The 53bit permissions integer for the role
 	 */
-	private int permissions;
+	private long permissions;
 
 	/**
 	 * The color users with this role should display as

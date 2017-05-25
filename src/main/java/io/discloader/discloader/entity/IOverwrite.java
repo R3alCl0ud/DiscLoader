@@ -6,18 +6,18 @@ import io.discloader.discloader.entity.util.ISnowflake;
 import io.discloader.discloader.entity.util.Permissions;
 
 public interface IOverwrite extends ISnowflake {
-	
-	int getAllowed();
-	
-	int getDenied();
-	
+
+	long getAllowed();
+
+	long getDenied();
+
 	IGuildMember getMember();
-	
+
 	IRole getRole();
-	
+
 	String getType();
-	
+
 	void setAllowed(Permissions... permissions);
-	
+
 	void setDenied(Permissions... permissions);
 }

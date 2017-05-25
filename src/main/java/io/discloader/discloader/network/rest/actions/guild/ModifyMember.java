@@ -1,6 +1,6 @@
 package io.discloader.discloader.network.rest.actions.guild;
 
-import java.util.HashMap;
+import java.util.List;
 import java.util.concurrent.CompletableFuture;
 
 import io.discloader.discloader.common.DiscLoader;
@@ -30,7 +30,7 @@ public class ModifyMember {
 		this.nick = member.getNickname();
 		this.roles = new String[member.getRoles().size()];
 		int i = 0;
-		for (IRole r : member.getRoles().values()) {
+		for (IRole r : member.getRoles()) {
 			roles[i] = Long.toUnsignedString(r.getID());
 			i++;
 		}
@@ -38,17 +38,17 @@ public class ModifyMember {
 		deaf = member.isDeaf();
 	}
 
-	public ModifyMember(IGuildMember member, String nick, HashMap<String, IRole> hashMap, boolean mute, boolean deaf, IVoiceChannel channel) {
-		this.channel_id = Long.toUnsignedString(channel.getID());
+	public ModifyMember(IGuildMember member, String nick, List<IRole> list, boolean mute, boolean deaf, IVoiceChannel channel) {
+		channel_id = Long.toUnsignedString(channel.getID());
 		this.nick = nick;
 		this.mute = mute;
 		this.deaf = deaf;
 		loader = channel.getLoader();
 		this.member = member;
-		this.roles = new String[hashMap.size()];
+		roles = new String[list.size()];
 		int i = 0;
-		for (IRole r : hashMap.values()) {
-			this.roles[i] = Long.toUnsignedString(r.getID());
+		for (IRole r : list) {
+			roles[i] = Long.toUnsignedString(r.getID());
 			i++;
 		}
 	}

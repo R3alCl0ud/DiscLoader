@@ -5,20 +5,9 @@ import io.discloader.discloader.entity.util.Permissions;
 
 public interface IPermission {
 
-	int asInt();
+	long toLong();
 
 	IGuildChannel getChannel();
-
-	/**
-	 * Checks if the member has the specified permission. <br>
-	 * {@code boolean sendMessages =
-	 * channel.permissionsFor(member).hasPermission({@link Permissions#SEND_MESSAGES});}
-	 * 
-	 * @param permission A {@link Permissions} constant
-	 * @return {@code true} if the user has the specified {@link Permissions
-	 *         permission}. {@code false} otherwise.
-	 */
-	boolean hasPermission(Permissions permission);
 
 	/**
 	 * Checks if the member has the specified permission. <br>
@@ -33,5 +22,16 @@ public interface IPermission {
 	 *         {@code false} otherwise.
 	 */
 	boolean hasPermission(Permissions permission, boolean explicit);
+
+	/**
+	 * Checks if the member has the specified permission. <br>
+	 * {@code boolean sendMessages =
+	 * channel.permissionsFor(member).hasPermission({@link Permissions#SEND_MESSAGES});}
+	 * 
+	 * @param permissions One or more {@link Permissions} constant so check for.
+	 * @return {@code true} if the user has the specified {@link Permissions
+	 *         permissions}. {@code false} otherwise.
+	 */
+	boolean hasPermission(Permissions... permissions);
 
 }

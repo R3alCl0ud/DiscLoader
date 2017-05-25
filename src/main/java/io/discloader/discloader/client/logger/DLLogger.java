@@ -41,7 +41,7 @@ public class DLLogger {
 				if (getFormatter() == null) {
 					setFormatter(new DLLogFormatter());
 				}
-
+			
 				try {
 					String message = getFormatter().format(record);
 					if (record.getLevel().intValue() >= Level.WARNING.intValue()) {
@@ -52,7 +52,7 @@ public class DLLogger {
 				} catch (Exception exception) {
 					reportError(null, exception, ErrorManager.FORMAT_FAILURE);
 				}
-
+			
 			}
 
 			@Override

@@ -34,46 +34,21 @@ public class Permission implements IPermission {
 	/**
 	 * The raw 53bit permissions {@link Integer}
 	 */
-	private final int raw;
+	private final long raw;
 
-	public Permission(IGuildMember member, IGuildChannel channel, int raw) {
+	public Permission(IGuildMember member, IGuildChannel channel, long raw) {
 		this.member = member;
 		this.channel = channel;
 		this.raw = raw;
 	}
 
-	public Permission(Role role, int permissions) {
+	public Permission(Role role, long permissions) {
 		this(null, null, permissions);
 		this.role = role;
 	}
 
-	public Permission(IGuildMember member, int permissions) {
+	public Permission(IGuildMember member, long permissions) {
 		this(member, null, permissions);
-	}
-
-	/**
-	 * Checks if the member has the specified permission.
-	 * 
-	 * @param permission A {@link DLUtil.PermissionFlags Permission Flag}
-	 * @return {@code true}, if the user has the specified permission. Otherwise
-	 *         {@code false}.
-	 */
-	public boolean hasPermission(int permission) {
-		return this.hasPermission(permission, false);
-	}
-
-	/**
-	 * Checks if the member has the specified permission. <br>
-	 * {@code boolean sendMessages = channel.permissionsFor(member).hasPermission(PermissionFlags.SEND_MESSAGES);}
-	 * 
-	 * @param permission A {@link DLUtil.PermissionFlags Permission Flag}
-	 * @param explicit Whether or not the member explicitly has the permission
-	 * @return {@code true}, if the user has the specified permission. Otherwise
-	 *         {@code false}.
-	 */
-	public boolean hasPermission(int permission, boolean explicit) {
-		if (!explicit && (this.raw & Permissions.ADMINISTRATOR.getValue()) > 0) return true;
-		return (this.raw & permission) > 0;
 	}
 
 	/**
@@ -98,40 +73,23 @@ public class Permission implements IPermission {
 		return role;
 	}
 
-	public int asInteger() {
+	@Override
+	public long toLong() {
 		return raw;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * @see io.discloader.discloader.entity.IPermission#toInt()
-	 */
-	@Override
-	public int asInt() {
-		return raw;
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * @see
-	 * io.discloader.discloader.entity.IPermission#hasPermission(io.discloader.
-	 * discloader.entity.Permissions)
-	 */
-	@Override
-	public boolean hasPermission(Permissions permission) {
-		return hasPermission(permission, false);
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * @see
-	 * io.discloader.discloader.entity.IPermission#hasPermission(io.discloader.
-	 * discloader.entity.Permissions, boolean)
-	 */
 	@Override
 	public boolean hasPermission(Permissions permission, boolean explicit) {
-		if (!explicit && (this.raw & Permissions.ADMINISTRATOR.getValue()) > 0) return true;
-		return (this.raw & permission.getValue()) > 0;
+		return (!explicit && (raw & Permissions.ADMINISTRATOR.getValue()) > 0) || ((raw & permission.getValue()) > 0);
+	}
+
+	@Override
+	public boolean hasPermission(Permissions... permissions) {
+		if ((raw & Permissions.ADMINISTRATOR.getValue()) > 0) return true;
+		for (Permissions permission : permissions) {
+			if (!hasPermission(permission, false)) return false;
+		}
+		return true;
 	}
 
 }

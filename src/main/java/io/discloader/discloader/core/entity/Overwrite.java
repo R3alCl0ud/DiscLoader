@@ -26,12 +26,12 @@ public class Overwrite implements IOverwrite {
 	/**
 	 * The 53bit integer of allowed permissions
 	 */
-	public int allow;
+	public long allow;
 
 	/**
 	 * The 53bit integer of denied permissions
 	 */
-	public int deny;
+	public long deny;
 
 	/**
 	 * either "role" or "member"
@@ -54,18 +54,18 @@ public class Overwrite implements IOverwrite {
 
 	private transient IGuildChannel channel;
 
-	public Overwrite(int allow, int deny) {
+	public Overwrite(long allow, long deny) {
 		this.allow = allow;
 		this.deny = deny;
 	}
 
-	public Overwrite(int allow, int deny, IGuildMember member) {
+	public Overwrite(long allow, long deny, IGuildMember member) {
 		this(allow, deny);
 		type = "member";
 		id = member.getID();
 	}
 
-	public Overwrite(int allow, int deny, IRole role) {
+	public Overwrite(long allow, long deny, IRole role) {
 		this(allow, deny);
 		type = "role";
 		id = role.getID();
@@ -89,7 +89,7 @@ public class Overwrite implements IOverwrite {
 		if (data.type != null) this.type = data.type;
 	}
 
-	public int getAllowed() {
+	public long getAllowed() {
 		return allow;
 	}
 
@@ -97,7 +97,7 @@ public class Overwrite implements IOverwrite {
 		return channel;
 	}
 
-	public int getDenied() {
+	public long getDenied() {
 		return deny;
 	}
 
@@ -114,14 +114,14 @@ public class Overwrite implements IOverwrite {
 		return channel.getGuild().getRoles().get(id);
 	}
 
-	public int setAllowedPermissions(Permissions... permissions) {
+	public long setAllowedPermissions(Permissions... permissions) {
 		for (Permissions p : permissions) {
 			allow |= p.getValue();
 		}
 		return allow;
 	}
 
-	public int setDeniedPermissions(Permissions... permissions) {
+	public long setDeniedPermissions(Permissions... permissions) {
 		for (Permissions p : permissions) {
 			deny |= p.getValue();
 		}
