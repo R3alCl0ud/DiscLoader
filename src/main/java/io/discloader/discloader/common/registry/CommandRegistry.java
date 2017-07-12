@@ -67,6 +67,7 @@ public class CommandRegistry {
 	 *            recommended that this should be the command's unlocalized name
 	 */
 	public static void registerCommand(Command command, String name) {
+		System.out.println("registering");
 		if (ProgressLogger.phaseNumber != 2) {
 //			System.err.println(String.format("", ));
 		}

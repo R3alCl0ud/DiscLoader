@@ -42,7 +42,6 @@ public class CommandHandler {
 			} catch (Exception ex) {
 				ex.printStackTrace();
 			}
-			
 			Command command = getCommand(label, message);
 			if (command != null) {
 				if (message.getChannel() instanceof IGuildChannel && !command.shouldExecute(message.getMember(), (IGuildChannel) message.getChannel())) return;
@@ -78,7 +77,6 @@ public class CommandHandler {
 		} else if (region.startsWith("london")) {
 			locale = Locale.UK;
 		}
-		
 		for (Command command : CommandRegistry.commands.entries()) {
 			String localized = LanguageRegistry.getLocalized(locale, "command." + command.getUnlocalizedName() + ".name");
 			if ((localized != null && localized.equals(label)) || command.getUnlocalizedName().equals(label)) {
