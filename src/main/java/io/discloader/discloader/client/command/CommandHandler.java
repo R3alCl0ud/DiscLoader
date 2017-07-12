@@ -25,14 +25,13 @@ public class CommandHandler {
 	public static void handleMessageCreate(MessageCreateEvent e) {
 		try {
 			IMessage message = e.getMessage();
-			if (!handleCommands || message.getAuthor().isBot() || ((!e.loader.user.bot && selfBot) && message.getAuthor().getID() != e.loader.user.getID()) || message.getContent().length() < prefix.length()) {
+			if (!handleCommands || message.getAuthor() == null || message.getAuthor().isBot() || ((!e.loader.user.bot && selfBot) && message.getAuthor().getID() != e.loader.user.getID()) || message.getContent().length() < prefix.length()) {
 				return;
 			}
 			String[] Args = e.args;
 			String label = Args[0];
 			String rest = "";
-			if (label.length() < message.getContent().length())
-				rest = message.getContent().substring(label.length() + 1);
+			if (label.length() < message.getContent().length()) rest = message.getContent().substring(label.length() + 1);
 			int argc = Args.length > 1 ? Args.length - 1 : 1;
 			
 			if (label.length() < prefix.length() || !label.substring(0, prefix.length()).equals(prefix)) {
@@ -46,8 +45,7 @@ public class CommandHandler {
 			
 			Command command = getCommand(label, message);
 			if (command != null) {
-				if (message.getChannel() instanceof IGuildChannel && !command.shouldExecute(message.getMember(), (IGuildChannel) message.getChannel()))
-					return;
+				if (message.getChannel() instanceof IGuildChannel && !command.shouldExecute(message.getMember(), (IGuildChannel) message.getChannel())) return;
 				String[] args = new String[argc];
 				Matcher argM = command.getArgsPattern().matcher(rest);
 				if (argM.find()) {
