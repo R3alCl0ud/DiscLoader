@@ -1,7 +1,7 @@
-package io.discloader.discloader.entity.guild;
+package io.discloader.discloader.entity;
 
-import io.discloader.discloader.entity.IIcon;
 import io.discloader.discloader.entity.channel.IChannel;
+import io.discloader.discloader.entity.guild.IGuild;
 import io.discloader.discloader.entity.user.IUser;
 import io.discloader.discloader.entity.util.ISnowflake;
 

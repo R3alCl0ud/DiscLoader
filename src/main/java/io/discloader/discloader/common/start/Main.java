@@ -127,10 +127,9 @@ public class Main {
 				public void RawPacket(RawEvent data) {
 					WebSocketFrame frame = data.getFrame();
 					if (data.isGateway() && frame.isTextFrame() && !frame.getPayloadText().contains("PRESENCE_UPDATE")) {
-						// LOGGER.fine(frame.getPayloadText());
+						LOGGER.fine(frame.getPayloadText());
 					} else if (data.isREST() && data.getHttpResponse() != null) {
 						LOGGER.info(data.getHttpResponse().getBody());
-						// LOGGER.info("" + data.getHttpResponse().getStatus());
 					}
 				}
 			});

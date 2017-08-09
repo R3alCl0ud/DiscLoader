@@ -17,7 +17,7 @@ import io.discloader.discloader.util.DLUtil;
 public interface ICreationTime {
 
 	/**
-	 * @return
+	 * @return An {@link OffsetDateTime} object of the time the {@link ISnowflake} was created.
 	 */
 	OffsetDateTime createdAt();
 

@@ -16,34 +16,35 @@ import io.discloader.discloader.util.DLUtil.ChannelType;
  */
 // @FunctionalInterface
 public interface IChannel extends ISnowflake, ICreationTime {
-
+	
 	/**
 	 * @return The type of the channel
 	 */
 	ChannelType getType();
-
+	
 	/**
-	 * Whether or not the channel is a dm channel. Is always {@literal true} if
-	 * {@link Channel#type type} is {@literal "groupDM"} or {@literal "dm"}
+	 * Whether or not the channel is a dm channel. Is always {@literal true} if {@link Channel#type type} is {@literal "groupDM"} or
+	 * {@literal "dm"}
 	 * 
 	 * @return true if the channel is a dm/groupDM channel, false otherwise
 	 * @author Perry Berman
 	 */
 	boolean isPrivate();
-
+	
+	// boolean isNSFW();
+	
 	/**
 	 * Sets up the channel for use.
 	 * 
 	 * @param data Channel data.
 	 */
 	void setup(ChannelJSON data);
-
+	
 	/**
-	 * @return A string that is in the correct format for mentioning this
-	 *         channel in a {@link Message}
+	 * @return A string that is in the correct format for mentioning this channel in a {@link Message}
 	 */
 	String toMention();
-
+	
 	DiscLoader getLoader();
-
+	
 }

@@ -11,8 +11,8 @@ import org.json.JSONObject;
 import io.discloader.discloader.core.entity.Game;
 import io.discloader.discloader.core.entity.Presence;
 import io.discloader.discloader.entity.sendable.Packet;
-import io.discloader.discloader.entity.sendable.SendablePresenceUpdate;
 import io.discloader.discloader.entity.user.IUser;
+import io.discloader.discloader.network.gateway.packets.request.PresenceUpdate;
 import io.discloader.discloader.network.rest.actions.ModifyUser;
 
 /**
@@ -37,7 +37,7 @@ public class DLUser extends User {
 	/**
 	 * User's persence. shows as default if {@code user.id != loader.user.id}
 	 */
-	public final Presence presence;
+	private final Presence presence;
 
 	/**
 	 * Creates a new DLUser object
@@ -113,7 +113,7 @@ public class DLUser extends User {
 	 * @return this
 	 */
 	public DLUser setPresence(String status, Game game, boolean afk) {
-		SendablePresenceUpdate d = new SendablePresenceUpdate(game, status, afk, 0);
+		PresenceUpdate d = new PresenceUpdate(game, status, afk, 0);
 		Packet payload = new Packet(3, d);
 		presence.update(status, game);
 		loader.socket.send(payload);
@@ -160,6 +160,13 @@ public class DLUser extends User {
 	 */
 	public String getEmail() {
 		return email;
+	}
+
+	/**
+	 * @return the presence
+	 */
+	public Presence getPresence() {
+		return this.presence;
 	}
 
 }
