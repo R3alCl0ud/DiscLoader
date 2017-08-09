@@ -402,7 +402,7 @@ public class DiscLoader {
 			Gson gson = new Gson();
 			Gateway gateway = gson.fromJson(text, Gateway.class);
 			try {
-				socket.connectSocket(gateway.url + "?v=7&encoding=json");
+				socket.connectSocket(gateway.url + "?v=6&encoding=json");
 			} catch (Exception e) {
 				future.completeExceptionally(e);
 				e.printStackTrace();

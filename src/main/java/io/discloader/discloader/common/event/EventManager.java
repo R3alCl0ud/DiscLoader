@@ -79,6 +79,7 @@ public class EventManager {
 			}
 		}
 		for (IEventListener handler : handlers) {
+
 			if (event instanceof GuildMemberEvent) {
 				GuildMemberEvent gme = (GuildMemberEvent) event;
 				handler.GuildMemberEvent(gme);
@@ -109,6 +110,8 @@ public class EventManager {
 					handler.GroupMessageCreate((GroupMessageCreateEvent) event);
 				} else if (event instanceof PrivateMessageCreateEvent) {
 					handler.PrivateMessageCreate((PrivateMessageCreateEvent) event);
+				} else {
+					handler.MessageCreate((MessageCreateEvent) event);
 				}
 			} else if (event instanceof MessageDeleteEvent) {
 				if (event instanceof GuildMessageDeleteEvent) {

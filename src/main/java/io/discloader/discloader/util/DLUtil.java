@@ -607,7 +607,7 @@ public final class DLUtil {
 
 	public static final String HOST = "https://discordapp.com";
 
-	public static final String API = String.format("%s/api/v7", HOST);
+	public static final String API = String.format("%s/api/v6", HOST);
 
 	public static final String LoaderVersion = "0.1.1";
 

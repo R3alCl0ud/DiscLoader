@@ -176,6 +176,10 @@ public class DiscSocketListener extends WebSocketAdapter {
 	public void onConnected(WebSocket ws, Map<String, List<String>> arg1) throws Exception {
 		logger.info("Connected to the gateway");
 		ProgressLogger.stage(2, 3, "Caching API Objects");
+		if (reconnection != null && !reconnection.isInterrupted()) {
+			reconnection.interrupt();
+			reconnection = null;
+		}
 		if (socket.status != Status.RECONNECTING) {
 			this.socket.lastHeartbeatAck = true;
 			this.sendNewIdentify();
@@ -263,12 +267,12 @@ public class DiscSocketListener extends WebSocketAdapter {
 		this.socket.status = Status.RECONNECTING;
 		logger.info("Waiting to reconnect to the gateway");
 		if (reconnection == null) {
-			reconnection = new Thread("GatewayReconnector") {
+			reconnection = new Thread(logname + " Reconnector") {
 
 				public void run() {
-					if (socket.status == Status.RECONNECTING && !interrupted()) {
+					if (socket.status == Status.RECONNECTING && !this.isInterrupted()) {
 						try {
-							Thread.sleep(timeout * retries);
+							Thread.sleep(timeout * (retries + 1));
 							logger.info("Attempting to reconnect to the gateway");
 							loader.emit(new ReconnectEvent(loader, retries));
 							socket.ws = socket.ws.recreate().connect();

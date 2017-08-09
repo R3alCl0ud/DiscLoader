@@ -12,6 +12,7 @@ import java.util.regex.Pattern;
 import com.google.gson.Gson;
 import com.neovisionaries.ws.client.WebSocketFrame;
 
+import io.discloader.discloader.client.command.Command;
 import io.discloader.discloader.client.render.WindowFrame;
 import io.discloader.discloader.common.DLOptions;
 import io.discloader.discloader.common.DiscLoader;
@@ -20,7 +21,9 @@ import io.discloader.discloader.common.ShardManager;
 import io.discloader.discloader.common.event.EventListenerAdapter;
 import io.discloader.discloader.common.event.RawEvent;
 import io.discloader.discloader.common.event.ReadyEvent;
+import io.discloader.discloader.common.event.message.MessageCreateEvent;
 import io.discloader.discloader.common.event.sharding.ShardingListenerAdapter;
+import io.discloader.discloader.common.registry.CommandRegistry;
 
 /**
  * DiscLoader client entry point
@@ -81,7 +84,10 @@ public class Main {
 					shard.getLoader().addEventHandler(new EventListenerAdapter() {
 
 						public void Ready(ReadyEvent e) {
-
+							
+							for (Command command : CommandRegistry.commands.entries()) {
+								LOGGER.info(command.getUnlocalizedName());
+							}
 						}
 
 						@Override
@@ -102,8 +108,19 @@ public class Main {
 			loader = new DiscLoader(options);
 			loader.addEventHandler(new EventListenerAdapter() {
 
-				public void Ready(ReadyEvent e) {
+				@Override
+				public void MessageCreate(MessageCreateEvent e) {
+					if (e.getMessage().getContent().equals("#$close")) {
+						e.getLoader().socket.ws.disconnect(1001);
+					}
+				}
 
+				public void Ready(ReadyEvent e) {
+					LOGGER.info(e.getLoader().user.getUsername());
+					
+					for (Command command : CommandRegistry.commands.entries()) {
+						LOGGER.info(command.getUnlocalizedName());
+					}
 				}
 
 				@Override
