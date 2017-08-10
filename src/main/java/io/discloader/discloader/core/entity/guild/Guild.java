@@ -538,8 +538,7 @@ public class Guild implements IGuild {
 	public IGuildTextChannel getDefaultChannel() {
 		IGuildTextChannel defaultChannel = null;
 		for (IGuildTextChannel channel : textChannels.values()) {
-			if ((defaultChannel == null && channel.permissionsOf(getCurrentMember()).hasPermission(Permissions.READ_MESSAGES, false))
-					|| (channel.getPosition() > defaultChannel.getPosition() && channel.permissionsOf(getCurrentMember()).hasPermission(Permissions.READ_MESSAGES, false))) {
+			if ((defaultChannel == null || channel.getPosition() < defaultChannel.getPosition()) && channel.permissionsOf(getCurrentMember()).hasPermission(Permissions.READ_MESSAGES, true)) {
 				defaultChannel = channel;
 			}
 		}
