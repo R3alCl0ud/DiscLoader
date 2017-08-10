@@ -203,6 +203,10 @@ public class DiscSocket {
 
 	}
 
+	public void setRetries(int i) {
+		socketListener.setRetries(i);
+	}
+
 	public void setReady() {
 		status = Status.READY;
 	}

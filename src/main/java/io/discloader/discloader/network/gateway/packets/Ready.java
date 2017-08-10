@@ -42,6 +42,7 @@ public class Ready extends AbstractHandler {
 		}
 
 		// check if the loader is ready to rock & roll
+		loader.socket.setRetries(0);
 		loader.checkReady();
 	}
 }

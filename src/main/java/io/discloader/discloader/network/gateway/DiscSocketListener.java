@@ -61,28 +61,28 @@ import io.discloader.discloader.util.DLUtil.Status;
 import io.discloader.discloader.util.DLUtil.WSEvents;
 
 public class DiscSocketListener extends WebSocketAdapter {
-	
+
 	public Gson gson = new Gson();
-	
+
 	public DiscLoader loader;
-	
+
 	public DiscSocket socket;
-	
-	private int retries = 0;
-	
+
+	private int tries = 0;
+
 	private long timeout = 5000;
-	
+
 	private final Logger logger;
-	
+
 	public HashMap<String, AbstractHandler> handlers;
-	
+
 	public List<SocketPacket> queue;
-	
+
 	private String token;
 	private final String logname;
-	
+
 	private Thread reconnection = null;
-	
+
 	public DiscSocketListener(DiscSocket socket) {
 		this.socket = socket;
 		this.loader = this.socket.loader;
@@ -118,24 +118,24 @@ public class DiscSocketListener extends WebSocketAdapter {
 		this.register(WSEvents.TYPING_START, new TypingStart(this.socket));
 		this.register(WSEvents.VOICE_STATE_UPDATE, new VoiceStateUpdate(this.socket));
 		this.register(WSEvents.VOICE_SERVER_UPDATE, new VoiceServerUpdate(this.socket));
-		
+
 	}
-	
+
 	public void handle(SocketPacket packet) {
 		if (packet.op == OPCodes.RECONNECT) {
 			this.setSequence(packet.s);
 			return;
 		}
-		
+
 		if (packet.op == OPCodes.INVALID_SESSION) {
 			sendNewIdentify();
 			return;
 		}
-		
+
 		if (packet.op == OPCodes.HELLO) {
 			this.handlers.get(WSEvents.HELLO).handle(packet);
 		}
-		
+
 		if (packet.op == DLUtil.OPCodes.HEARTBEAT_ACK) {
 			socket.lastHeartbeatAck = true;
 			// loader.emit("debug", "Heartbeat Acknowledged");
@@ -144,18 +144,18 @@ public class DiscSocketListener extends WebSocketAdapter {
 			logger.info("Recieved Heartbeat request from Gateway.");
 			JSONObject payload = new JSONObject().put("op", OPCodes.HEARTBEAT).put("d", socket.s);
 			socket.send(payload, true);
-			
+
 		}
-		
+
 		setSequence(packet.s);
-		
+
 		if (socket.status != Status.READY && socket.status != Status.RECONNECTING) {
 			if (DLUtil.EventWhitelist.indexOf(packet.t) == -1) {
 				queue.add(packet);
 				return;
 			}
 		}
-		
+
 		if (packet.op == OPCodes.DISPATCH) {
 			if (!handlers.containsKey(packet.t)) return;
 			try {
@@ -165,14 +165,14 @@ public class DiscSocketListener extends WebSocketAdapter {
 			}
 		}
 	}
-	
+
 	public void handleQueue() {
 		this.queue.forEach(packet -> {
 			this.handle(packet);
 			this.queue.remove(packet);
 		});
 	}
-	
+
 	public void onConnected(WebSocket ws, Map<String, List<String>> arg1) throws Exception {
 		logger.info("Connected to the gateway");
 		ProgressLogger.stage(2, 3, "Caching API Objects");
@@ -187,53 +187,62 @@ public class DiscSocketListener extends WebSocketAdapter {
 			sendResume();
 		}
 	}
-	
+
 	public void onDisconnected(WebSocket ws, WebSocketFrame frame_1, WebSocketFrame frame_2, boolean isServer) throws Exception {
 		this.socket.killHeartbeat();
+		loader.emit(new DisconnectEvent(loader));
 		if (isServer) {
 			logger.severe(String.format("Gateway connection was closed by the server. Close Code: %d, Reason: %s", frame_1.getCloseCode(), frame_1.getCloseReason()));
 			if (frame_1.getCloseCode() != 1000) {
-				// if connection wasn't closed properly try to reconnect
-				tryReconnecting();
-			} else {
-				loader.emit(new DisconnectEvent(loader));
+				if (tries > 3) {
+					loader.login();
+				} else {
+					// if connection wasn't closed properly try to reconnect
+					tryReconnecting();
+				}
 			}
 		} else {
 			logger.severe(String.format("Client was disconnected from the gateway, Code: %d", frame_2.getCloseCode()));
 			if (frame_2.getCloseCode() != 1000) {
-				// if connection wasn't closed properly try to reconnect
-				tryReconnecting();
-			} else {
-				loader.emit(new DisconnectEvent(loader));
+				if (tries > 3) {
+					loader.login();
+				} else {
+					// if connection wasn't closed properly try to reconnect
+					tryReconnecting();
+				}
 			}
 		}
-		
+
 	}
-	
+
 	@Override
 	public void onFrame(WebSocket ws, WebSocketFrame frame) {
 		RawEvent event = new RawEvent(loader, frame);
 		loader.emit(event);
 		loader.emit("RawPacket", event);
 	}
-	
+
 	@Override
 	public void onTextMessage(WebSocket ws, String text) throws Exception {
 		SocketPacket packet = gson.fromJson(text, SocketPacket.class);
 		this.handle(packet);
 	}
-	
+
 	public void register(String event, AbstractHandler handler) {
 		this.handlers.put(event, handler);
 	}
-	
+
+	public void setRetries(int i) {
+		tries = i;
+	}
+
 	public void sendNewIdentify() {
 		if (!loader.token.startsWith("Bot")) {
 			token = loader.token;
 		}
-		
+
 		GatewayIdentify payload = new GatewayIdentify(token, 250, new Properties("DiscLoader", "DiscLoader", "DiscLoader"));
-		
+
 		try {
 			if (this.loader.shards > 1) {
 				payload.setShard(loader.shard, loader.shards);
@@ -241,40 +250,40 @@ public class DiscSocketListener extends WebSocketAdapter {
 		} catch (NullPointerException e) {
 			e.printStackTrace();
 		}
-		
+
 		Packet packet = new Packet(OPCodes.IDENTIFY, payload);
 		socket.send(packet, true);
 		socket.s = -1;
-		retries = 0;
+		// tries = 0;
 	}
-	
+
 	public void setSequence(int s) {
 		if (s > this.socket.s) this.socket.s = s;
 	}
-	
+
 	public void sendResume() {
-		System.out.println(retries);
-		if (retries > 3) {
+		// System.out.println(retries);
+		if (tries >= 3) {
 			sendNewIdentify();
 			return;
 		}
 		Packet d = new Packet(OPCodes.RESUME, new GatewayResume(socket.sessionID, token, socket.s));
 		socket.send(d, true);
-		retries++;
 	}
-	
+
 	public void tryReconnecting() {
 		this.socket.status = Status.RECONNECTING;
 		logger.info("Waiting to reconnect to the gateway");
 		if (reconnection == null) {
 			reconnection = new Thread(logname + " Reconnector") {
-				
+
 				public void run() {
 					if (socket.status == Status.RECONNECTING && !this.isInterrupted()) {
 						try {
-							Thread.sleep(timeout * (retries + 1));
+							tries++;
+							Thread.sleep(timeout * (tries));
 							logger.info("Attempting to reconnect to the gateway");
-							loader.emit(new ReconnectEvent(loader, retries));
+							loader.emit(new ReconnectEvent(loader, tries));
 							socket.ws = socket.ws.recreate().connect();
 							Thread.sleep(41250);
 							if (socket.status == Status.RECONNECTING) {

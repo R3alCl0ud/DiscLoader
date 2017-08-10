@@ -4,16 +4,16 @@ import io.discloader.discloader.network.gateway.DiscSocket;
 
 /**
  * @author Perry Berman
- *
  */
 public class Resumed extends AbstractHandler {
 
-    public Resumed(DiscSocket socket) {
-        super(socket);
-    }
+	public Resumed(DiscSocket socket) {
+		super(socket);
+	}
 
-    public void handle() {
-        loader.checkReady();
-    }
+	public void handle() {
+		loader.socket.setRetries(0);
+		loader.checkReady();
+	}
 
 }
