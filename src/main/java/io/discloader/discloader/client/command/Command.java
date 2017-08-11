@@ -35,7 +35,7 @@ public class Command {
 	
 	private String description = "default description";
 	
-	private String argsRegex = "(.*)";
+	private String argsRegex = "(.*) ";
 	
 	private String usage = null;
 	
