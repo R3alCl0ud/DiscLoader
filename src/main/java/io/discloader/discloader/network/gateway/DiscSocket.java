@@ -64,7 +64,7 @@ public class DiscSocket {
 
 	public DiscSocket(DiscLoader loader) {
 		this.loader = loader;
-		logname = loader.shards > 1 ? "Gateway (Shard: #" + loader.shard + ")" : "Gateway";
+		logname = loader.shards > 1 ? "Gateway (Shard: #" + loader.shardid + ")" : "Gateway";
 		logger = new DLLogger(logname).getLogger();
 		socketListener = new DiscSocketListener(this);
 

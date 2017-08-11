@@ -53,19 +53,19 @@ import io.discloader.discloader.common.event.voice.VoiceStateUpdateEvent;
 import io.discloader.discloader.entity.guild.IGuild;
 
 public class EventManager {
-
+	
 	private final List<IEventListener> handlers = new ArrayList<>();
 	private final List<Consumer<DLEvent>> consumers = new ArrayList<>();
 	private final Map<Consumer<DLEvent>, Function<IGuild, Boolean>> guildTest = new HashMap<>();
-
+	
 	public void addEventHandler(IEventListener e) {
 		handlers.add(e);
 	}
-
+	
 	public void removeEventHandler(IEventListener e) {
 		handlers.remove(e);
 	}
-
+	
 	public void emit(DLEvent event) {
 		for (Consumer<DLEvent> consumer : consumers) {
 			if (event instanceof GuildMembersChunkEvent && guildTest.get(consumer) != null) {
@@ -78,8 +78,8 @@ public class EventManager {
 				consumer.accept(event);
 			}
 		}
-		for (IEventListener handler : handlers) {
-
+		for (int i = 0; i < handlers.size(); i++) {
+			IEventListener handler = handlers.get(i);
 			if (event instanceof GuildMemberEvent) {
 				GuildMemberEvent gme = (GuildMemberEvent) event;
 				handler.GuildMemberEvent(gme);
@@ -119,7 +119,7 @@ public class EventManager {
 				} else if (event instanceof PrivateMessageDeleteEvent) {
 					handler.PrivateMessageDelete((PrivateMessageDeleteEvent) event);
 				} else if (event instanceof GroupMessageDeleteEvent) {
-
+					
 				} else {
 					handler.MessageDelete((MessageDeleteEvent) event);
 				}
@@ -190,11 +190,11 @@ public class EventManager {
 			}
 		}
 	}
-
+	
 	public void onEvent(Consumer<DLEvent> consumer) {
 		consumers.add(consumer);
 	}
-
+	
 	public void onceEvent(Consumer<DLEvent> consumer) {
 		onEvent(consumer);
 		consumer.andThen(after -> {
@@ -202,14 +202,14 @@ public class EventManager {
 			consumers.remove(consumer);
 		});
 	}
-
+	
 	public void onceEvent(Consumer<DLEvent> consumer, Function<IGuild, Boolean> checker) {
 		onceEvent(consumer);
 		guildTest.put(consumer, checker);
 	}
-
+	
 	public List<IEventListener> getHandlers() {
 		return handlers;
 	}
-
+	
 }

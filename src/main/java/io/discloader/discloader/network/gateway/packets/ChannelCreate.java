@@ -24,6 +24,7 @@ public class ChannelCreate extends AbstractHandler {
 	public void handle(SocketPacket packet) {
 		String d = gson.toJson(packet.d);
 		ChannelJSON data = gson.fromJson(d, ChannelJSON.class);
+		
 		IGuild guild = EntityRegistry.getGuildByID(data.guild_id);
 		IChannel channel = EntityRegistry.addChannel(data, guild);
 		ChannelCreateEvent event = new ChannelCreateEvent(channel);

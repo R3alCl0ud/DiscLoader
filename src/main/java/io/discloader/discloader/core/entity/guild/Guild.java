@@ -839,7 +839,14 @@ public class Guild implements IGuild {
 	
 	public void setPresence(PresenceJSON guildPresence, boolean shouldEmit) {
 		IPresence presence = new Presence(guildPresence);
-		if (guildPresence.user.id.equals(this.loader.user.getID())) loader.user.getPresence().update(guildPresence);
+		if (guildPresence.user.id == null) {
+			System.out.println("user is null");
+			return;
+		}
+		if (guildPresence.user.id.equals(this.loader.user.getID())) {
+			System.out.println(DLUtil.gson.toJson(guildPresence));
+			loader.user.getPresence().update(guildPresence);
+		}
 		presences.put(SnowflakeUtil.parse(guildPresence.user.id), presence);
 	}
 	
