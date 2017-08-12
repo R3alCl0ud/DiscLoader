@@ -134,9 +134,9 @@ public class RESTManager {
 		return future;
 	}
 
-	public CompletableFuture<GuildMember> giveRole(GuildMember member, IRole role) {
-		CompletableFuture<GuildMember> future = new CompletableFuture<GuildMember>();
-		this.makeRequest(Endpoints.guildMemberRole(member.guild.getID(), member.getID(), role.getID()), Methods.PUT, true).thenAcceptAsync(action -> {
+	public CompletableFuture<IGuildMember> giveRole(IGuildMember member, IRole role) {
+		CompletableFuture<IGuildMember> future = new CompletableFuture<>();
+		this.makeRequest(Endpoints.guildMemberRole(member.getGuild().getID(), member.getID(), role.getID()), Methods.PUT, true).thenAcceptAsync(action -> {
 			future.complete(member);
 		});
 		return future;

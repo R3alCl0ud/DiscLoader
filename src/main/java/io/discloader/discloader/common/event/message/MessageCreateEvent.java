@@ -32,7 +32,7 @@ public class MessageCreateEvent extends DLEvent {
 	public MessageCreateEvent(IMessage message) {
 		super(message.getLoader());
 		this.message = message;
-		this.args = this.message.getContent().split(" ");
+		this.args = this.message.getContent().split("\\s");
 	}
 	
 	public IMessage getMessage() {

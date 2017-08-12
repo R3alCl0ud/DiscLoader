@@ -7,7 +7,7 @@ import io.discloader.discloader.client.render.util.IRenderable;
 import io.discloader.discloader.client.render.util.Resource;
 import io.discloader.discloader.common.event.message.MessageCreateEvent;
 import io.discloader.discloader.common.registry.CommandRegistry;
-import io.discloader.discloader.entity.channel.IGuildChannel;
+import io.discloader.discloader.entity.channel.IGuildTextChannel;
 import io.discloader.discloader.entity.guild.IGuildMember;
 import io.discloader.discloader.util.DLNameSpacedMap;
 
@@ -35,7 +35,7 @@ public class Command {
 	
 	private String description = "default description";
 	
-	private String argsRegex = "(.*) ";
+	private String argsRegex = "(\\S+)";
 	
 	private String usage = null;
 	
@@ -179,7 +179,7 @@ public class Command {
 		return this;
 	}
 	
-	public boolean shouldExecute(IGuildMember member, IGuildChannel channel) {
+	public boolean shouldExecute(IGuildMember member, IGuildTextChannel channel) {
 		return true;
 	}
 	

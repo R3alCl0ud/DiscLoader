@@ -243,6 +243,8 @@ public interface IGuild extends ISnowflake, ICreationTime {
 	
 	IRole getRoleByID(String roleID);
 	
+	IRole getRoleByName(String name);
+	
 	Map<Long, IRole> getRoles();
 	
 	IGuildTextChannel getTextChannelByID(long channelID);
@@ -274,7 +276,11 @@ public interface IGuild extends ISnowflake, ICreationTime {
 	 */
 	Map<Long, VoiceState> getVoiceStates();
 	
-	boolean hasPermission(Permissions permissions);
+	/**
+	 * @param permissions
+	 * @return a boolean.
+	 */
+	boolean hasPermission(Permissions... permissions);
 	
 	/**
 	 * @return

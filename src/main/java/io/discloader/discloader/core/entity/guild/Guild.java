@@ -738,7 +738,7 @@ public class Guild implements IGuild {
 	}
 	
 	@Override
-	public boolean hasPermission(Permissions permissions) {
+	public boolean hasPermission(Permissions... permissions) {
 		return isOwner() || getCurrentMember().getPermissions().hasPermission(permissions);
 	}
 	
@@ -932,6 +932,18 @@ public class Guild implements IGuild {
 	@Override
 	public IRole getRoleByID(String roleID) {
 		return getRoleByID(SnowflakeUtil.parse(roleID));
+	}
+	
+	/*
+	 * (non-Javadoc)
+	 * @see io.discloader.discloader.entity.guild.IGuild#getRoleByName(java.lang.String)
+	 */
+	@Override
+	public IRole getRoleByName(String name) {
+		for (IRole role : roles.values()) {
+			if (role.getName().equalsIgnoreCase(name)) return role;
+		}
+		return null;
 	}
 	
 }
