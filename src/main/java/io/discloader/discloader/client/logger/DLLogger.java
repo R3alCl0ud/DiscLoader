@@ -17,62 +17,63 @@ import java.util.logging.Logger;
  * @author Perry Berman
  */
 public class DLLogger {
-
+	
 	public final Logger LOGGER;
 	private static FileHandler fileHandler = null;
-
+	
 	public DLLogger(Class<?> cls) {
 		this(cls.getSimpleName());
 	}
-
+	
 	public DLLogger(String name) {
 		File logFolder = new File("logs");
-
+		
 		if (!logFolder.exists()) {
 			logFolder.mkdirs();
 		}
 		
 		this.LOGGER = Logger.getLogger(name);
-
-		Handler consoleHandler = new Handler() {
-
-			@Override
-			public void publish(LogRecord record) {
-				if (getFormatter() == null) {
-					setFormatter(new DLLogFormatter());
-				}
-			
-				try {
-					String message = getFormatter().format(record);
-					if (record.getLevel().intValue() >= Level.WARNING.intValue()) {
-						System.err.write(message.getBytes());
-					} else {
-						System.out.write(message.getBytes());
+		if (LOGGER.getHandlers().length < 2) {
+			Handler consoleHandler = new Handler() {
+				
+				@Override
+				public void publish(LogRecord record) {
+					if (getFormatter() == null) {
+						setFormatter(new DLLogFormatter());
 					}
-				} catch (Exception exception) {
-					reportError(null, exception, ErrorManager.FORMAT_FAILURE);
+					
+					try {
+						String message = getFormatter().format(record);
+						if (record.getLevel().intValue() >= Level.WARNING.intValue()) {
+							System.err.write(message.getBytes());
+						} else {
+							System.out.write(message.getBytes());
+						}
+					} catch (Exception exception) {
+						reportError(null, exception, ErrorManager.FORMAT_FAILURE);
+					}
+					
 				}
-			
-			}
-
-			@Override
-			public void close() throws SecurityException {
-			}
-
-			@Override
-			public void flush() {
-			}
-		};
-		this.LOGGER.setLevel(Level.ALL);
-		this.LOGGER.addHandler(consoleHandler);
-		this.LOGGER.addHandler(getFileHandler());
-		this.LOGGER.setUseParentHandlers(false);
+				
+				@Override
+				public void close() throws SecurityException {
+				}
+				
+				@Override
+				public void flush() {
+				}
+			};
+			this.LOGGER.setLevel(Level.ALL);
+			this.LOGGER.addHandler(consoleHandler);
+			this.LOGGER.addHandler(getFileHandler());
+			this.LOGGER.setUseParentHandlers(false);
+		}
 	}
-
+	
 	public Logger getLogger() {
 		return this.LOGGER;
 	}
-
+	
 	/**
 	 * @return the fileHandler
 	 */
@@ -89,7 +90,7 @@ public class DLLogger {
 				e.printStackTrace();
 			}
 		}
-
+		
 		return fileHandler;
 	}
 }

@@ -20,9 +20,12 @@ public class AudioSendHandler implements AudioOutputHook {
 	// Packet creation variables
 	private char sequence = 0;
 	private int timestamp = 0;
+	private int silent = 0;
 	
 	private byte[] rawAudio;
 	private byte[] rawPacket;
+	
+	private byte[] silentAudio = { (byte) 0xF8, (byte) 0xFF, (byte) 0xFE };
 	
 	public AudioSendHandler(AudioPlayer player, VoiceConnection connection) {
 		audioPlayer = player;
@@ -52,9 +55,8 @@ public class AudioSendHandler implements AudioOutputHook {
 				}
 				while (!udpSocket.isClosed() && !this.isInterrupted()) {
 					try {
-						DatagramPacket packet = getNextPacket();
-						if (packet != null)
-							udpSocket.send(packet);
+						DatagramPacket packet = getNextPacket((System.currentTimeMillis() - lastSent) > 20);
+						if (packet != null) udpSocket.send(packet);
 						
 					} catch (Exception e) {
 						e.printStackTrace();
@@ -103,14 +105,17 @@ public class AudioSendHandler implements AudioOutputHook {
 		return Arrays.copyOf(rawPacket, 12);
 	}
 	
-	public DatagramPacket getNextPacket() {
+	public DatagramPacket getNextPacket(boolean changeTalking) {
 		DatagramPacket nextPacket = null;
 		
 		try {
 			if (canProvide()) {
 				byte[] rawAudio = provide20MsAudio();
-				if (rawAudio != null && rawAudio.length != 0) {
+				if (rawAudio == null || rawAudio.length == 0) {
+					if (connection.isSpeaking() && changeTalking) connection.setSpeaking(false);
+				} else {
 					StreamPacket packet = new StreamPacket(sequence, timestamp, connection.getSSRC(), rawAudio);
+					if (!connection.isSpeaking()) connection.setSpeaking(true);
 					nextPacket = packet.toEncryptedPacket(connection.getUDPClient().getVoiceGateway(), connection.getWebSocket().getSecretKey());
 					if (sequence + 1 > Character.MAX_VALUE) {
 						sequence = 0;
@@ -118,7 +123,7 @@ public class AudioSendHandler implements AudioOutputHook {
 						sequence++;
 					}
 				}
-			}
+			} else if (connection.isSpeaking() && changeTalking) connection.setSpeaking(false);
 			
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -151,7 +156,7 @@ public class AudioSendHandler implements AudioOutputHook {
 	
 	@Override
 	public AudioFrame outgoingFrame(AudioPlayer player, AudioFrame frame) {
-		System.out.println(frame.format.codec.name());
+		// System.out.println(frame.format.codec.name());
 		return frame;
 	}
 	

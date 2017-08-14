@@ -32,14 +32,14 @@ public class VoiceStateUpdate extends AbstractHandler {
 		if (guild.getMember(data.user_id) == null) return;
 		VoiceState currentState = new VoiceState(data, guild);
 		VoiceState oldState = guild.getVoiceStates().get(SnowflakeUtil.parse(data.user_id));
-		guild.updateVoiceState(currentState);
 		VoiceConnection connection = EntityRegistry.getVoiceConnectionByID(guild.getID());
 		if (connection != null && SnowflakeUtil.asString(loader.user).equals(data.user_id)) {
 			connection.setSessionID(data.session_id);
 			connection.setStateUpdated(true);
 			connection.setVoiceChannel(currentState.channel);
 		}
-
+		guild.updateVoiceState(currentState);
+		
 		if (shouldEmit()) {
 			if (currentState.channel != null && (oldState != null && oldState.channel != null)) {
 				loader.emit(new VoiceSwitchEvent(currentState.member, oldState.channel));

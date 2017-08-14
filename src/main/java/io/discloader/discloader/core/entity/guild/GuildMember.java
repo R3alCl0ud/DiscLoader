@@ -333,7 +333,7 @@ public class GuildMember implements IGuildMember {
 	 */
 	@Override
 	public CompletableFuture<IGuildMember> move(IGuildVoiceChannel channel) {
-		if (!guild.isOwner() && !channel.permissionsOf(guild.getCurrentMember()).hasPermission(Permissions.MOVE_MEMBERS)) throw new PermissionsException("Insufficient Permissions");
+		if (!equals(guild.getCurrentMember()) && !guild.isOwner() && !channel.permissionsOf(guild.getCurrentMember()).hasPermission(Permissions.MOVE_MEMBERS)) throw new PermissionsException("Insufficient Permissions");
 		if (getVoiceChannel() == null) throw new VoiceConnectionException();
 		
 		return new ModifyMember(this, channel).execute();

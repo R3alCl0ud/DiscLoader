@@ -47,23 +47,21 @@ public class CommandHelp extends Command {
 						commands = String.format("%s**%s**: %s\n", commands, sub.getUnlocalizedName(), desc);
 					}
 					embed.addField("Sub Commands", commands, true);
-					// embed.addField(name, value, inline)
 				}
-				message.getChannel().sendEmbed(embed);
+				e.getChannel().sendEmbed(embed);
 				return;
 			}
-		}
-		if (args.length == 1 && args[0] != null && args[0].length() > 0) {
+		} else if (args.length == 1 && args[0] != null && args[0].length() > 0) {
 			String commands = "";
 			int page = Integer.parseInt(args[0], 10);
 			int size = CommandRegistry.commands.entries().size();
 			Command[] cmds = CommandRegistry.commands.entries().toArray(new Command[size]);
-			for (int i = 0 + (10 * page); i < (10 * (page + 1)) && i < size; i++) {
+			for (int i = 0 + (10 * (page - 1)); i < (10 * page) && i < size; i++) {
 				String desc = this.getCommandDesc(cmds[i]);
 				commands = String.format("%s**%s**: %s\n", commands, cmds[i].getUnlocalizedName(), desc);
 			}
 			embed.addField("Commands", commands, true);
-			embed.setTitle(String.format("Help. Page: 1/%d", (size / 10) + (size % 10 != 0 ? 1 : 0)));
+			embed.setTitle(String.format("Help. Page: %d/%d", page, (size / 10) + (size % 10 != 0 ? 1 : 0)));
 		} else {
 			String commands = "";
 			int size = CommandRegistry.commands.entries().size();
@@ -75,7 +73,7 @@ public class CommandHelp extends Command {
 			embed.addField("Commands", commands, true);
 			embed.setTitle(String.format("Help. Page: 1/%d", (size / 10) + (size % 10 != 0 ? 1 : 0)));
 		}
-		message.getChannel().sendEmbed(embed);
+		e.getChannel().sendEmbed(embed);
 	}
 	
 	private String getCommandDesc(Command command) {

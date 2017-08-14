@@ -36,6 +36,7 @@ public class ModifyMember {
 		}
 		mute = member.isMuted();
 		deaf = member.isDeaf();
+		loader = member.getLoader();
 	}
 
 	public ModifyMember(IGuildMember member, String nick, List<IRole> list, boolean mute, boolean deaf, IVoiceChannel channel) {

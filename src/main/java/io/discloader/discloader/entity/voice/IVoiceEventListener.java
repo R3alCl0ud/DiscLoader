@@ -7,6 +7,9 @@ import com.sedmelluq.discord.lavaplayer.player.AudioLoadResultHandler;
 import com.sedmelluq.discord.lavaplayer.track.AudioTrack;
 import com.sedmelluq.discord.lavaplayer.track.AudioTrackEndReason;
 
+import io.discloader.discloader.common.event.voice.VoiceConnectionDisconnectEvent;
+import io.discloader.discloader.common.event.voice.VoiceConnectionReadyEvent;
+
 /**
  * @author Perry Berman
  */
@@ -17,12 +20,12 @@ public interface IVoiceEventListener extends AudioLoadResultHandler {
 	 * 
 	 * @param reason The reason the voice connection was disconnected
 	 */
-	void disconnected(String reason);
+	void disconnected(VoiceConnectionDisconnectEvent event);
 
 	/**
 	 * Executed when the connect is ready to stream
 	 */
-	void ready();
+	void ready(VoiceConnectionReadyEvent event);
 
 	void started(AudioTrack track);
 

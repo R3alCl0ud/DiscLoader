@@ -16,29 +16,29 @@ import io.discloader.discloader.util.DLUtil.ChannelType;
  * @author Perry Berman
  */
 public class VoiceChannel extends GuildChannel implements IGuildVoiceChannel {
-
+	
 	/**
 	 * The channel's bitrate
 	 */
 	public int bitrate;
-
+	
 	/**
 	 * The limit of user that can be in this channel at one time
 	 */
 	public int userLimit;
-
+	
 	/**
 	 * @param guild The guild the channel is in
 	 * @param data The channel's data
 	 */
 	public VoiceChannel(IGuild guild, ChannelJSON data) {
 		super(guild, data);
-
+		
 		this.type = ChannelType.VOICE;
-
+		
 		this.name = data.name;
 	}
-
+	
 	/**
 	 * Changes the channels settings
 	 * 
@@ -49,7 +49,7 @@ public class VoiceChannel extends GuildChannel implements IGuildVoiceChannel {
 	public CompletableFuture<IGuildChannel> edit(String name, int position) {
 		return edit(name, position, bitrate, userLimit);
 	}
-
+	
 	/**
 	 * Changes the channels settings
 	 * 
@@ -66,22 +66,20 @@ public class VoiceChannel extends GuildChannel implements IGuildVoiceChannel {
 		});
 		return future;
 	}
-
+	
 	@Override
 	public CompletableFuture<VoiceConnection> join() {
-		CompletableFuture<VoiceConnection> future = new CompletableFuture<VoiceConnection>();
 		if (EntityRegistry.getVoiceConnectionByID(guild.getID()) != null) {
-			EntityRegistry.getVoiceConnectionByID(guild.getID()).disconnect().thenAcceptAsync(action -> {
-				VoiceConnection connection = new VoiceConnection(this, future);
-				EntityRegistry.putVoiceConnection(connection);
-			});
-			return future;
+			VoiceConnection connection = EntityRegistry.getVoiceConnectionByID(guild.getID());
+			connection.updateChannel(this);
+			return CompletableFuture.completedFuture(connection);
 		}
+		CompletableFuture<VoiceConnection> future = new CompletableFuture<VoiceConnection>();
 		VoiceConnection connection = new VoiceConnection(this, future);
 		EntityRegistry.putVoiceConnection(connection);
 		return future;
 	}
-
+	
 	@Override
 	public CompletableFuture<VoiceConnection> leave() {
 		if (EntityRegistry.getVoiceConnectionByID(guild.getID()) != null) {
@@ -89,30 +87,30 @@ public class VoiceChannel extends GuildChannel implements IGuildVoiceChannel {
 		}
 		return null;
 	}
-
+	
 	public CompletableFuture<IGuildChannel> setBitrate(int bitrate) {
 		return edit(name, position, bitrate, userLimit);
 	}
-
+	
 	@Override
 	public CompletableFuture<IGuildChannel> setName(String name) {
 		return edit(name, position, bitrate, userLimit);
 	}
-
+	
 	@Override
 	public CompletableFuture<IGuildChannel> setPosition(int position) {
 		return edit(name, position, bitrate, userLimit);
 	}
-
+	
 	@Override
 	public void setup(ChannelJSON data) {
 		super.setup(data);
-
+		
 		this.bitrate = data.bitrate;
-
+		
 		this.userLimit = data.user_limit;
 	}
-
+	
 	public CompletableFuture<IGuildChannel> setUserLimit(int userLimit) {
 		return edit(name, position, bitrate, userLimit);
 	}
