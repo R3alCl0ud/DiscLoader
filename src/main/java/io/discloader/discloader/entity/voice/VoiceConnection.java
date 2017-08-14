@@ -359,6 +359,12 @@ public class VoiceConnection {
 		this.stateUpdated = stateUpdated;
 	}
 
+	public void setVoiceChannel(IGuildVoiceChannel channel) {
+		if (this.channel.getID() != channel.getID()) {
+			this.channel = channel;
+		}
+	}
+
 	public void setVolume(int volume) {
 		player.setVolume(volume);
 	}

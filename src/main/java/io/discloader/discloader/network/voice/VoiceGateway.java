@@ -15,6 +15,7 @@ import com.neovisionaries.ws.client.WebSocketFrame;
 
 import io.discloader.discloader.client.logger.DLLogger;
 import io.discloader.discloader.common.event.voice.VoiceConnectionReadyEvent;
+import io.discloader.discloader.common.registry.EntityRegistry;
 import io.discloader.discloader.entity.util.SnowflakeUtil;
 import io.discloader.discloader.entity.voice.VoiceConnection;
 import io.discloader.discloader.network.gateway.packets.SocketPacket;
@@ -55,6 +56,9 @@ public class VoiceGateway extends WebSocketAdapter {
 		this.connection = connection;
 		logger = new DLLogger("VoiceGateway" + (connection.getGuild() == null ? " - Channel: " + connection.getChannel().getID() : " - Guild: " + connection.getGuild().getID())).getLogger();
 		gson = new Gson();
+		dc.thenAcceptAsync(vc -> {
+			EntityRegistry.removeVoiceConnection(connection.getGuild().getID());
+		});
 	}
 
 	public void connect(String gateway, String token) throws IOException, WebSocketException {
