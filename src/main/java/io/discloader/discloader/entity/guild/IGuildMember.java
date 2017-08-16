@@ -54,7 +54,10 @@ public interface IGuildMember extends ISnowflake {
 	
 	boolean isDeaf();
 	
+	
 	boolean isMuted();
+	
+	boolean isOwner();
 	
 	CompletableFuture<IGuildMember> kick();
 	

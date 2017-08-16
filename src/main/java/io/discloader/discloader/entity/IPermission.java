@@ -24,7 +24,7 @@ public interface IPermission {
 	boolean hasPermission(Permissions permission, boolean explicit);
 
 	/**
-	 * Checks if the member has the specified permission. <br>
+	 * Checks if the member has the specified permission(s). <br>
 	 * {@code boolean sendMessages =
 	 * channel.permissionsFor(member).hasPermission({@link Permissions#SEND_MESSAGES});}
 	 * 
@@ -33,5 +33,13 @@ public interface IPermission {
 	 *         permissions}. {@code false} otherwise.
 	 */
 	boolean hasPermission(Permissions... permissions);
+	
+	/**
+	 * @param permissions
+	 * @return {@code true} if the {@link IGuildMember member} has any of the specified {@link Permissions
+	 *         permissions}. {@code false} otherwise.
+	 */
+	boolean hasAny(Permissions...permissions);
+	
 
 }

@@ -8,12 +8,12 @@ import io.discloader.discloader.common.event.message.MessageCreateEvent;
 import io.discloader.discloader.entity.channel.IGuildTextChannel;
 
 public class CommandTree extends Command {
-	
+
 	public CommandTree(String unlocalizedName) {
 		super();
 		setUnlocalizedName(unlocalizedName);
 	}
-	
+
 	public void execute(MessageCreateEvent e, String[] args) {
 		if (args.length == 0) {
 			defaultResponse(e);
@@ -35,11 +35,15 @@ public class CommandTree extends Command {
 						}
 					}
 				}
-				if (getSubCommands().get(args[0]).shouldExecute(e.getMessage().getMember(), (IGuildTextChannel) e.getChannel())) getSubCommands().get(args[0]).execute(e, argc);
+				if (e.getMessage().getGuild() != null && getSubCommands().get(args[0]).shouldExecute(e.getMessage().getMember(), (IGuildTextChannel) e.getChannel())) {
+					getSubCommands().get(args[0]).execute(e, argc);
+				} else {
+					getSubCommands().get(args[0]).execute(e, argc);
+				}
 			}
 		}
 	}
-	
+
 	private String[] slice(String[] strings) {
 		if (strings.length <= 1) return new String[0];
 		String[] b = new String[strings.length - 1];
@@ -47,17 +51,17 @@ public class CommandTree extends Command {
 			b[i - 1] = strings[i];
 		return b;
 	}
-	
+
 	public Map<String, Command> getSubCommands() {
 		return new HashMap<>();
 	}
-	
+
 	public void defaultResponse(MessageCreateEvent e) {
 		String text = "Available option(s) are:\n" + this.subsText(this, 0);
 		e.getChannel().sendMessage(text);
 		return;
 	}
-	
+
 	private String subsText(CommandTree cmdt, int l) {
 		String text = "";
 		for (Command sub : getSubCommands().values()) {
@@ -66,5 +70,5 @@ public class CommandTree extends Command {
 		}
 		return text;
 	}
-	
+
 }

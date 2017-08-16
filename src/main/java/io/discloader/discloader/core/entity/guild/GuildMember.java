@@ -35,61 +35,62 @@ import io.discloader.discloader.network.rest.actions.guild.ModifyMember;
  * @see Guild
  */
 public class GuildMember implements IGuildMember {
-	
+
 	/**
 	 * The member's nickname, or null if the user has no nickname
 	 */
 	private String nick;
-	
+
 	/**
 	 * The member's user object
 	 */
 	public final IUser user;
-	
+
 	/**
 	 * The guild the member is in
 	 */
 	public final IGuild guild;
-	
+
 	private String[] roleIDs;
-	
+
 	/**
 	 * Whether or not the member's microphone is muted
 	 */
 	private boolean mute;
-	
+
 	/**
 	 * Whether or not the member has muted their audio.
 	 */
 	private boolean deaf;
-	
+
 	/**
-	 * A {@link Date} object representing when the member joined the {@link Guild}.
+	 * A {@link Date} object representing when the member joined the
+	 * {@link Guild}.
 	 */
 	public final OffsetDateTime joinedAt;
-	
+
 	public GuildMember(IGuild guild, MemberJSON data) {
 		user = EntityRegistry.addUser(data.user);
 		this.guild = guild;
 		nick = data.nick != null ? data.nick : user.getUsername();
 		joinedAt = data.joined_at == null ? user.createdAt() : OffsetDateTime.parse(data.joined_at);
 		roleIDs = data.roles != null ? data.roles : new String[] {};
-		
+
 		deaf = data.deaf;
 		mute = deaf || data.mute;
-		
+
 	}
-	
+
 	public GuildMember(IGuild guild, IUser user) {
 		this.user = user;
-		
+
 		this.guild = guild;
-		
+
 		roleIDs = new String[] {};
-		
+
 		joinedAt = user.createdAt();
 	}
-	
+
 	public GuildMember(IGuild guild, IUser user, String[] roles, boolean deaf, boolean mute, String nick) {
 		this.user = user;
 		this.guild = guild;
@@ -99,7 +100,7 @@ public class GuildMember implements IGuildMember {
 		this.deaf = deaf;
 		this.mute = deaf || mute;
 	}
-	
+
 	public GuildMember(IGuildMember member) {
 		user = member.getUser();
 		guild = member.getGuild();
@@ -115,7 +116,7 @@ public class GuildMember implements IGuildMember {
 		deaf = member.isDeaf();
 		mute = deaf || member.isMuted();
 	}
-	
+
 	/**
 	 * Same as {@link User#toString()}
 	 * 
@@ -125,20 +126,23 @@ public class GuildMember implements IGuildMember {
 	public String asMention() {
 		return String.format("<@!%s>", getID());
 	}
-	
+
 	/**
-	 * Bans the member from the {@link Guild} if the {@link DiscLoader loader} has sufficient permissions
+	 * Bans the member from the {@link Guild} if the {@link DiscLoader loader}
+	 * has sufficient permissions
 	 * 
 	 * @see Permission
-	 * @return A CompletableFuture that completes with {@code this} if successful
+	 * @return A CompletableFuture that completes with {@code this} if
+	 *         successful
 	 */
 	@Override
 	public CompletableFuture<IGuildMember> ban() {
 		return guild.ban(this);
 	}
-	
+
 	/**
-	 * Server deafens a {@link GuildMember} if they are not already server deafened
+	 * Server deafens a {@link GuildMember} if they are not already server
+	 * deafened
 	 * 
 	 * @return A Future that completes with the deafed member if successful.
 	 */
@@ -146,7 +150,7 @@ public class GuildMember implements IGuildMember {
 	public CompletableFuture<IGuildMember> deafen() {
 		return new ModifyMember(this, nick, getRoles(), mute, true, getVoiceChannel()).execute();
 	}
-	
+
 	@Override
 	public boolean equals(Object obj) {
 		if (!(obj instanceof GuildMember)) return false;
@@ -155,37 +159,38 @@ public class GuildMember implements IGuildMember {
 		for (IRole role : member.getRoles()) {
 			if (!getRoles().contains(role)) return false;
 		}
-		
+
 		return getID() == member.getID() && nick.equals(member.nick);
 	}
-	
+
 	@Override
 	public IGuild getGuild() {
 		return guild;
 	}
-	
+
 	@Override
 	public IRole getHighestRole() {
 		return getRoles().get(getRoles().size() - 1);
 	}
-	
+
 	@Override
 	public long getID() {
 		return user.getID();
 	}
-	
+
 	@Override
 	public DiscLoader getLoader() {
 		return guild.getLoader();
 	}
-	
+
 	/**
-	 * @return the member's nickname if they have one, {@link #user} {@link User#username .username} otherwise.
+	 * @return the member's nickname if they have one, {@link #user}
+	 *         {@link User#username .username} otherwise.
 	 */
 	public String getName() {
 		return nick != null ? nick : user.getUsername();
 	}
-	
+
 	/**
 	 * @return the member's nickname if they have one, null otherwise.
 	 */
@@ -193,7 +198,7 @@ public class GuildMember implements IGuildMember {
 	public String getNickname() {
 		return nick;
 	}
-	
+
 	@Override
 	public IPermission getPermissions() {
 		long r = 0;
@@ -202,7 +207,7 @@ public class GuildMember implements IGuildMember {
 		}
 		return new Permission(this, r);
 	}
-	
+
 	/**
 	 * Gets the member's presence from their {@link #guild}
 	 * 
@@ -212,7 +217,7 @@ public class GuildMember implements IGuildMember {
 	public IPresence getPresence() {
 		return guild.getPresences().get(getID());
 	}
-	
+
 	@Override
 	public List<IRole> getRoles() {
 		List<IRole> roles = new ArrayList<>();
@@ -226,36 +231,41 @@ public class GuildMember implements IGuildMember {
 		});
 		return roles;
 	}
-	
+
 	@Override
 	public IUser getUser() {
 		return user;
 	}
-	
+
 	/**
-	 * Gets the {@link VoiceChannel} that the member is connected to, if they're in a voice channel.
+	 * Gets the {@link VoiceChannel} that the member is connected to, if they're
+	 * in a voice channel.
 	 * 
-	 * @return a {@link VoiceChannel} object if {@link #hasVoiceConnection()} returns true, null otherwise.
+	 * @return a {@link VoiceChannel} object if {@link #hasVoiceConnection()}
+	 *         returns true, null otherwise.
 	 */
 	@Override
 	public IGuildVoiceChannel getVoiceChannel() {
 		VoiceState vs = guild.getVoiceStates().get(getID());
-		
+
 		return vs == null ? null : vs.channel;
 	}
-	
+
 	@Override
 	public VoiceState getVoiceState() {
 		return guild.getVoiceStates().get(getID());
 	}
-	
+
 	/**
 	 * Gives a member a new role
 	 * 
 	 * @param roles The roles to give to the member
-	 * @return A CompletableFuture that completes with {@code this} if successful
-	 * @throws PermissionsException thrown if a role with a higher position than the current user's highest role is attempted to be given to
-	 *             the member. Also thrown if the current user doesn't have the MANAGE_ROLE permission.
+	 * @return A CompletableFuture that completes with {@code this} if
+	 *         successful
+	 * @throws PermissionsException thrown if a role with a higher position than
+	 *             the current user's highest role is attempted to be given to
+	 *             the member. Also thrown if the current user doesn't have the
+	 *             MANAGE_ROLE permission.
 	 */
 	@SuppressWarnings("unchecked")
 	@Override
@@ -263,13 +273,13 @@ public class GuildMember implements IGuildMember {
 		if (!guild.hasPermission(Permissions.MANAGE_ROLES)) {
 			throw new PermissionsException("");
 		}
-		
+
 		for (IRole role : roles) {
 			if (!guild.isOwner() && role.getPosition() >= guild.getCurrentMember().getHighestRole().getPosition()) {
 				throw new PermissionsException("");
 			}
 		}
-		
+
 		CompletableFuture<IGuildMember> future = new CompletableFuture<>();
 		if (roles.length > 1) {
 			ArrayList<CompletableFuture<IGuildMember>> futures = new ArrayList<>();
@@ -286,128 +296,144 @@ public class GuildMember implements IGuildMember {
 		}
 		return future;
 	}
-	
+
 	@Override
 	public int hashCode() {
 		return (getName() + getID()).hashCode();
 	}
-	
+
 	/**
-	 * Determines if the member is connected to a voice channel in their {@link #guild}
+	 * Determines if the member is connected to a voice channel in their
+	 * {@link #guild}
 	 * 
-	 * @return {@code true} if the member has a {@link VoiceState}, {@code false} otherwise.
+	 * @return {@code true} if the member has a {@link VoiceState},
+	 *         {@code false} otherwise.
 	 */
 	public boolean hasVoiceConnection() {
 		return getVoiceState() != null;
 	}
-	
+
 	@Override
 	public boolean isDeaf() {
 		return hasVoiceConnection() ? (getVoiceState().deaf || deaf) : deaf;
 	}
-	
+
 	@Override
 	public boolean isMuted() {
 		return hasVoiceConnection() ? (getVoiceState().mute || mute) : mute;
 	}
-	
+
 	/**
-	 * Kicks the member from the {@link Guild} if the {@link DiscLoader client} has sufficient permissions
+	 * Kicks the member from the {@link Guild} if the {@link DiscLoader client}
+	 * has sufficient permissions
 	 * 
 	 * @see Permission
-	 * @return A CompletableFuture that completes with {@code this} if successful
-	 * @throws PermissionsException Thrown if the current user doesn't have the {@link Permissions#KICK_MEMBERS} permission.
+	 * @return A CompletableFuture that completes with {@code this} if
+	 *         successful
+	 * @throws PermissionsException Thrown if the current user doesn't have the
+	 *             {@link Permissions#KICK_MEMBERS} permission.
 	 */
 	@Override
 	public CompletableFuture<IGuildMember> kick() {
 		return guild.kickMember(this);
 	}
-	
+
 	/**
-	 * Move the {@link GuildMember member} to a different {@link VoiceChannel} if they are already connected to a {@link VoiceChannel}.
+	 * Move the {@link GuildMember member} to a different {@link VoiceChannel}
+	 * if they are already connected to a {@link VoiceChannel}.
 	 * 
 	 * @param channel The {@link VoiceChannel} to move the member to.
 	 * @return A Future that completes with {@code this} if successful.
-	 * @throws PermissionsException thrown if the current user doesn't have the {@link Permissions#MOVE_MEMBERS} permission.
-	 * @throws VoiceConnectionException Thrown if the member is not in a voice channel.
+	 * @throws PermissionsException thrown if the current user doesn't have the
+	 *             {@link Permissions#MOVE_MEMBERS} permission.
+	 * @throws VoiceConnectionException Thrown if the member is not in a voice
+	 *             channel.
 	 */
 	@Override
 	public CompletableFuture<IGuildMember> move(IGuildVoiceChannel channel) {
 		if (!equals(guild.getCurrentMember()) && !guild.isOwner() && !channel.permissionsOf(guild.getCurrentMember()).hasPermission(Permissions.MOVE_MEMBERS)) throw new PermissionsException("Insufficient Permissions");
 		if (getVoiceChannel() == null) throw new VoiceConnectionException();
-		
+
 		return new ModifyMember(this, channel).execute();
 	}
-	
+
 	/**
-	 * Server deafens a {@link GuildMember} if they are not already server deafened
+	 * Server deafens a {@link GuildMember} if they are not already server
+	 * deafened
 	 * 
-	 * @return A CompletableFuture that completes with {@code this} if successful
-	 * @throws PermissionsException thrown if the current user doesn't have the {@link Permissions#MUTE_MEMBERS} permission.
+	 * @return A CompletableFuture that completes with {@code this} if
+	 *         successful
+	 * @throws PermissionsException thrown if the current user doesn't have the
+	 *             {@link Permissions#MUTE_MEMBERS} permission.
 	 */
 	@Override
 	public CompletableFuture<IGuildMember> mute() {
 		if (!guild.hasPermission(Permissions.MUTE_MEMBERS)) {
 			throw new PermissionsException("Insufficient Permissions");
 		}
-		
+
 		return new ModifyMember(this, nick, getRoles(), true, deaf, getVoiceChannel()).execute();
 	}
-	
+
 	/**
-	 * Sets the member's nickname if the {@link DiscLoader loader} has sufficient permissions. Requires the
+	 * Sets the member's nickname if the {@link DiscLoader loader} has
+	 * sufficient permissions. Requires the
 	 * {@link Permissions#MANAGE_NICKNAMES} permission.
 	 * 
 	 * @param nick The member's new nickname
 	 * @see Permission
-	 * @return A CompletableFuture that completes with {@code this} if successful
-	 * @throws PermissionsException thrown if the current user doesn't have the {@link Permissions#MANAGE_NICKNAMES} permission.
+	 * @return A CompletableFuture that completes with {@code this} if
+	 *         successful
+	 * @throws PermissionsException thrown if the current user doesn't have the
+	 *             {@link Permissions#MANAGE_NICKNAMES} permission.
 	 */
 	@Override
 	public CompletableFuture<IGuildMember> setNick(String nick) {
 		if (!guild.hasPermission(Permissions.MANAGE_NICKNAMES)) {
 			throw new PermissionsException("Insuccficient Permissions");
 		}
-		
+
 		CompletableFuture<IGuildMember> future = getLoader().rest.setNick(this, nick);
 		future.thenAcceptAsync(action -> this.nick = nick);
 		return future;
 	}
-	
+
 	/**
 	 * Takes a role away from a member
 	 * 
 	 * @param role The role to take away from the member
 	 * @return A Future that completes with the member if successful.
-	 * @throws PermissionsException thrown if a role with a higher position than the current user's highest role is attempted to be given to
-	 *             the member. Also thrown if the current user doesn't have the MANAGE_ROLE permission.
+	 * @throws PermissionsException thrown if a role with a higher position than
+	 *             the current user's highest role is attempted to be given to
+	 *             the member. Also thrown if the current user doesn't have the
+	 *             MANAGE_ROLE permission.
 	 */
 	@Override
 	public CompletableFuture<IGuildMember> takeRole(IRole role) {
 		if (!guild.hasPermission(Permissions.MANAGE_ROLES)) {
 			throw new PermissionsException("Insuccficient Permissions");
 		}
-		
+
 		if (!guild.isOwner() && role.getPosition() >= guild.getCurrentMember().getHighestRole().getPosition()) throw new PermissionsException("Cannot take away roles higher than your's");
-		
+
 		return getLoader().rest.takeRole(this, role);
 	}
-	
+
 	@Override
 	public String toString() {
 		return user.toString();
 	}
-	
+
 	@Override
 	public CompletableFuture<IGuildMember> unDeafen() {
 		return new ModifyMember(this, nick, getRoles(), mute, false, getVoiceChannel()).execute();
 	}
-	
+
 	@Override
 	public CompletableFuture<IGuildMember> unMute() {
 		return new ModifyMember(this, nick, getRoles(), false, deaf, getVoiceChannel()).execute();
 	}
-	
+
 	/*
 	 * (non-Javadoc)
 	 * @see io.discloader.discloader.entity.guild.IGuildMember#getJoinTime()
@@ -416,5 +442,10 @@ public class GuildMember implements IGuildMember {
 	public OffsetDateTime getJoinTime() {
 		return joinedAt;
 	}
-	
+
+	@Override
+	public boolean isOwner() {
+		return guild.isOwner(this);
+	}
+
 }

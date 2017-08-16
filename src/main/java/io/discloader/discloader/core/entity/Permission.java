@@ -80,7 +80,7 @@ public class Permission implements IPermission {
 
 	@Override
 	public boolean hasPermission(Permissions permission, boolean explicit) {
-		return (!explicit && (raw & Permissions.ADMINISTRATOR.getValue()) > 0) || ((raw & permission.getValue()) > 0);
+		return (!explicit && ((raw & Permissions.ADMINISTRATOR.getValue()) > 0) || (member != null) && member.isOwner()) || ((raw & permission.getValue()) > 0);
 	}
 
 	@Override
@@ -90,6 +90,14 @@ public class Permission implements IPermission {
 			if (!hasPermission(permission, false)) return false;
 		}
 		return true;
+	}
+
+	@Override
+	public boolean hasAny(Permissions... permissions) {
+		for (Permissions permission : permissions) {
+			if (hasPermission(permission, false)) return true;
+		}
+		return false;
 	}
 
 }
