@@ -1,7 +1,10 @@
 package io.discloader.discloader.client.command;
 
 import java.io.File;
+import java.util.List;
 import java.util.Locale;
+
+import com.google.common.collect.Lists;
 
 import io.discloader.discloader.client.render.util.Resource;
 import io.discloader.discloader.common.event.message.MessageCreateEvent;
@@ -55,20 +58,31 @@ public class CommandHelp extends Command {
 			String commands = "";
 			int page = Integer.parseInt(args[0], 10);
 			int size = CommandRegistry.commands.entries().size();
-			Command[] cmds = CommandRegistry.commands.entries().toArray(new Command[size]);
+			List<Command> cmdList = Lists.newArrayList(CommandRegistry.commands.entries().toArray(new Command[size]));
+			cmdList.sort((a, b) -> {
+				if (a.getUnlocalizedName().compareToIgnoreCase(b.getUnlocalizedName()) < 0) return -1;
+				if (a.getUnlocalizedName().compareToIgnoreCase(b.getUnlocalizedName()) > 0) return 1;
+				return 0;
+			});
 			for (int i = 0 + (10 * (page - 1)); i < (10 * page) && i < size; i++) {
-				String desc = this.getCommandDesc(cmds[i]);
-				commands = String.format("%s**%s**: %s\n", commands, cmds[i].getUnlocalizedName(), desc);
+				String desc = this.getCommandDesc(cmdList.get(i));
+				commands = String.format("%s**%s**: %s\n", commands, cmdList.get(i).getUnlocalizedName(), desc);
 			}
 			embed.addField("Commands", commands, true);
 			embed.setTitle(String.format("Help. Page: %d/%d", page, (size / 10) + (size % 10 != 0 ? 1 : 0)));
 		} else {
 			String commands = "";
 			int size = CommandRegistry.commands.entries().size();
-			Command[] cmds = CommandRegistry.commands.entries().toArray(new Command[size]);
-			for (int i = 0; i < 10 && i < cmds.length; i++) {
-				String desc = this.getCommandDesc(cmds[i]);
-				commands = String.format("%s**%s**: %s\n", commands, cmds[i].getUnlocalizedName(), desc);
+			List<Command> cmdList = Lists.newArrayList(CommandRegistry.commands.entries().toArray(new Command[size]));
+			cmdList.sort((a, b) -> {
+				if (a.getUnlocalizedName().compareToIgnoreCase(b.getUnlocalizedName()) < 0) return -1;
+				if (a.getUnlocalizedName().compareToIgnoreCase(b.getUnlocalizedName()) > 0) return 1;
+				return 0;
+			});
+			System.out.println(cmdList);
+			for (int i = 0; i < 10 && i < size; i++) {
+				String desc = this.getCommandDesc(cmdList.get(i));
+				commands = String.format("%s**%s**: %s\n", commands, cmdList.get(i).getUnlocalizedName(), desc);
 			}
 			embed.addField("Commands", commands, true);
 			embed.setTitle(String.format("Help. Page: 1/%d", (size / 10) + (size % 10 != 0 ? 1 : 0)));
