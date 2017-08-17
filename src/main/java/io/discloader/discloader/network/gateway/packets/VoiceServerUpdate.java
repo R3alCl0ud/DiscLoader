@@ -6,7 +6,7 @@ package io.discloader.discloader.network.gateway.packets;
 import io.discloader.discloader.common.registry.EntityRegistry;
 import io.discloader.discloader.entity.util.SnowflakeUtil;
 import io.discloader.discloader.entity.voice.VoiceConnection;
-import io.discloader.discloader.network.gateway.DiscSocket;
+import io.discloader.discloader.network.gateway.Gateway;
 import io.discloader.discloader.network.json.VoiceServerUpdateJSON;
 
 /**
@@ -14,7 +14,7 @@ import io.discloader.discloader.network.json.VoiceServerUpdateJSON;
  */
 public class VoiceServerUpdate extends AbstractHandler {
 
-	public VoiceServerUpdate(DiscSocket socket) {
+	public VoiceServerUpdate(Gateway socket) {
 		super(socket);
 	}
 

@@ -1,13 +1,13 @@
 package io.discloader.discloader.network.gateway.packets;
 
-import io.discloader.discloader.network.gateway.DiscSocket;
+import io.discloader.discloader.network.gateway.Gateway;
 
 /**
  * @author Perry Berman
  */
 public class Resumed extends AbstractHandler {
 
-	public Resumed(DiscSocket socket) {
+	public Resumed(Gateway socket) {
 		super(socket);
 	}
 

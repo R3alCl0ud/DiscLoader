@@ -10,7 +10,7 @@ import io.discloader.discloader.core.entity.guild.Guild;
 import io.discloader.discloader.core.entity.guild.Role;
 import io.discloader.discloader.entity.guild.IGuild;
 import io.discloader.discloader.entity.guild.IRole;
-import io.discloader.discloader.network.gateway.DiscSocket;
+import io.discloader.discloader.network.gateway.Gateway;
 import io.discloader.discloader.network.json.GuildRoleJSON;
 import io.discloader.discloader.util.DLUtil;
 
@@ -26,7 +26,7 @@ public class RoleCreate extends AbstractHandler {
 
 	private GuildFactory gfac = EntityBuilder.getGuildFactory();
 
-	public RoleCreate(DiscSocket socket) {
+	public RoleCreate(Gateway socket) {
 		super(socket);
 	}
 

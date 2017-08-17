@@ -60,13 +60,13 @@ import io.discloader.discloader.util.DLUtil.OPCodes;
 import io.discloader.discloader.util.DLUtil.Status;
 import io.discloader.discloader.util.DLUtil.WSEvents;
 
-public class DiscSocketListener extends WebSocketAdapter {
+public class GatewayListener extends WebSocketAdapter {
 	
 	public Gson gson = new Gson();
 	
 	public DiscLoader loader;
 	
-	public DiscSocket socket;
+	public Gateway socket;
 	
 	private int tries = 0;
 	
@@ -85,7 +85,7 @@ public class DiscSocketListener extends WebSocketAdapter {
 	
 	private boolean connected = false;
 	
-	public DiscSocketListener(DiscSocket socket) {
+	public GatewayListener(Gateway socket) {
 		this.socket = socket;
 		this.loader = this.socket.loader;
 		this.handlers = new HashMap<String, AbstractHandler>();
@@ -258,7 +258,7 @@ public class DiscSocketListener extends WebSocketAdapter {
 		Packet packet = new Packet(OPCodes.IDENTIFY, payload);
 		socket.send(packet, true);
 		socket.s = -1;
-		// tries = 0;
+		tries = 0;
 	}
 	
 	public void setSequence(int s) {

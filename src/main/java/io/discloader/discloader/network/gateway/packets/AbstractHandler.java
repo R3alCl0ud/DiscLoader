@@ -4,7 +4,7 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
 import io.discloader.discloader.common.DiscLoader;
-import io.discloader.discloader.network.gateway.DiscSocket;
+import io.discloader.discloader.network.gateway.Gateway;
 import io.discloader.discloader.util.DLUtil.Status;
 
 /**
@@ -12,11 +12,11 @@ import io.discloader.discloader.util.DLUtil.Status;
  */
 public abstract class AbstractHandler {
 
-	public DiscSocket socket;
+	public Gateway socket;
 	public DiscLoader loader;
 	public Gson gson;
 
-	public AbstractHandler(DiscSocket socket) {
+	public AbstractHandler(Gateway socket) {
 		this.socket = socket;
 		this.loader = this.socket.loader;
 		this.gson = new GsonBuilder().serializeNulls().create();

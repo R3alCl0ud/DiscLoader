@@ -9,14 +9,14 @@ import io.discloader.discloader.common.registry.EntityRegistry;
 import io.discloader.discloader.core.entity.guild.GuildEmoji;
 import io.discloader.discloader.entity.guild.IGuild;
 import io.discloader.discloader.entity.guild.IGuildEmoji;
-import io.discloader.discloader.network.gateway.DiscSocket;
+import io.discloader.discloader.network.gateway.Gateway;
 import io.discloader.discloader.network.json.EmojiJSON;
 import io.discloader.discloader.network.json.EmojiUpdateJSON;
 import io.discloader.discloader.util.DLUtil.Events;
 
 public class EmojiUpdate extends AbstractHandler {
 
-	public EmojiUpdate(DiscSocket socket) {
+	public EmojiUpdate(Gateway socket) {
 		super(socket);
 	}
 

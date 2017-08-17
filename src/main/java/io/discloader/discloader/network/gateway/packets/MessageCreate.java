@@ -12,7 +12,7 @@ import io.discloader.discloader.common.registry.EntityRegistry;
 import io.discloader.discloader.entity.channel.ITextChannel;
 import io.discloader.discloader.entity.message.IMessage;
 import io.discloader.discloader.entity.util.SnowflakeUtil;
-import io.discloader.discloader.network.gateway.DiscSocket;
+import io.discloader.discloader.network.gateway.Gateway;
 import io.discloader.discloader.network.json.MessageJSON;
 import io.discloader.discloader.util.DLUtil;
 import io.discloader.discloader.util.DLUtil.ChannelType;
@@ -22,7 +22,7 @@ import io.discloader.discloader.util.DLUtil.ChannelType;
  */
 public class MessageCreate extends AbstractHandler {
 
-	public MessageCreate(DiscSocket socket) {
+	public MessageCreate(Gateway socket) {
 		super(socket);
 	}
 

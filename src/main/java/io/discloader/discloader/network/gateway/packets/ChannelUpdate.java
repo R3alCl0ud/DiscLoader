@@ -9,7 +9,7 @@ import io.discloader.discloader.entity.channel.IChannel;
 import io.discloader.discloader.entity.channel.ITextChannel;
 import io.discloader.discloader.entity.guild.IGuild;
 import io.discloader.discloader.entity.message.IMessage;
-import io.discloader.discloader.network.gateway.DiscSocket;
+import io.discloader.discloader.network.gateway.Gateway;
 import io.discloader.discloader.network.json.ChannelJSON;
 import io.discloader.discloader.util.DLUtil.Events;
 
@@ -18,7 +18,7 @@ import io.discloader.discloader.util.DLUtil.Events;
  */
 public class ChannelUpdate extends AbstractHandler {
 
-	public ChannelUpdate(DiscSocket socket) {
+	public ChannelUpdate(Gateway socket) {
 		super(socket);
 	}
 

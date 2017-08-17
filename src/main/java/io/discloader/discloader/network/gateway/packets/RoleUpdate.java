@@ -8,7 +8,7 @@ import io.discloader.discloader.common.event.guild.role.GuildRoleUpdateEvent;
 import io.discloader.discloader.common.registry.EntityRegistry;
 import io.discloader.discloader.entity.guild.IGuild;
 import io.discloader.discloader.entity.guild.IRole;
-import io.discloader.discloader.network.gateway.DiscSocket;
+import io.discloader.discloader.network.gateway.Gateway;
 import io.discloader.discloader.network.json.RoleJSON;
 import io.discloader.discloader.util.DLUtil;
 
@@ -18,7 +18,7 @@ import io.discloader.discloader.util.DLUtil;
  */
 public class RoleUpdate extends AbstractHandler {
 
-	public RoleUpdate(DiscSocket socket) {
+	public RoleUpdate(Gateway socket) {
 		super(socket);
 	}
 

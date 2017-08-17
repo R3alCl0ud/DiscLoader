@@ -7,7 +7,7 @@ import io.discloader.discloader.core.entity.user.User;
 import io.discloader.discloader.entity.guild.IGuild;
 import io.discloader.discloader.entity.guild.IGuildMember;
 import io.discloader.discloader.entity.user.IUser;
-import io.discloader.discloader.network.gateway.DiscSocket;
+import io.discloader.discloader.network.gateway.Gateway;
 import io.discloader.discloader.network.json.PresenceJSON;
 import io.discloader.discloader.util.DLUtil;
 
@@ -16,7 +16,7 @@ import io.discloader.discloader.util.DLUtil;
  */
 public class PresenceUpdate extends AbstractHandler {
 
-	public PresenceUpdate(DiscSocket socket) {
+	public PresenceUpdate(Gateway socket) {
 		super(socket);
 	}
 

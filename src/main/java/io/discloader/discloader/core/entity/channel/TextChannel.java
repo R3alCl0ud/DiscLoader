@@ -15,17 +15,22 @@ import io.discloader.discloader.entity.channel.IGuildTextChannel;
 import io.discloader.discloader.entity.guild.IGuild;
 import io.discloader.discloader.entity.message.IMessage;
 import io.discloader.discloader.entity.sendable.Attachment;
+import io.discloader.discloader.entity.sendable.SendableMessage;
 import io.discloader.discloader.entity.user.IUser;
 import io.discloader.discloader.entity.util.SnowflakeUtil;
 import io.discloader.discloader.network.json.ChannelJSON;
+import io.discloader.discloader.network.json.MessageJSON;
+import io.discloader.discloader.network.rest.RESTOptions;
 import io.discloader.discloader.network.rest.actions.channel.BulkDelete;
 import io.discloader.discloader.network.rest.actions.channel.FetchMessage;
 import io.discloader.discloader.network.rest.actions.channel.FetchMessages;
-import io.discloader.discloader.network.rest.actions.channel.SendMessage;
 import io.discloader.discloader.network.rest.actions.channel.StartTyping;
 import io.discloader.discloader.network.rest.actions.channel.pin.PinMessage;
 import io.discloader.discloader.network.rest.actions.channel.pin.PinnedMessages;
 import io.discloader.discloader.network.rest.actions.channel.pin.UnpinMessage;
+import io.discloader.discloader.network.util.Endpoints;
+import io.discloader.discloader.network.util.Methods;
+import io.discloader.discloader.util.DLUtil;
 import io.discloader.discloader.util.DLUtil.ChannelType;
 
 /**
@@ -181,8 +186,11 @@ public class TextChannel extends GuildChannel implements IGuildTextChannel {
 	
 	@Override
 	public CompletableFuture<IMessage> sendEmbed(RichEmbed embed) {
-		if (embed.getThumbnail() != null && embed.getThumbnail().resource != null) return sendMessage(null, embed, (Resource) null);
-		if (embed.getImage() != null && embed.getImage().resource != null) return sendMessage(null, embed, (Resource) null);
+		// System.out.println(DLUtil.gson.toJson(embed));
+		if (embed.getThumbnail() != null && embed.getThumbnail().resource != null) return sendMessage(null, embed, embed.getThumbnail().resource);
+		if (embed.getThumbnail() != null && embed.getThumbnail().file != null) return sendMessage(null, embed, embed.getThumbnail().file);
+		if (embed.getImage() != null && embed.getImage().resource != null) return sendMessage(null, embed, embed.getImage().resource);
+		if (embed.getImage() != null && embed.getImage().file != null) return sendMessage(null, embed, embed.getImage().file);
 		return sendMessage(null, embed, (File) null);
 	}
 	
@@ -203,39 +211,65 @@ public class TextChannel extends GuildChannel implements IGuildTextChannel {
 	
 	@Override
 	public CompletableFuture<IMessage> sendMessage(String content, RichEmbed embed) {
-		if ((embed.getThumbnail() != null && embed.getThumbnail().resource != null)) return sendMessage(content, embed, (Resource) null);
-		if ((embed.getImage() != null && embed.getImage().resource != null)) return sendMessage(content, embed, (Resource) null);
+		if ((embed.getThumbnail() != null && embed.getThumbnail().resource != null)) return sendMessage(content, embed, embed.getThumbnail().resource);
+		if (embed.getThumbnail() != null && embed.getThumbnail().file != null) return sendMessage(content, embed, embed.getThumbnail().file);
+		if ((embed.getImage() != null && embed.getImage().resource != null)) return sendMessage(content, embed, embed.getImage().resource);
+		if (embed.getImage() != null && embed.getImage().file != null) return sendMessage(content, embed, embed.getImage().file);
 		return sendMessage(content, embed, (File) null);
 	}
 	
 	@Override
 	public CompletableFuture<IMessage> sendMessage(String content, RichEmbed embed, File file) {
-		Attachment attachment = null;
-		if (embed != null) {
-			if (embed.getThumbnail() != null && embed.getThumbnail().file != null) {
-				file = embed.getThumbnail().file;
-				attachment = new Attachment(file.getName());
-			} else if (embed.getImage() != null && embed.getImage().file != null) {
-				file = embed.getImage().file;
-				attachment = new Attachment(file.getName());
-			}
-		}
-		return new SendMessage<IGuildTextChannel>(this, content, embed, attachment, file).execute();
+		Attachment attachment = file == null ? null : new Attachment(file.getName());
+		SendableMessage sendable = new SendableMessage(content, false, embed, attachment, file);
+		System.out.println(DLUtil.gson.toJson(sendable));
+		// System.out.println(DLUtil.gson.toJson(embed));
+		// if (embed != null) {
+		// if (embed.getThumbnail() != null && embed.getThumbnail().file != null) {
+		// file = embed.getThumbnail().file;
+		// attachment = new Attachment(file.getName());
+		// sendable = new SendableMessage(content, false, embed, attachment, file);
+		// } else if (embed.getImage() != null && embed.getImage().file != null) {
+		// file = embed.getImage().file;
+		// attachment = new Attachment(file.getName());
+		// sendable = new SendableMessage(content, false, embed, attachment, file);
+		// }
+		// }
+		CompletableFuture<IMessage> future = new CompletableFuture<>();
+		
+		loader.rest.request(Methods.POST, Endpoints.messages(getID()), new RESTOptions<MessageJSON>(sendable), MessageJSON.class).thenAcceptAsync(e -> {
+			future.complete(new Message<IGuildTextChannel>(this, e));
+		}).exceptionally(ex -> {
+			future.completeExceptionally(ex);
+			return null;
+		});
+		return future;
+		
 	}
 	
 	@Override
 	public CompletableFuture<IMessage> sendMessage(String content, RichEmbed embed, Resource resource) {
-		Attachment attachment = null;
-		if (embed != null) {
-			if (embed.getThumbnail() != null && embed.getThumbnail().resource != null) {
-				resource = embed.getThumbnail().resource;
-				attachment = new Attachment(embed.getThumbnail().resource.getFileName());
-			} else if (embed.getImage() != null && embed.getImage().resource != null) {
-				resource = embed.getImage().resource;
-				attachment = new Attachment(embed.getImage().resource.getFileName());
-			}
-		}
-		return new SendMessage<IGuildTextChannel>(this, content, embed, attachment, resource).execute();
+		Attachment attachment = resource == null ? null : new Attachment(resource.getFileName());
+		SendableMessage sendable = new SendableMessage(content, false, embed, attachment, resource);
+		// if (embed != null) {
+		// if (embed.getThumbnail() != null && embed.getThumbnail().resource != null) {
+		// resource = embed.getThumbnail().resource;
+		// attachment = new Attachment(embed.getThumbnail().resource.getFileName());
+		// sendable = new SendableMessage(content, false, embed, attachment, resource);
+		// } else if (embed.getImage() != null && embed.getImage().resource != null) {
+		// resource = embed.getImage().resource;
+		// attachment = new Attachment(embed.getImage().resource.getFileName());
+		// sendable = new SendableMessage(content, false, embed, attachment, resource);
+		// }
+		// }
+		CompletableFuture<IMessage> future = new CompletableFuture<>();
+		loader.rest.request(Methods.POST, Endpoints.messages(getID()), new RESTOptions<MessageJSON>(sendable), MessageJSON.class).thenAcceptAsync(e -> {
+			future.complete(new Message<IGuildTextChannel>(this, e));
+		}).exceptionally(ex -> {
+			future.completeExceptionally(ex);
+			return null;
+		});
+		return future;
 	}
 	
 	/**

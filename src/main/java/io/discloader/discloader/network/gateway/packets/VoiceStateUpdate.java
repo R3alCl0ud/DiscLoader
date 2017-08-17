@@ -12,7 +12,7 @@ import io.discloader.discloader.entity.guild.IGuild;
 import io.discloader.discloader.entity.util.SnowflakeUtil;
 import io.discloader.discloader.entity.voice.VoiceConnection;
 import io.discloader.discloader.entity.voice.VoiceState;
-import io.discloader.discloader.network.gateway.DiscSocket;
+import io.discloader.discloader.network.gateway.Gateway;
 import io.discloader.discloader.network.json.VoiceStateJSON;
 
 /**
@@ -20,7 +20,7 @@ import io.discloader.discloader.network.json.VoiceStateJSON;
  */
 public class VoiceStateUpdate extends AbstractHandler {
 
-	public VoiceStateUpdate(DiscSocket socket) {
+	public VoiceStateUpdate(Gateway socket) {
 		super(socket);
 	}
 

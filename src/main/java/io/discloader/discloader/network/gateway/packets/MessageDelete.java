@@ -6,7 +6,7 @@ import io.discloader.discloader.common.registry.EntityRegistry;
 import io.discloader.discloader.entity.channel.ITextChannel;
 import io.discloader.discloader.entity.message.IMessage;
 import io.discloader.discloader.entity.util.SnowflakeUtil;
-import io.discloader.discloader.network.gateway.DiscSocket;
+import io.discloader.discloader.network.gateway.Gateway;
 import io.discloader.discloader.network.json.MessageJSON;
 import io.discloader.discloader.util.DLUtil.Events;
 
@@ -15,7 +15,7 @@ import io.discloader.discloader.util.DLUtil.Events;
  */
 public class MessageDelete extends AbstractHandler {
 
-	public MessageDelete(DiscSocket socket) {
+	public MessageDelete(Gateway socket) {
 		super(socket);
 	}
 

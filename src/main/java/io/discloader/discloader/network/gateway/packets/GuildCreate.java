@@ -5,14 +5,14 @@ import com.google.gson.Gson;
 import io.discloader.discloader.common.event.guild.GuildCreateEvent;
 import io.discloader.discloader.common.registry.EntityRegistry;
 import io.discloader.discloader.entity.guild.IGuild;
-import io.discloader.discloader.network.gateway.DiscSocket;
+import io.discloader.discloader.network.gateway.Gateway;
 import io.discloader.discloader.network.json.GuildJSON;
 import io.discloader.discloader.util.DLUtil;
 import io.discloader.discloader.util.DLUtil.Events;
 
 public class GuildCreate extends AbstractHandler {
 
-	public GuildCreate(DiscSocket socket) {
+	public GuildCreate(Gateway socket) {
 		super(socket);
 	}
 

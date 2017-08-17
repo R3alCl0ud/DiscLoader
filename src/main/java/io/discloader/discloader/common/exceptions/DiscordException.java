@@ -6,12 +6,12 @@ import io.discloader.discloader.network.json.ExceptionJSON;
  * @author Perry Berman
  *
  */
-public class UnknownException extends RuntimeException {
+public class DiscordException extends RuntimeException {
 
     private static final long serialVersionUID = 3158890067864659909L;
     private final int errorCode;
 
-    public UnknownException(ExceptionJSON data) {
+    public DiscordException(ExceptionJSON data) {
         super(data.message);
         errorCode = data.code;
     }

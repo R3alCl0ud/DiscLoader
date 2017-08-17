@@ -1,10 +1,10 @@
 package io.discloader.discloader.network.gateway.packets;
 
-import io.discloader.discloader.network.gateway.DiscSocket;
+import io.discloader.discloader.network.gateway.Gateway;
 
 public class WebhooksUpdate extends AbstractHandler {
 
-	public WebhooksUpdate(DiscSocket socket) {
+	public WebhooksUpdate(Gateway socket) {
 		super(socket);
 	}
 

@@ -8,7 +8,7 @@ import io.discloader.discloader.common.registry.EntityRegistry;
 import io.discloader.discloader.common.registry.EntityBuilder;
 import io.discloader.discloader.entity.guild.IGuild;
 import io.discloader.discloader.entity.guild.IGuildMember;
-import io.discloader.discloader.network.gateway.DiscSocket;
+import io.discloader.discloader.network.gateway.Gateway;
 import io.discloader.discloader.network.json.GuildMemberRemoveJSON;
 
 /**
@@ -16,7 +16,7 @@ import io.discloader.discloader.network.json.GuildMemberRemoveJSON;
  */
 public class GuildMemberRemove extends AbstractHandler {
 
-	public GuildMemberRemove(DiscSocket socket) {
+	public GuildMemberRemove(Gateway socket) {
 		super(socket);
 	}
 

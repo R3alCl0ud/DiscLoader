@@ -1,5 +1,6 @@
 package io.discloader.discloader.common;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -8,7 +9,7 @@ import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.logging.Logger;
 
-import com.google.gson.Gson;
+import com.neovisionaries.ws.client.WebSocketException;
 
 import io.discloader.discloader.client.command.Command;
 import io.discloader.discloader.client.command.CommandHandler;
@@ -30,18 +31,21 @@ import io.discloader.discloader.common.logger.DLPrintStream;
 import io.discloader.discloader.common.registry.EntityRegistry;
 import io.discloader.discloader.common.registry.ModRegistry;
 import io.discloader.discloader.common.start.Main;
+import io.discloader.discloader.core.entity.channel.Channel;
 import io.discloader.discloader.core.entity.channel.VoiceChannel;
 import io.discloader.discloader.core.entity.guild.Guild;
 import io.discloader.discloader.core.entity.user.DLUser;
 import io.discloader.discloader.entity.guild.IGuild;
 import io.discloader.discloader.entity.invite.IInvite;
 import io.discloader.discloader.entity.sendable.Packet;
-import io.discloader.discloader.network.gateway.DiscSocket;
+import io.discloader.discloader.network.gateway.Gateway;
+import io.discloader.discloader.network.json.GatewayJSON;
 import io.discloader.discloader.network.rest.RESTManager;
+import io.discloader.discloader.network.rest.RESTOptions;
 import io.discloader.discloader.network.rest.actions.InviteAction;
+import io.discloader.discloader.network.util.Methods;
 import io.discloader.discloader.util.DLUtil;
 import io.discloader.discloader.util.DLUtil.Endpoints;
-import io.discloader.discloader.util.DLUtil.Methods;
 import io.discloader.discloader.util.DLUtil.Status;
 
 /**
@@ -64,11 +68,6 @@ import io.discloader.discloader.util.DLUtil.Status;
  */
 public class DiscLoader {
 	
-	private class Gateway {
-		
-		public String url;
-	}
-	
 	public static final Logger LOG = new DLLogger("DiscLoader").getLogger();
 	
 	private static boolean started = false;
@@ -81,7 +80,7 @@ public class DiscLoader {
 	
 	public final List<IEventListener> handlers;
 	
-	public final DiscSocket socket;
+	public final Gateway socket;
 	
 	public String token;
 	
@@ -155,6 +154,7 @@ public class DiscLoader {
 	// public HashMap<Long, IVoiceChannel> voiceChannels;
 	
 	private CompletableFuture<String> future;
+	private CompletableFuture<DiscLoader> rf;
 	
 	/**
 	 * A HashMap of the client's voice connections. Indexed by {@link Guild#id}.
@@ -267,7 +267,7 @@ public class DiscLoader {
 	public DiscLoader(int shard, int shards) {
 		this.shards = shards;
 		this.shardid = shard;
-		socket = new DiscSocket(this);
+		socket = new Gateway(this);
 		rest = new RESTManager(this);
 		clientRegistry = new ClientRegistry();
 		syncingGuilds = new HashMap<>();
@@ -352,10 +352,11 @@ public class DiscLoader {
 		ReadyEvent event = new ReadyEvent(this);
 		emit(DLUtil.Events.READY, event);
 		emit(event);
+		// rf.complete(this);
 	}
 	
 	public CompletableFuture<IInvite> getInvite(String code) {
-		return new InviteAction(code, Methods.GET).execute();
+		return new InviteAction(code, DLUtil.Methods.GET).execute();
 	}
 	
 	/**
@@ -393,23 +394,36 @@ public class DiscLoader {
 		future = new CompletableFuture<>();
 		startup();
 		future.join();
+		System.out.println("testing123");
 		this.token = token;
 		
-		CompletableFuture<DiscLoader> future2 = new CompletableFuture<>();
-		rest.makeRequest(Endpoints.gateway, DLUtil.Methods.GET, true).handle((text, ex) -> {
-			Gson gson = new Gson();
-			Gateway gateway = gson.fromJson(text, Gateway.class);
+		rf = new CompletableFuture<>();
+		rest.<GatewayJSON>request(Methods.GET, Endpoints.gateway, new RESTOptions<GatewayJSON>(), GatewayJSON.class).thenAccept(gateway -> {
 			try {
 				socket.connectSocket(gateway.url + DLUtil.GatewaySuffix);
-			} catch (Exception e) {
-				future.completeExceptionally(e);
-				e.printStackTrace();
+			} catch (WebSocketException | IOException e1) {
+				e1.printStackTrace();
+				rf.completeExceptionally(e1);
 			}
-			future2.complete(DiscLoader.this);
+			rf.complete(this);
+		}).exceptionally(e -> {
+			rf.completeExceptionally(e);
 			return null;
 		});
 		
-		return future2;
+		// rest.makeRequest(Endpoints.gateway, DLUtil.Methods.GET, true).thenAccept(text -> {
+		// GatewayJSON gateway = DLUtil.gson.fromJson(text, GatewayJSON.class);
+		// try {
+		// socket.connectSocket(gateway.url);
+		// } catch (WebSocketException | IOException e1) {
+		// e1.printStackTrace();
+		// }
+		// }).exceptionally(e -> {
+		// rf.completeExceptionally(e.getCause());
+		// return null;
+		// });
+		
+		return rf;
 	}
 	
 	public void onceEvent(Consumer<DLEvent> consumer) {

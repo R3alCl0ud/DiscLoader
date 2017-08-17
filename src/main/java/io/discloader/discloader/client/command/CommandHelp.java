@@ -79,7 +79,6 @@ public class CommandHelp extends Command {
 				if (a.getUnlocalizedName().compareToIgnoreCase(b.getUnlocalizedName()) > 0) return 1;
 				return 0;
 			});
-			System.out.println(cmdList);
 			for (int i = 0; i < 10 && i < size; i++) {
 				String desc = this.getCommandDesc(cmdList.get(i));
 				commands = String.format("%s**%s**: %s\n", commands, cmdList.get(i).getUnlocalizedName(), desc);

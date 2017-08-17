@@ -5,7 +5,7 @@ package io.discloader.discloader.network.gateway.packets;
 
 import io.discloader.discloader.common.registry.EntityRegistry;
 import io.discloader.discloader.entity.guild.IGuild;
-import io.discloader.discloader.network.gateway.DiscSocket;
+import io.discloader.discloader.network.gateway.Gateway;
 import io.discloader.discloader.network.json.MemberJSON;
 
 /**
@@ -13,7 +13,7 @@ import io.discloader.discloader.network.json.MemberJSON;
  */
 public class GuildMemberAdd extends AbstractHandler {
 
-	public GuildMemberAdd(DiscSocket socket) {
+	public GuildMemberAdd(Gateway socket) {
 		super(socket);
 	}
 

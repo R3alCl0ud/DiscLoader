@@ -7,7 +7,7 @@ import io.discloader.discloader.common.registry.EntityBuilder;
 import io.discloader.discloader.common.registry.factory.GuildFactory;
 import io.discloader.discloader.entity.guild.IGuild;
 import io.discloader.discloader.entity.guild.IGuildMember;
-import io.discloader.discloader.network.gateway.DiscSocket;
+import io.discloader.discloader.network.gateway.Gateway;
 import io.discloader.discloader.network.json.MemberJSON;
 import io.discloader.discloader.util.DLUtil.Events;
 
@@ -18,7 +18,7 @@ public class GuildMemberUpdate extends AbstractHandler {
 
 	private GuildFactory gfac = EntityBuilder.getGuildFactory();
 
-	public GuildMemberUpdate(DiscSocket socket) {
+	public GuildMemberUpdate(Gateway socket) {
 		super(socket);
 	}
 

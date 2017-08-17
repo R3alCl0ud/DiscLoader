@@ -8,7 +8,7 @@ import io.discloader.discloader.common.registry.EntityRegistry;
 import io.discloader.discloader.common.registry.EntityBuilder;
 import io.discloader.discloader.entity.guild.IGuild;
 import io.discloader.discloader.entity.guild.IGuildMember;
-import io.discloader.discloader.network.gateway.DiscSocket;
+import io.discloader.discloader.network.gateway.Gateway;
 import io.discloader.discloader.network.json.GuildMembersChunkJSON;
 import io.discloader.discloader.network.json.MemberJSON;
 
@@ -17,7 +17,7 @@ import io.discloader.discloader.network.json.MemberJSON;
  */
 public class GuildMembersChunk extends AbstractHandler {
 
-	public GuildMembersChunk(DiscSocket socket) {
+	public GuildMembersChunk(Gateway socket) {
 		super(socket);
 	}
 

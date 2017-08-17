@@ -7,7 +7,7 @@ import io.discloader.discloader.common.event.IEventListener;
 import io.discloader.discloader.common.event.guild.GuildDeleteEvent;
 import io.discloader.discloader.common.registry.EntityRegistry;
 import io.discloader.discloader.entity.guild.IGuild;
-import io.discloader.discloader.network.gateway.DiscSocket;
+import io.discloader.discloader.network.gateway.Gateway;
 import io.discloader.discloader.network.json.GuildJSON;
 import io.discloader.discloader.util.DLUtil.Events;
 import io.discloader.discloader.util.DLUtil.Status;
@@ -17,7 +17,7 @@ import io.discloader.discloader.util.DLUtil.Status;
  */
 public class GuildDelete extends AbstractHandler {
 
-	public GuildDelete(DiscSocket socket) {
+	public GuildDelete(Gateway socket) {
 		super(socket);
 	}
 

@@ -20,7 +20,7 @@ import io.discloader.discloader.common.DiscLoader;
 import io.discloader.discloader.common.language.Language;
 import io.discloader.discloader.core.entity.Permission;
 import io.discloader.discloader.entity.util.ISnowflake;
-import io.discloader.discloader.network.gateway.DiscSocketListener;
+import io.discloader.discloader.network.gateway.GatewayListener;
 
 /**
  * A collection of all useful constants for DiscLoader
@@ -631,7 +631,7 @@ public final class DLUtil {
 	public static final Language enUS = new Language(new Resource("discloader", "lang/en-US.lang").getResourceAsStream(), Locale.US);
 	
 	/**
-	 * An {@link ArrayList} of {@link WSEvents} that are handled by the {@link DiscSocketListener SocketListener} before the
+	 * An {@link ArrayList} of {@link WSEvents} that are handled by the {@link GatewayListener SocketListener} before the
 	 * {@link DiscLoader loader} has emitted ready.
 	 * 
 	 * @author Perry Berman

@@ -4,7 +4,7 @@ import io.discloader.discloader.common.event.guild.role.GuildRoleDeleteEvent;
 import io.discloader.discloader.common.registry.EntityRegistry;
 import io.discloader.discloader.entity.guild.IGuild;
 import io.discloader.discloader.entity.guild.IRole;
-import io.discloader.discloader.network.gateway.DiscSocket;
+import io.discloader.discloader.network.gateway.Gateway;
 import io.discloader.discloader.network.json.GuildRoleJSON;
 import io.discloader.discloader.util.DLUtil;
 
@@ -13,7 +13,7 @@ import io.discloader.discloader.util.DLUtil;
  */
 public class RoleDelete extends AbstractHandler {
 
-	public RoleDelete(DiscSocket socket) {
+	public RoleDelete(Gateway socket) {
 		super(socket);
 	}
 

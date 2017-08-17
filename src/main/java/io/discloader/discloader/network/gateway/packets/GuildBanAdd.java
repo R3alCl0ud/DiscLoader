@@ -4,7 +4,7 @@ import io.discloader.discloader.common.event.guild.GuildBanAddEvent;
 import io.discloader.discloader.common.registry.EntityRegistry;
 import io.discloader.discloader.entity.guild.IGuild;
 import io.discloader.discloader.entity.user.IUser;
-import io.discloader.discloader.network.gateway.DiscSocket;
+import io.discloader.discloader.network.gateway.Gateway;
 import io.discloader.discloader.network.json.GuildMemberRemoveJSON;
 import io.discloader.discloader.util.DLUtil;
 
@@ -13,7 +13,7 @@ import io.discloader.discloader.util.DLUtil;
  */
 public class GuildBanAdd extends AbstractHandler {
 
-	public GuildBanAdd(DiscSocket socket) {
+	public GuildBanAdd(Gateway socket) {
 		super(socket);
 	}
 

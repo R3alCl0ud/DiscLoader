@@ -3,7 +3,7 @@ package io.discloader.discloader.network.gateway.packets;
 import io.discloader.discloader.common.event.guild.GuildUpdateEvent;
 import io.discloader.discloader.common.registry.EntityRegistry;
 import io.discloader.discloader.entity.guild.IGuild;
-import io.discloader.discloader.network.gateway.DiscSocket;
+import io.discloader.discloader.network.gateway.Gateway;
 import io.discloader.discloader.network.json.GuildJSON;
 import io.discloader.discloader.util.DLUtil;
 
@@ -12,7 +12,7 @@ import io.discloader.discloader.util.DLUtil;
  */
 public class GuildUpdate extends AbstractHandler {
 
-	public GuildUpdate(DiscSocket socket) {
+	public GuildUpdate(Gateway socket) {
 		super(socket);
 	}
 

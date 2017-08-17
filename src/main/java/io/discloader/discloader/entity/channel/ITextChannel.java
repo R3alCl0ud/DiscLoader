@@ -19,6 +19,7 @@ import io.discloader.discloader.entity.user.IUser;
  */
 public interface ITextChannel extends IChannel {
 
+	
 	/**
 	 * Deletes multiple messages from the channel.
 	 * 

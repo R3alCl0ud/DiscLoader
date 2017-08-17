@@ -2,6 +2,7 @@ package io.discloader.discloader.common.registry;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.logging.Logger;
 
 import io.discloader.discloader.client.command.Command;
@@ -56,10 +57,10 @@ public class ModRegistry {
 
 	private static final Logger logger = new DLLogger(ModRegistry.class).getLogger();
 
-	public static void checkCandidates(ArrayList<ModCandidate> mcs) {
+	public static void checkCandidates(List<ModCandidate> mcs) {
 		ProgressLogger.step(1, 2, "Checking candidates for @Mod annotation");
 		logger.info("Checking candidates for @Mod annotation");
-		ArrayList<ModContainer> containers = new ArrayList<ModContainer>();
+		List<ModContainer> containers = new ArrayList<ModContainer>();
 		for (int i = 0; i < mcs.size(); i++) {
 			activeMod = null;
 			ModCandidate candidate = mcs.get(i);

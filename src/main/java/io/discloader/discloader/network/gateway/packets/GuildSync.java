@@ -2,14 +2,14 @@ package io.discloader.discloader.network.gateway.packets;
 
 import io.discloader.discloader.common.registry.EntityRegistry;
 import io.discloader.discloader.entity.guild.IGuild;
-import io.discloader.discloader.network.gateway.DiscSocket;
+import io.discloader.discloader.network.gateway.Gateway;
 import io.discloader.discloader.network.json.GuildSyncJSON;
 import io.discloader.discloader.network.json.MemberJSON;
 import io.discloader.discloader.network.json.PresenceJSON;
 
 public class GuildSync extends AbstractHandler {
 
-	public GuildSync(DiscSocket socket) {
+	public GuildSync(Gateway socket) {
 		super(socket);
 	}
 

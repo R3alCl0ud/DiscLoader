@@ -24,7 +24,7 @@ import io.discloader.discloader.common.event.RawEvent;
 import io.discloader.discloader.common.exceptions.AccountTypeException;
 import io.discloader.discloader.common.exceptions.PermissionsException;
 import io.discloader.discloader.common.exceptions.UnauthorizedException;
-import io.discloader.discloader.common.exceptions.UnknownException;
+import io.discloader.discloader.common.exceptions.DiscordException;
 import io.discloader.discloader.network.json.ExceptionJSON;
 
 /**
@@ -157,7 +157,7 @@ public class RESTQueue {
 							}
 							break;
 						default:
-							apiRequest.future.completeExceptionally(new UnknownException(data));
+							apiRequest.future.completeExceptionally(new DiscordException(data));
 							break;
 						}
 					} else {

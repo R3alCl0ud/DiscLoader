@@ -6,7 +6,7 @@ package io.discloader.discloader.network.gateway.packets;
 import io.discloader.discloader.common.registry.EntityRegistry;
 import io.discloader.discloader.entity.channel.ITextChannel;
 import io.discloader.discloader.entity.user.IUser;
-import io.discloader.discloader.network.gateway.DiscSocket;
+import io.discloader.discloader.network.gateway.Gateway;
 import io.discloader.discloader.network.json.TypingStartJSON;
 
 /**
@@ -14,7 +14,7 @@ import io.discloader.discloader.network.json.TypingStartJSON;
  */
 public class TypingStart extends AbstractHandler {
 
-	public TypingStart(DiscSocket socket) {
+	public TypingStart(Gateway socket) {
 		super(socket);
 	}
 

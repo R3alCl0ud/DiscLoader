@@ -1,11 +1,11 @@
 package io.discloader.discloader.network.gateway.packets;
 
-import io.discloader.discloader.network.gateway.DiscSocket;
+import io.discloader.discloader.network.gateway.Gateway;
 import io.discloader.discloader.network.json.HelloJSON;
 
 public class Hello extends AbstractHandler {
 
-	public Hello(DiscSocket socket) {
+	public Hello(Gateway socket) {
 		super(socket);
 	}
 

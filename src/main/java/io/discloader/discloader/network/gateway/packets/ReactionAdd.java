@@ -7,12 +7,12 @@ import io.discloader.discloader.entity.channel.ITextChannel;
 import io.discloader.discloader.entity.message.IMessage;
 import io.discloader.discloader.entity.message.IReaction;
 import io.discloader.discloader.entity.user.IUser;
-import io.discloader.discloader.network.gateway.DiscSocket;
+import io.discloader.discloader.network.gateway.Gateway;
 import io.discloader.discloader.network.json.ReactionJSON;
 
 public class ReactionAdd extends AbstractHandler {
 
-	public ReactionAdd(DiscSocket socket) {
+	public ReactionAdd(Gateway socket) {
 		super(socket);
 	}
 

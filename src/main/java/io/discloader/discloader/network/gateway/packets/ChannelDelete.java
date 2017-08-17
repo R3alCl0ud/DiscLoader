@@ -4,7 +4,7 @@ import io.discloader.discloader.common.event.channel.ChannelDeleteEvent;
 import io.discloader.discloader.common.registry.EntityRegistry;
 import io.discloader.discloader.entity.channel.IChannel;
 import io.discloader.discloader.entity.guild.IGuild;
-import io.discloader.discloader.network.gateway.DiscSocket;
+import io.discloader.discloader.network.gateway.Gateway;
 import io.discloader.discloader.network.json.ChannelJSON;
 import io.discloader.discloader.util.DLUtil.Events;
 
@@ -13,7 +13,7 @@ import io.discloader.discloader.util.DLUtil.Events;
  */
 public class ChannelDelete extends AbstractHandler {
 
-	public ChannelDelete(DiscSocket socket) {
+	public ChannelDelete(Gateway socket) {
 		super(socket);
 	}
 
