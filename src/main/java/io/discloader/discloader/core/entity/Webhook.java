@@ -93,7 +93,7 @@ public class Webhook implements IWebhook {
 	 */
 	@Override
 	public IIcon getAvatar() {
-		return new UserAvatar(avatar, id, 0000);
+		return new UserAvatar(avatar, id, (short) 0000);
 	}
 	
 	/*

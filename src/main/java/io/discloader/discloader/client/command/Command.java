@@ -35,6 +35,8 @@ public class Command {
 
 	private String description = "default description";
 
+	private String fullDescription = null;
+
 	private String argsRegex = "(\\S+)";
 
 	private String usage = null;
@@ -54,19 +56,19 @@ public class Command {
 	 * executes the command
 	 * 
 	 * @param e The MessageCreateEvent
-	 * @param args The args parsed from {@link #getArgsPattern()}
 	 */
-	public void execute(MessageCreateEvent e, String[] args) {
-		execute(e);
+	public void execute(MessageCreateEvent e) {
+		return;
 	}
 
 	/**
 	 * executes the command
 	 * 
 	 * @param e The MessageCreateEvent
+	 * @param args The args parsed from {@link #getArgsPattern()}
 	 */
-	public void execute(MessageCreateEvent e) {
-		return;
+	public void execute(MessageCreateEvent e, String[] args) {
+		execute(e);
 	}
 
 	/**
@@ -83,6 +85,13 @@ public class Command {
 		return this.description;
 	}
 
+	/**
+	 * @return the fullDescription
+	 */
+	public String getFullDescription() {
+		return fullDescription;
+	}
+
 	public IRenderable getIcon() {
 		if (this.renderable == null) {
 			this.renderable = TextureRegistry.registerCommandIcon(this);
@@ -97,15 +106,15 @@ public class Command {
 		return id;
 	}
 
+	public Resource getResourceLocation() {
+		return new Resource("DiscLoader", "texture/commands/missing-texture.png");
+	}
+
 	/**
 	 * @return the textureName
 	 */
 	public String getTextureName() {
 		return textureName;
-	}
-
-	public Resource getResourceLocation() {
-		return new Resource("DiscLoader", "texture/commands/missing-texture.png");
 	}
 
 	/**
@@ -139,6 +148,13 @@ public class Command {
 	public Command setDescription(String description) {
 		this.description = description;
 		return this;
+	}
+
+	/**
+	 * @param fullDescription the fullDescription to set
+	 */
+	public void setFullDescription(String fullDescription) {
+		this.fullDescription = fullDescription;
 	}
 
 	/**

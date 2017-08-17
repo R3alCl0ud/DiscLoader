@@ -6,7 +6,7 @@ package io.discloader.discloader.network.rest;
  * @param <T>
  * @param <U>
  */
-public class RESTOptions<T> {
+public class RESTOptions {
 	
 	private final boolean auth;
 	private final String reason;

@@ -1,5 +1,8 @@
 package io.discloader.discloader.core.entity;
 
+import java.net.MalformedURLException;
+import java.net.URL;
+
 import io.discloader.discloader.entity.IGame;
 import io.discloader.discloader.network.json.GameJSON;
 
@@ -13,14 +16,14 @@ public class Game implements IGame {
 	/**
 	 * The type of activity
 	 */
-	private transient int type;
+	private int type;
 
 	/**
 	 * The link to the user's Twitch Stream. (Currently it is only possible to
 	 * stream using Twitch on discord)<br>
 	 * is null if {@link #isStream()} is {@code false}
 	 */
-	public String url;
+	private String url;
 
 	public Game(Game game) {
 		this.name = game.name;
@@ -69,5 +72,10 @@ public class Game implements IGame {
 
 	public int hashCode() {
 		return (name + type + url).hashCode();
+	}
+
+	@Override
+	public URL toURL() throws MalformedURLException {
+		return new URL(url);
 	}
 }

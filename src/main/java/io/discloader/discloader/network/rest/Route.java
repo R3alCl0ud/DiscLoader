@@ -24,6 +24,12 @@ import io.discloader.discloader.network.json.ExceptionJSON;
 import io.discloader.discloader.network.util.Methods;
 import io.discloader.discloader.util.DLUtil;
 
+/**
+ * 
+ * @param <T>
+ * 
+ * @author Perry Berman
+ */
 public class Route<T> {
 	
 	private final RateLimiter rateLimiter;

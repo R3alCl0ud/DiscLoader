@@ -18,12 +18,12 @@ import io.discloader.discloader.util.DLUtil;
  * @author Perry Berman
  */
 public class CommandHelp extends Command {
-	
+
 	public CommandHelp() {
 		super();
 		setTextureName("discloader:help").setDescription("Displays information about the available commands").setUsage("help [<command>]");
 	}
-	
+
 	@Override
 	public void execute(MessageCreateEvent e, String[] args) {
 		IMessage message = e.getMessage();
@@ -41,12 +41,12 @@ public class CommandHelp extends Command {
 						if (((CommandTree) command).getSubCommands().get(args[i]) != null) command = ((CommandTree) command).getSubCommands().get(args[i]);
 					}
 				}
-				
+
 				embed.setTitle(command.getUnlocalizedName()).addField("Description", this.getCommandDesc(command), true).addField("Usage", command.getUsage(), true);
 				if (command instanceof CommandTree) {
 					String commands = "";
 					for (Command sub : ((CommandTree) command).getSubCommands().values()) {
-						String desc = this.getCommandDesc(sub);
+						String desc = sub.getDescription();
 						commands = String.format("%s**%s**: %s\n", commands, sub.getUnlocalizedName(), desc);
 					}
 					embed.addField("Sub Commands", commands, true);
@@ -80,7 +80,7 @@ public class CommandHelp extends Command {
 				return 0;
 			});
 			for (int i = 0; i < 10 && i < size; i++) {
-				String desc = this.getCommandDesc(cmdList.get(i));
+				String desc = cmdList.get(i).getDescription();
 				commands = String.format("%s**%s**: %s\n", commands, cmdList.get(i).getUnlocalizedName(), desc);
 			}
 			embed.addField("Commands", commands, true);
@@ -88,17 +88,17 @@ public class CommandHelp extends Command {
 		}
 		e.getChannel().sendEmbed(embed);
 	}
-	
+
 	private String getCommandDesc(Command command) {
 		String desc = LanguageRegistry.getLocalized(Locale.US, "command." + command.getUnlocalizedName() + ".desc");
 		if (desc == null || desc.length() < 1) {
-			return command.getDescription();
+			return command.getFullDescription() == null ? command.getDescription() : command.getFullDescription();
 		}
 		return desc;
 	}
-	
+
 	public Resource getResourceLocation() {
 		return new Resource("discloader", "texture/commands/help.png");
 	}
-	
+
 }

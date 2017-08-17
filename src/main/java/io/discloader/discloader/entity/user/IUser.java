@@ -32,7 +32,7 @@ public interface IUser extends ISnowflake, ICreationTime {
 	/**
 	 * @return
 	 */
-	int getDiscriminator();
+	short getDiscriminator();
 
 	/**
 	 * @return

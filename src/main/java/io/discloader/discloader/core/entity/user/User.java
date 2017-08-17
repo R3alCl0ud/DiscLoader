@@ -49,7 +49,7 @@ public class User implements IUser {
 	/**
 	 * The user's four digit discriminator
 	 */
-	private int discriminator;
+	private short discriminator;
 
 	/**
 	 * Whether or not the user is a bot account
@@ -121,7 +121,7 @@ public class User implements IUser {
 	}
 
 	@Override
-	public int getDiscriminator() {
+	public short getDiscriminator() {
 		return discriminator;
 	}
 
@@ -184,7 +184,8 @@ public class User implements IUser {
 	public void setup(UserJSON data) {
 		if (data.username != null) username = data.username;
 
-		discriminator = data.discriminator == null ? 0000 : Integer.parseInt( data.discriminator, 10);
+		// Short.p
+		discriminator = data.discriminator == null ? 0000 : Short.parseShort(data.discriminator, 10);
 
 		avatar = data.avatar;
 

@@ -49,17 +49,17 @@ import io.discloader.discloader.util.DLUtil;
 import io.discloader.discloader.util.DLUtil.Endpoints;
 
 public class RESTManager {
-	
+
 	public Gson gson;
 	public HashMap<String, RESTQueue> queues;
 	public DiscLoader loader;
 	private final Map<String, Route<?>> routes;
 	// private final Map<>
-	
+
 	private boolean globally;
-	
+
 	private GuildFactory gfac = EntityBuilder.getGuildFactory();
-	
+
 	public RESTManager(DiscLoader loader) {
 		this.loader = loader;
 		gson = new Gson();
@@ -67,16 +67,24 @@ public class RESTManager {
 		routes = new HashMap<>();
 		setGlobally(false);
 	}
-	
+
+	/**
+	 * @param <T> The type to parse request response data as
+	 * @param method
+	 * @param url
+	 * @param options
+	 * @param cls The {@link Class} of Type param
+	 * @return A {@link CompletableFuture}<T> Object that completes with an
+	 *         Object of Type <T> if applicable.
+	 */
 	@SuppressWarnings("unchecked")
-	public <T> CompletableFuture<T> request(Methods method, String url, RESTOptions<T> options, Class<T> cls) {
-		if (options == null) options = new RESTOptions<>();
+	public <T> CompletableFuture<T> request(Methods method, String url, RESTOptions options, Class<T> cls) {
+		if (options == null) options = new RESTOptions();
 		Request<T> apiRequest = new Request<T>(options.getPayload());
-		if (!routes.containsKey(url))
-			routes.put(url, new Route<T>(this, url, method, options.isAuth(), cls));
+		if (!routes.containsKey(url)) routes.put(url, new Route<T>(this, url, method, options.isAuth(), cls));
 		return ((Route<T>) routes.get(url)).push(apiRequest);
 	}
-	
+
 	public CompletableFuture<IGuildMember> banMember(Guild guild, IGuildMember member) {
 		CompletableFuture<IGuildMember> future = new CompletableFuture<>();
 		this.makeRequest(Endpoints.guildBanMember(member.getGuild().getID(), member.getID()), DLUtil.Methods.PUT, true).thenAcceptAsync(action -> {
@@ -84,7 +92,7 @@ public class RESTManager {
 		});
 		return future;
 	}
-	
+
 	public CompletableFuture<Integer> beginPrune(Guild guild, int days) {
 		CompletableFuture<Integer> future = new CompletableFuture<>();
 		JSONObject payload = new JSONObject().put("days", days);
@@ -93,7 +101,7 @@ public class RESTManager {
 		});
 		return future;
 	}
-	
+
 	public CompletableFuture<IGuildEmoji> createEmoji(Guild guild, String name, String image) {
 		CompletableFuture<IGuildEmoji> future = new CompletableFuture<>();
 		CreateEmoji ce = new CreateEmoji(name, image);
@@ -102,7 +110,7 @@ public class RESTManager {
 		});
 		return future;
 	}
-	
+
 	public CompletableFuture<TextChannel> createTextChannel(Guild guild, JSONObject data) {
 		CompletableFuture<TextChannel> future = new CompletableFuture<TextChannel>();
 		this.makeRequest(DLUtil.Endpoints.guildChannels(guild.getID()), DLUtil.Methods.POST, true, data.put("type", "text")).thenAcceptAsync(action -> {
@@ -110,7 +118,7 @@ public class RESTManager {
 		});
 		return future;
 	}
-	
+
 	public CompletableFuture<VoiceChannel> createVoiceChannel(Guild guild, JSONObject data) {
 		CompletableFuture<VoiceChannel> future = new CompletableFuture<VoiceChannel>();
 		this.makeRequest(DLUtil.Endpoints.guildChannels(guild.getID()), DLUtil.Methods.POST, true, data.put("type", "voice")).thenAcceptAsync(action -> {
@@ -118,7 +126,7 @@ public class RESTManager {
 		});
 		return future;
 	}
-	
+
 	public CompletableFuture<IGuildEmoji> deleteEmoji(GuildEmoji guildEmoji) {
 		CompletableFuture<IGuildEmoji> future = new CompletableFuture<>();
 		this.makeRequest(Endpoints.guildEmoji(guildEmoji.getGuild().getID(), guildEmoji.getID()), DLUtil.Methods.DELETE, true).thenAcceptAsync(action -> {
@@ -126,7 +134,7 @@ public class RESTManager {
 		});
 		return future;
 	}
-	
+
 	public CompletableFuture<IMessage> deleteMessage(ITextChannel channel, IMessage message) {
 		CompletableFuture<IMessage> future = new CompletableFuture<>();
 		this.makeRequest(DLUtil.Endpoints.message(channel.getID(), message.getID()), DLUtil.Methods.DELETE, true).thenAcceptAsync(action -> {
@@ -134,7 +142,7 @@ public class RESTManager {
 		});
 		return future;
 	}
-	
+
 	public CompletableFuture<OAuth2Application> getApplicationInfo() {
 		CompletableFuture<OAuth2Application> future = new CompletableFuture<OAuth2Application>();
 		this.makeRequest(DLUtil.Endpoints.currentOAuthApplication, DLUtil.Methods.GET, true).thenAcceptAsync(data -> {
@@ -142,10 +150,10 @@ public class RESTManager {
 			IUser owner = EntityRegistry.addUser(appData.owner);
 			future.complete(new OAuth2Application(appData, owner));
 		});
-		
+
 		return future;
 	}
-	
+
 	public CompletableFuture<IGuildMember> giveRole(IGuildMember member, IRole role) {
 		CompletableFuture<IGuildMember> future = new CompletableFuture<>();
 		this.makeRequest(Endpoints.guildMemberRole(member.getGuild().getID(), member.getID(), role.getID()), DLUtil.Methods.PUT, true).thenAcceptAsync(action -> {
@@ -153,11 +161,11 @@ public class RESTManager {
 		});
 		return future;
 	}
-	
+
 	public void handleQueue(String route) {
 		this.queues.get(route).handle();
 	}
-	
+
 	public CompletableFuture<GuildMember> kickMember(GuildMember member) {
 		CompletableFuture<GuildMember> future = new CompletableFuture<>();
 		this.makeRequest(Endpoints.guildMember(member.guild.getID(), member.getID()), DLUtil.Methods.DELETE, true).thenAcceptAsync(action -> {
@@ -165,7 +173,7 @@ public class RESTManager {
 		});
 		return future;
 	}
-	
+
 	public CompletableFuture<IGuildMember> loadGuildMember(IGuild guild, long memberID) {
 		CompletableFuture<IGuildMember> future = new CompletableFuture<>();
 		this.makeRequest(DLUtil.Endpoints.guildMember(guild.getID(), memberID), DLUtil.Methods.GET, true).thenAcceptAsync(action -> {
@@ -173,7 +181,7 @@ public class RESTManager {
 		});
 		return future;
 	}
-	
+
 	public CompletableFuture<Map<Long, IGuildMember>> loadGuildMembers(IGuild guild, int limit, long after) {
 		CompletableFuture<Map<Long, IGuildMember>> future = new CompletableFuture<>();
 		FetchMembers fetchMem = new FetchMembers(limit, after);
@@ -187,24 +195,24 @@ public class RESTManager {
 		});
 		return future;
 	}
-	
+
 	public CompletableFuture<String> makeRequest(String url, int method, boolean auth) {
 		return this.makeRequest(url, method, auth, null);
 	}
-	
+
 	public CompletableFuture<String> makeRequest(String url, int method, boolean auth, Object data) {
 		APIRequest request = new APIRequest(url, method, auth, data);
 		CompletableFuture<String> future = new CompletableFuture<>();
 		if (!queues.containsKey(url)) {
 			queues.put(url, new RESTQueue(this, url));
 		}
-		
+
 		request.setFuture(future);
 		queues.get(url).addToQueue(request);
 		handleQueue(url);
 		return future;
 	}
-	
+
 	public CompletableFuture<Guild> modifyGuild(Guild guild, JSONObject data) {
 		CompletableFuture<Guild> future = new CompletableFuture<Guild>();
 		this.makeRequest(DLUtil.Endpoints.guild(guild.getID()), DLUtil.Methods.PATCH, true, data).thenAcceptAsync(action -> {
@@ -213,7 +221,7 @@ public class RESTManager {
 		});
 		return future;
 	}
-	
+
 	public CompletableFuture<Integer> pruneCount(Guild guild, int days) {
 		CompletableFuture<Integer> future = new CompletableFuture<>();
 		JSONObject payload = new JSONObject().put("days", days);
@@ -222,7 +230,7 @@ public class RESTManager {
 		});
 		return future;
 	}
-	
+
 	public CompletableFuture<IGuildMember> removeMember(IGuild guild, IGuildMember member) {
 		CompletableFuture<IGuildMember> future = new CompletableFuture<>();
 		this.makeRequest(Endpoints.guildMember(member.getGuild().getID(), member.getID()), DLUtil.Methods.DELETE, true).thenAcceptAsync(action -> {
@@ -230,7 +238,7 @@ public class RESTManager {
 		});
 		return future;
 	}
-	
+
 	public CompletableFuture<DLUser> setAvatar(String avatar) {
 		CompletableFuture<DLUser> future = new CompletableFuture<>();
 		try {
@@ -244,7 +252,7 @@ public class RESTManager {
 		}
 		return future;
 	}
-	
+
 	public CompletableFuture<IGuildMember> setNick(IGuildMember member, String nick) {
 		CompletableFuture<IGuildMember> future = new CompletableFuture<>();
 		String endpoint = member.getID() == loader.user.getID() ? DLUtil.Endpoints.guildNick(member.getGuild().getID()) : DLUtil.Endpoints.guildMember(member.getGuild().getID(), member.getID());
@@ -253,7 +261,7 @@ public class RESTManager {
 		});
 		return future;
 	}
-	
+
 	public CompletableFuture<DLUser> setUsername(String username) {
 		CompletableFuture<DLUser> future = new CompletableFuture<>();
 		makeRequest(DLUtil.Endpoints.currentUser, DLUtil.Methods.PATCH, true, new JSONObject().put("username", username)).thenAcceptAsync(action -> {
@@ -262,7 +270,7 @@ public class RESTManager {
 		});
 		return future;
 	}
-	
+
 	public CompletableFuture<IGuildMember> takeRole(GuildMember member, IRole role) {
 		CompletableFuture<IGuildMember> future = new CompletableFuture<>();
 		this.makeRequest(Endpoints.guildMemberRole(member.guild.getID(), member.getID(), role.getID()), DLUtil.Methods.DELETE, true).thenAcceptAsync(action -> {
@@ -270,7 +278,7 @@ public class RESTManager {
 		});
 		return future;
 	}
-	
+
 	public CompletableFuture<Role> createRole(Guild guild, String name, int permissions, int color, boolean hoist, boolean mentionable) {
 		CompletableFuture<Role> future = new CompletableFuture<Role>();
 		SendableRole payload = new SendableRole(name, permissions, color, hoist, mentionable);
@@ -280,17 +288,17 @@ public class RESTManager {
 		});
 		return future;
 	}
-	
+
 	public CompletableFuture<InviteJSON[]> getInvites(Guild guild) {
 		CompletableFuture<InviteJSON[]> future = new CompletableFuture<>();
 		this.makeRequest(Endpoints.guildInvites(guild.getID()), DLUtil.Methods.GET, true).thenAcceptAsync(action -> {
 			InviteJSON[] data = gson.fromJson(action, InviteJSON[].class);
 			future.complete(data);
 		});
-		
+
 		return future;
 	}
-	
+
 	public CompletableFuture<GuildChannel> modifyGuildChannel(GuildChannel channel, String name, String topic, int position, int bitrate, int userLimit) {
 		CompletableFuture<GuildChannel> future = new CompletableFuture<>();
 		EditChannel d = new EditChannel(name, topic, position, bitrate, userLimit);
@@ -299,22 +307,22 @@ public class RESTManager {
 			channel.setup(cd);
 			future.complete(channel);
 		});
-		
+
 		return future;
 	}
-	
+
 	/**
 	 * @return the globally
 	 */
 	public boolean isGlobally() {
 		return this.globally;
 	}
-	
+
 	/**
 	 * @param globally the globally to set
 	 */
 	public void setGlobally(boolean globally) {
 		this.globally = globally;
 	}
-	
+
 }
