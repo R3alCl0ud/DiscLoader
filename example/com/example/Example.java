@@ -13,12 +13,13 @@ public class Example extends EventListenerAdapter {
 	}
 	
 	public void MessageCreate(MessageCreateEvent e) {
-		if (!e.getMessage().content.startsWith("/"))
+		if (e.getMessage().getAuthor().isBot() || !e.getMessage().getContent().startsWith("/"))
 			return;
-		
-		if (e.getMessage().content.equals("/hello")) {
-			// message.author.toString() returns their mention string
-			e.getChannel().sendMessage(String.format("Hello %s", e.getMessage().author));
+		String content = e.getMessage().getContent().subString(1);
+		if (content.equals("hello")) {
+			// <IMessage>.getAuthor().asMention() returns a string in mention format
+			// <IMessage>.getAuthor().toString() return a string in username#discriminator format
+			e.getChannel().sendMessage(String.format("Hello %s", e.getMessage().getAuthor()));
 		}
 	}
 }
