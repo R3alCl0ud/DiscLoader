@@ -4,17 +4,12 @@ import java.awt.Color;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
 import java.net.URL;
-import java.util.ArrayList;
 
 import javax.swing.ImageIcon;
 import javax.swing.JFrame;
 
-import io.discloader.discloader.client.logger.ProgressLogger;
 import io.discloader.discloader.client.render.panel.LoadingPanel;
 import io.discloader.discloader.common.DiscLoader;
-import io.discloader.discloader.common.discovery.ModCandidate;
-import io.discloader.discloader.common.discovery.ModDiscoverer;
-import io.discloader.discloader.common.registry.ModRegistry;
 
 /**
  * 
@@ -92,11 +87,6 @@ public class WindowFrame extends JFrame {
                 LoadingPanel.stepPanel.setBarColor();
                 LoadingPanel.progressPanel.setBarColor();
                 loading.repaint();
-                ProgressLogger.stage(1, 3, "Mod Discovery");
-                ModDiscoverer.checkModDir();
-                ArrayList<ModCandidate> candidates = ModDiscoverer.discoverMods();
-                ProgressLogger.stage(2, 3, "Discovering Mod Containers");
-                ModRegistry.checkCandidates(candidates);
             }
 
         });

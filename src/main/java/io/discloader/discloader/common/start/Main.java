@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.util.concurrent.ExecutionException;
 // import java.util.concurrent.ExecutionException;
 import java.util.logging.Logger;
 import java.util.regex.Matcher;
@@ -13,6 +14,7 @@ import com.google.gson.Gson;
 import com.neovisionaries.ws.client.WebSocketFrame;
 
 import io.discloader.discloader.client.command.Command;
+import io.discloader.discloader.client.logger.DLLogger;
 import io.discloader.discloader.client.render.WindowFrame;
 import io.discloader.discloader.common.DLOptions;
 import io.discloader.discloader.common.DiscLoader;
@@ -25,6 +27,7 @@ import io.discloader.discloader.common.event.message.MessageCreateEvent;
 import io.discloader.discloader.common.event.sharding.ShardingListenerAdapter;
 import io.discloader.discloader.common.registry.CommandRegistry;
 import io.discloader.discloader.common.registry.EntityRegistry;
+import io.discloader.discloader.common.registry.ModRegistry;
 
 /**
  * DiscLoader client entry point
@@ -46,7 +49,7 @@ public class Main {
 	
 	// private static int shard = 0, shards = 1;
 	
-	private static Logger LOGGER;
+	private static Logger LOGGER = new DLLogger(Main.class).getLogger();
 	
 	private static final String tokenRegex = "-t=(.*+)", prefixRegex = "-p=(.*+)", shardRegex = "-s=(\\d+)\\:(\\d+)";
 	private static final Pattern tokenPat = Pattern.compile(tokenRegex), prefixPat = Pattern.compile(prefixRegex), shardPat = Pattern.compile(shardRegex);
@@ -63,7 +66,7 @@ public class Main {
 	}
 	
 	public static void main(String... args) throws IOException {
-		LOGGER = DiscLoader.LOG;
+		// LOGGER = DiscLoader.LOG;
 		// System.setOut(new DLPrintStream(System.out, LOGGER));
 		// System.setErr(new DLErrorStream(System.err, LOGGER));
 		System.setProperty("http.agent", "DiscLoader");
@@ -76,6 +79,11 @@ public class Main {
 			token = options.auth.token;
 		}
 		DLOptions options = parseArgs(args);
+		try {
+			ModRegistry.startMods().get();
+		} catch (InterruptedException | ExecutionException e1) {
+			e1.printStackTrace();
+		}
 		if (options.shards > 1) {
 			ShardManager manager = new ShardManager(options);
 			manager.addShardingListener(new ShardingListenerAdapter() {
