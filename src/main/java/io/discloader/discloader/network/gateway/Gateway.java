@@ -52,7 +52,7 @@ public class Gateway {
 	
 	private Thread resetRemaining = null;
 	
-	private int remaining = 120;
+	private int remaining = 115;
 	
 	private Gson gson = new GsonBuilder().serializeNulls().create();
 	
@@ -73,7 +73,6 @@ public class Gateway {
 		queue = new ArrayList<>();
 	}
 	
-	// throws WebSocketException, IOException
 	public void connectSocket(String gateway) throws WebSocketException, IOException {
 		logger.info(String.format("Connecting to Gateway with Endpoint: %s", gateway));
 		ws = new WebSocketFactory().setConnectionTimeout(15000).createSocket(gateway).addHeader("Accept-Encoding", "gzip");
@@ -108,9 +107,10 @@ public class Gateway {
 				try {
 					Thread.sleep(interval);
 				} catch (InterruptedException e) {
+					logger.warning(String.format("The thread: %s - Heartbeat, has been interrupted", logname));
 				}
 				
-				while (ws.isOpen() && !heartbeatThread.isInterrupted()) {
+				while (ws.isOpen() && !this.isInterrupted()) {
 					sendHeartbeat(true);
 					try {
 						Thread.sleep(interval);
@@ -122,9 +122,8 @@ public class Gateway {
 			}
 		};
 		resetRemaining = new Thread(logname + " - Rate Limiter") {
-			
 			public void run() {
-				while (ws.isOpen() && !resetRemaining.isInterrupted()) {
+				while (ws.isOpen() && !this.isInterrupted()) {
 					remaining = 115;
 					handleQueue();
 					try {
@@ -145,6 +144,7 @@ public class Gateway {
 	}
 	
 	public void killHeartbeat() {
+		logger.severe("Killing heartbeat");
 		if (heartbeatThread != null) {
 			heartbeatThread.interrupt();
 			heartbeatThread = null;

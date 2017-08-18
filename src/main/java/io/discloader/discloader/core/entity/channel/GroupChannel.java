@@ -226,4 +226,14 @@ public class GroupChannel extends Channel implements IGroupChannel, IVoiceChanne
 		return new UnpinMessage<IGroupChannel>(message).execute();
 	}
 	
+	/*
+	 * (non-Javadoc)
+	 * @see io.discloader.discloader.entity.channel.ITextChannel#sendMessage(java.lang.String,
+	 * io.discloader.discloader.core.entity.RichEmbed, io.discloader.discloader.entity.sendable.Attachment)
+	 */
+	@Override
+	public CompletableFuture<IMessage> sendMessage(String content, RichEmbed embed, Attachment attachment) {
+		return null;
+	}
+	
 }

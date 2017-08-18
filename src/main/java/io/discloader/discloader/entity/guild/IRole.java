@@ -6,7 +6,7 @@ import io.discloader.discloader.common.DiscLoader;
 import io.discloader.discloader.core.entity.Permission;
 import io.discloader.discloader.core.entity.guild.GuildMember;
 import io.discloader.discloader.core.entity.guild.Role;
-import io.discloader.discloader.core.entity.message.Message;
+import io.discloader.discloader.entity.IMentionable;
 import io.discloader.discloader.entity.IPermission;
 import io.discloader.discloader.entity.util.ISnowflake;
 
@@ -14,7 +14,7 @@ import io.discloader.discloader.entity.util.ISnowflake;
  * @author Perry Berman
  *
  */
-public interface IRole extends ISnowflake, Cloneable {
+public interface IRole extends ISnowflake, IMentionable, Cloneable {
 	IGuild getGuild();
 	
 	/**
@@ -71,11 +71,6 @@ public interface IRole extends ISnowflake, Cloneable {
 	CompletableFuture<IRole> setPermissions(int permissions);
 	
 	CompletableFuture<IRole> setPosition(int position);
-	
-	/**
-	 * @return A string that is in the correct format for mentioning this role in a {@link Message}
-	 */
-	String toMention();
 	
 	@Override
 	String toString();

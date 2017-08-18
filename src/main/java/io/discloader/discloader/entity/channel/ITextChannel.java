@@ -11,6 +11,7 @@ import io.discloader.discloader.core.entity.message.Message;
 import io.discloader.discloader.core.entity.message.MessageFetchOptions;
 import io.discloader.discloader.core.entity.user.User;
 import io.discloader.discloader.entity.message.IMessage;
+import io.discloader.discloader.entity.sendable.Attachment;
 import io.discloader.discloader.entity.user.IUser;
 
 /**
@@ -145,6 +146,8 @@ public interface ITextChannel extends IChannel {
 	 *         successful.
 	 */
 	CompletableFuture<IMessage> sendMessage(String content, RichEmbed embed);
+	
+	CompletableFuture<IMessage> sendMessage(String content, RichEmbed embed, Attachment attachment);
 
 	CompletableFuture<IMessage> sendMessage(String content, RichEmbed embed, File file);
 

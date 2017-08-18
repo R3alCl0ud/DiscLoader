@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.concurrent.CompletableFuture;
 
 import io.discloader.discloader.common.DiscLoader;
+import io.discloader.discloader.entity.IMentionable;
 import io.discloader.discloader.entity.IPermission;
 import io.discloader.discloader.entity.IPresence;
 import io.discloader.discloader.entity.channel.IGuildVoiceChannel;
@@ -15,7 +16,7 @@ import io.discloader.discloader.entity.voice.VoiceState;
 /**
  * @author Perry Berman
  */
-public interface IGuildMember extends ISnowflake {
+public interface IGuildMember extends ISnowflake, IMentionable {
 	
 	OffsetDateTime getJoinTime();
 	
@@ -28,8 +29,6 @@ public interface IGuildMember extends ISnowflake {
 	DiscLoader getLoader();
 	
 	String getNickname();
-	
-	String asMention();
 	
 	IPermission getPermissions();
 	
@@ -53,7 +52,6 @@ public interface IGuildMember extends ISnowflake {
 	CompletableFuture<IGuildMember> giveRole(IRole... roles);
 	
 	boolean isDeaf();
-	
 	
 	boolean isMuted();
 	

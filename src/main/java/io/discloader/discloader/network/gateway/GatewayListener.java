@@ -79,6 +79,7 @@ public class GatewayListener extends WebSocketAdapter {
 	public List<SocketPacket> queue;
 	
 	private String token;
+	
 	private final String logname;
 	
 	private Thread reconnection = null;
@@ -146,7 +147,6 @@ public class GatewayListener extends WebSocketAdapter {
 			logger.info("Recieved Heartbeat request from Gateway.");
 			JSONObject payload = new JSONObject().put("op", OPCodes.HEARTBEAT).put("d", socket.s);
 			socket.send(payload, true);
-			
 		}
 		
 		setSequence(packet.s);
@@ -191,13 +191,13 @@ public class GatewayListener extends WebSocketAdapter {
 		}
 	}
 	
-	public void onDisconnected(WebSocket ws, WebSocketFrame frame_1, WebSocketFrame frame_2, boolean isServer) throws Exception {
-		this.socket.killHeartbeat();
+	public void onDisconnected(WebSocket ws, WebSocketFrame server_frame, WebSocketFrame frame_2, boolean isServer) throws Exception {
+		socket.killHeartbeat();
 		loader.emit(new DisconnectEvent(loader));
 		connected = false;
 		if (isServer) {
-			logger.severe(String.format("Gateway connection was closed by the server. Close Code: %d, Reason: %s", frame_1.getCloseCode(), frame_1.getCloseReason()));
-			if (frame_1.getCloseCode() != 1000) {
+			logger.severe(String.format("Gateway connection was closed by the server. Close Code: %d, Reason: %s", server_frame.getCloseCode(), server_frame.getCloseReason()));
+			if (server_frame.getCloseCode() != 1000) {
 				if (tries > 3) {
 					loader.login();
 				} else {
@@ -228,6 +228,7 @@ public class GatewayListener extends WebSocketAdapter {
 	
 	@Override
 	public void onTextMessage(WebSocket ws, String text) throws Exception {
+		// System.out.println(Thread.currentThread().getName());
 		SocketPacket packet = gson.fromJson(text, SocketPacket.class);
 		this.handle(packet);
 	}
@@ -252,9 +253,8 @@ public class GatewayListener extends WebSocketAdapter {
 				payload.setShard(loader.shardid, loader.shards);
 			}
 		} catch (NullPointerException e) {
-			e.printStackTrace();
+			logger.throwing(e.getStackTrace()[0].getClassName(), e.getStackTrace()[0].getMethodName(), e);
 		}
-		
 		Packet packet = new Packet(OPCodes.IDENTIFY, payload);
 		socket.send(packet, true);
 		socket.s = -1;
@@ -266,7 +266,6 @@ public class GatewayListener extends WebSocketAdapter {
 	}
 	
 	public void sendResume() {
-		// System.out.println(retries);
 		if (tries >= 3) {
 			sendNewIdentify();
 			return;
