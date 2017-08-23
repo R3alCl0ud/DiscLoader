@@ -269,4 +269,12 @@ public abstract class EventListenerAdapter implements IEventListener {
 	public void MessageReactionRemove(MessageReactionRemoveEvent e) {
 	}
 
+	@Override
+	public void GuildEvent(io.discloader.discloader.common.event.guild.GuildEvent e) {
+	}
+
+	@Override
+	public void GuildRoleEvent(io.discloader.discloader.common.event.guild.role.GuildRoleEvent e) {
+	}
+
 }

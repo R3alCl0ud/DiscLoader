@@ -22,7 +22,6 @@ import io.discloader.discloader.core.entity.channel.VoiceChannel;
 import io.discloader.discloader.core.entity.guild.Guild;
 import io.discloader.discloader.core.entity.guild.GuildEmoji;
 import io.discloader.discloader.core.entity.guild.GuildMember;
-import io.discloader.discloader.core.entity.guild.Role;
 import io.discloader.discloader.core.entity.user.DLUser;
 import io.discloader.discloader.core.entity.user.OAuth2Application;
 import io.discloader.discloader.entity.channel.ITextChannel;
@@ -279,8 +278,8 @@ public class RESTManager {
 		return future;
 	}
 
-	public CompletableFuture<Role> createRole(Guild guild, String name, int permissions, int color, boolean hoist, boolean mentionable) {
-		CompletableFuture<Role> future = new CompletableFuture<Role>();
+	public CompletableFuture<IRole> createRole(Guild guild, String name, int permissions, int color, boolean hoist, boolean mentionable) {
+		CompletableFuture<IRole> future = new CompletableFuture<>();
 		SendableRole payload = new SendableRole(name, permissions, color, hoist, mentionable);
 		this.makeRequest(Endpoints.guildRoles(guild.getID()), DLUtil.Methods.POST, true, payload).thenAcceptAsync(action -> {
 			RoleJSON data = gson.fromJson(action, RoleJSON.class);

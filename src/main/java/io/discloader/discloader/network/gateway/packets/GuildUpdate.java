@@ -21,8 +21,9 @@ public class GuildUpdate extends AbstractHandler {
 		String d = gson.toJson(packet.d);
 		GuildJSON data = gson.fromJson(d, GuildJSON.class);
 		IGuild guild = EntityRegistry.getGuildByID(data.id);
+		IGuild oldGuild = guild.clone();
 		guild.setup(data);
-		GuildUpdateEvent event = new GuildUpdateEvent(guild);
+		GuildUpdateEvent event = new GuildUpdateEvent(guild, oldGuild);
 		loader.emit(DLUtil.Events.GUILD_UPDATE, event);
 		loader.emit(event);
 	}

@@ -18,6 +18,7 @@ import io.discloader.discloader.common.event.guild.GuildBanAddEvent;
 import io.discloader.discloader.common.event.guild.GuildBanRemoveEvent;
 import io.discloader.discloader.common.event.guild.GuildCreateEvent;
 import io.discloader.discloader.common.event.guild.GuildDeleteEvent;
+import io.discloader.discloader.common.event.guild.GuildEvent;
 import io.discloader.discloader.common.event.guild.GuildSyncEvent;
 import io.discloader.discloader.common.event.guild.GuildUpdateEvent;
 import io.discloader.discloader.common.event.guild.emoji.GuildEmojiCreateEvent;
@@ -34,6 +35,7 @@ import io.discloader.discloader.common.event.guild.member.GuildMemberUpdateEvent
 import io.discloader.discloader.common.event.guild.member.GuildMembersChunkEvent;
 import io.discloader.discloader.common.event.guild.role.GuildRoleCreateEvent;
 import io.discloader.discloader.common.event.guild.role.GuildRoleDeleteEvent;
+import io.discloader.discloader.common.event.guild.role.GuildRoleEvent;
 import io.discloader.discloader.common.event.guild.role.GuildRoleUpdateEvent;
 import io.discloader.discloader.common.event.message.GroupMessageCreateEvent;
 import io.discloader.discloader.common.event.message.GroupMessageDeleteEvent;
@@ -53,19 +55,19 @@ import io.discloader.discloader.common.event.voice.VoiceStateUpdateEvent;
 import io.discloader.discloader.entity.guild.IGuild;
 
 public class EventManager {
-	
+
 	private final List<IEventListener> handlers = new ArrayList<>();
 	private final List<Consumer<DLEvent>> consumers = new ArrayList<>();
 	private final Map<Consumer<DLEvent>, Function<IGuild, Boolean>> guildTest = new HashMap<>();
-	
+
 	public void addEventHandler(IEventListener e) {
 		handlers.add(e);
 	}
-	
+
 	public void removeEventHandler(IEventListener e) {
 		handlers.remove(e);
 	}
-	
+
 	public void emit(DLEvent event) {
 		for (Consumer<DLEvent> consumer : consumers) {
 			if (event instanceof GuildMembersChunkEvent && guildTest.get(consumer) != null) {
@@ -80,19 +82,7 @@ public class EventManager {
 		}
 		for (int i = 0; i < handlers.size(); i++) {
 			IEventListener handler = handlers.get(i);
-			if (event instanceof GuildMemberEvent) {
-				GuildMemberEvent gme = (GuildMemberEvent) event;
-				handler.GuildMemberEvent(gme);
-				if (gme instanceof VoiceJoinEvent) {
-					handler.GuildMemberVoiceJoin((VoiceJoinEvent) gme);
-				} else if (gme instanceof VoiceLeaveEvent) {
-					handler.GuildMemberVoiceLeave((VoiceLeaveEvent) gme);
-				} else if (gme instanceof VoiceSwitchEvent) {
-					handler.GuildMemberVoiceSwitch((VoiceSwitchEvent) gme);
-				} else if (gme instanceof NicknameUpdateEvent) {
-					handler.GuildMemberNicknameUpdated((NicknameUpdateEvent) gme);
-				}
-			} else if (event instanceof MessageUpdateEvent) {
+			if (event instanceof MessageUpdateEvent) {
 				if (event instanceof GuildMessageUpdateEvent) {
 					handler.GuildMessageUpdate((GuildMessageUpdateEvent) event);
 				} else if (event instanceof GroupMessageUpdateEvent) {
@@ -119,9 +109,39 @@ public class EventManager {
 				} else if (event instanceof PrivateMessageDeleteEvent) {
 					handler.PrivateMessageDelete((PrivateMessageDeleteEvent) event);
 				} else if (event instanceof GroupMessageDeleteEvent) {
-					
+
 				} else {
 					handler.MessageDelete((MessageDeleteEvent) event);
+				}
+			} else if (event instanceof GuildEvent) {
+				handler.GuildEvent((GuildEvent) event);
+				if (event instanceof GuildCreateEvent) {
+					handler.GuildCreate((GuildCreateEvent) event);
+				} else if (event instanceof GuildDeleteEvent) {
+					handler.GuildDelete((GuildDeleteEvent) event);
+				} else if (event instanceof GuildUpdateEvent) {
+					handler.GuildUpdate((GuildUpdateEvent) event);
+				} else if (event instanceof GuildRoleEvent) {
+					handler.GuildRoleEvent((GuildRoleEvent) event);
+					if (event instanceof GuildRoleCreateEvent) {
+						handler.GuildRoleCreate((GuildRoleCreateEvent) event);
+					} else if (event instanceof GuildRoleDeleteEvent) {
+						handler.GuildRoleDelete((GuildRoleDeleteEvent) event);
+					} else if (event instanceof GuildRoleUpdateEvent) {
+						handler.GuildRoleUpdate((GuildRoleUpdateEvent) event);
+					}
+				} else if (event instanceof GuildMemberEvent) {
+					GuildMemberEvent gme = (GuildMemberEvent) event;
+					handler.GuildMemberEvent(gme);
+					if (gme instanceof VoiceJoinEvent) {
+						handler.GuildMemberVoiceJoin((VoiceJoinEvent) gme);
+					} else if (gme instanceof VoiceLeaveEvent) {
+						handler.GuildMemberVoiceLeave((VoiceLeaveEvent) gme);
+					} else if (gme instanceof VoiceSwitchEvent) {
+						handler.GuildMemberVoiceSwitch((VoiceSwitchEvent) gme);
+					} else if (gme instanceof NicknameUpdateEvent) {
+						handler.GuildMemberNicknameUpdated((NicknameUpdateEvent) gme);
+					}
 				}
 			} else if (event instanceof MessageReactionAddEvent) {
 				handler.MessageReactionAdd((MessageReactionAddEvent) event);
@@ -149,12 +169,6 @@ public class EventManager {
 				handler.GuildChannelUpdate((GuildChannelUpdateEvent) event);
 			} else if (event instanceof ChannelUpdateEvent) {
 				handler.ChannelUpdate((ChannelUpdateEvent) event);
-			} else if (event instanceof GuildCreateEvent) {
-				handler.GuildCreate((GuildCreateEvent) event);
-			} else if (event instanceof GuildDeleteEvent) {
-				handler.GuildDelete((GuildDeleteEvent) event);
-			} else if (event instanceof GuildUpdateEvent) {
-				handler.GuildUpdate((GuildUpdateEvent) event);
 			} else if (event instanceof GuildBanAddEvent) {
 				handler.GuildBanAdd((GuildBanAddEvent) event);
 			} else if (event instanceof GuildBanRemoveEvent) {
@@ -173,12 +187,6 @@ public class EventManager {
 				handler.GuildMemberUpdate((GuildMemberUpdateEvent) event);
 			} else if (event instanceof GuildMembersChunkEvent) {
 				handler.GuildMembersChunk((GuildMembersChunkEvent) event);
-			} else if (event instanceof GuildRoleCreateEvent) {
-				handler.GuildRoleCreate((GuildRoleCreateEvent) event);
-			} else if (event instanceof GuildRoleDeleteEvent) {
-				handler.GuildRoleDelete((GuildRoleDeleteEvent) event);
-			} else if (event instanceof GuildRoleUpdateEvent) {
-				handler.GuildRoleUpdate((GuildRoleUpdateEvent) event);
 			} else if (event instanceof GuildSyncEvent) {
 				handler.GuildSync((GuildSyncEvent) event);
 			} else if (event instanceof TypingStartEvent) {
@@ -190,11 +198,11 @@ public class EventManager {
 			}
 		}
 	}
-	
+
 	public void onEvent(Consumer<DLEvent> consumer) {
 		consumers.add(consumer);
 	}
-	
+
 	public void onceEvent(Consumer<DLEvent> consumer) {
 		onEvent(consumer);
 		consumer.andThen(after -> {
@@ -202,14 +210,14 @@ public class EventManager {
 			consumers.remove(consumer);
 		});
 	}
-	
+
 	public void onceEvent(Consumer<DLEvent> consumer, Function<IGuild, Boolean> checker) {
 		onceEvent(consumer);
 		guildTest.put(consumer, checker);
 	}
-	
+
 	public List<IEventListener> getHandlers() {
 		return handlers;
 	}
-	
+
 }

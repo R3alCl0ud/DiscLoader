@@ -14,6 +14,7 @@ import io.discloader.discloader.common.event.guild.GuildBanAddEvent;
 import io.discloader.discloader.common.event.guild.GuildBanRemoveEvent;
 import io.discloader.discloader.common.event.guild.GuildCreateEvent;
 import io.discloader.discloader.common.event.guild.GuildDeleteEvent;
+import io.discloader.discloader.common.event.guild.GuildEvent;
 import io.discloader.discloader.common.event.guild.GuildSyncEvent;
 import io.discloader.discloader.common.event.guild.GuildUpdateEvent;
 import io.discloader.discloader.common.event.guild.emoji.GuildEmojiCreateEvent;
@@ -30,6 +31,7 @@ import io.discloader.discloader.common.event.guild.member.GuildMemberUpdateEvent
 import io.discloader.discloader.common.event.guild.member.GuildMembersChunkEvent;
 import io.discloader.discloader.common.event.guild.role.GuildRoleCreateEvent;
 import io.discloader.discloader.common.event.guild.role.GuildRoleDeleteEvent;
+import io.discloader.discloader.common.event.guild.role.GuildRoleEvent;
 import io.discloader.discloader.common.event.guild.role.GuildRoleUpdateEvent;
 import io.discloader.discloader.common.event.message.GroupMessageCreateEvent;
 import io.discloader.discloader.common.event.message.GuildMessageCreateEvent;
@@ -51,6 +53,7 @@ import io.discloader.discloader.core.entity.guild.Role;
 import io.discloader.discloader.core.entity.user.User;
 import io.discloader.discloader.entity.channel.ITextChannel;
 import io.discloader.discloader.entity.guild.IGuildEmoji;
+import io.discloader.discloader.entity.voice.VoiceConnection;
 
 /**
  * Interface for DiscLoader events
@@ -125,6 +128,8 @@ public interface IEventListener {
 	 * @param e A {@link GuildDeleteEvent}
 	 */
 	void GuildDelete(GuildDeleteEvent e);
+	
+	void GuildEvent(GuildEvent e);
 
 	void GuildEmojiCreate(GuildEmojiCreateEvent event);
 
@@ -202,6 +207,8 @@ public interface IEventListener {
 	 * @param e A GuildRoleDeleteEvent object
 	 */
 	void GuildRoleDelete(GuildRoleDeleteEvent e);
+	
+	void GuildRoleEvent(GuildRoleEvent e);
 
 	/**
 	 * Executed when a {@link Role} is updated

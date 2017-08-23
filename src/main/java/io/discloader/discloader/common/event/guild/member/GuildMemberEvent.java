@@ -1,16 +1,16 @@
 package io.discloader.discloader.common.event.guild.member;
 
-import io.discloader.discloader.common.event.DLEvent;
+import io.discloader.discloader.common.event.guild.GuildEvent;
 import io.discloader.discloader.entity.channel.IGuildVoiceChannel;
 import io.discloader.discloader.entity.guild.IGuild;
 import io.discloader.discloader.entity.guild.IGuildMember;
 
-public class GuildMemberEvent extends DLEvent {
+public class GuildMemberEvent extends GuildEvent {
 
 	private IGuildMember member;
 
 	public GuildMemberEvent(IGuildMember member) {
-		super(member.getLoader());
+		super(member.getGuild());
 		this.member = member;
 	}
 

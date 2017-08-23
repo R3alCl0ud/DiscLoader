@@ -33,7 +33,6 @@ public class TabbedPanel extends JPanel {
 	public TabbedPanel(DiscLoader loader) {
 		super(new GridLayout(1, 1));
 		this.loader = loader;
-		// System.out.print();
 		tabbedPane = new JTabbedPane();
 		tabbedPane.addTab("Mods", new ModsFolder<ModContainer>(this.loader));
 		tabbedPane.addTab(LanguageRegistry.getLocalized("gui.tabcommands.name"), new CommandsTab<Command>(this.loader));

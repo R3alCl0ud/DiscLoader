@@ -12,6 +12,8 @@ public class Endpoints {
 	public static final String API = String.format("%s/api/v%d", Discord, DLUtil.APIVersion);
 	public static final String CDN = "https://cdn.discordapp.com";
 	
+	public final static String EmojiJSON = "https://raw.githubusercontent.com/emojione/emojione/master/emoji.json";
+	
 	public static final String OAuth2 = String.format("%s/oauth2", API);
 	
 	public static final String login = String.format("%s/auth/login", API);

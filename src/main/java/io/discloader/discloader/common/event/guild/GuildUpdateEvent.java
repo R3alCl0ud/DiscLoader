@@ -3,20 +3,26 @@
  */
 package io.discloader.discloader.common.event.guild;
 
-import io.discloader.discloader.common.event.DLEvent;
 import io.discloader.discloader.entity.guild.IGuild;
 
 /**
  * @author Perry Berman
  *
  */
-public class GuildUpdateEvent extends DLEvent {
+public class GuildUpdateEvent extends GuildEvent {
 
-	public final IGuild guild;
+	private final IGuild oldGuild;
 	
-	public GuildUpdateEvent(IGuild guild2) {
-		super(guild2.getLoader());
-		this.guild = guild2;
+	public GuildUpdateEvent(IGuild guild, IGuild oldGuild) {
+		super(guild);
+		this.oldGuild = oldGuild;
+	}
+
+	/**
+	 * @return the oldGuild
+	 */
+	public IGuild getOldGuild() {
+		return oldGuild;
 	}
 
 }
