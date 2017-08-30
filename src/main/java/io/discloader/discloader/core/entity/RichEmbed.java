@@ -2,6 +2,7 @@ package io.discloader.discloader.core.entity;
 
 import java.io.File;
 import java.io.IOException;
+import java.time.OffsetDateTime;
 import java.time.temporal.TemporalAccessor;
 import java.util.ArrayList;
 import java.util.List;
@@ -284,6 +285,10 @@ public class RichEmbed {
 	public RichEmbed setThumbnail(String URL) {
 		this.thumbnail = new EmbedThumbnail(URL);
 		return this;
+	}
+
+	public RichEmbed setTimestamp() {
+		return setTimestamp(OffsetDateTime.now());
 	}
 
 	public RichEmbed setTimestamp(TemporalAccessor time) {

@@ -1,8 +1,12 @@
-package io.discloader.discloader.entity.emoji;
+package io.discloader.discloader.core.entity.emoji;
 
-public class DiscordEmoji {
+import java.util.List;
 
-	public class CodePoints {
+import com.google.common.collect.Lists;
+
+public class Emoji {
+
+	public static class CodePoints {
 
 		private String base;
 		private String fully_qualified;
@@ -29,8 +33,8 @@ public class DiscordEmoji {
 		/**
 		 * @return the default_matches
 		 */
-		public String[] getDefaultMatches() {
-			return default_matches;
+		public List<String> getDefaultMatches() {
+			return Lists.newArrayList(default_matches);
 		}
 
 		/**
@@ -43,8 +47,8 @@ public class DiscordEmoji {
 		/**
 		 * @return the greedy_matches
 		 */
-		public String[] getGreedyMatches() {
-			return greedy_matches;
+		public List<String> getGreedyMatches() {
+			return Lists.newArrayList(greedy_matches);
 		}
 
 		/**
@@ -62,30 +66,41 @@ public class DiscordEmoji {
 		}
 
 	}
-	private String name, category, shortname, diversity, gender;
-	private String[] shortname_alternatives;
-	private String[] ascii;
-	private String[] diversities;
-	private String[] genders;
-	private String[] keywords;
-	private int order;
-	private int display;
-
-	private float unicode_version;
-
+	private String name, shortname, unicode;
+	private int order, display;
+	private double unicode_version;
+	
+	private List<String> keywords, shortnames;
+	
+	private EmojiGender gender;
+	private EmojiCategory category;
+	
 	private CodePoints code_points;
 
+	public Emoji(String name, String unicode, double unicode_version, int order, int display, List<String> keywords, List<String> shortnames, EmojiGender gender, EmojiCategory category, CodePoints code_points) {
+		this.name = name;
+		this.unicode = unicode;
+		this.unicode_version = unicode_version;
+		this.order = order;
+		this.display = display;
+		this.keywords = keywords;
+		this.shortnames = shortnames;
+		this.gender = gender;
+		this.category = category;
+		this.code_points = code_points;
+	}
+
 	/**
-	 * @return the ascii
+	 * @return the aliases of the emoji
 	 */
-	public String[] getAscii() {
-		return ascii;
+	public List<String> getAliases() {
+		return shortnames;
 	}
 
 	/**
 	 * @return the category
 	 */
-	public String getCategory() {
+	public EmojiCategory getCategory() {
 		return category;
 	}
 
@@ -104,37 +119,16 @@ public class DiscordEmoji {
 	}
 
 	/**
-	 * @return the diversities
-	 */
-	public String[] getDiversities() {
-		return diversities;
-	}
-
-	/**
-	 * @return the diversity
-	 */
-	public String getDiversity() {
-		return diversity;
-	}
-
-	/**
 	 * @return the gender
 	 */
-	public String getGender() {
+	public EmojiGender getGender() {
 		return gender;
-	}
-
-	/**
-	 * @return the genders
-	 */
-	public String[] getGenders() {
-		return genders;
 	}
 
 	/**
 	 * @return the keywords
 	 */
-	public String[] getKeywords() {
+	public List<String> getKeywords() {
 		return keywords;
 	}
 
@@ -160,24 +154,22 @@ public class DiscordEmoji {
 	}
 
 	/**
-	 * @return the shortname_alternatives
+	 * @return the unicode
 	 */
-	public String[] getShortnameAlternatives() {
-		return shortname_alternatives;
+	public String getUnicode() {
+		return unicode;
 	}
 
 	/**
 	 * @return the unicode_version
 	 */
-	public float getUnicodeVersion() {
+	public double getUnicodeVersion() {
 		return unicode_version;
 	}
 
-	/**
-	 * @return the unicode
-	 */
-	public String getUnicode() {
-		return code_points.base;
+	@Override
+	public String toString() {
+		return getUnicode();
 	}
 
 }

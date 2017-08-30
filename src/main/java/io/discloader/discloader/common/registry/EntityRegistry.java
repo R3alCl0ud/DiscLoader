@@ -13,13 +13,14 @@ import com.mashape.unirest.http.HttpResponse;
 import com.mashape.unirest.http.Unirest;
 
 import io.discloader.discloader.common.Shard;
+import io.discloader.discloader.core.entity.emoji.Emoji;
+import io.discloader.discloader.core.entity.emoji.EmojiCategory;
 import io.discloader.discloader.entity.channel.IChannel;
 import io.discloader.discloader.entity.channel.IGroupChannel;
 import io.discloader.discloader.entity.channel.IGuildChannel;
 import io.discloader.discloader.entity.channel.IPrivateChannel;
 import io.discloader.discloader.entity.channel.ITextChannel;
 import io.discloader.discloader.entity.channel.IVoiceChannel;
-import io.discloader.discloader.entity.emoji.DiscordEmoji;
 import io.discloader.discloader.entity.guild.IGuild;
 import io.discloader.discloader.entity.user.IUser;
 import io.discloader.discloader.entity.util.SnowflakeUtil;
@@ -42,22 +43,6 @@ public class EntityRegistry {
 	private static final Map<Long, IGroupChannel> groupChannels = new HashMap<>();
 	private static final Map<Long, IPrivateChannel> privateChannels = new HashMap<>();
 	private static final Map<Long, IGuildChannel> guildChannels = new HashMap<>();
-	private static final Map<String, DiscordEmoji> emojis = new HashMap<>();
-
-	static {
-		try {
-			HttpResponse<String> response = Unirest.get(Endpoints.EmojiJSON).asString();
-			// System.out.println(response.getBody());
-			JSONTokener tokener = new JSONTokener(response.getBody());
-			JSONObject json = new JSONObject(tokener);
-			for (String key : json.keySet()) {
-				DiscordEmoji emoji = DLUtil.gson.fromJson(json.getJSONObject(key).toString(), DiscordEmoji.class);
-				emojis.put(key, emoji);
-			}
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-	}
 
 	public static IChannel addChannel(ChannelJSON data) {
 		return addChannel(data, null);
@@ -100,6 +85,8 @@ public class EntityRegistry {
 	public static Collection<IChannel> getChannels() {
 		return channels.values();
 	}
+
+
 
 	public static Collection<IGroupChannel> getGroupChannels() {
 		return groupChannels.values();
