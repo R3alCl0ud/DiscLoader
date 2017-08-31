@@ -295,10 +295,6 @@ public class RichEmbed {
 		return setTimestamp(OffsetDateTime.now());
 	}
 	
-	/**
-	 * @param time The time to set as the timestamp.
-	 * @return {@code this}
-	 */
 	public RichEmbed setTimestamp(TemporalAccessor time) {
 		// LocalDateTime ldt = LocalDateTime.from(time).plusHours(7l);
 		timestamp = time.toString();
