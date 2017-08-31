@@ -7,15 +7,14 @@ import io.discloader.discloader.common.registry.EntityRegistry;
 import io.discloader.discloader.entity.guild.IGuild;
 import io.discloader.discloader.network.gateway.Gateway;
 import io.discloader.discloader.network.json.GuildJSON;
-import io.discloader.discloader.util.DLUtil;
 import io.discloader.discloader.util.DLUtil.Events;
 
 public class GuildCreate extends AbstractHandler {
-
+	
 	public GuildCreate(Gateway socket) {
 		super(socket);
 	}
-
+	
 	@Override
 	public void handle(SocketPacket packet) {
 		Gson gson = new Gson();
@@ -27,12 +26,12 @@ public class GuildCreate extends AbstractHandler {
 			try {
 				if (!guild.isAvailable() && !data.unavailable) {
 					guild.setup(data);
-					loader.checkReady();
-					if (socket.status == DLUtil.Status.READY && loader.ready) {
+					if (shouldEmit()) {
 						GuildCreateEvent event = new GuildCreateEvent(guild);
 						loader.emit(Events.GUILD_CREATE, event);
 						loader.emit(event);
 					}
+					loader.checkReady();
 				}
 			} catch (Exception e) {
 				e.printStackTrace();
@@ -47,5 +46,5 @@ public class GuildCreate extends AbstractHandler {
 			}
 		}
 	}
-
+	
 }
