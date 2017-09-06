@@ -15,13 +15,13 @@ import io.discloader.discloader.entity.message.IMessage;
  * @since 0.0.1
  */
 public class CommandHandler {
-	
+
 	public static String prefix = "/";
-	
+
 	public static boolean handleCommands = false;
-	
+
 	public static boolean selfBot = true;
-	
+
 	public static void handleMessageCreate(MessageCreateEvent e) {
 		try {
 			IMessage message = e.getMessage();
@@ -33,7 +33,7 @@ public class CommandHandler {
 			String rest = "";
 			if (label.length() < message.getContent().length()) rest = message.getContent().substring(label.length() + 1);
 			int argc = Args.length > 1 ? Args.length - 1 : 0;
-			
+
 			if (label.length() < prefix.length() || !label.substring(0, prefix.length()).equals(prefix)) {
 				return;
 			}
@@ -49,7 +49,7 @@ public class CommandHandler {
 				Matcher argM = command.getArgsPattern().matcher(rest);
 				int n = 0;
 				while (argM.find()) {
-					for (int i = 0; i < argM.groupCount(); i++) {
+					for (int i = 0; i < argM.groupCount() && i < args.length; i++) {
 						try {
 							args[n] = argM.group(i);
 						} catch (Exception ex) {
@@ -65,11 +65,12 @@ public class CommandHandler {
 			e1.printStackTrace();
 		}
 	}
-	
+
 	/**
 	 * @param label The label of the command
 	 * @param message The message the label is from
-	 * @return A Command if a command was found, {@code null} if no command was found
+	 * @return A Command if a command was found, {@code null} if no command was
+	 *         found
 	 */
 	public static Command getCommand(String label, IMessage message) {
 		String region = message.getGuild() != null ? getGuildRegion(message.getGuild()) : "us-central";
@@ -87,9 +88,9 @@ public class CommandHandler {
 		}
 		return null;
 	}
-	
+
 	public static String getGuildRegion(IGuild guild) {
 		return guild.getVoiceRegion().id;
 	}
-	
+
 }

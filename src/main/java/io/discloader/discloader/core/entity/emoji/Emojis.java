@@ -35,8 +35,8 @@ public class Emojis {
 				}
 				List<String> keywords = new ArrayList<>(), shortnames = new ArrayList<>();
 				obj.getJSONArray("keywords").forEach(keyword -> keywords.add(keyword.toString()));
-				obj.getJSONArray("shortname_alternatives").forEach(alt -> shortnames.add(alt.toString().replaceAll(":", "")));
-				emojis.add(new Emoji(name, unicode, obj.getDouble("unicode_version"), obj.getInt("order"), obj.getInt("display"), keywords, shortnames, EmojiGender.getByCode(obj.getString("gender")), category, codePoints));
+				obj.getJSONArray("shortname_alternates").forEach(alt -> shortnames.add(alt.toString().replaceAll(":", "")));
+				emojis.add(new Emoji(name, unicode, obj.getDouble("unicode_version"), obj.getInt("order"), obj.getInt("display"), keywords, shortnames, EmojiGender.getByCode(obj.get("gender").toString()), category, codePoints));
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
