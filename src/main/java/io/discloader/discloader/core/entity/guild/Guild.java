@@ -38,6 +38,7 @@ import io.discloader.discloader.core.entity.user.User;
 import io.discloader.discloader.entity.IIcon;
 import io.discloader.discloader.entity.IOverwrite;
 import io.discloader.discloader.entity.IPresence;
+import io.discloader.discloader.entity.channel.IChannelCategory;
 import io.discloader.discloader.entity.channel.IGuildChannel;
 import io.discloader.discloader.entity.channel.IGuildTextChannel;
 import io.discloader.discloader.entity.channel.IGuildVoiceChannel;
@@ -167,6 +168,8 @@ public class Guild implements IGuild {
 	 */
 	private HashMap<Long, IGuildVoiceChannel> voiceChannels;
 
+	private Map<Long, IChannelCategory> categories;
+
 	/**
 	 * A HashMap of the guild's roles. Indexed by role ID.
 	 * 
@@ -220,6 +223,7 @@ public class Guild implements IGuild {
 		members = new HashMap<>();
 		textChannels = new HashMap<>();
 		voiceChannels = new HashMap<>();
+		categories = new HashMap<>();
 		roles = new HashMap<>();
 		presences = new HashMap<>();
 		guildEmojis = new HashMap<>();
@@ -996,6 +1000,11 @@ public class Guild implements IGuild {
 			if (role.getName().equalsIgnoreCase(name)) return role;
 		}
 		return null;
+	}
+
+	@Override
+	public Map<Long, IChannelCategory> getChannelCategories() {
+		return categories;
 	}
 
 }

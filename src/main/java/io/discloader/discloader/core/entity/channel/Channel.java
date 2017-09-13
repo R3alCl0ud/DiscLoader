@@ -3,10 +3,10 @@ package io.discloader.discloader.core.entity.channel;
 import java.time.OffsetDateTime;
 
 import io.discloader.discloader.common.DiscLoader;
+import io.discloader.discloader.entity.channel.ChannelTypes;
 import io.discloader.discloader.entity.channel.IChannel;
 import io.discloader.discloader.entity.util.SnowflakeUtil;
 import io.discloader.discloader.network.json.ChannelJSON;
-import io.discloader.discloader.util.DLUtil.ChannelType;
 
 public class Channel implements IChannel {
 
@@ -15,7 +15,7 @@ public class Channel implements IChannel {
 	 */
 	private long id;
 
-	protected ChannelType type;
+	protected short type;
 
 	/**
 	 * The current instance of DiscLoader
@@ -27,7 +27,7 @@ public class Channel implements IChannel {
 
 		id = SnowflakeUtil.parse(data.id);
 
-		type = ChannelType.CHANNEL;
+		type = data.type;
 
 		if (data != null) setup(data);
 	}
@@ -43,13 +43,13 @@ public class Channel implements IChannel {
 	}
 
 	@Override
-	public ChannelType getType() {
-		return type;
+	public ChannelTypes getType() {
+		return ChannelTypes.fromCode(type);
 	}
 
 	@Override
 	public boolean isPrivate() {
-		return type != ChannelType.TEXT && type != ChannelType.VOICE && type != ChannelType.CHANNEL;
+		return getType() == ChannelTypes.DM || getType() == ChannelTypes.GROUP;
 	}
 
 	public void setup(ChannelJSON data) {

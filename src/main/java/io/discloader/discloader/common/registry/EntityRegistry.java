@@ -15,6 +15,7 @@ import com.mashape.unirest.http.Unirest;
 import io.discloader.discloader.common.Shard;
 import io.discloader.discloader.core.entity.emoji.Emoji;
 import io.discloader.discloader.core.entity.emoji.EmojiCategory;
+import io.discloader.discloader.entity.channel.ChannelTypes;
 import io.discloader.discloader.entity.channel.IChannel;
 import io.discloader.discloader.entity.channel.IGroupChannel;
 import io.discloader.discloader.entity.channel.IGuildChannel;
@@ -85,8 +86,6 @@ public class EntityRegistry {
 	public static Collection<IChannel> getChannels() {
 		return channels.values();
 	}
-
-
 
 	public static Collection<IGroupChannel> getGroupChannels() {
 		return groupChannels.values();
@@ -231,13 +230,13 @@ public class EntityRegistry {
 	public static void removeChannel(IChannel channel) {
 		if (channel == null) return;
 		channels.remove(channel.getID());
-		if (channel.getType() == ChannelType.TEXT) {
+		if (channel.getType() == ChannelTypes.TEXT) {
 			textChannels.remove(channel.getID());
-		} else if (channel.getType() == ChannelType.VOICE) {
+		} else if (channel.getType() == ChannelTypes.VOICE) {
 			voiceChannels.remove(channel.getID());
-		} else if (channel.getType() == ChannelType.DM) {
+		} else if (channel.getType() == ChannelTypes.GROUP) {
 			groupChannels.remove(channel.getID());
-		} else if (channel.getType() == ChannelType.DM) {
+		} else if (channel.getType() == ChannelTypes.DM) {
 			privateChannels.remove(channel.getID());
 		}
 	}

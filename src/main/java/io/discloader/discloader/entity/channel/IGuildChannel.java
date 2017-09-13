@@ -22,6 +22,14 @@ public interface IGuildChannel extends IChannel {
 	 */
 	CompletableFuture<? extends IGuildChannel> delete();
 
+	CompletableFuture<? extends IGuildChannel> edit(int position, boolean nsfw);
+
+	CompletableFuture<? extends IGuildChannel> edit(String name, boolean nsfw);
+
+	CompletableFuture<? extends IGuildChannel> edit(String name, int position);
+
+	CompletableFuture<? extends IGuildChannel> edit(String name, int position, boolean nsfw);
+
 	/**
 	 * Changes the channels settings
 	 * 
@@ -32,12 +40,15 @@ public interface IGuildChannel extends IChannel {
 	 * @param userLimit The new userLimit
 	 * @return A Future that completes with a IGuildChannel if successful
 	 */
-	CompletableFuture<? extends IGuildChannel> edit(String name, String topic, int position, int bitrate, int userLimit);
+	// CompletableFuture<? extends IGuildChannel> edit(String name, String
+	// topic, int position, int bitrate, int userLimit);
 
 	/**
 	 * @return
 	 */
 	IGuild getGuild();
+
+	CompletableFuture<List<IInvite>> getInvites();
 
 	/**
 	 * Gets the members that can view/join this channel
@@ -46,11 +57,11 @@ public interface IGuildChannel extends IChannel {
 	 */
 	Map<Long, IGuildMember> getMembers();
 
-	CompletableFuture<List<IInvite>> getInvites();
-
 	String getName();
 
 	int getPosition();
+	
+	boolean isNSFW();
 
 	IOverwrite overwriteOf(IRole role);
 
@@ -85,6 +96,8 @@ public interface IGuildChannel extends IChannel {
 	 * @return A completed future object with the new name set, if successful.
 	 */
 	CompletableFuture<? extends IGuildChannel> setName(String name);
+
+	CompletableFuture<? extends IGuildChannel> setNSFW(boolean nswf);
 
 	CompletableFuture<IOverwrite> setOverwrite(IOverwrite overwrite);
 

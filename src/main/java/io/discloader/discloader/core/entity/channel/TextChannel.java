@@ -29,7 +29,6 @@ import io.discloader.discloader.network.rest.actions.channel.pin.PinnedMessages;
 import io.discloader.discloader.network.rest.actions.channel.pin.UnpinMessage;
 import io.discloader.discloader.network.util.Endpoints;
 import io.discloader.discloader.network.util.Methods;
-import io.discloader.discloader.util.DLUtil.ChannelType;
 
 /**
  * Represents a TextChannel in a Guild on Discord
@@ -260,9 +259,9 @@ public class TextChannel extends GuildChannel implements IGuildTextChannel {
 	public void setup(ChannelJSON data) {
 		super.setup(data);
 
-		this.type = ChannelType.TEXT;
+		// type = ChannelType.TEXT;
 
-		this.topic = data.topic;
+		topic = data.topic;
 	}
 
 	@Override
@@ -292,6 +291,26 @@ public class TextChannel extends GuildChannel implements IGuildTextChannel {
 	@Override
 	public String asMention() {
 		return String.format("<#%d>", getID());
+	}
+
+	@Override
+	public CompletableFuture<IGuildTextChannel> edit(String name, int position) {
+		return null;
+	}
+
+	@Override
+	public CompletableFuture<IGuildTextChannel> edit(String name, String topic) {
+		return null;
+	}
+
+	@Override
+	public CompletableFuture<IGuildTextChannel> edit(String name, String topic, int position) {
+		return null;
+	}
+
+	@Override
+	public CompletableFuture<IGuildTextChannel> setNSFW(boolean nsfw) {
+		return null;
 	}
 
 }

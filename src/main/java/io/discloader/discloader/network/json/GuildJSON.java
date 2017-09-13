@@ -12,8 +12,9 @@ public class GuildJSON {
 	public String owner_id;
 	public String embed_channel_id;
 	public String afk_channel_id;
-	public String[] features;
 	public String region;
+	public String system_channel_id;
+	public String[] features;
 
 	public int verification_level;
 	public int default_message_notifications;

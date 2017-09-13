@@ -6,6 +6,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 
+import org.json.JSONObject;
+
+import io.discloader.discloader.common.registry.EntityBuilder;
 import io.discloader.discloader.core.entity.Overwrite;
 import io.discloader.discloader.core.entity.Permission;
 import io.discloader.discloader.core.entity.guild.Guild;
@@ -13,15 +16,19 @@ import io.discloader.discloader.core.entity.guild.Role;
 import io.discloader.discloader.entity.IOverwrite;
 import io.discloader.discloader.entity.IPermission;
 import io.discloader.discloader.entity.channel.IGuildChannel;
+import io.discloader.discloader.entity.channel.IGuildTextChannel;
 import io.discloader.discloader.entity.guild.IGuild;
 import io.discloader.discloader.entity.guild.IGuildMember;
 import io.discloader.discloader.entity.guild.IRole;
 import io.discloader.discloader.entity.invite.IInvite;
 import io.discloader.discloader.entity.util.Permissions;
 import io.discloader.discloader.network.json.ChannelJSON;
+import io.discloader.discloader.network.rest.RESTOptions;
 import io.discloader.discloader.network.rest.actions.channel.FetchInvites;
 import io.discloader.discloader.network.rest.actions.channel.SetOverwrite;
 import io.discloader.discloader.network.rest.actions.channel.close.CloseGuildChannel;
+import io.discloader.discloader.network.util.Endpoints;
+import io.discloader.discloader.network.util.Methods;
 
 /**
  * Represents any channel in a guild
@@ -59,6 +66,8 @@ public class GuildChannel extends Channel implements IGuildChannel {
 	 */
 	private Map<Long, IOverwrite> overwrites;
 
+	private boolean nsfw;
+
 	public GuildChannel(IGuild guild, ChannelJSON channel) {
 		super(guild.getLoader(), channel);
 
@@ -77,23 +86,42 @@ public class GuildChannel extends Channel implements IGuildChannel {
 		return new CloseGuildChannel(this).execute();
 	}
 
-	/**
-	 * Changes the channels settings
-	 * 
-	 * @param name The new name for the channel
-	 * @param topic The new topic for the channel
-	 * @param position The new position for the channel
-	 * @param bitrate The new bitrate
-	 * @param userLimit The new userLimit
-	 * @return A Future that completes with an IGuildChannel if successful
-	 */
 	@Override
-	public CompletableFuture<IGuildChannel> edit(String name, String topic, int position, int bitrate, int userLimit) {
-		CompletableFuture<IGuildChannel> future = new CompletableFuture<>();
-		loader.rest.modifyGuildChannel(this, name, topic, position, bitrate, userLimit).thenAcceptAsync(channel -> {
-			future.complete(channel);
-		});
-		return future;
+	public CompletableFuture<? extends IGuildChannel> edit(String name, int position) {
+		return edit(name, position, nsfw);
+	}
+
+	// /**
+	// * Changes the channels settings
+	// *
+	// * @param name The new name for the channel
+	// * @param topic The new topic for the channel
+	// * @param position The new position for the channel
+	// * @param bitrate The new bitrate
+	// * @param userLimit The new userLimit
+	// * @return A Future that completes with an IGuildChannel if successful
+	// */
+	//// @Override
+	// public CompletableFuture<IGuildChannel> edit(String name, String topic,
+	// int position, int bitrate, int userLimit) {
+	// CompletableFuture<IGuildChannel> future = new CompletableFuture<>();
+	// loader.rest.request(Methods.PATCH, Endpoints.channel(getID()), new
+	// RESTOptions, cls)
+	//// loader.rest.modifyGuildChannel(this, name, topic, position, bitrate,
+	// userLimit).thenAcceptAsync(channel -> {
+	//// future.complete(channel);
+	//// });
+	// return future;
+	// }
+
+	@Override
+	public IGuild getGuild() {
+		return guild;
+	}
+
+	@Override
+	public CompletableFuture<List<IInvite>> getInvites() {
+		return new FetchInvites(this).execute();
 	}
 
 	@Override
@@ -105,13 +133,28 @@ public class GuildChannel extends Channel implements IGuildChannel {
 		return members;
 	}
 
+	@Override
+	public String getName() {
+		return name;
+	}
+
 	public Map<Long, IOverwrite> getOverwrites() {
 		return overwrites;
 	}
 
 	@Override
+	public int getPosition() {
+		return position;
+	}
+
+	@Override
 	public boolean isPrivate() {
 		return false;
+	}
+
+	@Override
+	public boolean isNSFW() {
+		return nsfw;
 	}
 
 	@Override
@@ -146,8 +189,13 @@ public class GuildChannel extends Channel implements IGuildChannel {
 	}
 
 	@Override
-	public CompletableFuture<IGuildChannel> setName(String name) {
-		return edit(name, null, position, 64000, 0);
+	public CompletableFuture<? extends IGuildChannel> setName(String name) {
+		return edit(name, position);
+	}
+
+	@Override
+	public CompletableFuture<IOverwrite> setOverwrite(IOverwrite overwrite) {
+		return new SetOverwrite(this, overwrite).execute();
 	}
 
 	@Override
@@ -161,8 +209,8 @@ public class GuildChannel extends Channel implements IGuildChannel {
 	}
 
 	@Override
-	public CompletableFuture<IGuildChannel> setPosition(int position) {
-		return edit(name, null, position, 64000, 0);
+	public CompletableFuture<? extends IGuildChannel> setPosition(int position) {
+		return edit(name, position);
 	}
 
 	@Override
@@ -173,28 +221,23 @@ public class GuildChannel extends Channel implements IGuildChannel {
 	}
 
 	@Override
-	public IGuild getGuild() {
-		return guild;
+	public CompletableFuture<? extends IGuildChannel> setNSFW(boolean nswf) {
+		return null;
 	}
 
 	@Override
-	public String getName() {
-		return name;
+	public CompletableFuture<? extends IGuildChannel> edit(String name, int position, boolean nsfw) {
+		return null;
 	}
 
 	@Override
-	public CompletableFuture<IOverwrite> setOverwrite(IOverwrite overwrite) {
-		return new SetOverwrite(this, overwrite).execute();
+	public CompletableFuture<? extends IGuildChannel> edit(String name, boolean nsfw) {
+		return null;
 	}
 
 	@Override
-	public int getPosition() {
-		return position;
-	}
-
-	@Override
-	public CompletableFuture<List<IInvite>> getInvites() {
-		return new FetchInvites(this).execute();
+	public CompletableFuture<? extends IGuildChannel> edit(int position, boolean nsfw) {
+		return null;
 	}
 
 }

@@ -28,7 +28,6 @@ import io.discloader.discloader.network.rest.actions.channel.StartTyping;
 import io.discloader.discloader.network.rest.actions.channel.pin.PinMessage;
 import io.discloader.discloader.network.rest.actions.channel.pin.PinnedMessages;
 import io.discloader.discloader.network.rest.actions.channel.pin.UnpinMessage;
-import io.discloader.discloader.util.DLUtil.ChannelType;
 
 /**
  * Represents a GroupDMChannel on discord. GroupChannels are only available for
@@ -55,7 +54,7 @@ public class GroupChannel extends Channel implements IGroupChannel, IVoiceChanne
 	public GroupChannel(DiscLoader loader, ChannelJSON data) {
 		super(loader, data);
 
-		type = ChannelType.GROUPDM;
+		// type = ChannelType.GROUPDM;
 
 		messages = new HashMap<>();
 		typing = new HashMap<>();
@@ -225,15 +224,18 @@ public class GroupChannel extends Channel implements IGroupChannel, IVoiceChanne
 	public CompletableFuture<IMessage> unpinMessage(IMessage message) {
 		return new UnpinMessage<IGroupChannel>(message).execute();
 	}
-	
+
 	/*
 	 * (non-Javadoc)
-	 * @see io.discloader.discloader.entity.channel.ITextChannel#sendMessage(java.lang.String,
-	 * io.discloader.discloader.core.entity.RichEmbed, io.discloader.discloader.entity.sendable.Attachment)
+	 * @see
+	 * io.discloader.discloader.entity.channel.ITextChannel#sendMessage(java.
+	 * lang.String,
+	 * io.discloader.discloader.core.entity.RichEmbed,
+	 * io.discloader.discloader.entity.sendable.Attachment)
 	 */
 	@Override
 	public CompletableFuture<IMessage> sendMessage(String content, RichEmbed embed, Attachment attachment) {
 		return null;
 	}
-	
+
 }

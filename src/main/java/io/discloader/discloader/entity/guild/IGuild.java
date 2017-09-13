@@ -20,6 +20,7 @@ import io.discloader.discloader.core.entity.user.User;
 import io.discloader.discloader.entity.IIcon;
 import io.discloader.discloader.entity.IOverwrite;
 import io.discloader.discloader.entity.IPresence;
+import io.discloader.discloader.entity.channel.IChannelCategory;
 import io.discloader.discloader.entity.channel.IGuildTextChannel;
 import io.discloader.discloader.entity.channel.IGuildVoiceChannel;
 import io.discloader.discloader.entity.invite.IInvite;
@@ -69,7 +70,8 @@ public interface IGuild extends ISnowflake, ICreationTime {
 	CompletableFuture<IGuildMember> ban(IGuildMember member) throws PermissionsException;
 
 	/**
-	 * Begin a prune operation. Requires the {@link Permissions#KICK_MEMBERS KICK_MEMBERS}
+	 * Begin a prune operation. Requires the {@link Permissions#KICK_MEMBERS
+	 * KICK_MEMBERS}
 	 * permission.
 	 * 
 	 * @return A Future that completes with the number of member kicked during
@@ -80,7 +82,8 @@ public interface IGuild extends ISnowflake, ICreationTime {
 	CompletableFuture<Integer> beginPrune();
 
 	/**
-	 * Begin a prune operation. Requires the {@link Permissions#KICK_MEMBERS KICK_MEMBERS}
+	 * Begin a prune operation. Requires the {@link Permissions#KICK_MEMBERS
+	 * KICK_MEMBERS}
 	 * permission.
 	 * 
 	 * @param days The number of days to prune (1 or more)
@@ -191,6 +194,8 @@ public interface IGuild extends ISnowflake, ICreationTime {
 	 *         {@link IGuildMember#getID()}
 	 */
 	CompletableFuture<Map<Long, IGuildMember>> fetchMembers(int limit);
+
+	Map<Long, IChannelCategory> getChannelCategories();
 
 	/**
 	 * Returns the {@link GuildMember} object for the {@link User} you are
