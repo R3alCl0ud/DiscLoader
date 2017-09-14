@@ -18,7 +18,6 @@ import org.json.JSONObject;
 import io.discloader.discloader.client.render.texture.icon.GuildIcon;
 import io.discloader.discloader.client.render.texture.icon.GuildSplash;
 import io.discloader.discloader.common.DiscLoader;
-import io.discloader.discloader.common.event.DLEvent;
 import io.discloader.discloader.common.event.guild.member.GuildMemberAddEvent;
 import io.discloader.discloader.common.event.guild.member.GuildMembersChunkEvent;
 import io.discloader.discloader.common.event.guild.role.GuildRoleCreateEvent;
@@ -73,72 +72,74 @@ import io.discloader.discloader.util.DLUtil;
 import io.discloader.discloader.util.DLUtil.Endpoints;
 
 public class Guild implements IGuild {
-	
+
 	public class MemberQuery {
-		
+
 		public String guild_id = Long.toUnsignedString(getID(), 10);
 		public int limit;
 		public String query;
-		
+
 		public MemberQuery(int limit, String query) {
 			this.limit = limit;
 			this.query = query;
 		}
 	}
-	
+
 	/**
 	 * The guild's Snowflake ID.
 	 */
 	private String id;
-	
+
 	/**
 	 * The guild's name
 	 */
 	public String name;
-	
+
 	/**
 	 * The guild's owner's Snowflake ID.
 	 */
 	public long ownerID;
-	
+
 	/**
 	 * The hash code of the guild's icon
 	 */
 	public String icon;
-	
+
 	/**
 	 * The url to where the {@link #icon} is located
 	 */
 	public String iconURL;
-	
+
 	/**
 	 * The guild's splash screen
 	 */
 	public GuildSplash splash;
-	
+
 	/**
 	 * The hash of the guild splash.
 	 */
 	public String splashHash;
-	
+
 	/**
-	 * The amount of members in the guild, {@link #members members.size()} maybe not be equal to {@link #memberCount} if this is a
-	 * {@link #isLarge() large} {@link Guild guild}, as {@link #members} is a map of the currently cached {@link GuildMember guild members}.
+	 * The amount of members in the guild, {@link #members members.size()} maybe
+	 * not be equal to {@link #memberCount} if this is a
+	 * {@link #isLarge() large} {@link Guild guild}, as {@link #members} is a
+	 * map of the currently cached {@link GuildMember guild members}.
 	 */
 	private int memberCount;
-	
+
 	/**
 	 * Whether or not the guild is currently available
 	 */
 	public boolean available;
-	
+
 	private String afk_channel_id;
-	
+
 	/**
 	 * The instance of the {@link DiscLoader loader} the cached the guild
 	 */
 	private final DiscLoader loader;
-	
+
 	/**
 	 * A HashMap of the guild's cached members. Indexed by member ID.
 	 * 
@@ -147,7 +148,7 @@ public class Guild implements IGuild {
 	 * @author Perry Berman
 	 */
 	public HashMap<Long, IGuildMember> members;
-	
+
 	/**
 	 * A HashMap of the guild's TextChannels. Indexed by channel ID.
 	 * 
@@ -156,7 +157,7 @@ public class Guild implements IGuild {
 	 * @author Perry Berman
 	 */
 	private Map<Long, IGuildTextChannel> textChannels;
-	
+
 	/**
 	 * A HashMap of the guild's VoiceChannels. Indexed by channel ID.
 	 * 
@@ -165,9 +166,9 @@ public class Guild implements IGuild {
 	 * @author Perry Berman
 	 */
 	private HashMap<Long, IGuildVoiceChannel> voiceChannels;
-	
+
 	private Map<Long, IChannelCategory> categories;
-	
+
 	/**
 	 * A HashMap of the guild's roles. Indexed by role ID.
 	 * 
@@ -176,7 +177,7 @@ public class Guild implements IGuild {
 	 * @author Perry Berman
 	 */
 	public HashMap<Long, IRole> roles;
-	
+
 	/**
 	 * A HashMap of the presences of the guild's members
 	 * 
@@ -186,28 +187,29 @@ public class Guild implements IGuild {
 	 * @author Perry Berman
 	 */
 	public Map<Long, IPresence> presences;
-	
+
 	/**
 	 * A HashMap of the guild's custom emojis. Indexed by {@link GuildEmoji#id}
 	 * 
 	 * @author Perry Berman
 	 */
 	public Map<Long, IGuildEmoji> guildEmojis;
-	
+
 	/**
-	 * A Private HashMap of the guild's raw voice states. Indexed by {@link GuildMember#getID}
+	 * A Private HashMap of the guild's raw voice states. Indexed by
+	 * {@link GuildMember#getID}
 	 * 
 	 * @author Perry Berman
 	 */
 	private HashMap<Long, VoiceState> rawStates;
-	
+
 	/**
 	 * The guild's current voice region
 	 */
 	private VoiceRegion voiceRegion;
-	
+
 	private GuildFactory gfac = EntityBuilder.getGuildFactory();
-	
+
 	/**
 	 * Creates a new guild
 	 * 
@@ -216,7 +218,7 @@ public class Guild implements IGuild {
 	 */
 	public Guild(DiscLoader loader, GuildJSON data) {
 		this.loader = loader;
-		
+
 		members = new HashMap<>();
 		textChannels = new HashMap<>();
 		voiceChannels = new HashMap<>();
@@ -226,7 +228,7 @@ public class Guild implements IGuild {
 		guildEmojis = new HashMap<>();
 		rawStates = new HashMap<>();
 		voiceRegion = new VoiceRegion("us-central");
-		
+
 		if (data != null && data.unavailable == true) {
 			available = false;
 			id = data.id;
@@ -238,12 +240,12 @@ public class Guild implements IGuild {
 			available = false;
 		}
 	}
-	
+
 	@Override
 	public IGuildMember addMember(IGuildMember member) {
 		return addMember(member, false);
 	}
-	
+
 	@Override
 	public IGuildMember addMember(IGuildMember member, boolean emit) {
 		members.put(member.getID(), member);
@@ -253,16 +255,18 @@ public class Guild implements IGuild {
 		}
 		return member;
 	}
-	
+
 	/**
-	 * Method used internally by DiscLoader to make a new {@link GuildMember} object when a member's data is recieved
+	 * Method used internally by DiscLoader to make a new {@link GuildMember}
+	 * object when a member's data is recieved
 	 * 
 	 * @param user the member's {@link User} object.
 	 * @param roles the member's role's ids.
 	 * @param deaf is the member deafened.
 	 * @param mute is the member muted.
 	 * @param nick The member's nickname.
-	 * @param emitEvent if a {@code GuildMemberAddEvent} should be fired by the client.
+	 * @param emitEvent if a {@code GuildMemberAddEvent} should be fired by the
+	 *            client.
 	 * @return The {@link GuildMember} that was instantiated.
 	 */
 	@Override
@@ -276,12 +280,13 @@ public class Guild implements IGuild {
 			// loader.emit(DLUtil.Events.GUILD_MEMBER_ADD, event);
 			loader.emit(event);
 		}
-		
+
 		return member;
 	}
-	
+
 	/**
-	 * Method used internally by DiscLoader to make a new {@link GuildMember} object when a member's data is recieved
+	 * Method used internally by DiscLoader to make a new {@link GuildMember}
+	 * object when a member's data is recieved
 	 * 
 	 * @param data The member's data
 	 * @return The {@link GuildMember} that was instantiated.
@@ -290,19 +295,21 @@ public class Guild implements IGuild {
 	public IGuildMember addMember(MemberJSON data) {
 		return this.addMember(data, false);
 	}
-	
+
 	/**
-	 * Method used internally by DiscLoader to make a new {@link GuildMember} object when a member's data is recieved
+	 * Method used internally by DiscLoader to make a new {@link GuildMember}
+	 * object when a member's data is recieved
 	 * 
 	 * @param data The member's data
-	 * @param shouldEmit if a {@code GuildMemberAddEvent} should be fired by the client
+	 * @param shouldEmit if a {@code GuildMemberAddEvent} should be fired by the
+	 *            client
 	 * @return The {@link GuildMember} that was instantiated.
 	 */
 	public IGuildMember addMember(MemberJSON data, boolean shouldEmit) {
 		boolean exists = members.containsKey(SnowflakeUtil.parse(data.user.id));
 		IGuildMember member = new GuildMember(this, data);
 		members.put(member.getID(), member);
-		
+
 		if (!exists && shouldEmit) {
 			memberCount++;
 			GuildMemberAddEvent event = new GuildMemberAddEvent(member);
@@ -311,13 +318,13 @@ public class Guild implements IGuild {
 		}
 		return member;
 	}
-	
+
 	@Override
 	public IRole addRole(IRole role) {
 		roles.put(role.getID(), role);
 		return role;
 	}
-	
+
 	@Override
 	public IRole addRole(RoleJSON guildRole) {
 		boolean exists = roles.containsKey(guildRole.id);
@@ -329,18 +336,18 @@ public class Guild implements IGuild {
 		}
 		return role;
 	}
-	
+
 	@Override
 	public CompletableFuture<IGuildMember> ban(IGuildMember member) {
 		return loader.rest.banMember(this, member);
 	}
-	
+
 	@Override
 	public CompletableFuture<Integer> beginPrune() {
 		if (!getCurrentMember().getPermissions().hasPermission(Permissions.KICK_MEMBERS)) throw new PermissionsException("Pruning members requires the 'KICK_MEMBERS' permission");
 		return beginPrune(1);
 	}
-	
+
 	@Override
 	public CompletableFuture<Integer> beginPrune(int days) {
 		if (!getCurrentMember().getPermissions().hasPermission(Permissions.KICK_MEMBERS)) throw new PermissionsException("Pruning members requires the 'KICK_MEMBERS' permission");
@@ -350,7 +357,7 @@ public class Guild implements IGuild {
 		});
 		return future;
 	}
-	
+
 	public IGuild clone() {
 		Guild guild = new Guild(loader, null);
 		guildEmojis.forEach((id, emoji) -> guild.guildEmojis.put(id, emoji));
@@ -373,12 +380,12 @@ public class Guild implements IGuild {
 		guild.afk_channel_id = afk_channel_id;
 		return guild;
 	}
-	
+
 	@Override
 	public OffsetDateTime createdAt() {
 		return SnowflakeUtil.creationTime(this);
 	}
-	
+
 	public CompletableFuture<IGuildEmoji> createEmoji(String name, File image) {
 		String base64 = null;
 		try {
@@ -388,97 +395,102 @@ public class Guild implements IGuild {
 		}
 		return this.createEmoji(name, base64);
 	}
-	
+
 	public CompletableFuture<IGuildEmoji> createEmoji(String name, String image) {
 		return this.loader.rest.createEmoji(this, name, image);
 	}
-	
+
 	/**
 	 * Creates a new {@link Role}.
 	 * 
-	 * @return A future that completes with a new {@link Role} Object if successful.
+	 * @return A future that completes with a new {@link Role} Object if
+	 *         successful.
 	 * @since 0.0.3
 	 */
 	public CompletableFuture<IRole> createRole() {
 		return createRole(null, 0, 0, false, false);
 	}
-	
+
 	@Override
 	public CompletableFuture<IRole> createRole(String name) {
 		return new CreateRole(this, new SendableRole(name, 0, 0, false, false)).execute();
 	}
-	
+
 	/**
 	 * Creates a new {@link Role}.
 	 * 
 	 * @param name The name of the role
 	 * @param permissions The 53bit Permissions integer to assign to the role
 	 * @param color The color of the role
-	 * @return A future that completes with a new {@link Role} Object if successful.
+	 * @return A future that completes with a new {@link Role} Object if
+	 *         successful.
 	 * @since 0.0.3
 	 */
 	public CompletableFuture<IRole> createRole(String name, long permissions, int color) {
 		return this.createRole(name, permissions, color, false, false);
 	}
-	
+
 	public CompletableFuture<IRole> createRole(String name, long permissions, int color, boolean hoist, boolean mentionable) {
 		return new CreateRole(this, new SendableRole(name, permissions, color, hoist, mentionable)).execute();
 	}
-	
+
 	public CompletableFuture<IGuildTextChannel> createTextChannel(String name) {
 		return null;
 	}
-	
+
 	@Override
 	public CompletableFuture<IGuildTextChannel> createTextChannel(String name, IOverwrite... overwrites) {
 		return null;
 	}
-	
+
 	/**
 	 * Creates a new {@link VoiceChannel}
 	 * 
 	 * @param name The channel's name
-	 * @return A future that completes with a new {@link VoiceChannel} Object if successful.
+	 * @return A future that completes with a new {@link VoiceChannel} Object if
+	 *         successful.
 	 */
 	public CompletableFuture<IGuildVoiceChannel> createVoiceChannel(String name) {
 		return null;
 		// this.loader.rest.createVoiceChannel(this, new
 		// JSONObject().put("name", name));
 	}
-	
+
 	/**
 	 * Creates a new {@link VoiceChannel}
 	 * 
 	 * @param name The name of the channel
 	 * @param bitrate The channel's bitrate
-	 * @return A future that completes with a new {@link VoiceChannel} Object if successful.
+	 * @return A future that completes with a new {@link VoiceChannel} Object if
+	 *         successful.
 	 */
 	public CompletableFuture<VoiceChannel> createVoiceChannel(String name, int bitrate) {
 		return this.loader.rest.createVoiceChannel(this, new JSONObject().put("name", name).put("bitrate", bitrate));
 	}
-	
+
 	/**
 	 * Creates a new {@link VoiceChannel}
 	 * 
 	 * @param name The name of the channel
 	 * @param bitrate The channel's bitrate
 	 * @param userLimit the channel's userlimit
-	 * @return A future that completes with a new {@link VoiceChannel} Object if successful.
+	 * @return A future that completes with a new {@link VoiceChannel} Object if
+	 *         successful.
 	 */
 	public CompletableFuture<VoiceChannel> createVoiceChannel(String name, int bitrate, int userLimit) {
 		return this.loader.rest.createVoiceChannel(this, new JSONObject().put("name", name).put("bitrate", bitrate).put("user_limit", userLimit));
 	}
-	
+
 	@Override
 	public CompletableFuture<IGuildTextChannel> createVoiceChannel(String name, int bitRate, IOverwrite... overwrites) {
 		return null;
 	}
-	
+
 	@Override
 	public CompletableFuture<IGuildTextChannel> createVoiceChannel(String name, IOverwrite... overwrites) {
 		return null;
 	}
-	
+
 	public CompletableFuture<IGuild> delete() {
 		if (!isOwner()) throw new UnauthorizedException("Only the guild's owner can delete a guild");
 		CompletableFuture<IGuild> future = new CompletableFuture<>();
@@ -487,14 +499,15 @@ public class Guild implements IGuild {
 		});
 		return future;
 	}
-	
+
 	public CompletableFuture<IGuild> edit(String name, String icon, IGuildVoiceChannel afkChannel) throws IOException {
 		if (!isOwner() && getCurrentMember().getPermissions().hasPermission(Permissions.MANAGE_GUILD)) throw new PermissionsException();
 		return new CompletableFuture<>();
 	}
-	
+
 	/**
-	 * @return {@code true} if all fields are equivalent, {@code false} otherwise.
+	 * @return {@code true} if all fields are equivalent, {@code false}
+	 *         otherwise.
 	 */
 	@Override
 	public boolean equals(Object object) {
@@ -507,19 +520,19 @@ public class Guild implements IGuild {
 			if (!guild.members.containsKey(member.getID())) return false;
 		return guild.name.equals(name) && guild.ownerID == ownerID && guild.icon.equals(icon) && (isSyncing() == guild.isSyncing());
 	}
-	
+
 	public CompletableFuture<IGuildMember> fetchMember(long memberID) {
 		return loader.rest.loadGuildMember(this, memberID);
 	}
-	
+
 	public CompletableFuture<Map<Long, IGuildMember>> fetchMembers() {
 		return fetchMembers((int) 0);
 	}
-	
+
 	@Override
 	public CompletableFuture<Map<Long, IGuildMember>> fetchMembers(int limit) {
 		CompletableFuture<Map<Long, IGuildMember>> future = new CompletableFuture<>();
-		final Consumer<DLEvent> consumer = event -> {
+		final Consumer<Object> consumer = event -> {
 			if (event instanceof GuildMembersChunkEvent) {
 				GuildMembersChunkEvent gmce = (GuildMembersChunkEvent) event;
 				future.complete(gmce.members);
@@ -530,42 +543,46 @@ public class Guild implements IGuild {
 		loader.socket.send(payload);
 		return future;
 	}
-	
+
 	/**
 	 * Gets a HashMap of GuildMembers that are in the guild.
 	 * 
 	 * @param limit max number of members to return (1-1000) default 50
 	 * @param after The highest user id in the previous page
-	 * @return A CompletableFuture that completes with a HashMap of GuildMembers if successful, null otherwise.
+	 * @return A CompletableFuture that completes with a HashMap of GuildMembers
+	 *         if successful, null otherwise.
 	 */
 	public CompletableFuture<Map<Long, IGuildMember>> fetchMembers(int limit, long after) {
 		return loader.rest.loadGuildMembers(this, limit, after);
 	}
-	
+
 	/**
-	 * Gets a HashMap of GuildMembers that are in the guild. <u>Only retrieves 50 members</u>
+	 * Gets a HashMap of GuildMembers that are in the guild. <u>Only retrieves
+	 * 50 members</u>
 	 * 
 	 * @param after The highest user id in the previous page
-	 * @return A CompletableFuture that completes with a HashMap of GuildMembers if successful, null otherwise.
+	 * @return A CompletableFuture that completes with a HashMap of GuildMembers
+	 *         if successful, null otherwise.
 	 */
 	public CompletableFuture<Map<Long, IGuildMember>> fetchMembers(long after) {
 		return loader.rest.loadGuildMembers(this, 50, after);
 	}
-	
+
 	/**
 	 * @return the afk_channel_id
 	 */
 	public IVoiceChannel getAfkChannel() {
 		return voiceChannels.get(afk_channel_id);
 	}
-	
+
 	@Override
 	public IGuildMember getCurrentMember() {
 		return members.get(loader.user.getID());
 	}
-	
+
 	/**
-	 * Gets the guild's default text channel. The "default" channel for a given user is now the channel with the highest position that their
+	 * Gets the guild's default text channel. The "default" channel for a given
+	 * user is now the channel with the highest position that their
 	 * {@link Permissions} allow them to see.
 	 * 
 	 * @return the default TextChannel
@@ -579,30 +596,30 @@ public class Guild implements IGuild {
 		}
 		return defaultChannel;
 	}
-	
+
 	@Override
 	public IRole getDefaultRole() {
 		return getRoleByID(getID());
 	}
-	
+
 	@Override
 	public Map<Long, IGuildEmoji> getEmojis() {
 		return guildEmojis;
 	}
-	
+
 	@Override
 	public IIcon getIcon() {
 		return new GuildIcon(this, icon);
 	}
-	
+
 	public String getIconHash() {
 		return icon;
 	}
-	
+
 	public String getIconURL() {
 		return iconURL;
 	}
-	
+
 	/**
 	 * @return the id
 	 */
@@ -610,16 +627,17 @@ public class Guild implements IGuild {
 	public long getID() {
 		return SnowflakeUtil.parse(id);
 	}
-	
+
 	@Override
 	public CompletableFuture<List<IIntegration>> getIntegrations() {
 		return null;
 	}
-	
+
 	/**
 	 * Retrieves the guild's invites from Discord's API
 	 * 
-	 * @return A Future that completes with a HashMap of Invite objects, indexed by {@link Invite#code}, if successful.
+	 * @return A Future that completes with a HashMap of Invite objects, indexed
+	 *         by {@link Invite#code}, if successful.
 	 */
 	public CompletableFuture<List<IInvite>> getInvites() {
 		CompletableFuture<List<IInvite>> future = new CompletableFuture<>();
@@ -632,37 +650,37 @@ public class Guild implements IGuild {
 		});
 		return future;
 	}
-	
+
 	@Override
 	public DiscLoader getLoader() {
 		return DiscLoader.getDiscLoader();
 	}
-	
+
 	@Override
 	public IGuildMember getMember(long memberID) {
 		return members.get(memberID);
 	}
-	
+
 	@Override
 	public IGuildMember getMember(String memberID) {
 		return getMember(SnowflakeUtil.parse(memberID));
 	}
-	
+
 	@Override
 	public int getMemberCount() {
 		return memberCount;
 	}
-	
+
 	@Override
 	public Map<Long, IGuildMember> getMembers() {
 		return members;
 	}
-	
+
 	@Override
 	public String getName() {
 		return name;
 	}
-	
+
 	/**
 	 * Returns a {@link GuildMember} object repersenting the guild's owner
 	 * 
@@ -671,84 +689,84 @@ public class Guild implements IGuild {
 	public IGuildMember getOwner() {
 		return getMember(ownerID);
 	}
-	
+
 	@Override
 	public long getOwnerID() {
 		return ownerID;
 	}
-	
+
 	@Override
 	public IPresence getPresence(long memberID) {
 		return presences.get(memberID);
 	}
-	
+
 	@Override
 	public Map<Long, IPresence> getPresences() {
 		return presences;
 	}
-	
+
 	public CompletableFuture<Integer> getPruneCount() {
 		return getPruneCount(1);
 	}
-	
+
 	public CompletableFuture<Integer> getPruneCount(int days) {
 		return loader.rest.pruneCount(this, days);
 	}
-	
+
 	@Override
 	public IRole getRoleByID(long roleID) {
 		return roles.get(roleID);
 	}
-	
+
 	@Override
 	public Map<Long, IRole> getRoles() {
 		return roles;
 	}
-	
+
 	@Override
 	public IGuildTextChannel getTextChannelByID(long channelID) {
 		return textChannels.get(channelID);
 	}
-	
+
 	@Override
 	public IGuildTextChannel getTextChannelByID(String channelID) {
 		return getTextChannelByID(SnowflakeUtil.parse(channelID));
 	}
-	
+
 	@Override
 	public IGuildTextChannel getTextChannelByName(String channelName) {
 		for (IGuildTextChannel channel : textChannels.values())
 			if (channel.getName().equals(channelName)) return channel;
 		return null;
 	}
-	
+
 	@Override
 	public Map<Long, IGuildTextChannel> getTextChannels() {
 		return textChannels;
 	}
-	
+
 	@Override
 	public IGuildVoiceChannel getVoiceChannelByID(long channelID) {
 		return voiceChannels.get(channelID);
 	}
-	
+
 	@Override
 	public IGuildVoiceChannel getVoiceChannelByID(String channelID) {
 		return getVoiceChannelByID(SnowflakeUtil.parse(channelID));
 	}
-	
+
 	@Override
 	public IGuildVoiceChannel getVoiceChannelByName(String channelName) {
 		for (IGuildVoiceChannel channel : voiceChannels.values())
 			if (channel.getName().equals(channelName)) return channel;
 		return null;
 	}
-	
+
 	@Override
 	public Map<Long, IGuildVoiceChannel> getVoiceChannels() {
 		return voiceChannels;
 	}
-	
+
 	/**
 	 * @return the voiceRegion
 	 */
@@ -756,122 +774,122 @@ public class Guild implements IGuild {
 	public VoiceRegion getVoiceRegion() {
 		return voiceRegion;
 	}
-	
+
 	@Override
 	public CompletableFuture<List<VoiceRegion>> getVoiceRegions() {
 		return new CompletableFuture<>();
 	}
-	
+
 	@Override
 	public Map<Long, VoiceState> getVoiceStates() {
 		return rawStates;
 	}
-	
+
 	@Override
 	public int hashCode() {
 		return id.hashCode();
 	}
-	
+
 	@Override
 	public boolean hasPermission(Permissions... permissions) {
 		return isOwner() || getCurrentMember().getPermissions().hasPermission(permissions);
 	}
-	
+
 	@Override
 	public boolean isAvailable() {
 		return available;
 	}
-	
+
 	public boolean isLarge() {
 		return memberCount >= 250;
 	}
-	
+
 	@Override
 	public boolean isOwner() {
 		return isOwner(getCurrentMember());
 	}
-	
+
 	@Override
 	public boolean isOwner(IGuildMember iGuildMember) {
 		return getOwner().getID() == iGuildMember.getID();
 	}
-	
+
 	@Override
 	public boolean isSyncing() {
 		return loader.isGuildSyncing(this);
 	}
-	
+
 	public CompletableFuture<IGuildMember> kickMember(IGuildMember guildMember) {
 		if (!isOwner() && getCurrentMember().getPermissions().hasPermission(Permissions.KICK_MEMBERS)) throw new PermissionsException();
-		
+
 		return loader.rest.removeMember(this, guildMember);
 	}
-	
+
 	@Override
 	public CompletableFuture<IGuild> leave() {
 		CompletableFuture<IGuild> future = new CompletableFuture<>();
 		this.kickMember(getCurrentMember()).thenAcceptAsync(action -> {
 			future.complete(this);
 		});
-		
+
 		return future;
 	}
-	
+
 	@Override
 	public IGuildMember removeMember(IGuildMember member) {
 		members.remove(member.getID());
 		memberCount--;
 		return member;
 	}
-	
+
 	@Override
 	public void removeMember(IUser user) {
 		members.remove(user.getID());
 		memberCount--;
 	}
-	
+
 	@Override
 	public IRole removeRole(IRole role) {
 		return roles.remove(role.getID());
 	}
-	
+
 	@Override
 	public IRole removeRole(long roleID) {
 		return roles.remove(roleID);
 	}
-	
+
 	@Override
 	public IRole removeRole(String roleID) {
 		return removeRole(SnowflakeUtil.parse(roleID));
 	}
-	
+
 	public CompletableFuture<IGuild> setAFKChannel(IGuildVoiceChannel channel) {
 		if (!isOwner() && !getCurrentMember().getPermissions().hasPermission(Permissions.MANAGE_GUILD)) throw new PermissionsException("Insuficient Permissions");
 		if (!id.equals(channel.getGuild().getID())) throw new MissmatchException("Afk Channel cannot be set to a voice channel from another guild");
 		return new ModifyGuild(this, new JSONObject().put("afk_channel_id", channel.getID())).execute();
 	}
-	
+
 	public CompletableFuture<IGuild> setIcon(String icon) throws IOException {
 		if (!isOwner() && !getCurrentMember().getPermissions().hasPermission(Permissions.MANAGE_GUILD)) throw new PermissionsException("Insuficient Permissions");
 		String base64 = new String("data:image/jpg;base64," + Base64.encodeBase64String(Files.readAllBytes(Paths.get(icon))));
 		return new ModifyGuild(this, new JSONObject().put("icon", base64)).execute();
 	}
-	
+
 	public CompletableFuture<IGuild> setName(String name) {
 		if (!isOwner() && !getCurrentMember().getPermissions().hasPermission(Permissions.MANAGE_GUILD)) throw new PermissionsException("Insuficient Permissions");
 		return new ModifyGuild(this, new JSONObject().put("name", name)).execute();
 	}
-	
+
 	public CompletableFuture<IGuild> setOwner(IGuildMember member) {
 		if (!isOwner()) throw new UnauthorizedException("Only the guild's owner can delete a guild");
 		return new ModifyGuild(this, new JSONObject().put("owner_id", SnowflakeUtil.asString(member))).execute();
 	}
-	
+
 	@Override
 	public void setPresence(PresenceJSON guildPresence) {
 		setPresence(guildPresence, false);
 	}
-	
+
 	public void setPresence(PresenceJSON guildPresence, boolean shouldEmit) {
 		IPresence presence = new Presence(guildPresence);
 		if (guildPresence.user.id == null) {
@@ -884,7 +902,7 @@ public class Guild implements IGuild {
 		}
 		presences.put(SnowflakeUtil.parse(guildPresence.user.id), presence);
 	}
-	
+
 	/**
 	 * Sets up a guild with data from the gateway
 	 * 
@@ -944,31 +962,31 @@ public class Guild implements IGuild {
 			e.printStackTrace();
 		}
 	}
-	
+
 	public CompletableFuture<IGuild> setVoiceRegion(String region) {
 		if (!isOwner() && !getCurrentMember().getPermissions().hasPermission(Permissions.MANAGE_GUILD)) throw new PermissionsException("Insuficient Permissions");
 		return new ModifyGuild(this, new JSONObject().put("region", region)).execute();
 	}
-	
+
 	public void sync() throws GuildSyncException, AccountTypeException {
 		loader.syncGuilds(this.id);
 	}
-	
+
 	@Override
 	public void updateVoiceState(VoiceState state) {
 		rawStates.put(state.member.getID(), state);
 	}
-	
+
 	@Override
 	public VoiceConnection getVoiceConnection() {
 		return EntityRegistry.getVoiceConnectionByGuild(this);
 	}
-	
+
 	@Override
 	public IRole getRoleByID(String roleID) {
 		return getRoleByID(SnowflakeUtil.parse(roleID));
 	}
-	
+
 	@Override
 	public IRole getRoleByName(String name) {
 		for (IRole role : roles.values()) {
@@ -976,25 +994,25 @@ public class Guild implements IGuild {
 		}
 		return null;
 	}
-	
+
 	@Override
 	public Map<Long, IChannelCategory> getChannelCategories() {
 		return categories;
 	}
-	
+
 	@Override
 	public IChannelCategory getChannelCategoryByID(long id) {
 		return null;
 	}
-	
+
 	@Override
 	public IChannelCategory getChannelCategoryByID(String id) {
 		return null;
 	}
-	
+
 	@Override
 	public IChannelCategory getChannelCategoryByName(String name) {
 		return null;
 	}
-	
+
 }

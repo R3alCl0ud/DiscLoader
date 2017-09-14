@@ -58,7 +58,9 @@ public class EventManager {
 
 	private final List<IEventListener> handlers = new ArrayList<>();
 	private final List<Consumer<DLEvent>> consumers = new ArrayList<>();
-	private final Map<Consumer<DLEvent>, Function<IGuild, Boolean>> guildTest = new HashMap<>();
+	private final Map<Consumer<Object>, Function<IGuild, Boolean>> guildTest = new HashMap<>();
+	private final Map<String, List<Consumer<Object>>> _listeners = new HashMap<>();
+	private final Map<String, List<Consumer<Object>>> _onceListeners = new HashMap<>();
 
 	public void addEventHandler(IEventListener e) {
 		handlers.add(e);
@@ -69,6 +71,18 @@ public class EventManager {
 	}
 
 	public void emit(DLEvent event) {
+		if (_listeners.containsKey(event.getClass().getSimpleName())) {
+			List<Consumer<Object>> cons = _listeners.get(event.getClass().getSimpleName());
+			for (int i = cons.size() - 1; i >= 0; i--) {
+				cons.get(i).accept(event);
+			}
+		}
+		if (_onceListeners.containsKey(event.getClass().getSimpleName())) {
+			List<Consumer<Object>> cons = _onceListeners.get(event.getClass().getSimpleName());
+			for (int i = cons.size() - 1; i >= 0; i--) {
+				cons.remove(i).accept(event);
+			}
+		}
 		for (Consumer<DLEvent> consumer : consumers) {
 			if (event instanceof GuildMembersChunkEvent && guildTest.get(consumer) != null) {
 				boolean b = guildTest.get(consumer).apply(((GuildMembersChunkEvent) event).guild);
@@ -199,25 +213,36 @@ public class EventManager {
 		}
 	}
 
-	public void onEvent(Consumer<DLEvent> consumer) {
-		consumers.add(consumer);
+	public <T> void onEvent(Class<T> cls, Consumer<Object> consumer) {
+		if (_listeners.get(cls.getSimpleName()) == null) {
+			_listeners.put(cls.getSimpleName(), new ArrayList<>());
+		}
+		_listeners.get(cls.getSimpleName()).add(consumer);
 	}
 
-	public void onceEvent(Consumer<DLEvent> consumer) {
-		onEvent(consumer);
-		consumer.andThen(after -> {
-			System.out.println(consumers.indexOf(consumer));
-			consumers.remove(consumer);
-		});
+	public <T extends Object> void onceEvent(Class<T> cls, Consumer<Object> consumer) {
+		if (_onceListeners.get(cls.getSimpleName()) == null) {
+			_onceListeners.put(cls.getSimpleName(), new ArrayList<>());
+		}
+		_onceListeners.get(cls.getSimpleName()).add(consumer);
 	}
 
-	public void onceEvent(Consumer<DLEvent> consumer, Function<IGuild, Boolean> checker) {
-		onceEvent(consumer);
+	public void onceEvent(Consumer<Object> consumer, Function<IGuild, Boolean> checker) {
+		onceEvent(IGuild.class, consumer);
 		guildTest.put(consumer, checker);
 	}
 
 	public List<IEventListener> getHandlers() {
 		return handlers;
+	}
+
+	public <T> List<Consumer<Object>> getConsumers(Class<T> cls) {
+		List<Consumer<Object>> listeners = new ArrayList<>();
+		for (Consumer<Object> consumer : _listeners.get(cls.getSimpleName()))
+			listeners.add(consumer);
+		for (Consumer<Object> consumer : _onceListeners.get(cls.getSimpleName()))
+			listeners.add(consumer);
+		return listeners;
 	}
 
 }

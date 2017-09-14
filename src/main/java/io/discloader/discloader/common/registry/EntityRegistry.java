@@ -6,17 +6,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.json.JSONObject;
-import org.json.JSONTokener;
-
-import com.mashape.unirest.http.HttpResponse;
-import com.mashape.unirest.http.Unirest;
-
 import io.discloader.discloader.common.Shard;
-import io.discloader.discloader.core.entity.emoji.Emoji;
-import io.discloader.discloader.core.entity.emoji.EmojiCategory;
 import io.discloader.discloader.entity.channel.ChannelTypes;
 import io.discloader.discloader.entity.channel.IChannel;
+import io.discloader.discloader.entity.channel.IChannelCategory;
 import io.discloader.discloader.entity.channel.IGroupChannel;
 import io.discloader.discloader.entity.channel.IGuildChannel;
 import io.discloader.discloader.entity.channel.IPrivateChannel;
@@ -29,9 +22,6 @@ import io.discloader.discloader.entity.voice.VoiceConnection;
 import io.discloader.discloader.network.json.ChannelJSON;
 import io.discloader.discloader.network.json.GuildJSON;
 import io.discloader.discloader.network.json.UserJSON;
-import io.discloader.discloader.network.util.Endpoints;
-import io.discloader.discloader.util.DLUtil;
-import io.discloader.discloader.util.DLUtil.ChannelType;
 
 public class EntityRegistry {
 
@@ -39,10 +29,11 @@ public class EntityRegistry {
 	private static final Map<Long, IUser> users = new HashMap<>();
 	private static final Map<Long, VoiceConnection> voiceConnections = new HashMap<>();
 	private static final Map<Long, IChannel> channels = new HashMap<>();
+	private static final Map<Long, IChannelCategory> categories = new HashMap<>();
 	private static final Map<Long, ITextChannel> textChannels = new HashMap<>();
-	private static final Map<Long, IVoiceChannel> voiceChannels = new HashMap<>();
 	private static final Map<Long, IGroupChannel> groupChannels = new HashMap<>();
 	private static final Map<Long, IPrivateChannel> privateChannels = new HashMap<>();
+	private static final Map<Long, IVoiceChannel> voiceChannels = new HashMap<>();
 	private static final Map<Long, IGuildChannel> guildChannels = new HashMap<>();
 
 	public static IChannel addChannel(ChannelJSON data) {
@@ -81,6 +72,21 @@ public class EntityRegistry {
 
 	public static IChannel getChannelByID(String channelID) {
 		return channels.get(SnowflakeUtil.parse(channelID));
+	}
+
+	public static IChannel getChannelCategoryByID(long channelID) {
+		return categories.get(channelID);
+	}
+
+	public static IChannel getChannelCategoryByID(String channelID) {
+		return categories.get(SnowflakeUtil.parse(channelID));
+	}
+
+	/**
+	 * @return {@code categories}
+	 */
+	public static Map<Long, IChannelCategory> getChannelCategories() {
+		return categories;
 	}
 
 	public static Collection<IChannel> getChannels() {
@@ -176,16 +182,16 @@ public class EntityRegistry {
 		return users.values();
 	}
 
-	public static Collection<IVoiceChannel> getVoiceChannels() {
-		return voiceChannels.values();
-	}
-
 	public static IVoiceChannel getVoiceChannelByID(long channelID) {
 		return voiceChannels.get(channelID);
 	}
 
 	public static IVoiceChannel getVoiceChannelByID(String channelID) {
 		return getVoiceChannelByID(SnowflakeUtil.parse(channelID));
+	}
+
+	public static Collection<IVoiceChannel> getVoiceChannels() {
+		return voiceChannels.values();
 	}
 
 	public static VoiceConnection getVoiceConnectionByGuild(IGuild guild) {
@@ -214,13 +220,13 @@ public class EntityRegistry {
 		return guildExists(SnowflakeUtil.parse(guildID));
 	}
 
-	public static boolean hasVoiceConnection(long guildID) {
-		return voiceConnections.containsKey(guildID);
-	}
-
 	public static boolean hasVoiceConnection(IGuild guild) {
 		if (guild == null) return false;
 		return voiceConnections.containsKey(guild.getID());
+	}
+
+	public static boolean hasVoiceConnection(long guildID) {
+		return voiceConnections.containsKey(guildID);
 	}
 
 	public static void putVoiceConnection(VoiceConnection connection) {
