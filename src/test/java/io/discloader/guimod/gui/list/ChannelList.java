@@ -38,7 +38,7 @@ public class ChannelList<T extends Channel> extends AbstractList<T> {
 				listModel.addElement(String.format("<html>%d<br>%s#%s<br>DM</html>", pc.getID(), pc.getRecipient().toString(), pc.getRecipient().getDiscriminator()));
 				items.add((T) c);
 				break;
-			case GROUPDM:
+				case GROUP:
 				break;
 			default:
 				break;

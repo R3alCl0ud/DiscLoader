@@ -9,11 +9,11 @@ import io.discloader.discloader.common.event.message.MessageUpdateEvent;
 import io.discloader.discloader.common.event.message.PrivateMessageUpdateEvent;
 import io.discloader.discloader.common.registry.EntityBuilder;
 import io.discloader.discloader.common.registry.EntityRegistry;
+import io.discloader.discloader.entity.channel.ChannelTypes;
 import io.discloader.discloader.entity.channel.ITextChannel;
 import io.discloader.discloader.entity.message.IMessage;
 import io.discloader.discloader.network.gateway.Gateway;
 import io.discloader.discloader.network.json.MessageJSON;
-import io.discloader.discloader.util.DLUtil.ChannelType;
 import io.discloader.discloader.util.DLUtil.Events;
 
 /**
@@ -38,9 +38,9 @@ public class MessageUpdate extends AbstractHandler {
 		loader.emit(event);
 		if (message.getGuild() != null) {
 			loader.emit(new GuildMessageUpdateEvent(message, oldMessage));
-		} else if (channel.getType() == ChannelType.DM) {
+		} else if (channel.getType() == ChannelTypes.DM) {
 			loader.emit(new PrivateMessageUpdateEvent(message, oldMessage));
-		} else if (channel.getType() == ChannelType.GROUPDM) {
+		} else if (channel.getType() == ChannelTypes.GROUP) {
 			loader.emit(new GroupMessageUpdateEvent(message, oldMessage));
 		}
 	}

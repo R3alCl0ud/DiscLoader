@@ -52,7 +52,7 @@ public class Gateway {
 	
 	private Thread resetRemaining = null;
 	
-	private int remaining = 115;
+	private int remaining = 115, interval = 0;
 	
 	private Gson gson = new GsonBuilder().serializeNulls().create();
 	
@@ -98,7 +98,12 @@ public class Gateway {
 		handleQueue();
 	}
 	
+	public void keepAlive() {
+		keepAlive(interval);
+	}
+	
 	public void keepAlive(final int interval) {
+		this.interval = interval;
 		heartbeatThread = new Thread(logname + " - Heartbeat") {
 			
 			@Override

@@ -9,13 +9,13 @@ import io.discloader.discloader.common.event.message.MessageCreateEvent;
 import io.discloader.discloader.common.event.message.PrivateMessageCreateEvent;
 import io.discloader.discloader.common.registry.EntityBuilder;
 import io.discloader.discloader.common.registry.EntityRegistry;
+import io.discloader.discloader.entity.channel.ChannelTypes;
 import io.discloader.discloader.entity.channel.ITextChannel;
 import io.discloader.discloader.entity.message.IMessage;
 import io.discloader.discloader.entity.util.SnowflakeUtil;
 import io.discloader.discloader.network.gateway.Gateway;
 import io.discloader.discloader.network.json.MessageJSON;
 import io.discloader.discloader.util.DLUtil;
-import io.discloader.discloader.util.DLUtil.ChannelType;
 
 /**
  * @author Perry Berman
@@ -42,11 +42,11 @@ public class MessageCreate extends AbstractHandler {
 			MessageCreateEvent event = new MessageCreateEvent(message);
 			loader.emit(DLUtil.Events.MESSAGE_CREATE, event);
 			loader.emit(event);
-			if (channel.getType() == ChannelType.TEXT) {
+			if (channel.getType() == ChannelTypes.TEXT) {
 				GuildMessageCreateEvent event2 = new GuildMessageCreateEvent(message);
 				loader.emit("GuildMessageCreate", event2);
 				loader.emit(event2);
-			} else if (channel.getType() == ChannelType.DM) {
+			} else if (channel.getType() == ChannelTypes.DM) {
 				PrivateMessageCreateEvent event2 = new PrivateMessageCreateEvent(message);
 				loader.emit(DLUtil.Events.PRIVATE_MESSAGE_CREATE, event2);
 				loader.emit(event2);
