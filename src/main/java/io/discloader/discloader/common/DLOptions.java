@@ -35,6 +35,8 @@ public class DLOptions {
 	 */
 	public boolean useWindow = false;
 
+	private boolean useModloader = false;
+
 	public boolean selfbot = false;
 
 	public int shard = 0;
@@ -42,40 +44,75 @@ public class DLOptions {
 	public int shards = 1;
 
 	public DLOptions() {
-		this("TOKEN", "/", false, false, 0, 1);
+		this("TOKEN", "/", true, false, false, 0, 1);
 	}
 
 	public DLOptions(boolean defaultCommands, boolean useWindow) {
-		this("TOKEN", "/", defaultCommands, useWindow, 0, 1);
+		this("TOKEN", "/", defaultCommands, useWindow, false, 0, 1);
 	}
 
 	public DLOptions(int shard, int shards) {
-		this("TOKEN", "/", true, false, 0, 1);
+		this("TOKEN", "/", true, false, false, shard, shards);
 	}
 
 	public DLOptions(String token, String prefix) {
-		this(token, prefix, true, false, 0, 1);
+		this(token, prefix, true, false, false, 0, 1);
 	}
 
 	public DLOptions(String token, String prefix, boolean defaultCommands, boolean useWindow) {
-		this(token, prefix, defaultCommands, useWindow, 0, 1);
+		this(token, prefix, defaultCommands, useWindow, false, 0, 1);
 	}
 
-	public DLOptions(String token, String prefix, boolean defaultCommands, boolean useWindow, int shard, int shards) {
+	public DLOptions(String token, String prefix, boolean defaultCommands, boolean useWindow, boolean loadMods, int shard, int shards) {
 		this.token = token;
 		this.prefix = prefix;
 		this.defaultCommands = defaultCommands;
 		this.useWindow = useWindow;
+		this.useModloader = loadMods;
 		this.shard = shard;
 		this.shards = shards;
 	}
 
-	public DLOptions(String token, String prefix, int shard, int shards) {
-		this(token, prefix, true, false, shard, shards);
+	public DLOptions(String token, String prefix, boolean defaultCommands, boolean useWindow, int shard, int shards) {
+		this(token, prefix, defaultCommands, useWindow, false, shard, shards);
 	}
 
-	public DLOptions setToken(String token) {
-		this.token = token;
+	public DLOptions(String token, String prefix, int shard, int shards) {
+		this(token, prefix, true, false, false, shard, shards);
+	}
+
+	public int getShardCount() {
+		return shards;
+	}
+
+	public int getShardID() {
+		return shard;
+	}
+
+	public boolean isSelfbot() {
+		return selfbot;
+	}
+
+	public boolean isSharded() {
+		return shards > 1;
+	}
+
+	public boolean isShowingWindow() {
+		return useWindow;
+	}
+
+	/**
+	 * @return {@codeuseModloader}
+	 */
+	public boolean isUsingModloader() {
+		return useModloader;
+	}
+
+	/**
+	 * @param useModloader the useModloader to set
+	 */
+	public DLOptions loadMods(boolean useModloader) {
+		this.useModloader = useModloader;
 		return this;
 	}
 
@@ -87,6 +124,21 @@ public class DLOptions {
 	public DLOptions setSharding(int shard, int totalShards) {
 		this.shard = shard;
 		this.shards = totalShards;
+		return this;
+	}
+
+	public DLOptions setToken(String token) {
+		this.token = token;
+		return this;
+	}
+
+	public DLOptions showWindow(boolean show) {
+		useWindow = show;
+		return this;
+	}
+
+	public DLOptions useDefaultCommands(boolean b) {
+		defaultCommands = b;
 		return this;
 	}
 

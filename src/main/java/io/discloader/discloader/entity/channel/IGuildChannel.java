@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 
+import io.discloader.discloader.common.exceptions.PermissionsException;
 import io.discloader.discloader.core.entity.guild.Guild;
 import io.discloader.discloader.core.entity.guild.Role;
 import io.discloader.discloader.entity.IOverwrite;
@@ -20,28 +21,37 @@ public interface IGuildChannel extends IChannel {
 	 * 
 	 * @return A Future that completes with the deleted channel if successful.
 	 */
-	CompletableFuture<? extends IGuildChannel> delete();
+	CompletableFuture<? extends IGuildChannel> delete() throws PermissionsException;
 
-	CompletableFuture<? extends IGuildChannel> edit(int position, boolean nsfw);
+	CompletableFuture<IOverwrite> deleteOverwrite(IOverwrite overwrite) throws PermissionsException;
 
-	CompletableFuture<? extends IGuildChannel> edit(String name, boolean nsfw);
+	CompletableFuture<List<IOverwrite>> deleteOverwrites(IOverwrite... overwrites) throws PermissionsException;
 
-	CompletableFuture<? extends IGuildChannel> edit(String name, int position);
+	CompletableFuture<? extends IGuildChannel> edit(int position, boolean nsfw) throws PermissionsException;
 
-	CompletableFuture<? extends IGuildChannel> edit(String name, int position, boolean nsfw);
+	CompletableFuture<? extends IGuildChannel> edit(String name, boolean nsfw) throws PermissionsException;
+
+	CompletableFuture<? extends IGuildChannel> edit(String name, int position) throws PermissionsException;
 
 	/**
 	 * Changes the channels settings
 	 * 
 	 * @param name The new name for the channel
-	 * @param topic The new topic
 	 * @param position The new position for the channel
-	 * @param bitrate The new bitrate
-	 * @param userLimit The new userLimit
+	 * @param nsfw whether or not the channel is NSFW.
 	 * @return A Future that completes with a IGuildChannel if successful
+	 * @throws PermissionsException
 	 */
+	CompletableFuture<? extends IGuildChannel> edit(String name, int position, boolean nsfw) throws PermissionsException;
+
 	// CompletableFuture<? extends IGuildChannel> edit(String name, String
 	// topic, int position, int bitrate, int userLimit);
+
+	IChannelCategory getCategory();
+
+	boolean inCategory();
+
+	boolean inCategory(IChannelCategory category);
 
 	/**
 	 * @return
@@ -60,7 +70,7 @@ public interface IGuildChannel extends IChannel {
 	String getName();
 
 	int getPosition();
-	
+
 	boolean isNSFW();
 
 	IOverwrite overwriteOf(IRole role);
@@ -99,7 +109,9 @@ public interface IGuildChannel extends IChannel {
 
 	CompletableFuture<? extends IGuildChannel> setNSFW(boolean nswf);
 
-	CompletableFuture<IOverwrite> setOverwrite(IOverwrite overwrite);
+	CompletableFuture<IOverwrite> setOverwrite(IOverwrite overwrite) throws PermissionsException;
+
+	CompletableFuture<List<IOverwrite>> setOverwrite(IOverwrite... overwrites) throws PermissionsException;
 
 	/**
 	 * Permission setting for a member in the channel's {@link Guild}

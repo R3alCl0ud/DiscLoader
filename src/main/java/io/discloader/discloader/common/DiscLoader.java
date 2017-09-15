@@ -66,11 +66,11 @@ public class DiscLoader {
 
 	public static final Logger LOG = new DLLogger("DiscLoader").getLogger();
 
-	private Shard shard = null;
-
 	public static DiscLoader getDiscLoader() {
 		return ModRegistry.loader;
 	}
+
+	private Shard shard = null;
 
 	public final List<IEventListener> handlers;
 
@@ -194,11 +194,6 @@ public class DiscLoader {
 		this(1, 0);
 	}
 
-	public DiscLoader(Shard shard) {
-		this(shard.getShardID(), shard.getShardCount());
-		this.shard = shard;
-	}
-
 	/**
 	 * <pre>
 	 * 
@@ -278,6 +273,11 @@ public class DiscLoader {
 		options = new DLOptions();
 	}
 
+	public DiscLoader(Shard shard) {
+		this(shard.getShardID(), shard.getShardCount());
+		this.shard = shard;
+	}
+
 	public void addEventHandler(IEventListener e) {
 		eventManager.addEventHandler(e);
 	}
@@ -296,23 +296,7 @@ public class DiscLoader {
 					}
 				}
 				if (unavailable == 0) {
-					// LOG.info("Nearly ready");
 					socket.status = Status.NEARLY;
-					/*
-					 * Uncomment when you are sure that this will work if
-					 * (!user.isBot()) { //
-					 * System.out.println("Just checking something"); //
-					 * List<CompletableFuture<Map<Long, IGuildMember>>> futures
-					 * = new
-					 * ArrayList<>(); // for (IGuild guild :
-					 * EntityRegistry.getGuilds()) { // if (guild.isLarge() &&
-					 * guild.getMembers().size() < guild.getMemberCount())
-					 * futures.add(guild.fetchMembers()); // } //
-					 * System.out.println(futures.size()); // if (futures.size()
-					 * > 0) { // CompletableFuture.allOf(futures.toArray(new
-					 * CompletableFuture[0])).thenAcceptAsync(a -> emitReady());
-					 * // } else { // emitReady(); // } } else {
-					 */
 					try {
 						emitReady();
 					} catch (Exception e) {
@@ -325,8 +309,21 @@ public class DiscLoader {
 		}
 	}
 
-	public void disconnect() {
-		socket.ws.disconnect(1000);
+	public CompletableFuture<Void> disconnect() {
+		return disconnect(1000, null);
+	}
+
+	public CompletableFuture<Void> disconnect(int code) {
+		return disconnect(code, null);
+	}
+
+	public CompletableFuture<Void> disconnect(int code, String reason) {
+		CompletableFuture<Void> future = new CompletableFuture<>();
+		onceEvent(DisconnectEvent.class, (e) -> {
+			future.complete(null);
+		});
+		socket.ws.disconnect(code, reason);
+		return future;
 	}
 
 	public void emit(DLEvent event) {
@@ -364,6 +361,13 @@ public class DiscLoader {
 		return options;
 	}
 
+	/**
+	 * @return the shard
+	 */
+	public Shard getShard() {
+		return this.shard;
+	}
+
 	public boolean isGuildSyncing(IGuild guild) {
 		return syncingGuilds.containsKey(guild.getID());
 	}
@@ -377,7 +381,8 @@ public class DiscLoader {
 	 * You can use {@link DLOptions} to set the token when you create a new
 	 * DiscLoader object.
 	 * 
-	 * @return {@literal CompletableFuture<String>}
+	 * @return A CompletableFuture that completes with {@code this} if
+	 *         successful.
 	 */
 	public CompletableFuture<DiscLoader> login() {
 		return login(token);
@@ -388,11 +393,13 @@ public class DiscLoader {
 	 * Discord's gateway servers
 	 * 
 	 * @param token your API token
-	 * @return A Future that completes with {@code this} if successful.
+	 * @return A CompletableFuture that completes with {@code this} if
+	 *         successful.
 	 */
 	public CompletableFuture<DiscLoader> login(String token) {
+		LOG.info("Attempting to login");
 		rf = new CompletableFuture<>();
-		// startup().thenAcceptAsync(n -> {
+
 		Command.registerCommands();
 		this.token = token;
 		rest.request(Methods.GET, Endpoints.gateway, new RESTOptions(), GatewayJSON.class).thenAcceptAsync(gateway -> {
@@ -406,18 +413,24 @@ public class DiscLoader {
 			rf.completeExceptionally(e);
 			return null;
 		});
-		// });
 
 		return rf;
 	}
 
 	public CompletableFuture<Void> logout() {
-		CompletableFuture<Void> future = new CompletableFuture<>();
-		onceEvent(DisconnectEvent.class, (v) -> {
-			future.complete(null);
-		});
-		disconnect();
-		return future;
+		return disconnect(1000, null);
+	}
+
+	public CompletableFuture<Void> logout(int code) {
+		return disconnect(code, null);
+	}
+
+	public CompletableFuture<Void> logout(int code, String reason) {
+		return disconnect(code, reason);
+	}
+
+	public CompletableFuture<Void> logout(String reason) {
+		return disconnect(1000, reason);
 	}
 
 	public <T> DiscLoader onceEvent(Class<T> cls, Consumer<Object> consumer) {
@@ -437,23 +450,6 @@ public class DiscLoader {
 
 	public void removeEventHandler(IEventListener e) {
 		eventManager.removeEventHandler(e);
-	}
-
-	/**
-	 * Sets the clients options;
-	 * 
-	 * @param options The new options to use
-	 * @return this.
-	 */
-	public DiscLoader setOptions(DLOptions options) {
-		shardid = options.shard;
-		shards = options.shards;
-		token = options.token;
-		Main.usegui = options.useWindow;
-		Command.defaultCommands = options.defaultCommands;
-		CommandHandler.prefix = options.prefix;
-		this.options = options;
-		return this;
 	}
 
 	/**
@@ -497,6 +493,23 @@ public class DiscLoader {
 	// }
 
 	/**
+	 * Sets the clients options;
+	 * 
+	 * @param options The new options to use
+	 * @return this.
+	 */
+	public DiscLoader setOptions(DLOptions options) {
+		shardid = options.shard;
+		shards = options.shards;
+		token = options.token;
+		Main.usegui = options.useWindow;
+		Command.defaultCommands = options.defaultCommands;
+		CommandHandler.prefix = options.prefix;
+		this.options = options;
+		return this;
+	}
+
+	/**
 	 * Syncs guilds to client if the logged in user is not a bot
 	 * 
 	 * @param guilds the guilds to sync
@@ -523,24 +536,6 @@ public class DiscLoader {
 	 * @throws AccountTypeException
 	 * @throws GuildSyncException
 	 */
-	public void syncGuilds(String... guildIDs) throws AccountTypeException, GuildSyncException {
-		if (user.isBot()) throw new AccountTypeException("Only user accounts are allowed to sync guilds");
-
-		for (String id : guildIDs) {
-			if (isGuildSyncing(id)) throw new GuildSyncException("Cannot syncing a guild that is currently syncing");
-		}
-
-		Packet packet = new Packet(12, guildIDs);
-		socket.send(packet, true);
-	}
-
-	/**
-	 * Syncs guilds to client if the logged in user is not a bot
-	 * 
-	 * @param guildIDs the ids of the guilds to sync
-	 * @throws AccountTypeException
-	 * @throws GuildSyncException
-	 */
 	public void syncGuilds(long... guildIDs) throws AccountTypeException, GuildSyncException {
 		if (user.isBot()) throw new AccountTypeException("Only user accounts are allowed to sync guilds");
 
@@ -554,10 +549,21 @@ public class DiscLoader {
 	}
 
 	/**
-	 * @return the shard
+	 * Syncs guilds to client if the logged in user is not a bot
+	 * 
+	 * @param guildIDs the ids of the guilds to sync
+	 * @throws AccountTypeException
+	 * @throws GuildSyncException
 	 */
-	public Shard getShard() {
-		return this.shard;
+	public void syncGuilds(String... guildIDs) throws AccountTypeException, GuildSyncException {
+		if (user.isBot()) throw new AccountTypeException("Only user accounts are allowed to sync guilds");
+
+		for (String id : guildIDs) {
+			if (isGuildSyncing(id)) throw new GuildSyncException("Cannot syncing a guild that is currently syncing");
+		}
+
+		Packet packet = new Packet(12, guildIDs);
+		socket.send(packet, true);
 	}
 
 }

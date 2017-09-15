@@ -1015,4 +1015,26 @@ public class Guild implements IGuild {
 		return null;
 	}
 
+	@Override
+	public CompletableFuture<IChannelCategory> createCategory(String name) {
+		return null;
+	}
+
+	@Override
+	public CompletableFuture<IChannelCategory> createCategory(String name, IOverwrite... overwrites) {
+		return null;
+	}
+
+	@Override
+	public Map<Long, IGuildChannel> getChannels() {
+		Map<Long, IGuildChannel> channels = new HashMap<>();
+		for (IGuildTextChannel channel : textChannels.values()) {
+			channels.put(channel.getID(), channel);
+		}
+		for (IGuildVoiceChannel channel : voiceChannels.values()) {
+			channels.put(channel.getID(), channel);
+		}
+		return channels;
+	}
+
 }

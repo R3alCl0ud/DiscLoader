@@ -15,8 +15,9 @@ import io.discloader.discloader.core.entity.guild.Guild;
 import io.discloader.discloader.core.entity.guild.Role;
 import io.discloader.discloader.entity.IOverwrite;
 import io.discloader.discloader.entity.IPermission;
+import io.discloader.discloader.entity.channel.IChannel;
+import io.discloader.discloader.entity.channel.IChannelCategory;
 import io.discloader.discloader.entity.channel.IGuildChannel;
-import io.discloader.discloader.entity.channel.IGuildTextChannel;
 import io.discloader.discloader.entity.guild.IGuild;
 import io.discloader.discloader.entity.guild.IGuildMember;
 import io.discloader.discloader.entity.guild.IRole;
@@ -68,6 +69,8 @@ public class GuildChannel extends Channel implements IGuildChannel {
 
 	private boolean nsfw;
 
+	private long parentID;
+
 	public GuildChannel(IGuild guild, ChannelJSON channel) {
 		super(guild.getLoader(), channel);
 
@@ -87,8 +90,8 @@ public class GuildChannel extends Channel implements IGuildChannel {
 	}
 
 	@Override
-	public CompletableFuture<? extends IGuildChannel> edit(String name, int position) {
-		return edit(name, position, nsfw);
+	public CompletableFuture<? extends IGuildChannel> edit(int position, boolean nsfw) {
+		return null;
 	}
 
 	// /**
@@ -113,6 +116,35 @@ public class GuildChannel extends Channel implements IGuildChannel {
 	//// });
 	// return future;
 	// }
+
+	@Override
+	public CompletableFuture<? extends IGuildChannel> edit(String name, boolean nsfw) {
+		return edit(name, position, nsfw);
+	}
+
+	@Override
+	public CompletableFuture<? extends IGuildChannel> edit(String name, int position) {
+		return edit(name, position, nsfw);
+	}
+
+	@Override
+	public CompletableFuture<? extends IGuildChannel> edit(String name, int position, boolean nsfw) {
+		CompletableFuture<IGuildChannel> future = new CompletableFuture<>();
+		JSONObject settings = new JSONObject().put("name", name).put("position", position).put("nsfw", nsfw);
+		loader.rest.request(Methods.PATCH, Endpoints.channel(getID()), new RESTOptions(settings), ChannelJSON.class).thenAcceptAsync(data -> {
+			IChannel newChannel = EntityBuilder.getChannelFactory().buildChannel(data, guild, false);
+			if (newChannel instanceof IGuildChannel) future.complete((IGuildChannel) newChannel);
+		}).exceptionally(ex -> {
+			future.completeExceptionally(ex);
+			return null;
+		});
+		return future;
+	}
+
+	@Override
+	public IChannelCategory getCategory() {
+		return guild.getChannelCategoryByID(parentID);
+	}
 
 	@Override
 	public IGuild getGuild() {
@@ -148,13 +180,23 @@ public class GuildChannel extends Channel implements IGuildChannel {
 	}
 
 	@Override
-	public boolean isPrivate() {
-		return false;
+	public boolean inCategory() {
+		return getCategory() != null;
+	}
+
+	@Override
+	public boolean inCategory(IChannelCategory category) {
+		return inCategory() && getCategory().getID() == category.getID();
 	}
 
 	@Override
 	public boolean isNSFW() {
 		return nsfw;
+	}
+
+	@Override
+	public boolean isPrivate() {
+		return false;
 	}
 
 	@Override
@@ -194,6 +236,11 @@ public class GuildChannel extends Channel implements IGuildChannel {
 	}
 
 	@Override
+	public CompletableFuture<? extends IGuildChannel> setNSFW(boolean nswf) {
+		return null;
+	}
+
+	@Override
 	public CompletableFuture<IOverwrite> setOverwrite(IOverwrite overwrite) {
 		return new SetOverwrite(this, overwrite).execute();
 	}
@@ -218,25 +265,21 @@ public class GuildChannel extends Channel implements IGuildChannel {
 		super.setup(data);
 		name = data.name;
 		position = data.position;
+
 	}
 
 	@Override
-	public CompletableFuture<? extends IGuildChannel> setNSFW(boolean nswf) {
+	public CompletableFuture<IOverwrite> deleteOverwrite(IOverwrite overwrite) {
 		return null;
 	}
 
 	@Override
-	public CompletableFuture<? extends IGuildChannel> edit(String name, int position, boolean nsfw) {
+	public CompletableFuture<List<IOverwrite>> deleteOverwrites(IOverwrite... overwrites) {
 		return null;
 	}
 
 	@Override
-	public CompletableFuture<? extends IGuildChannel> edit(String name, boolean nsfw) {
-		return null;
-	}
-
-	@Override
-	public CompletableFuture<? extends IGuildChannel> edit(int position, boolean nsfw) {
+	public CompletableFuture<List<IOverwrite>> setOverwrite(IOverwrite... overwrites) {
 		return null;
 	}
 
