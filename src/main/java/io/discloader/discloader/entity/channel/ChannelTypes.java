@@ -9,6 +9,10 @@ public enum ChannelTypes {
 		this.identifier = identifier;
 	}
 
+	public int toInt() {
+		return identifier;
+	}
+
 	public static ChannelTypes fromCode(int code) {
 		for (ChannelTypes type : values()) {
 			if (type.identifier == code) return type; // if the identifier

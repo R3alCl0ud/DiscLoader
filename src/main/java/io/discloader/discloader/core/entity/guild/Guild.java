@@ -13,6 +13,7 @@ import java.util.concurrent.CompletableFuture;
 import java.util.function.Consumer;
 
 import org.apache.commons.codec.binary.Base64;
+import org.json.JSONArray;
 import org.json.JSONObject;
 
 import io.discloader.discloader.client.render.texture.icon.GuildIcon;
@@ -37,6 +38,7 @@ import io.discloader.discloader.core.entity.user.User;
 import io.discloader.discloader.entity.IIcon;
 import io.discloader.discloader.entity.IOverwrite;
 import io.discloader.discloader.entity.IPresence;
+import io.discloader.discloader.entity.channel.IChannel;
 import io.discloader.discloader.entity.channel.IChannelCategory;
 import io.discloader.discloader.entity.channel.IGuildChannel;
 import io.discloader.discloader.entity.channel.IGuildTextChannel;
@@ -382,6 +384,34 @@ public class Guild implements IGuild {
 	}
 
 	@Override
+	public CompletableFuture<IChannelCategory> createCategory(String name) {
+		CompletableFuture<IChannelCategory> future = new CompletableFuture<>();
+		JSONObject chanSet = new JSONObject().put("name", name).put("type", 4);
+		loader.rest.request(Methods.POST, Endpoints.guildChannels(getID()), new RESTOptions(chanSet), ChannelJSON.class).thenAcceptAsync(d -> {
+			IChannel channel = EntityBuilder.getChannelFactory().buildChannel(d, this, false);
+			if (channel instanceof IChannelCategory) future.complete((IChannelCategory) channel);
+		});
+
+		return future;
+	}
+
+	@Override
+	public CompletableFuture<IChannelCategory> createCategory(String name, IOverwrite... overwrites) {
+		CompletableFuture<IChannelCategory> future = new CompletableFuture<>();
+		JSONArray ows = new JSONArray();
+		for (IOverwrite ow : overwrites) {
+			ows.put(ow);
+		}
+		JSONObject chanSet = new JSONObject().put("name", name).put("type", 4).put("permission_overwrites", ows);
+		loader.rest.request(Methods.POST, Endpoints.guildChannels(getID()), new RESTOptions(chanSet), ChannelJSON.class).thenAcceptAsync(d -> {
+			IChannel channel = EntityBuilder.getChannelFactory().buildChannel(d, this, false);
+			if (channel instanceof IChannelCategory) future.complete((IChannelCategory) channel);
+		});
+
+		return future;
+	}
+
+	@Override
 	public OffsetDateTime createdAt() {
 		return SnowflakeUtil.creationTime(this);
 	}
@@ -576,6 +606,38 @@ public class Guild implements IGuild {
 	}
 
 	@Override
+	public Map<Long, IChannelCategory> getChannelCategories() {
+		return categories;
+	}
+
+	@Override
+	public IChannelCategory getChannelCategoryByID(long id) {
+		return null;
+	}
+
+	@Override
+	public IChannelCategory getChannelCategoryByID(String id) {
+		return null;
+	}
+
+	@Override
+	public IChannelCategory getChannelCategoryByName(String name) {
+		return null;
+	}
+
+	@Override
+	public Map<Long, IGuildChannel> getChannels() {
+		Map<Long, IGuildChannel> channels = new HashMap<>();
+		for (IGuildTextChannel channel : textChannels.values()) {
+			channels.put(channel.getID(), channel);
+		}
+		for (IGuildVoiceChannel channel : voiceChannels.values()) {
+			channels.put(channel.getID(), channel);
+		}
+		return channels;
+	}
+
+	@Override
 	public IGuildMember getCurrentMember() {
 		return members.get(loader.user.getID());
 	}
@@ -719,6 +781,19 @@ public class Guild implements IGuild {
 	}
 
 	@Override
+	public IRole getRoleByID(String roleID) {
+		return getRoleByID(SnowflakeUtil.parse(roleID));
+	}
+
+	@Override
+	public IRole getRoleByName(String name) {
+		for (IRole role : roles.values()) {
+			if (role.getName().equalsIgnoreCase(name)) return role;
+		}
+		return null;
+	}
+
+	@Override
 	public Map<Long, IRole> getRoles() {
 		return roles;
 	}
@@ -765,6 +840,11 @@ public class Guild implements IGuild {
 	@Override
 	public Map<Long, IGuildVoiceChannel> getVoiceChannels() {
 		return voiceChannels;
+	}
+
+	@Override
+	public VoiceConnection getVoiceConnection() {
+		return EntityRegistry.getVoiceConnectionByGuild(this);
 	}
 
 	/**
@@ -975,66 +1055,6 @@ public class Guild implements IGuild {
 	@Override
 	public void updateVoiceState(VoiceState state) {
 		rawStates.put(state.member.getID(), state);
-	}
-
-	@Override
-	public VoiceConnection getVoiceConnection() {
-		return EntityRegistry.getVoiceConnectionByGuild(this);
-	}
-
-	@Override
-	public IRole getRoleByID(String roleID) {
-		return getRoleByID(SnowflakeUtil.parse(roleID));
-	}
-
-	@Override
-	public IRole getRoleByName(String name) {
-		for (IRole role : roles.values()) {
-			if (role.getName().equalsIgnoreCase(name)) return role;
-		}
-		return null;
-	}
-
-	@Override
-	public Map<Long, IChannelCategory> getChannelCategories() {
-		return categories;
-	}
-
-	@Override
-	public IChannelCategory getChannelCategoryByID(long id) {
-		return null;
-	}
-
-	@Override
-	public IChannelCategory getChannelCategoryByID(String id) {
-		return null;
-	}
-
-	@Override
-	public IChannelCategory getChannelCategoryByName(String name) {
-		return null;
-	}
-
-	@Override
-	public CompletableFuture<IChannelCategory> createCategory(String name) {
-		return null;
-	}
-
-	@Override
-	public CompletableFuture<IChannelCategory> createCategory(String name, IOverwrite... overwrites) {
-		return null;
-	}
-
-	@Override
-	public Map<Long, IGuildChannel> getChannels() {
-		Map<Long, IGuildChannel> channels = new HashMap<>();
-		for (IGuildTextChannel channel : textChannels.values()) {
-			channels.put(channel.getID(), channel);
-		}
-		for (IGuildVoiceChannel channel : voiceChannels.values()) {
-			channels.put(channel.getID(), channel);
-		}
-		return channels;
 	}
 
 }
