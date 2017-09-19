@@ -18,4 +18,8 @@ public interface IGuildEmoji extends IEmoji {
 
 	boolean requiresColons();
 
+	CompletableFuture<IGuildEmoji> setName(String name);
+
+	CompletableFuture<IGuildEmoji> setRoles(IRole... roles);
+
 }

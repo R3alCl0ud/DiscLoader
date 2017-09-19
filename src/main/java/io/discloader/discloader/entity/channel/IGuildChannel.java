@@ -99,6 +99,8 @@ public interface IGuildChannel extends IChannel {
 	 */
 	IPermission permissionsOf(IGuildMember iGuildMember);
 
+	CompletableFuture<IGuildChannel> setCategory(IChannelCategory category);
+
 	/**
 	 * Sets the name of the channel.
 	 * 

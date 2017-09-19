@@ -23,6 +23,7 @@ import io.discloader.discloader.entity.guild.IGuildMember;
 import io.discloader.discloader.entity.guild.IRole;
 import io.discloader.discloader.entity.invite.IInvite;
 import io.discloader.discloader.entity.util.Permissions;
+import io.discloader.discloader.entity.util.SnowflakeUtil;
 import io.discloader.discloader.network.json.ChannelJSON;
 import io.discloader.discloader.network.rest.RESTOptions;
 import io.discloader.discloader.network.rest.actions.channel.FetchInvites;
@@ -90,8 +91,15 @@ public class GuildChannel extends Channel implements IGuildChannel {
 	}
 
 	@Override
-	public CompletableFuture<? extends IGuildChannel> edit(int position, boolean nsfw) {
-		return null;
+	public CompletableFuture<IOverwrite> deleteOverwrite(IOverwrite overwrite) {
+		CompletableFuture<IOverwrite> future = new CompletableFuture<>();
+		loader.rest.request(Methods.DELETE, Endpoints.channelOverwrite(getID(), overwrite.getID()), new RESTOptions(), Void.class).thenAcceptAsync(n -> {
+			future.complete(overwrite);
+		}).exceptionally(ex -> {
+			future.completeExceptionally(ex);
+			return null;
+		});
+		return future;
 	}
 
 	// /**
@@ -116,6 +124,16 @@ public class GuildChannel extends Channel implements IGuildChannel {
 	//// });
 	// return future;
 	// }
+
+	@Override
+	public CompletableFuture<List<IOverwrite>> deleteOverwrites(IOverwrite... overwrites) {
+		return null;
+	}
+
+	@Override
+	public CompletableFuture<? extends IGuildChannel> edit(int position, boolean nsfw) {
+		return null;
+	}
 
 	@Override
 	public CompletableFuture<? extends IGuildChannel> edit(String name, boolean nsfw) {
@@ -231,6 +249,20 @@ public class GuildChannel extends Channel implements IGuildChannel {
 	}
 
 	@Override
+	public CompletableFuture<IGuildChannel> setCategory(IChannelCategory category) {
+		CompletableFuture<IGuildChannel> future = new CompletableFuture<>();
+		JSONObject settings = new JSONObject().put("parent_id", SnowflakeUtil.asString(category));
+		loader.rest.request(Methods.PATCH, Endpoints.channel(getID()), new RESTOptions(settings), ChannelJSON.class).thenAcceptAsync(data -> {
+			IGuildChannel newChannel = (IGuildChannel) EntityBuilder.getChannelFactory().buildChannel(data, guild, false);
+			future.complete(newChannel);
+		}).exceptionally(ex -> {
+			future.completeExceptionally(ex);
+			return null;
+		});
+		return future;
+	}
+
+	@Override
 	public CompletableFuture<? extends IGuildChannel> setName(String name) {
 		return edit(name, position);
 	}
@@ -243,6 +275,11 @@ public class GuildChannel extends Channel implements IGuildChannel {
 	@Override
 	public CompletableFuture<IOverwrite> setOverwrite(IOverwrite overwrite) {
 		return new SetOverwrite(this, overwrite).execute();
+	}
+
+	@Override
+	public CompletableFuture<List<IOverwrite>> setOverwrite(IOverwrite... overwrites) {
+		return null;
 	}
 
 	@Override
@@ -266,21 +303,6 @@ public class GuildChannel extends Channel implements IGuildChannel {
 		name = data.name;
 		position = data.position;
 
-	}
-
-	@Override
-	public CompletableFuture<IOverwrite> deleteOverwrite(IOverwrite overwrite) {
-		return null;
-	}
-
-	@Override
-	public CompletableFuture<List<IOverwrite>> deleteOverwrites(IOverwrite... overwrites) {
-		return null;
-	}
-
-	@Override
-	public CompletableFuture<List<IOverwrite>> setOverwrite(IOverwrite... overwrites) {
-		return null;
 	}
 
 }

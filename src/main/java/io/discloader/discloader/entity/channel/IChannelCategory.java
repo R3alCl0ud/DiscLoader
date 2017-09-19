@@ -20,8 +20,6 @@ public interface IChannelCategory extends IGuildChannel {
 	 */
 	public <T extends IGuildChannel> CompletableFuture<T> addChannel(T channel);
 
-	public CompletableFuture<IGuildChannel> createChannel(String name);
-
 	public CompletableFuture<IGuildChannel> createChannel(String name, ChannelTypes type);
 
 	public CompletableFuture<IGuildChannel> createChannel(String name, ChannelTypes type, IOverwrite... overwrites);

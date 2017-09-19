@@ -146,4 +146,14 @@ public class GuildEmoji implements IGuildEmoji {
 		return SnowflakeUtil.parse(id);
 	}
 
+	@Override
+	public CompletableFuture<IGuildEmoji> setName(String name) {
+		return null;
+	}
+
+	@Override
+	public CompletableFuture<IGuildEmoji> setRoles(IRole... roles) {
+		return null;
+	}
+
 }

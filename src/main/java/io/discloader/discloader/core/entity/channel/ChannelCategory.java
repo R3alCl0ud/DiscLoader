@@ -42,11 +42,6 @@ public class ChannelCategory extends GuildChannel implements IChannelCategory {
 	}
 
 	@Override
-	public CompletableFuture<IGuildChannel> createChannel(String name) {
-		return null;
-	}
-
-	@Override
 	public CompletableFuture<IGuildChannel> createChannel(String name, ChannelTypes type) {
 		return null;
 	}
@@ -96,12 +91,26 @@ public class ChannelCategory extends GuildChannel implements IChannelCategory {
 
 	@Override
 	public Map<Long, IGuildVoiceChannel> getVoiceChannels() {
-		return null;
+		Map<Long, IGuildVoiceChannel> channels = new HashMap<>();
+		for (IGuildVoiceChannel channel : getGuild().getVoiceChannels().values()) {
+			if (channel.inCategory(this)) channels.put(channel.getID(), channel);
+		}
+		return channels;
 	}
 
 	@Override
-	public <T extends IGuildChannel> CompletableFuture<T> removeChannel(T guildChannel) {
-		return null;
+	public <T extends IGuildChannel> CompletableFuture<T> removeChannel(T channel) {
+		CompletableFuture<T> future = new CompletableFuture<>();
+		JSONObject settings = new JSONObject().put("parent_id", (String) null);
+		loader.rest.request(Methods.PATCH, Endpoints.channel(channel.getID()), new RESTOptions(settings), ChannelJSON.class).thenAcceptAsync(data -> {
+			@SuppressWarnings("unchecked")
+			T newChannel = (T) EntityBuilder.getChannelFactory().buildChannel(data, guild, false);
+			future.complete(newChannel);
+		}).exceptionally(ex -> {
+			future.completeExceptionally(ex);
+			return null;
+		});
+		return future;
 	}
 
 	public void setup(ChannelJSON data) {
