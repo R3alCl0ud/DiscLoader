@@ -20,6 +20,9 @@ import io.discloader.discloader.core.entity.user.User;
 import io.discloader.discloader.entity.IIcon;
 import io.discloader.discloader.entity.IOverwrite;
 import io.discloader.discloader.entity.IPresence;
+import io.discloader.discloader.entity.auditlog.AuditLogActions;
+import io.discloader.discloader.entity.auditlog.IAuditLog;
+import io.discloader.discloader.entity.auditlog.IAuditLogEntry;
 import io.discloader.discloader.entity.channel.IChannelCategory;
 import io.discloader.discloader.entity.channel.IGuildChannel;
 import io.discloader.discloader.entity.channel.IGuildTextChannel;
@@ -200,8 +203,16 @@ public interface IGuild extends ISnowflake, ICreationTime {
 	 */
 	CompletableFuture<Map<Long, IGuildMember>> fetchMembers(int limit);
 
-	Map<Long, IGuildChannel> getChannels();
-	
+	CompletableFuture<IAuditLog> getAuditLog(AuditLogActions action);
+
+	CompletableFuture<IAuditLog> getAuditLog(IAuditLogEntry before);
+
+	CompletableFuture<IAuditLog> getAuditLog(IUser user);
+
+	CompletableFuture<IAuditLog> getAuditLog(IUser user, AuditLogActions action, IAuditLogEntry before, short limit);
+
+	CompletableFuture<IAuditLog> getAuditLog(short limit);
+
 	Map<Long, IChannelCategory> getChannelCategories();
 
 	IChannelCategory getChannelCategoryByID(long id);
@@ -209,6 +220,8 @@ public interface IGuild extends ISnowflake, ICreationTime {
 	IChannelCategory getChannelCategoryByID(String id);
 
 	IChannelCategory getChannelCategoryByName(String name);
+
+	Map<Long, IGuildChannel> getChannels();
 
 	/**
 	 * Returns the {@link GuildMember} object for the {@link User} you are

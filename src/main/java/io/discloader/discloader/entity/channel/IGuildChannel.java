@@ -44,6 +44,8 @@ public interface IGuildChannel extends IChannel {
 	 */
 	CompletableFuture<? extends IGuildChannel> edit(String name, int position, boolean nsfw) throws PermissionsException;
 
+	CompletableFuture<? extends IGuildChannel> edit(String name, int position, boolean nsfw, IOverwrite... overwrites) throws PermissionsException;
+
 	// CompletableFuture<? extends IGuildChannel> edit(String name, String
 	// topic, int position, int bitrate, int userLimit);
 

@@ -23,6 +23,7 @@ import io.discloader.discloader.common.ShardManager;
 import io.discloader.discloader.common.event.EventListenerAdapter;
 import io.discloader.discloader.common.event.RawEvent;
 import io.discloader.discloader.common.event.ReadyEvent;
+import io.discloader.discloader.common.event.message.GuildMessageCreateEvent;
 import io.discloader.discloader.common.event.message.MessageCreateEvent;
 import io.discloader.discloader.common.event.sharding.ShardingListenerAdapter;
 import io.discloader.discloader.common.registry.CommandRegistry;
@@ -36,35 +37,35 @@ import io.discloader.discloader.common.registry.ModRegistry;
  * @see DiscLoader
  */
 public class Main {
-	
+
 	public static final Gson gson = new Gson();
-	
+
 	public static WindowFrame window;
-	
+
 	public static DiscLoader loader;
-	
+
 	public static boolean usegui = false;
-	
+
 	public static String token;
-	
+
 	// private static int shard = 0, shards = 1;
-	
+
 	private static Logger LOGGER = new DLLogger(Main.class).getLogger();
-	
+
 	private static final String tokenRegex = "-t=(.*+)", prefixRegex = "-p=(.*+)", shardRegex = "-s=(\\d+)\\:(\\d+)";
 	private static final Pattern tokenPat = Pattern.compile(tokenRegex), prefixPat = Pattern.compile(prefixRegex), shardPat = Pattern.compile(shardRegex);
-	
+
 	public static DiscLoader getLoader() {
 		return loader;
 	}
-	
+
 	/**
 	 * @return the lOG
 	 */
 	public static Logger getLogger() {
 		return LOGGER;
 	}
-	
+
 	public static void main(String... args) throws IOException {
 		System.setProperty("http.agent", "DiscLoader");
 		String content = "";
@@ -84,18 +85,18 @@ public class Main {
 		if (options.shards > 1) {
 			ShardManager manager = new ShardManager(options);
 			manager.addShardingListener(new ShardingListenerAdapter() {
-				
+
 				public void ShardLaunched(Shard shard) {
 					LOGGER.info(String.format("Shard #%d: Launched", shard.getShardID()));
 					shard.getLoader().addEventHandler(new EventListenerAdapter() {
-						
+
 						public void Ready(ReadyEvent e) {
-							
+
 							for (Command command : CommandRegistry.commands.entries()) {
 								LOGGER.info(command.getUnlocalizedName());
 							}
 						}
-						
+
 						@Override
 						public void RawPacket(RawEvent data) {
 							WebSocketFrame frame = data.getFrame();
@@ -106,6 +107,19 @@ public class Main {
 								LOGGER.info("" + data.getHttpResponse().getStatus());
 							}
 						}
+
+						@Override
+						public void GuildMessageCreate(GuildMessageCreateEvent e) {
+							if (e.getGuild().getID() != 282226852616077312l) return;
+							if (e.getMessage().getContent().startsWith("logs")) {
+								String[] args = e.getMessage().getContent().split(" ");
+								if (args.length == 1) {
+
+								} else if (args.length == 2) {
+
+								}
+							}
+						}
 					});
 				}
 			});
@@ -113,24 +127,24 @@ public class Main {
 		} else {
 			loader = new DiscLoader(options);
 			loader.addEventHandler(new EventListenerAdapter() {
-				
+
 				@Override
 				public void MessageCreate(MessageCreateEvent e) {
 					if (e.getMessage().getContent().equals("#$close")) {
 						e.getLoader().socket.ws.disconnect(1001);
 					}
 				}
-				
+
 				public void Ready(ReadyEvent e) {
 					LOGGER.info(e.getLoader().user.getUsername());
-					
+
 					for (Command command : CommandRegistry.commands.entries()) {
 						LOGGER.info(command.getUnlocalizedName());
 					}
 					LOGGER.info(EntityRegistry.getGuildByID(282226852616077312l).getDefaultChannel().getName());
 					// .sendMessage("testing 125");
 				}
-				
+
 				@Override
 				public void RawPacket(RawEvent data) {
 					WebSocketFrame frame = data.getFrame();
@@ -144,7 +158,7 @@ public class Main {
 			loader.login();
 		}
 	}
-	
+
 	public static DLOptions parseArgs(String... args) {
 		DLOptions options = new DLOptions(false, false);
 		for (String arg : args) {
@@ -170,7 +184,7 @@ public class Main {
 					LOGGER.severe("Sharding option usage: -s=shard:totalshards");
 					continue;
 				}
-				
+
 				options.setSharding(Integer.parseInt(shardMatcher.group(1)), Integer.parseInt(shardMatcher.group(2)));
 				// System.out.println();
 			}

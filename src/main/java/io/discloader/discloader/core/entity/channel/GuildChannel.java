@@ -8,6 +8,7 @@ import java.util.concurrent.CompletableFuture;
 
 import org.json.JSONObject;
 
+import io.discloader.discloader.common.exceptions.PermissionsException;
 import io.discloader.discloader.common.registry.EntityBuilder;
 import io.discloader.discloader.core.entity.Overwrite;
 import io.discloader.discloader.core.entity.Permission;
@@ -127,7 +128,25 @@ public class GuildChannel extends Channel implements IGuildChannel {
 
 	@Override
 	public CompletableFuture<List<IOverwrite>> deleteOverwrites(IOverwrite... overwrites) {
-		return null;
+		CompletableFuture<List<IOverwrite>> future = new CompletableFuture<>();
+		List<IOverwrite> keep = new ArrayList<>(), removed = new ArrayList<>();
+		for (IOverwrite ow : this.overwrites.values())
+			keep.add(ow);
+		for (IOverwrite ow : overwrites) {
+			if (this.overwrites.containsKey(ow.getID())) {
+				keep.remove(this.overwrites.get(ow.getID()));
+				removed.add(this.overwrites.get(ow.getID()));
+			}
+		}
+
+		JSONObject props = new JSONObject().put("permission_overwrites", keep);
+		loader.rest.request(Methods.PATCH, Endpoints.channel(getID()), new RESTOptions(props), ChannelJSON.class).thenAcceptAsync(data -> {
+			future.complete(removed);
+		}).exceptionally(ex -> {
+			future.completeExceptionally(ex);
+			return null;
+		});
+		return future;
 	}
 
 	@Override
@@ -147,8 +166,13 @@ public class GuildChannel extends Channel implements IGuildChannel {
 
 	@Override
 	public CompletableFuture<? extends IGuildChannel> edit(String name, int position, boolean nsfw) {
+		return edit(name, position, nsfw, overwrites.values().toArray(new IOverwrite[0]));
+	}
+
+	@Override
+	public CompletableFuture<? extends IGuildChannel> edit(String name, int position, boolean nsfw, IOverwrite... overwrites) throws PermissionsException {
 		CompletableFuture<IGuildChannel> future = new CompletableFuture<>();
-		JSONObject settings = new JSONObject().put("name", name).put("position", position).put("nsfw", nsfw);
+		JSONObject settings = new JSONObject().put("name", name).put("position", position).put("nsfw", nsfw).put("permission_overwrites", overwrites);
 		loader.rest.request(Methods.PATCH, Endpoints.channel(getID()), new RESTOptions(settings), ChannelJSON.class).thenAcceptAsync(data -> {
 			IChannel newChannel = EntityBuilder.getChannelFactory().buildChannel(data, guild, false);
 			if (newChannel instanceof IGuildChannel) future.complete((IGuildChannel) newChannel);
@@ -269,7 +293,7 @@ public class GuildChannel extends Channel implements IGuildChannel {
 
 	@Override
 	public CompletableFuture<? extends IGuildChannel> setNSFW(boolean nswf) {
-		return null;
+		return edit(name, position, nsfw);
 	}
 
 	@Override

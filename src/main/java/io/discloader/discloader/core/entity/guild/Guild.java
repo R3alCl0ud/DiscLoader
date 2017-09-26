@@ -31,6 +31,7 @@ import io.discloader.discloader.common.registry.EntityBuilder;
 import io.discloader.discloader.common.registry.EntityRegistry;
 import io.discloader.discloader.common.registry.factory.GuildFactory;
 import io.discloader.discloader.core.entity.Presence;
+import io.discloader.discloader.core.entity.auditlog.AuditLog;
 import io.discloader.discloader.core.entity.channel.TextChannel;
 import io.discloader.discloader.core.entity.channel.VoiceChannel;
 import io.discloader.discloader.core.entity.invite.Invite;
@@ -38,6 +39,9 @@ import io.discloader.discloader.core.entity.user.User;
 import io.discloader.discloader.entity.IIcon;
 import io.discloader.discloader.entity.IOverwrite;
 import io.discloader.discloader.entity.IPresence;
+import io.discloader.discloader.entity.auditlog.AuditLogActions;
+import io.discloader.discloader.entity.auditlog.IAuditLog;
+import io.discloader.discloader.entity.auditlog.IAuditLogEntry;
 import io.discloader.discloader.entity.channel.IChannel;
 import io.discloader.discloader.entity.channel.IChannelCategory;
 import io.discloader.discloader.entity.channel.IGuildChannel;
@@ -58,6 +62,7 @@ import io.discloader.discloader.entity.util.Permissions;
 import io.discloader.discloader.entity.util.SnowflakeUtil;
 import io.discloader.discloader.entity.voice.VoiceConnection;
 import io.discloader.discloader.entity.voice.VoiceState;
+import io.discloader.discloader.network.json.AuditLogJSON;
 import io.discloader.discloader.network.json.ChannelJSON;
 import io.discloader.discloader.network.json.EmojiJSON;
 import io.discloader.discloader.network.json.GuildJSON;
@@ -69,9 +74,9 @@ import io.discloader.discloader.network.json.VoiceStateJSON;
 import io.discloader.discloader.network.rest.RESTOptions;
 import io.discloader.discloader.network.rest.actions.guild.CreateRole;
 import io.discloader.discloader.network.rest.actions.guild.ModifyGuild;
+import io.discloader.discloader.network.util.Endpoints;
 import io.discloader.discloader.network.util.Methods;
 import io.discloader.discloader.util.DLUtil;
-import io.discloader.discloader.util.DLUtil.Endpoints;
 
 public class Guild implements IGuild {
 
@@ -603,6 +608,42 @@ public class Guild implements IGuild {
 	 */
 	public IVoiceChannel getAfkChannel() {
 		return voiceChannels.get(afk_channel_id);
+	}
+
+	@Override
+	public CompletableFuture<IAuditLog> getAuditLog(AuditLogActions action) {
+		CompletableFuture<IAuditLog> future = new CompletableFuture<>();
+		return future;
+	}
+
+	@Override
+	public CompletableFuture<IAuditLog> getAuditLog(IAuditLogEntry before) {
+		CompletableFuture<IAuditLog> future = new CompletableFuture<>();
+		return future;
+	}
+
+	@Override
+	public CompletableFuture<IAuditLog> getAuditLog(IUser user) {
+		CompletableFuture<IAuditLog> future = new CompletableFuture<>();
+		return future;
+	}
+
+	@Override
+	public CompletableFuture<IAuditLog> getAuditLog(IUser user, AuditLogActions action, IAuditLogEntry before, short limit) {
+		CompletableFuture<IAuditLog> future = new CompletableFuture<>();
+		JSONObject params = new JSONObject().put("user_id", SnowflakeUtil.asString(user)).put("action_type", action.toInt()).put("before", SnowflakeUtil.asString(before)).put("limit", limit);
+		loader.rest.request(Methods.GET, Endpoints.auditLogs(getID()), new RESTOptions(params), AuditLogJSON.class).thenAcceptAsync(al -> {
+			future.complete(new AuditLog(this, al));
+		}).exceptionally(ex -> {
+			future.completeExceptionally(ex);
+			return null;
+		});
+		return future;
+	}
+
+	@Override
+	public CompletableFuture<IAuditLog> getAuditLog(short limit) {
+		return null;
 	}
 
 	@Override
