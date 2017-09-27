@@ -7,6 +7,8 @@ import java.util.List;
 import java.util.Map;
 
 import io.discloader.discloader.common.Shard;
+import io.discloader.discloader.core.entity.Webhook;
+import io.discloader.discloader.entity.IWebhook;
 import io.discloader.discloader.entity.channel.ChannelTypes;
 import io.discloader.discloader.entity.channel.IChannel;
 import io.discloader.discloader.entity.channel.IChannelCategory;
@@ -22,11 +24,13 @@ import io.discloader.discloader.entity.voice.VoiceConnection;
 import io.discloader.discloader.network.json.ChannelJSON;
 import io.discloader.discloader.network.json.GuildJSON;
 import io.discloader.discloader.network.json.UserJSON;
+import io.discloader.discloader.network.json.WebhookJSON;
 
 public class EntityRegistry {
 
 	private static final Map<Long, IGuild> guilds = new HashMap<>();
 	private static final Map<Long, IUser> users = new HashMap<>();
+	private static final Map<Long, IWebhook> webhooks = new HashMap<>();
 	private static final Map<Long, VoiceConnection> voiceConnections = new HashMap<>();
 	private static final Map<Long, IChannel> channels = new HashMap<>();
 	private static final Map<Long, IChannelCategory> categories = new HashMap<>();
@@ -66,6 +70,15 @@ public class EntityRegistry {
 		return user;
 	}
 
+	public static IWebhook addWebhook(WebhookJSON data) {
+		if (webhookExists(data.id == null ? "0" : data.id)) {
+			return getWebhookByID(data.id == null ? "0" : data.id);
+		}
+		IWebhook webhook = new Webhook(data);
+		webhooks.put(webhook.getID(), webhook);
+		return webhook;
+	}
+
 	public static IChannel getChannelByID(long channelID) {
 		return channels.get(channelID);
 	}
@@ -74,19 +87,19 @@ public class EntityRegistry {
 		return channels.get(SnowflakeUtil.parse(channelID));
 	}
 
+	/**
+	 * @return {@code categories}
+	 */
+	public static Map<Long, IChannelCategory> getChannelCategories() {
+		return categories;
+	}
+
 	public static IChannel getChannelCategoryByID(long channelID) {
 		return categories.get(channelID);
 	}
 
 	public static IChannel getChannelCategoryByID(String channelID) {
 		return categories.get(SnowflakeUtil.parse(channelID));
-	}
-
-	/**
-	 * @return {@code categories}
-	 */
-	public static Map<Long, IChannelCategory> getChannelCategories() {
-		return categories;
 	}
 
 	public static Collection<IChannel> getChannels() {
@@ -207,6 +220,21 @@ public class EntityRegistry {
 		return voiceConnections.values();
 	}
 
+	public static IWebhook getWebhookByID(long webhookID) {
+		return webhooks.get(webhookID);
+	}
+
+	public static IWebhook getWebhookByID(String webhookID) {
+		return getWebhookByID(SnowflakeUtil.parse(webhookID));
+	}
+
+	/**
+	 * @return {@codewebhooks}
+	 */
+	public static Map<Long, IWebhook> getWebhooks() {
+		return webhooks;
+	}
+
 	public static boolean guildExists(IGuild guild) {
 		if (guild == null) return false;
 		return guilds.containsValue(guild);
@@ -261,6 +289,14 @@ public class EntityRegistry {
 	}
 
 	public static boolean userExists(String userID) {
-		return users.containsKey(SnowflakeUtil.parse(userID));
+		return userExists(SnowflakeUtil.parse(userID));
+	}
+
+	public static boolean webhookExists(long webhookID) {
+		return webhooks.containsKey(webhookID);
+	}
+
+	public static boolean webhookExists(String webhookID) {
+		return webhookExists(SnowflakeUtil.parse(webhookID));
 	}
 }

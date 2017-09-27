@@ -2,8 +2,8 @@ package io.discloader.discloader.entity.auditlog;
 
 public interface IAuditLogChange {
 
-	String getKey();
+	AuditLogChangeKeys getKey();
 	
-	IAuditChangeValue getNewValue();
-	IAuditChangeValue getOldValue();
+	IChangeValue getNewValue();
+	IChangeValue getOldValue();
 }

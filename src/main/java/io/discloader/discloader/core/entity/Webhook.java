@@ -7,41 +7,41 @@ import io.discloader.discloader.entity.IWebhook;
 import io.discloader.discloader.entity.channel.ITextChannel;
 import io.discloader.discloader.entity.guild.IGuild;
 import io.discloader.discloader.entity.user.IUser;
+import io.discloader.discloader.entity.util.SnowflakeUtil;
 import io.discloader.discloader.network.json.WebhookJSON;
 
 /**
  * @author Perry Berman
- *
  */
 public class Webhook implements IWebhook {
-	
+
 	private final long id;
 	private final long channel_id;
 	private long guild_id = 0;
 	private long user_id = 0;
-	
+
 	private String avatar;
 	private String name;
 	private String token;
-	
+
 	/**
 	 * 
 	 */
 	public Webhook(WebhookJSON data) {
-		id = Long.parseUnsignedLong(data.id, 10);
-		channel_id = Long.parseUnsignedLong(data.channel_id, 10);
+		id = SnowflakeUtil.parse(data.id);
+		channel_id = SnowflakeUtil.parse(data.channel_id);
 		if (data.guild_id != null) {
-			guild_id = Long.parseUnsignedLong(data.guild_id, 10);
+			guild_id = SnowflakeUtil.parse(data.guild_id);
 		}
 		if (data.user != null) {
 			user_id = EntityRegistry.addUser(data.user).getID();
 		}
-		
+
 		name = data.name == null ? null : data.name;
 		avatar = data.avatar == null ? null : data.avatar;
 		token = data.token;
 	}
-	
+
 	/*
 	 * (non-Javadoc)
 	 * @see io.discloader.discloader.entity.util.ISnowflake#getID()
@@ -50,7 +50,7 @@ public class Webhook implements IWebhook {
 	public long getID() {
 		return id;
 	}
-	
+
 	/*
 	 * (non-Javadoc)
 	 * @see io.discloader.discloader.entity.IWebhook#getGuild()
@@ -59,7 +59,7 @@ public class Webhook implements IWebhook {
 	public IGuild getGuild() {
 		return guild_id == 0 ? null : EntityRegistry.getGuildByID(guild_id);
 	}
-	
+
 	/*
 	 * (non-Javadoc)
 	 * @see io.discloader.discloader.entity.IWebhook#getChannel()
@@ -68,7 +68,7 @@ public class Webhook implements IWebhook {
 	public ITextChannel getChannel() {
 		return EntityRegistry.getTextChannelByID(channel_id);
 	}
-	
+
 	/*
 	 * (non-Javadoc)
 	 * @see io.discloader.discloader.entity.IWebhook#getUser()
@@ -77,7 +77,7 @@ public class Webhook implements IWebhook {
 	public IUser getCreator() {
 		return user_id == 0 ? null : EntityRegistry.getUserByID(user_id);
 	}
-	
+
 	/*
 	 * (non-Javadoc)
 	 * @see io.discloader.discloader.entity.IWebhook#getName()
@@ -86,7 +86,7 @@ public class Webhook implements IWebhook {
 	public String getName() {
 		return name;
 	}
-	
+
 	/*
 	 * (non-Javadoc)
 	 * @see io.discloader.discloader.entity.IWebhook#getAvatar()
@@ -95,7 +95,7 @@ public class Webhook implements IWebhook {
 	public IIcon getAvatar() {
 		return new UserAvatar(avatar, id, (short) 0000);
 	}
-	
+
 	/*
 	 * (non-Javadoc)
 	 * @see io.discloader.discloader.entity.IWebhook#getToken()
@@ -104,5 +104,5 @@ public class Webhook implements IWebhook {
 	public String getToken() {
 		return token;
 	}
-	
+
 }

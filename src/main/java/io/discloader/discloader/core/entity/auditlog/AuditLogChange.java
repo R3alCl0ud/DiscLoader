@@ -1,6 +1,7 @@
 package io.discloader.discloader.core.entity.auditlog;
 
-import io.discloader.discloader.entity.auditlog.IAuditChangeValue;
+import io.discloader.discloader.entity.auditlog.IChangeValue;
+import io.discloader.discloader.entity.auditlog.AuditLogChangeKeys;
 import io.discloader.discloader.entity.auditlog.IAuditLogChange;
 import io.discloader.discloader.network.json.AuditLogChangeJSON;
 
@@ -16,18 +17,18 @@ public class AuditLogChange implements IAuditLogChange {
 	}
 
 	@Override
-	public String getKey() {
-		return null;
+	public IChangeValue getNewValue() {
+		return new ChangeValue(newValue, getKey().getType());
 	}
 
 	@Override
-	public IAuditChangeValue getNewValue() {
-		return null;
+	public IChangeValue getOldValue() {
+		return new ChangeValue(oldValue, getKey().getType());
 	}
 
 	@Override
-	public IAuditChangeValue getOldValue() {
-		return null;
+	public AuditLogChangeKeys getKey() {
+		return AuditLogChangeKeys.getKey(key);
 	}
 
 }

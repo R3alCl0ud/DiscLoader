@@ -7,12 +7,16 @@ import java.util.List;
 import java.util.Map;
 
 import io.discloader.discloader.common.DiscLoader;
+import io.discloader.discloader.common.registry.EntityRegistry;
 import io.discloader.discloader.entity.IWebhook;
 import io.discloader.discloader.entity.auditlog.IAuditLog;
 import io.discloader.discloader.entity.auditlog.IAuditLogEntry;
 import io.discloader.discloader.entity.guild.IGuild;
 import io.discloader.discloader.entity.user.IUser;
+import io.discloader.discloader.network.json.AuditLogEntryJSON;
 import io.discloader.discloader.network.json.AuditLogJSON;
+import io.discloader.discloader.network.json.UserJSON;
+import io.discloader.discloader.network.json.WebhookJSON;
 
 public class AuditLog implements IAuditLog {
 
@@ -25,6 +29,21 @@ public class AuditLog implements IAuditLog {
 		users = new HashMap<>();
 		webhooks = new HashMap<>();
 		entries = new HashMap<>();
+
+		for (UserJSON ud : data.users) {
+			IUser user = EntityRegistry.addUser(ud);
+			users.put(user.getID(), user);
+		}
+
+		for (WebhookJSON wd : data.webhooks) {
+			IWebhook wh = EntityRegistry.addWebhook(wd);
+			webhooks.put(wh.getID(), wh);
+		}
+
+		for (AuditLogEntryJSON ed : data.audit_log_entries) {
+			IAuditLogEntry en = new AuditLogEntry(ed);
+			entries.put(en.getID(), en);
+		}
 	}
 
 	@Override

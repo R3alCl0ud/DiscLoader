@@ -29,6 +29,7 @@ import io.discloader.discloader.common.event.sharding.ShardingListenerAdapter;
 import io.discloader.discloader.common.registry.CommandRegistry;
 import io.discloader.discloader.common.registry.EntityRegistry;
 import io.discloader.discloader.common.registry.ModRegistry;
+import io.discloader.discloader.entity.auditlog.AuditLogChangeKeys;
 
 /**
  * DiscLoader client entry point
