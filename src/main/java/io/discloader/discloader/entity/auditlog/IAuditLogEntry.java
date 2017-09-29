@@ -7,11 +7,20 @@ import io.discloader.discloader.entity.util.ISnowflake;
 
 public interface IAuditLogEntry extends ISnowflake {
 
-	String getReason();
-
-	ISnowflake getTarget();
+	IAuditLog getAuditLogs();
 
 	IUser getAuthor();
 
 	List<IAuditLogChange> getChanges();
+
+	String getReason();
+
+	Object getTarget();
+
+	ActionTypes getActionType();
+
+	default boolean actionInRange(int min, int max) {
+		int at = getActionType().toInt();
+		return at >= min && at <= max;
+	}
 }

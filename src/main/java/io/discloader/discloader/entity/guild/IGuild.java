@@ -20,7 +20,7 @@ import io.discloader.discloader.core.entity.user.User;
 import io.discloader.discloader.entity.IIcon;
 import io.discloader.discloader.entity.IOverwrite;
 import io.discloader.discloader.entity.IPresence;
-import io.discloader.discloader.entity.auditlog.AuditLogActions;
+import io.discloader.discloader.entity.auditlog.ActionTypes;
 import io.discloader.discloader.entity.auditlog.IAuditLog;
 import io.discloader.discloader.entity.auditlog.IAuditLogEntry;
 import io.discloader.discloader.entity.channel.IChannelCategory;
@@ -176,6 +176,8 @@ public interface IGuild extends ISnowflake, ICreationTime {
 	 */
 	CompletableFuture<IGuild> edit(String name, String icon, IGuildVoiceChannel afkChannel) throws IOException;
 
+	CompletableFuture<List<IInvite>> fetchInvites();
+
 	/**
 	 * Fetches a GuildMember from the REST API
 	 * 
@@ -203,13 +205,13 @@ public interface IGuild extends ISnowflake, ICreationTime {
 	 */
 	CompletableFuture<Map<Long, IGuildMember>> fetchMembers(int limit);
 
-	CompletableFuture<IAuditLog> getAuditLog(AuditLogActions action);
+	CompletableFuture<IAuditLog> getAuditLog(ActionTypes action);
 
 	CompletableFuture<IAuditLog> getAuditLog(IAuditLogEntry before);
 
 	CompletableFuture<IAuditLog> getAuditLog(IUser user);
 
-	CompletableFuture<IAuditLog> getAuditLog(IUser user, AuditLogActions action, IAuditLogEntry before, short limit);
+	CompletableFuture<IAuditLog> getAuditLog(IUser user, ActionTypes action, IAuditLogEntry before, short limit);
 
 	CompletableFuture<IAuditLog> getAuditLog(short limit);
 
@@ -252,7 +254,9 @@ public interface IGuild extends ISnowflake, ICreationTime {
 
 	CompletableFuture<List<IIntegration>> getIntegrations();
 
-	CompletableFuture<List<IInvite>> getInvites();
+	IInvite getInvite(String code);
+
+	List<IInvite> getInvites();
 
 	/**
 	 * @return the current instance of {@link DiscLoader}
@@ -303,6 +307,10 @@ public interface IGuild extends ISnowflake, ICreationTime {
 	IRole getRoleByName(String name);
 
 	Map<Long, IRole> getRoles();
+
+	IIcon getSplash();
+
+	String getSplashHash();
 
 	IGuildTextChannel getTextChannelByID(long channelID);
 

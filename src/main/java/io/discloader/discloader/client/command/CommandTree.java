@@ -19,26 +19,28 @@ public class CommandTree extends Command {
 			defaultResponse(e);
 			return;
 		} else if (args.length >= 1) {
-			if (getSubCommands().containsKey(args[0])) {
-				String[] argv = slice(args), argc = new String[args.length - 1];
-				String rest = "";
-				for (String arg : argv)
-					rest += (arg + " ");
-				Matcher argM = getSubCommands().get(args[0]).getArgsPattern().matcher(rest);
-				if (argM.find()) {
-					argc = new String[argM.groupCount()];
-					for (int i = 0; i < argM.groupCount(); i++) {
-						try {
-							argc[i] = argM.group(i + 1);
-						} catch (Exception ex) {
-							ex.printStackTrace();
+			for (Command cmd : getSubCommands().values()) {
+				if (cmd.getUnlocalizedName().equalsIgnoreCase(args[0]) || cmd.getAliases().contains(args[0])) {
+					String[] argv = slice(args), argc = new String[args.length - 1];
+					String rest = "";
+					for (String arg : argv)
+						rest += (arg + " ");
+					Matcher argM = cmd.getArgsPattern().matcher(rest);
+					if (argM.find()) {
+						argc = new String[argM.groupCount()];
+						for (int i = 0; i < argM.groupCount(); i++) {
+							try {
+								argc[i] = argM.group(i + 1);
+							} catch (Exception ex) {
+								ex.printStackTrace();
+							}
 						}
 					}
-				}
-				if (e.getMessage().getGuild() != null && getSubCommands().get(args[0]).shouldExecute(e.getMessage().getMember(), (IGuildTextChannel) e.getChannel())) {
-					getSubCommands().get(args[0]).execute(e, argc);
-				} else {
-					getSubCommands().get(args[0]).execute(e, argc);
+					if (e.getMessage().getGuild() != null && cmd.shouldExecute(e.getMessage().getMember(), (IGuildTextChannel) e.getChannel())) {
+						cmd.execute(e, argc);
+					} else {
+						cmd.execute(e, argc);
+					}
 				}
 			}
 		}
@@ -62,7 +64,7 @@ public class CommandTree extends Command {
 		return;
 	}
 
-	private String subsText(CommandTree cmdt, int l) {
+	protected String subsText(CommandTree cmdt, int l) {
 		String text = "";
 		for (Command sub : getSubCommands().values()) {
 			if (sub instanceof CommandTree) text += subsText((CommandTree) sub, l + 1);

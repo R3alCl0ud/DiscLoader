@@ -35,7 +35,7 @@ public class GuildInfo<T> extends AbstractInfo<T> {
 	public void update(Object object) {
 		Guild guild = (Guild) object;
 		this.id.setText(String.format("ID: %s", guild.getID()));
-		this.name.setText(String.format("Name: %s", guild.name));
+		this.name.setText(String.format("Name: %s", guild.getName()));
 		this.region.setText(String.format("Region: %s", guild.getVoiceRegion().id));
 	}
 	

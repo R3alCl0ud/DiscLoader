@@ -26,10 +26,10 @@ public class AuditLog implements IAuditLog {
 	private Map<Long, IAuditLogEntry> entries;
 
 	public AuditLog(IGuild guild, AuditLogJSON data) {
+		this.guild = guild;
 		users = new HashMap<>();
 		webhooks = new HashMap<>();
 		entries = new HashMap<>();
-
 		for (UserJSON ud : data.users) {
 			IUser user = EntityRegistry.addUser(ud);
 			users.put(user.getID(), user);
@@ -41,7 +41,7 @@ public class AuditLog implements IAuditLog {
 		}
 
 		for (AuditLogEntryJSON ed : data.audit_log_entries) {
-			IAuditLogEntry en = new AuditLogEntry(ed);
+			IAuditLogEntry en = new AuditLogEntry(this, ed);
 			entries.put(en.getID(), en);
 		}
 	}

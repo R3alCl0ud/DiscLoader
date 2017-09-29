@@ -32,14 +32,13 @@ import io.discloader.discloader.common.registry.EntityRegistry;
 import io.discloader.discloader.common.registry.factory.GuildFactory;
 import io.discloader.discloader.core.entity.Presence;
 import io.discloader.discloader.core.entity.auditlog.AuditLog;
-import io.discloader.discloader.core.entity.channel.TextChannel;
 import io.discloader.discloader.core.entity.channel.VoiceChannel;
 import io.discloader.discloader.core.entity.invite.Invite;
 import io.discloader.discloader.core.entity.user.User;
 import io.discloader.discloader.entity.IIcon;
 import io.discloader.discloader.entity.IOverwrite;
 import io.discloader.discloader.entity.IPresence;
-import io.discloader.discloader.entity.auditlog.AuditLogActions;
+import io.discloader.discloader.entity.auditlog.ActionTypes;
 import io.discloader.discloader.entity.auditlog.IAuditLog;
 import io.discloader.discloader.entity.auditlog.IAuditLogEntry;
 import io.discloader.discloader.entity.channel.IChannel;
@@ -66,7 +65,6 @@ import io.discloader.discloader.network.json.AuditLogJSON;
 import io.discloader.discloader.network.json.ChannelJSON;
 import io.discloader.discloader.network.json.EmojiJSON;
 import io.discloader.discloader.network.json.GuildJSON;
-import io.discloader.discloader.network.json.InviteJSON;
 import io.discloader.discloader.network.json.MemberJSON;
 import io.discloader.discloader.network.json.PresenceJSON;
 import io.discloader.discloader.network.json.RoleJSON;
@@ -92,123 +90,27 @@ public class Guild implements IGuild {
 		}
 	}
 
-	/**
-	 * The guild's Snowflake ID.
-	 */
-	private String id;
+	private String id, name, icon, iconURL, splashHash, afk_channel_id;
 
-	/**
-	 * The guild's name
-	 */
-	public String name;
-
-	/**
-	 * The guild's owner's Snowflake ID.
-	 */
 	public long ownerID;
 
-	/**
-	 * The hash code of the guild's icon
-	 */
-	public String icon;
-
-	/**
-	 * The url to where the {@link #icon} is located
-	 */
-	public String iconURL;
-
-	/**
-	 * The guild's splash screen
-	 */
 	public GuildSplash splash;
 
-	/**
-	 * The hash of the guild splash.
-	 */
-	public String splashHash;
-
-	/**
-	 * The amount of members in the guild, {@link #members members.size()} maybe
-	 * not be equal to {@link #memberCount} if this is a
-	 * {@link #isLarge() large} {@link Guild guild}, as {@link #members} is a
-	 * map of the currently cached {@link GuildMember guild members}.
-	 */
 	private int memberCount;
 
-	/**
-	 * Whether or not the guild is currently available
-	 */
 	public boolean available;
 
-	private String afk_channel_id;
-
-	/**
-	 * The instance of the {@link DiscLoader loader} the cached the guild
-	 */
 	private final DiscLoader loader;
 
-	/**
-	 * A HashMap of the guild's cached members. Indexed by member ID.
-	 * 
-	 * @see GuildMember
-	 * @see HashMap
-	 * @author Perry Berman
-	 */
-	public HashMap<Long, IGuildMember> members;
-
-	/**
-	 * A HashMap of the guild's TextChannels. Indexed by channel ID.
-	 * 
-	 * @see TextChannel
-	 * @see HashMap
-	 * @author Perry Berman
-	 */
+	public Map<Long, IGuildMember> members;
 	private Map<Long, IGuildTextChannel> textChannels;
-
-	/**
-	 * A HashMap of the guild's VoiceChannels. Indexed by channel ID.
-	 * 
-	 * @see VoiceChannel
-	 * @see HashMap
-	 * @author Perry Berman
-	 */
-	private HashMap<Long, IGuildVoiceChannel> voiceChannels;
-
+	private Map<Long, IGuildVoiceChannel> voiceChannels;
 	private Map<Long, IChannelCategory> categories;
-
-	/**
-	 * A HashMap of the guild's roles. Indexed by role ID.
-	 * 
-	 * @see Role
-	 * @see HashMap
-	 * @author Perry Berman
-	 */
-	public HashMap<Long, IRole> roles;
-
-	/**
-	 * A HashMap of the presences of the guild's members
-	 * 
-	 * @see GuildMember
-	 * @see Presence
-	 * @see HashMap
-	 * @author Perry Berman
-	 */
+	public Map<Long, IRole> roles;
 	public Map<Long, IPresence> presences;
-
-	/**
-	 * A HashMap of the guild's custom emojis. Indexed by {@link GuildEmoji#id}
-	 * 
-	 * @author Perry Berman
-	 */
 	public Map<Long, IGuildEmoji> guildEmojis;
-
-	/**
-	 * A Private HashMap of the guild's raw voice states. Indexed by
-	 * {@link GuildMember#getID}
-	 * 
-	 * @author Perry Berman
-	 */
-	private HashMap<Long, VoiceState> rawStates;
+	private Map<Long, VoiceState> rawStates;
+	private Map<String, IInvite> invites;
 
 	/**
 	 * The guild's current voice region
@@ -234,6 +136,7 @@ public class Guild implements IGuild {
 		presences = new HashMap<>();
 		guildEmojis = new HashMap<>();
 		rawStates = new HashMap<>();
+		invites = new HashMap<>();
 		voiceRegion = new VoiceRegion("us-central");
 
 		if (data != null && data.unavailable == true) {
@@ -611,7 +514,7 @@ public class Guild implements IGuild {
 	}
 
 	@Override
-	public CompletableFuture<IAuditLog> getAuditLog(AuditLogActions action) {
+	public CompletableFuture<IAuditLog> getAuditLog(ActionTypes action) {
 		CompletableFuture<IAuditLog> future = new CompletableFuture<>();
 		return future;
 	}
@@ -629,7 +532,7 @@ public class Guild implements IGuild {
 	}
 
 	@Override
-	public CompletableFuture<IAuditLog> getAuditLog(IUser user, AuditLogActions action, IAuditLogEntry before, short limit) {
+	public CompletableFuture<IAuditLog> getAuditLog(IUser user, ActionTypes action, IAuditLogEntry before, short limit) {
 		CompletableFuture<IAuditLog> future = new CompletableFuture<>();
 		JSONObject params = new JSONObject().put("user_id", SnowflakeUtil.asString(user)).put("action_type", action.toInt()).put("before", SnowflakeUtil.asString(before)).put("limit", limit);
 		loader.rest.request(Methods.GET, Endpoints.auditLogs(getID()), new RESTOptions(params), AuditLogJSON.class).thenAcceptAsync(al -> {
@@ -742,16 +645,9 @@ public class Guild implements IGuild {
 	 * @return A Future that completes with a HashMap of Invite objects, indexed
 	 *         by {@link Invite#code}, if successful.
 	 */
-	public CompletableFuture<List<IInvite>> getInvites() {
-		CompletableFuture<List<IInvite>> future = new CompletableFuture<>();
-		List<IInvite> invites = new ArrayList<>();
-		loader.rest.getInvites(this).thenAcceptAsync(action -> {
-			for (InviteJSON data : action) {
-				invites.add(EntityBuilder.getInviteFactory().buildInvite(data));
-			}
-			future.complete(invites);
-		});
-		return future;
+	@Override
+	public List<IInvite> getInvites() {
+		return new ArrayList<>(invites.values());
 	}
 
 	@Override
@@ -1096,6 +992,26 @@ public class Guild implements IGuild {
 	@Override
 	public void updateVoiceState(VoiceState state) {
 		rawStates.put(state.member.getID(), state);
+	}
+
+	@Override
+	public CompletableFuture<List<IInvite>> fetchInvites() {
+		return null;
+	}
+
+	@Override
+	public IInvite getInvite(String code) {
+		return null;
+	}
+
+	@Override
+	public IIcon getSplash() {
+		return splash;
+	}
+
+	@Override
+	public String getSplashHash() {
+		return splashHash;
 	}
 
 }

@@ -1,5 +1,7 @@
 package io.discloader.discloader.client.command;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.regex.Pattern;
 
 import io.discloader.discloader.client.registry.TextureRegistry;
@@ -69,6 +71,13 @@ public class Command {
 	 */
 	public void execute(MessageCreateEvent e, String[] args) {
 		execute(e);
+	}
+
+	/**
+	 * Get a list of aliases for this command. <b>Never return null!</b>
+	 */
+	public List<String> getAliases() {
+		return new ArrayList<>();
 	}
 
 	/**
