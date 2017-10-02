@@ -82,7 +82,7 @@ public class CommandHandler {
 		}
 		for (Command command : CommandRegistry.commands.entries()) {
 			String localized = LanguageRegistry.getLocalized(locale, "command." + command.getUnlocalizedName() + ".name");
-			if ((localized != null && localized.equals(label)) || command.getUnlocalizedName().equals(label)) {
+			if ((localized != null && localized.equals(label)) || command.getUnlocalizedName().equals(label)|| command.getAliases().contains(label)) {
 				return command;
 			}
 		}
