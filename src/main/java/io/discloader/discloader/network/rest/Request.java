@@ -12,6 +12,11 @@ public class Request<T> {
 	private CompletableFuture<T> future;
 	
 	private Object data;
+	private RESTOptions options;
+	public Request(RESTOptions options) {
+		this(options.getPayload());
+		this.options = options;
+	}
 	
 	public Request(Object data) {
 		future = new CompletableFuture<>();
@@ -34,6 +39,10 @@ public class Request<T> {
 	
 	public CompletableFuture<T> getFuture() {
 		return future;
+	}
+
+	public RESTOptions getOptions() {
+		return options;
 	}
 	
 }

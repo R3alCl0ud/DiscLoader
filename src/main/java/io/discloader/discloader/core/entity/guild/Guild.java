@@ -249,7 +249,22 @@ public class Guild implements IGuild {
 
 	@Override
 	public CompletableFuture<IGuildMember> ban(IGuildMember member) {
-		return loader.rest.banMember(this, member);
+		if (!hasPermission(Permissions.BAN_MEMBERS)) throw new PermissionsException("");
+		CompletableFuture<IGuildMember> future = new CompletableFuture<>();
+		loader.rest.request(Methods.PUT, Endpoints.guildBanMember(getID(), member.getID()), new RESTOptions(), Void.class).thenAcceptAsync(action -> {
+			future.complete(member);
+		});
+		return future;
+	}
+
+	@Override
+	public CompletableFuture<IGuildMember> ban(IGuildMember member, String reason) throws PermissionsException {
+		if (!hasPermission(Permissions.BAN_MEMBERS)) throw new PermissionsException("");
+		CompletableFuture<IGuildMember> future = new CompletableFuture<>();
+		loader.rest.request(Methods.PUT, Endpoints.guildBanMember(getID(), member.getID()), new RESTOptions(reason), Void.class).thenAcceptAsync(action -> {
+			future.complete(member);
+		});
+		return future;
 	}
 
 	@Override
@@ -459,6 +474,11 @@ public class Guild implements IGuild {
 		return guild.name.equals(name) && guild.ownerID == ownerID && guild.icon.equals(icon) && (isSyncing() == guild.isSyncing());
 	}
 
+	@Override
+	public CompletableFuture<List<IInvite>> fetchInvites() {
+		return null;
+	}
+
 	public CompletableFuture<IGuildMember> fetchMember(long memberID) {
 		return loader.rest.loadGuildMember(this, memberID);
 	}
@@ -639,6 +659,11 @@ public class Guild implements IGuild {
 		return null;
 	}
 
+	@Override
+	public IInvite getInvite(String code) {
+		return null;
+	}
+
 	/**
 	 * Retrieves the guild's invites from Discord's API
 	 * 
@@ -733,6 +758,16 @@ public class Guild implements IGuild {
 	@Override
 	public Map<Long, IRole> getRoles() {
 		return roles;
+	}
+
+	@Override
+	public IIcon getSplash() {
+		return splash;
+	}
+
+	@Override
+	public String getSplashHash() {
+		return splashHash;
 	}
 
 	@Override
@@ -992,26 +1027,6 @@ public class Guild implements IGuild {
 	@Override
 	public void updateVoiceState(VoiceState state) {
 		rawStates.put(state.member.getID(), state);
-	}
-
-	@Override
-	public CompletableFuture<List<IInvite>> fetchInvites() {
-		return null;
-	}
-
-	@Override
-	public IInvite getInvite(String code) {
-		return null;
-	}
-
-	@Override
-	public IIcon getSplash() {
-		return splash;
-	}
-
-	@Override
-	public String getSplashHash() {
-		return splashHash;
 	}
 
 }

@@ -72,6 +72,20 @@ public interface IGuild extends ISnowflake, ICreationTime {
 	 * @throws PermissionsException
 	 */
 	CompletableFuture<IGuildMember> ban(IGuildMember member) throws PermissionsException;
+	
+	
+	/**
+	 * Bans the member from the {@link Guild} if the {@link DiscLoader loader}
+	 * has sufficient permissions
+	 *
+	 * @param member The member to ban from the guild
+	 * @param reason The reason of which the member has been banned
+	 * @see Permissions
+	 * @return A CompletableFuture that completes with {@code this} if
+	 *         successful
+	 * @throws PermissionsException
+	 */
+	CompletableFuture<IGuildMember> ban(IGuildMember member, String reason) throws PermissionsException;
 
 	/**
 	 * Begin a prune operation. Requires the {@link Permissions#KICK_MEMBERS
