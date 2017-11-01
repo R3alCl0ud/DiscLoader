@@ -7,6 +7,7 @@ import java.util.concurrent.CompletableFuture;
 import org.json.JSONObject;
 
 import io.discloader.discloader.common.registry.EntityBuilder;
+import io.discloader.discloader.common.registry.EntityRegistry;
 import io.discloader.discloader.entity.IOverwrite;
 import io.discloader.discloader.entity.channel.ChannelTypes;
 import io.discloader.discloader.entity.channel.IChannelCategory;
@@ -17,6 +18,7 @@ import io.discloader.discloader.entity.guild.IGuild;
 import io.discloader.discloader.entity.util.SnowflakeUtil;
 import io.discloader.discloader.network.json.ChannelJSON;
 import io.discloader.discloader.network.rest.RESTOptions;
+import io.discloader.discloader.network.rest.payloads.ChannelPayload;
 import io.discloader.discloader.network.util.Endpoints;
 import io.discloader.discloader.network.util.Methods;
 
@@ -43,27 +45,100 @@ public class ChannelCategory extends GuildChannel implements IChannelCategory {
 
 	@Override
 	public CompletableFuture<IGuildChannel> createChannel(String name, ChannelTypes type) {
-		return null;
+		CompletableFuture<IGuildChannel> future = new CompletableFuture<>();
+		JSONObject data = new JSONObject().put("parent_id", SnowflakeUtil.asString(this)).put("name", name).put("type", type.toInt());
+		CompletableFuture<ChannelJSON> cf = loader.rest.request(Methods.POST, Endpoints.guildChannels(getGuild().getID()), new RESTOptions(data), ChannelJSON.class);
+		cf.thenAcceptAsync(channelJSON -> {
+			if (channelJSON != null) {
+				IGuildChannel channel = (IGuildChannel) EntityRegistry.addChannel(channelJSON, getGuild());
+				if (channel != null)
+					future.complete(channel);
+			}
+		});
+		cf.exceptionally(ex -> {
+			future.completeExceptionally(ex);
+			return null;
+		});
+		return future;
 	}
 
 	@Override
 	public CompletableFuture<IGuildChannel> createChannel(String name, ChannelTypes type, IOverwrite... overwrites) {
-		return null;
+		CompletableFuture<IGuildChannel> future = new CompletableFuture<>();
+		// JSONObject data = new JSONObject().put("parent_id",
+		// SnowflakeUtil.asString(this)).put("name", name).put("type", type.toInt()).;
+		ChannelPayload data = new ChannelPayload(name, type, overwrites);
+		CompletableFuture<ChannelJSON> cf = loader.rest.request(Methods.POST, Endpoints.guildChannels(getGuild().getID()), new RESTOptions(data), ChannelJSON.class);
+		cf.thenAcceptAsync(channelJSON -> {
+			if (channelJSON != null) {
+				IGuildChannel channel = (IGuildChannel) EntityRegistry.addChannel(channelJSON, getGuild());
+				if (channel != null)
+					future.complete(channel);
+			}
+		});
+		cf.exceptionally(ex -> {
+			future.completeExceptionally(ex);
+			return null;
+		});
+		return future;
 	}
 
 	@Override
 	public CompletableFuture<IGuildTextChannel> createTextChannel(String name) {
-		return null;
+		CompletableFuture<IGuildTextChannel> future = new CompletableFuture<>();
+		JSONObject data = new JSONObject().put("parent_id", SnowflakeUtil.asString(this)).put("name", name).put("type", 0);
+		// System.out.println(data.toString());
+		CompletableFuture<ChannelJSON> cf = loader.rest.request(Methods.POST, Endpoints.guildChannels(getGuild().getID()), new RESTOptions(data), ChannelJSON.class);
+		cf.thenAcceptAsync(channelJSON -> {
+			if (channelJSON != null) {
+				IGuildTextChannel channel = (IGuildTextChannel) EntityRegistry.addChannel(channelJSON, getGuild());
+				if (channel != null)
+					future.complete(channel);
+			}
+		});
+		cf.exceptionally(ex -> {
+			future.completeExceptionally(ex);
+			return null;
+		});
+		return future;
 	}
 
 	@Override
 	public CompletableFuture<IGuildTextChannel> createTextChannel(String name, IOverwrite... overwrites) {
-		return null;
+		CompletableFuture<IGuildTextChannel> future = new CompletableFuture<>();
+		ChannelPayload data = new ChannelPayload(name, ChannelTypes.TEXT, overwrites);
+		CompletableFuture<ChannelJSON> cf = loader.rest.request(Methods.POST, Endpoints.guildChannels(getGuild().getID()), new RESTOptions(data), ChannelJSON.class);
+		cf.thenAcceptAsync(channelJSON -> {
+			if (channelJSON != null) {
+				IGuildTextChannel channel = (IGuildTextChannel) EntityRegistry.addChannel(channelJSON, getGuild());
+				if (channel != null)
+					future.complete(channel);
+			}
+		});
+		cf.exceptionally(ex -> {
+			future.completeExceptionally(ex);
+			return null;
+		});
+		return future;
 	}
 
 	@Override
 	public CompletableFuture<IGuildVoiceChannel> createVoiceChannel(String name) {
-		return null;
+		CompletableFuture<IGuildVoiceChannel> future = new CompletableFuture<>();
+		JSONObject data = new JSONObject().put("parent_id", SnowflakeUtil.asString(this)).put("name", name).put("type", 2);
+		CompletableFuture<ChannelJSON> cf = loader.rest.request(Methods.POST, Endpoints.guildChannels(getGuild().getID()), new RESTOptions(data), ChannelJSON.class);
+		cf.thenAcceptAsync(channelJSON -> {
+			if (channelJSON != null) {
+				IGuildVoiceChannel channel = (IGuildVoiceChannel) EntityRegistry.addChannel(channelJSON, getGuild());
+				if (channel != null)
+					future.complete(channel);
+			}
+		});
+		cf.exceptionally(ex -> {
+			future.completeExceptionally(ex);
+			return null;
+		});
+		return future;
 	}
 
 	@Override
@@ -75,7 +150,8 @@ public class ChannelCategory extends GuildChannel implements IChannelCategory {
 	public Map<Long, IGuildChannel> getChannels() {
 		Map<Long, IGuildChannel> channels = new HashMap<>();
 		for (IGuildChannel channel : guild.getChannels().values()) {
-			if (channel.inCategory(this)) channels.put(channel.getID(), channel);
+			if (channel.inCategory(this))
+				channels.put(channel.getID(), channel);
 		}
 		return channels;
 	}
@@ -84,7 +160,8 @@ public class ChannelCategory extends GuildChannel implements IChannelCategory {
 	public Map<Long, IGuildTextChannel> getTextChannels() {
 		Map<Long, IGuildTextChannel> channels = new HashMap<>();
 		for (IGuildTextChannel channel : getGuild().getTextChannels().values()) {
-			if (channel.inCategory(this)) channels.put(channel.getID(), channel);
+			if (channel.inCategory(this))
+				channels.put(channel.getID(), channel);
 		}
 		return channels;
 	}
@@ -93,7 +170,8 @@ public class ChannelCategory extends GuildChannel implements IChannelCategory {
 	public Map<Long, IGuildVoiceChannel> getVoiceChannels() {
 		Map<Long, IGuildVoiceChannel> channels = new HashMap<>();
 		for (IGuildVoiceChannel channel : getGuild().getVoiceChannels().values()) {
-			if (channel.inCategory(this)) channels.put(channel.getID(), channel);
+			if (channel.inCategory(this))
+				channels.put(channel.getID(), channel);
 		}
 		return channels;
 	}

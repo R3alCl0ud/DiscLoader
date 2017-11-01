@@ -81,21 +81,44 @@ public class GuildChannel extends Channel implements IGuildChannel {
 		overwrites = new HashMap<>();
 	}
 
+	@Override
+	public CompletableFuture<IGuildChannel> delete() {
+		return new CloseGuildChannel(this).execute();
+	}
+	
 	// @Override
 	// public CompletableFuture<IGuildChannel> clone() {
 	// return guild.createTextChannel(name);
 	// }
 
 	@Override
-	public CompletableFuture<IGuildChannel> delete() {
-		return new CloseGuildChannel(this).execute();
-	}
-
-	@Override
 	public CompletableFuture<IOverwrite> deleteOverwrite(IOverwrite overwrite) {
 		CompletableFuture<IOverwrite> future = new CompletableFuture<>();
 		loader.rest.request(Methods.DELETE, Endpoints.channelOverwrite(getID(), overwrite.getID()), new RESTOptions(), Void.class).thenAcceptAsync(n -> {
 			future.complete(overwrite);
+		}).exceptionally(ex -> {
+			future.completeExceptionally(ex);
+			return null;
+		});
+		return future;
+	}
+
+	@Override
+	public CompletableFuture<List<IOverwrite>> deleteOverwrites(IOverwrite... overwrites) {
+		CompletableFuture<List<IOverwrite>> future = new CompletableFuture<>();
+		List<IOverwrite> keep = new ArrayList<>(), removed = new ArrayList<>();
+		for (IOverwrite ow : this.overwrites.values())
+			keep.add(ow);
+		for (IOverwrite ow : overwrites) {
+			if (this.overwrites.containsKey(ow.getID())) {
+				keep.remove(this.overwrites.get(ow.getID()));
+				removed.add(this.overwrites.get(ow.getID()));
+			}
+		}
+
+		JSONObject props = new JSONObject().put("permission_overwrites", keep);
+		loader.rest.request(Methods.PATCH, Endpoints.channel(getID()), new RESTOptions(props), ChannelJSON.class).thenAcceptAsync(data -> {
+			future.complete(removed);
 		}).exceptionally(ex -> {
 			future.completeExceptionally(ex);
 			return null;
@@ -125,29 +148,6 @@ public class GuildChannel extends Channel implements IGuildChannel {
 	//// });
 	// return future;
 	// }
-
-	@Override
-	public CompletableFuture<List<IOverwrite>> deleteOverwrites(IOverwrite... overwrites) {
-		CompletableFuture<List<IOverwrite>> future = new CompletableFuture<>();
-		List<IOverwrite> keep = new ArrayList<>(), removed = new ArrayList<>();
-		for (IOverwrite ow : this.overwrites.values())
-			keep.add(ow);
-		for (IOverwrite ow : overwrites) {
-			if (this.overwrites.containsKey(ow.getID())) {
-				keep.remove(this.overwrites.get(ow.getID()));
-				removed.add(this.overwrites.get(ow.getID()));
-			}
-		}
-
-		JSONObject props = new JSONObject().put("permission_overwrites", keep);
-		loader.rest.request(Methods.PATCH, Endpoints.channel(getID()), new RESTOptions(props), ChannelJSON.class).thenAcceptAsync(data -> {
-			future.complete(removed);
-		}).exceptionally(ex -> {
-			future.completeExceptionally(ex);
-			return null;
-		});
-		return future;
-	}
 
 	@Override
 	public CompletableFuture<? extends IGuildChannel> edit(int position, boolean nsfw) {
@@ -270,6 +270,10 @@ public class GuildChannel extends Channel implements IGuildChannel {
 			raw &= ~overwrite.getDenied();
 		}
 		return new Permission(member, this, raw);
+	}
+
+	protected String sanitizeChannelName(String name) {
+		return name.toLowerCase().replace(' ', '-');
 	}
 
 	@Override

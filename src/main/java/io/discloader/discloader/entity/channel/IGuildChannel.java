@@ -36,9 +36,12 @@ public interface IGuildChannel extends IChannel {
 	/**
 	 * Changes the channels settings
 	 * 
-	 * @param name The new name for the channel
-	 * @param position The new position for the channel
-	 * @param nsfw whether or not the channel is NSFW.
+	 * @param name
+	 *            The new name for the channel
+	 * @param position
+	 *            The new position for the channel
+	 * @param nsfw
+	 *            whether or not the channel is NSFW.
 	 * @return A Future that completes with a IGuildChannel if successful
 	 * @throws PermissionsException
 	 */
@@ -50,10 +53,6 @@ public interface IGuildChannel extends IChannel {
 	// topic, int position, int bitrate, int userLimit);
 
 	IChannelCategory getCategory();
-
-	boolean inCategory();
-
-	boolean inCategory(IChannelCategory category);
 
 	/**
 	 * @return
@@ -71,7 +70,13 @@ public interface IGuildChannel extends IChannel {
 
 	String getName();
 
+	Map<Long, IOverwrite> getOverwrites();
+
 	int getPosition();
+
+	boolean inCategory();
+
+	boolean inCategory(IChannelCategory category);
 
 	boolean isNSFW();
 
@@ -81,8 +86,8 @@ public interface IGuildChannel extends IChannel {
 	 * Gets all of the channel's {@link IOverwrite overwrites} that applies to a
 	 * {@link IGuildMember}
 	 * 
-	 * @param member The member of whom we are looking for overwrites that
-	 *            apply.
+	 * @param member
+	 *            The member of whom we are looking for overwrites that apply.
 	 * @author Perry Berman
 	 * @return A {@link List} of {@link IOverwrite} objects.
 	 * @version <strike>0.0.1</strike> Updated in version 0.1.1
@@ -93,10 +98,11 @@ public interface IGuildChannel extends IChannel {
 	/**
 	 * Evaluates the permissions for a member in the channel's {@link Guild}
 	 * 
-	 * @param iGuildMember The member whose permissions we are evaluating.
+	 * @param iGuildMember
+	 *            The member whose permissions we are evaluating.
 	 * @return A new Permissions object that contains {@literal this}, the
-	 *         {@literal member}, and their evaluated permissions
-	 *         {@link Integer}. <br>
+	 *         {@literal member}, and their evaluated permissions {@link Integer}.
+	 *         <br>
 	 *         null if the channel doesn't belong to a {@link Guild}
 	 */
 	IPermission permissionsOf(IGuildMember iGuildMember);
@@ -106,7 +112,8 @@ public interface IGuildChannel extends IChannel {
 	/**
 	 * Sets the name of the channel.
 	 * 
-	 * @param name New name for the channel who we are modifying.
+	 * @param name
+	 *            New name for the channel who we are modifying.
 	 * @return A completed future object with the new name set, if successful.
 	 */
 	CompletableFuture<? extends IGuildChannel> setName(String name);
@@ -124,11 +131,14 @@ public interface IGuildChannel extends IChannel {
 	 * setPermissions(READ_MESSAGE &amp; SEND_MESSAGE, 0x00000000, role);
 	 * </pre>
 	 * 
-	 * @param allow Raw integer representations for allowed permissions.
-	 * @param deny Raw integer representations for denied permissions.
-	 * @param member The {@link IGuildMember} to set an overwrite for.
-	 * @return A Future that completes with the member's new permission
-	 *         overwrite, if successful.
+	 * @param allow
+	 *            Raw integer representations for allowed permissions.
+	 * @param deny
+	 *            Raw integer representations for denied permissions.
+	 * @param member
+	 *            The {@link IGuildMember} to set an overwrite for.
+	 * @return A Future that completes with the member's new permission overwrite,
+	 *         if successful.
 	 */
 	CompletableFuture<IOverwrite> setPermissions(int allow, int deny, IGuildMember member);
 
@@ -139,18 +149,22 @@ public interface IGuildChannel extends IChannel {
 	 * setPermissions(READ_MESSAGE &amp; SEND_MESSAGE, 0x00000000, role);
 	 * </pre>
 	 * 
-	 * @param allow Raw integer representations for allowed permissions.
-	 * @param deny Raw integer representations for denied permissions.
-	 * @param role The role to set an overwrite for.
-	 * @return A Future that completes with the role's new permission overwrite
-	 *         if successful.
+	 * @param allow
+	 *            Raw integer representations for allowed permissions.
+	 * @param deny
+	 *            Raw integer representations for denied permissions.
+	 * @param role
+	 *            The role to set an overwrite for.
+	 * @return A Future that completes with the role's new permission overwrite if
+	 *         successful.
 	 */
 	CompletableFuture<IOverwrite> setPermissions(int allow, int deny, Role role);
 
 	/**
 	 * Sets position in a channel's {@link Guild}
 	 * 
-	 * @param position The new possition of the channel
+	 * @param position
+	 *            The new possition of the channel
 	 * @return A completed future with the position set.
 	 */
 	CompletableFuture<? extends IGuildChannel> setPosition(int position);

@@ -53,6 +53,7 @@ public class EntityRegistry {
 			if (channel instanceof IGroupChannel) groupChannels.put(channel.getID(), (IGroupChannel) channel);
 			if (channel instanceof IVoiceChannel) voiceChannels.put(channel.getID(), (IVoiceChannel) channel);
 			if (channel instanceof IGuildChannel) guildChannels.put(channel.getID(), (IGuildChannel) channel);
+			if (channel instanceof IChannelCategory) categories.put(channel.getID(), (IChannelCategory) channel);
 		}
 		return channel;
 	}
@@ -94,11 +95,11 @@ public class EntityRegistry {
 		return categories;
 	}
 
-	public static IChannel getChannelCategoryByID(long channelID) {
+	public static IChannelCategory getChannelCategoryByID(long channelID) {
 		return categories.get(channelID);
 	}
 
-	public static IChannel getChannelCategoryByID(String channelID) {
+	public static IChannelCategory getChannelCategoryByID(String channelID) {
 		return categories.get(SnowflakeUtil.parse(channelID));
 	}
 

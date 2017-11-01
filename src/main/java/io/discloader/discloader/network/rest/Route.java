@@ -7,6 +7,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 
+import org.json.JSONObject;
+
 import com.mashape.unirest.http.HttpResponse;
 import com.mashape.unirest.http.Unirest;
 import com.mashape.unirest.http.async.Callback;
@@ -31,18 +33,18 @@ import io.discloader.discloader.util.DLUtil;
  * @author Perry Berman
  */
 public class Route<T> {
-	
+
 	private final RateLimiter rateLimiter;
 	private final List<Request<T>> queue;
 	private final Class<T> cls;
 	private final RESTManager rest;
-	
+
 	private final String endpoint;
 	private final Methods method;
-	
+
 	private final boolean auth;
 	private boolean waiting;
-	
+
 	public Route(RESTManager rest, String endpoint, Methods method, boolean auth, Class<T> cls) {
 		queue = new ArrayList<>();
 		this.method = method;
@@ -53,20 +55,21 @@ public class Route<T> {
 		this.rest = rest;
 		this.cls = cls;
 	}
-	
+
 	public CompletableFuture<T> push(Request<T> apiRequest) {
 		queue.add(apiRequest);
 		handle();
 		return apiRequest.getFuture();
 	}
-	
+
 	public void handle() {
-		if (waiting || rateLimiter.isLimited() || queue.isEmpty()) return;
+		if (waiting || rateLimiter.isLimited() || queue.isEmpty())
+			return;
 		waiting = true;
 		Request<T> apiRequest = queue.remove(0);
 		BaseRequest request = createRequest(apiRequest);
 		request.asStringAsync(new Callback<String>() {
-			
+
 			@Override
 			public void completed(HttpResponse<String> response) {
 				try {
@@ -92,83 +95,106 @@ public class Route<T> {
 					e.printStackTrace();
 				}
 			}
-			
+
 			@Override
 			public void failed(UnirestException e) {
 				queue.add(0, apiRequest);
-				
+
 			}
-			
+
 			@Override
-			public void cancelled() {
-			}
-			
+			public void cancelled() {}
+
 		});
 	}
-	
+
 	public BaseRequest createRequest(Request<T> request) {
 		BaseRequest base = null;
 		switch (method) {
-			case GET:
-				base = Unirest.get(endpoint);
-				break;
-			case POST:
-				base = Unirest.post(endpoint);
+		case GET:
+			base = Unirest.get(endpoint);
+			break;
+		case POST:
+			base = Unirest.post(endpoint);
+			if (request.getData() instanceof SendableMessage) {
 				MultipartBody body = ((HttpRequestWithBody) base).fields(null);
-				body.field("Content-type", "multipart/form-data");
+				body.field("Content-Type", "multipart/form-data");
 				System.out.println(gson.toJson(request.getData()));
-				if (request.getData() instanceof SendableMessage) {
-					SendableMessage sdata = (SendableMessage) request.getData();
-					if (sdata.file != null || sdata.resource != null) {
-						try {
-							File file = sdata.file;
-							Resource resource = sdata.resource;
-							byte[] bytes = new byte[0];
-							if (file != null) bytes = DLUtil.readAllBytes(file);
-							if (resource != null && resource.getResourceAsStream() != null) bytes = DLUtil.readAllBytes(resource);
-							String loc = "";
-							if (file != null) loc = file.getName();
-							if (resource != null) loc = resource.getFileName();
-							body.field("file", bytes, loc);
-							System.out.println(gson.toJson(sdata));
-						} catch (Exception ex) {
-							ex.printStackTrace();
-						}
+				SendableMessage sdata = (SendableMessage) request.getData();
+				if (sdata.file != null || sdata.resource != null) {
+					try {
+						File file = sdata.file;
+						Resource resource = sdata.resource;
+						byte[] bytes = new byte[0];
+						if (file != null)
+							bytes = DLUtil.readAllBytes(file);
+						if (resource != null && resource.getResourceAsStream() != null)
+							bytes = DLUtil.readAllBytes(resource);
+						String loc = "";
+						if (file != null)
+							loc = file.getName();
+						if (resource != null)
+							loc = resource.getFileName();
+						body.field("file", bytes, loc);
+						System.out.println(gson.toJson(sdata));
+					} catch (Exception ex) {
+						ex.printStackTrace();
 					}
 				}
-				body.field("payload_json", gson.toJson(request.getData()));
-				break;
-			case DELETE:
-				base = Unirest.delete(endpoint);
-				break;
-			case PATCH:
-				base = Unirest.patch(endpoint);
-				break;
-			case PUT:
-				base = Unirest.put(endpoint);
-				break;
-			default:
-				base = Unirest.get(endpoint);
-				break;
+				try {
+					if (request.getData() instanceof JSONObject) {
+						System.out.println("JSON: " + request.getData().toString());
+						body.field("payload_json", request.getData().toString());
+					} else {
+						body.field("payload_json", gson.toJson(request.getData()));
+					}
+				} catch (Exception ex) {
+					ex.printStackTrace();
+				}
+			} else {
+				base.getHttpRequest().header("Content-Type", "application/json");
+				if (request.getData() instanceof JSONObject) {
+					System.out.println("JSON Object");
+					((HttpRequestWithBody) base).body(request.getData().toString());
+				} else {
+					((HttpRequestWithBody) base).body(gson.toJson(request.getData()));
+				}
+			}
+			break;
+		case DELETE:
+			base = Unirest.delete(endpoint);
+			break;
+		case PATCH:
+			base = Unirest.patch(endpoint);
+			break;
+		case PUT:
+			base = Unirest.put(endpoint);
+			break;
+		default:
+			base = Unirest.get(endpoint);
+			break;
 		}
+		// body.
 		HttpRequest httprequest = base.getHttpRequest();
-		if (auth && rest.loader.token != null) httprequest.header("Authorization", rest.loader.token);
-		if (request.getOptions().getReason() != null) httprequest.header("X-Audit-Log-Reason", request.getOptions().getReason());
-		httprequest.header("user-agent", "DiscordBot (http://discloader.io, v0.1.1)");
+		if (auth && rest.loader.token != null)
+			httprequest.header("Authorization", rest.loader.token);
+		if (request.getOptions() != null && request.getOptions().getReason() != null)
+			httprequest.header("X-Audit-Log-Reason", request.getOptions().getReason());
+		httprequest.header("user-agent", "DiscordBot (http://discloader.io, v0.2.0)");
 		httprequest.header("Accept-Encoding", "gzip");
 		return base;
 	}
-	
+
 	public String toString() {
 		return endpoint;
 	}
-	
+
 	/**
 	 * @return the rest
 	 */
 	public RESTManager getREST() {
 		return this.rest;
 	}
-	
+
 	// public void setWaiting
 }
