@@ -47,7 +47,7 @@ public class PresenceUpdate extends AbstractHandler {
 				member = guild.addMember(user, data.roles, false, false, data.nick, false);
 				loader.emit(DLUtil.Events.GUILD_MEMBER_AVAILABLE, member);
 			} else if (oldMember != null) {
-				member = guild.addMember(user, data.roles, oldMember.isDeaf(), oldMember.isMuted(), data.nick, false);
+				member = guild.addMember(user, data.roles, oldMember.isDeafened(), oldMember.isMuted(), data.nick, false);
 				guild.setPresence(data);
 				loader.emit(new GuildMemberUpdateEvent(member, oldMember, guild));
 			} else {

@@ -43,6 +43,8 @@ public interface IGuildMember extends ISnowflake, IMentionable {
 	
 	IUser getUser();
 	
+	boolean hasRole(IRole role);
+	
 	CompletableFuture<IGuildMember> setNick(String nick);
 	
 	IGuildVoiceChannel getVoiceChannel();
@@ -51,7 +53,7 @@ public interface IGuildMember extends ISnowflake, IMentionable {
 	
 	CompletableFuture<IGuildMember> giveRole(IRole... roles);
 	
-	boolean isDeaf();
+	boolean isDeafened();
 	
 	boolean isMuted();
 	

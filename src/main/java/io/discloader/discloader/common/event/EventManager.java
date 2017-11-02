@@ -94,14 +94,13 @@ public class EventManager {
 				consumer.accept(event);
 			}
 		}
-		for (int i = 0; i < handlers.size(); i++) {
+		for (int i = handlers.size() - 1; i >= 0; i--) {
 			IEventListener handler = handlers.get(i);
 			if (event instanceof MessageUpdateEvent) {
 				if (event instanceof GuildMessageUpdateEvent) {
 					handler.GuildMessageUpdate((GuildMessageUpdateEvent) event);
 				} else if (event instanceof GroupMessageUpdateEvent) {
-					// handler.g
-					// handler.
+					handler.GroupMessageUpdate((GroupMessageUpdateEvent) event);
 				} else if (event instanceof PrivateMessageUpdateEvent) {
 					handler.PrivateMessageUpdate((PrivateMessageUpdateEvent) event);
 				} else {
@@ -123,7 +122,7 @@ public class EventManager {
 				} else if (event instanceof PrivateMessageDeleteEvent) {
 					handler.PrivateMessageDelete((PrivateMessageDeleteEvent) event);
 				} else if (event instanceof GroupMessageDeleteEvent) {
-
+					handler.GroupMessageDelete((GroupMessageDeleteEvent) event);
 				} else {
 					handler.MessageDelete((MessageDeleteEvent) event);
 				}

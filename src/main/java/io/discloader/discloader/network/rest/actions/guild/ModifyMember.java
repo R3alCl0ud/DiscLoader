@@ -35,7 +35,7 @@ public class ModifyMember {
 			i++;
 		}
 		mute = member.isMuted();
-		deaf = member.isDeaf();
+		deaf = member.isDeafened();
 		loader = member.getLoader();
 	}
 

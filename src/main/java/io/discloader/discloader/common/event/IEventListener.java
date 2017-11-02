@@ -34,6 +34,8 @@ import io.discloader.discloader.common.event.guild.role.GuildRoleDeleteEvent;
 import io.discloader.discloader.common.event.guild.role.GuildRoleEvent;
 import io.discloader.discloader.common.event.guild.role.GuildRoleUpdateEvent;
 import io.discloader.discloader.common.event.message.GroupMessageCreateEvent;
+import io.discloader.discloader.common.event.message.GroupMessageDeleteEvent;
+import io.discloader.discloader.common.event.message.GroupMessageUpdateEvent;
 import io.discloader.discloader.common.event.message.GuildMessageCreateEvent;
 import io.discloader.discloader.common.event.message.GuildMessageDeleteEvent;
 import io.discloader.discloader.common.event.message.GuildMessageUpdateEvent;
@@ -86,26 +88,33 @@ public interface IEventListener {
 	void ChannelUpdate(ChannelUpdateEvent e);
 
 	/**
-	 * Fired when the {@link DiscLoader client} has successfully disconnected
-	 * from the Gateway as intended
+	 * Fired when the {@link DiscLoader client} has successfully disconnected from
+	 * the Gateway as intended
 	 * 
-	 * @param e A {@link DisconnectEvent} object.
+	 * @param e
+	 *            A {@link DisconnectEvent} object.
 	 */
 	void Disconnected(DisconnectEvent e);
 
 	void GroupMessageCreate(GroupMessageCreateEvent e);
 
+	void GroupMessageDelete(GroupMessageDeleteEvent e);
+
+	void GroupMessageUpdate(GroupMessageUpdateEvent e);
+
 	/**
 	 * Executed when a {@link User} is banned from a guild
 	 * 
-	 * @param e The GuildBanAddEvent object to be passed to the handler
+	 * @param e
+	 *            The GuildBanAddEvent object to be passed to the handler
 	 */
 	void GuildBanAdd(GuildBanAddEvent e);
 
 	/**
 	 * Executed when a {@link User} is unbanned from a guild
 	 * 
-	 * @param event The GuildBanRemoveEvent object to be passed to the handler
+	 * @param event
+	 *            The GuildBanRemoveEvent object to be passed to the handler
 	 */
 	void GuildBanRemove(GuildBanRemoveEvent event);
 
@@ -118,18 +127,18 @@ public interface IEventListener {
 	/**
 	 * Executed when the client joins a new {@link Guild}
 	 * 
-	 * @param e A GuildCreateEvent object
+	 * @param e
+	 *            A GuildCreateEvent object
 	 */
 	void GuildCreate(GuildCreateEvent e);
 
 	/**
 	 * Executed when the client leaves a {@link Guild}
 	 * 
-	 * @param e A {@link GuildDeleteEvent}
+	 * @param e
+	 *            A {@link GuildDeleteEvent}
 	 */
 	void GuildDelete(GuildDeleteEvent e);
-	
-	void GuildEvent(GuildEvent e);
 
 	void GuildEmojiCreate(GuildEmojiCreateEvent event);
 
@@ -139,17 +148,21 @@ public interface IEventListener {
 
 	void GuildEmojiUpdate(GuildEmojiUpdateEvent event);
 
+	void GuildEvent(GuildEvent e);
+
 	/**
 	 * Executed when a {@link GuildMember} joins a guild
 	 * 
-	 * @param event The GuildMemberAddEvent object to be passed to the handler
+	 * @param event
+	 *            The GuildMemberAddEvent object to be passed to the handler
 	 */
 	void GuildMemberAdd(GuildMemberAddEvent event);
 
 	/**
 	 * Executed when a GuildMemberAvailable event is sent to the client
 	 * 
-	 * @param member The GuildMember that became available
+	 * @param member
+	 *            The GuildMember that became available
 	 */
 	void GuildMemberAvailable(GuildMember member);
 
@@ -160,7 +173,8 @@ public interface IEventListener {
 	/**
 	 * Executed when a {@link GuildMember} leaves, or is kicked from a guild
 	 * 
-	 * @param e The GuildMemberRemoveEvent object to be passed to the handler
+	 * @param e
+	 *            The GuildMemberRemoveEvent object to be passed to the handler
 	 */
 	void GuildMemberRemove(GuildMemberRemoveEvent e);
 
@@ -171,14 +185,16 @@ public interface IEventListener {
 	/**
 	 * Executed when a GuildMembersChunk event is sent to the client
 	 * 
-	 * @param event A {@link GuildMembersChunkEvent} object.
+	 * @param event
+	 *            A {@link GuildMembersChunkEvent} object.
 	 */
 	void GuildMembersChunk(GuildMembersChunkEvent event);
 
 	/**
 	 * Executed when a GuildMemberUpdate event is sent to the client
 	 * 
-	 * @param e A GuildMemberUpdateEvent object
+	 * @param e
+	 *            A GuildMemberUpdateEvent object
 	 */
 	void GuildMemberUpdate(GuildMemberUpdateEvent e);
 
@@ -197,23 +213,26 @@ public interface IEventListener {
 	/**
 	 * Executed when a {@link Role} is created
 	 * 
-	 * @param event A GuildRoleCreateEvent object
+	 * @param event
+	 *            A GuildRoleCreateEvent object
 	 */
 	void GuildRoleCreate(GuildRoleCreateEvent event);
 
 	/**
 	 * Executed when a {@link Role} is deleted
 	 * 
-	 * @param e A GuildRoleDeleteEvent object
+	 * @param e
+	 *            A GuildRoleDeleteEvent object
 	 */
 	void GuildRoleDelete(GuildRoleDeleteEvent e);
-	
+
 	void GuildRoleEvent(GuildRoleEvent e);
 
 	/**
 	 * Executed when a {@link Role} is updated
 	 * 
-	 * @param e A GuildRoleUpdateEvent object
+	 * @param e
+	 *            A GuildRoleUpdateEvent object
 	 */
 	void GuildRoleUpdate(GuildRoleUpdateEvent e);
 
@@ -222,7 +241,8 @@ public interface IEventListener {
 	/**
 	 * Executed when a {@link Guild} is updated
 	 * 
-	 * @param e A GuildUpdateEvent object
+	 * @param e
+	 *            A GuildUpdateEvent object
 	 */
 	void GuildUpdate(GuildUpdateEvent e);
 
@@ -230,11 +250,11 @@ public interface IEventListener {
 
 	void MessageDelete(MessageDeleteEvent e);
 
-	void MessageUpdate(MessageUpdateEvent e);
-	
 	void MessageReactionAdd(MessageReactionAddEvent e);
 
 	void MessageReactionRemove(MessageReactionRemoveEvent e);
+
+	void MessageUpdate(MessageUpdateEvent e);
 
 	/**
 	 * Gets emitted during startup, when the current startup phase changes
@@ -242,12 +262,13 @@ public interface IEventListener {
 	void PhaseChange();
 
 	/**
-	 * During the PreInit phase of startup, after all mods have been discovered,
-	 * The {@link ModRegistry} executes this event on the mod the
-	 * registry is attempting to load. All commands <u>must</u> be registered on
-	 * this event being called in your mod.
+	 * During the PreInit phase of startup, after all mods have been discovered, The
+	 * {@link ModRegistry} executes this event on the mod the registry is attempting
+	 * to load. All commands <u>must</u> be registered on this event being called in
+	 * your mod.
 	 * 
-	 * @param preInitEvent A DLPreInitEvent Object
+	 * @param preInitEvent
+	 *            A DLPreInitEvent Object
 	 */
 	void PreInit(DLPreInitEvent preInitEvent);
 
@@ -260,11 +281,11 @@ public interface IEventListener {
 	void PrivateMessageUpdate(PrivateMessageUpdateEvent event);
 
 	/**
-	 * Emitted whenever a new packet is received from the gateway. Is not
-	 * executed when receiving packets from {@link VoiceConnection
-	 * VoiceConnections}
+	 * Emitted whenever a new packet is received from the gateway. Is not executed
+	 * when receiving packets from {@link VoiceConnection VoiceConnections}
 	 * 
-	 * @param event the raw data from the gateway/REST api.
+	 * @param event
+	 *            the raw data from the gateway/REST api.
 	 */
 	void RawPacket(RawEvent event);
 
@@ -272,22 +293,25 @@ public interface IEventListener {
 	 * Emitted when all guilds are available, and all members in non-large
 	 * {@link Guild guilds} are cached.
 	 * 
-	 * @param event A {@link ReadyEvent} object
+	 * @param event
+	 *            A {@link ReadyEvent} object
 	 */
 	void Ready(ReadyEvent event);
 
 	/**
-	 * Fired when the {@link DiscLoader client} attempts to reconnect to a
-	 * Gateway connection that was abnormally closed
+	 * Fired when the {@link DiscLoader client} attempts to reconnect to a Gateway
+	 * connection that was abnormally closed
 	 * 
-	 * @param e A {@link ReconnectEvent} object
+	 * @param e
+	 *            A {@link ReconnectEvent} object
 	 */
 	void Reconnect(ReconnectEvent e);
 
 	/**
 	 * Emitted when a user starts typing in an {@link ITextChannel}
 	 * 
-	 * @param event A {@link TypingStartEvent} object
+	 * @param event
+	 *            A {@link TypingStartEvent} object
 	 */
 	void TypingStart(TypingStartEvent event);
 

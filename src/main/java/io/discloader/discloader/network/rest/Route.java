@@ -119,7 +119,6 @@ public class Route<T> {
 			if (request.getData() instanceof SendableMessage) {
 				MultipartBody body = ((HttpRequestWithBody) base).fields(null);
 				body.field("Content-Type", "multipart/form-data");
-				System.out.println(gson.toJson(request.getData()));
 				SendableMessage sdata = (SendableMessage) request.getData();
 				if (sdata.file != null || sdata.resource != null) {
 					try {
@@ -136,14 +135,12 @@ public class Route<T> {
 						if (resource != null)
 							loc = resource.getFileName();
 						body.field("file", bytes, loc);
-						System.out.println(gson.toJson(sdata));
 					} catch (Exception ex) {
 						ex.printStackTrace();
 					}
 				}
 				try {
 					if (request.getData() instanceof JSONObject) {
-						System.out.println("JSON: " + request.getData().toString());
 						body.field("payload_json", request.getData().toString());
 					} else {
 						body.field("payload_json", gson.toJson(request.getData()));
@@ -154,7 +151,6 @@ public class Route<T> {
 			} else {
 				base.getHttpRequest().header("Content-Type", "application/json");
 				if (request.getData() instanceof JSONObject) {
-					System.out.println("JSON Object");
 					((HttpRequestWithBody) base).body(request.getData().toString());
 				} else {
 					((HttpRequestWithBody) base).body(gson.toJson(request.getData()));
@@ -166,9 +162,21 @@ public class Route<T> {
 			break;
 		case PATCH:
 			base = Unirest.patch(endpoint);
+			base.getHttpRequest().header("Content-Type", "application/json");
+			if (request.getData() instanceof JSONObject) {
+				((HttpRequestWithBody) base).body(request.getData().toString());
+			} else {
+				((HttpRequestWithBody) base).body(gson.toJson(request.getData()));
+			}
 			break;
 		case PUT:
 			base = Unirest.put(endpoint);
+			base.getHttpRequest().header("Content-Type", "application/json");
+			if (request.getData() instanceof JSONObject) {
+				((HttpRequestWithBody) base).body(request.getData().toString());
+			} else {
+				((HttpRequestWithBody) base).body(gson.toJson(request.getData()));
+			}
 			break;
 		default:
 			base = Unirest.get(endpoint);

@@ -30,6 +30,8 @@ import io.discloader.discloader.common.event.guild.role.GuildRoleCreateEvent;
 import io.discloader.discloader.common.event.guild.role.GuildRoleDeleteEvent;
 import io.discloader.discloader.common.event.guild.role.GuildRoleUpdateEvent;
 import io.discloader.discloader.common.event.message.GroupMessageCreateEvent;
+import io.discloader.discloader.common.event.message.GroupMessageDeleteEvent;
+import io.discloader.discloader.common.event.message.GroupMessageUpdateEvent;
 import io.discloader.discloader.common.event.message.GuildMessageCreateEvent;
 import io.discloader.discloader.common.event.message.GuildMessageDeleteEvent;
 import io.discloader.discloader.common.event.message.GuildMessageUpdateEvent;
@@ -54,227 +56,179 @@ import io.discloader.discloader.entity.guild.IGuildEmoji;
 public abstract class EventListenerAdapter implements IEventListener {
 
 	@Override
-	public void ChannelCreate(ChannelCreateEvent e) {
-	}
+	public void ChannelCreate(ChannelCreateEvent e) {}
 
 	@Override
-	public void ChannelDelete(ChannelDeleteEvent e) {
-	}
+	public void ChannelDelete(ChannelDeleteEvent e) {}
 
 	@Override
-	public void ChannelPinsUpdate() {
-	}
+	public void ChannelPinsUpdate() {}
 
 	@Override
-	public void ChannelUpdate(ChannelUpdateEvent e) {
-	}
+	public void ChannelUpdate(ChannelUpdateEvent e) {}
 
 	public void Disconnected(DisconnectEvent e) {
 
 	}
 
 	@Override
-	public void GroupMessageCreate(GroupMessageCreateEvent e) {
-	}
+	public void GroupMessageCreate(GroupMessageCreateEvent e) {}
 
 	@Override
-	public void GuildBanAdd(GuildBanAddEvent e) {
-	}
+	public void GroupMessageDelete(GroupMessageDeleteEvent e) {}
 
 	@Override
-	public void GuildBanRemove(GuildBanRemoveEvent e) {
-	}
+	public void GroupMessageUpdate(GroupMessageUpdateEvent e) {}
 
 	@Override
-	public void GuildChannelCreate(GuildChannelCreateEvent event) {
-	}
+	public void GuildBanAdd(GuildBanAddEvent e) {}
 
 	@Override
-	public void GuildChannelDelete(GuildChannelDeleteEvent event) {
-	}
+	public void GuildBanRemove(GuildBanRemoveEvent e) {}
 
 	@Override
-	public void GuildChannelUpdate(GuildChannelUpdateEvent event) {
-	}
+	public void GuildChannelCreate(GuildChannelCreateEvent event) {}
 
 	@Override
-	public void GuildCreate(GuildCreateEvent e) {
-	}
+	public void GuildChannelDelete(GuildChannelDeleteEvent event) {}
 
 	@Override
-	public void GuildDelete(GuildDeleteEvent e) {
-	}
+	public void GuildChannelUpdate(GuildChannelUpdateEvent event) {}
 
 	@Override
-	public void GuildEmojiCreate(GuildEmojiCreateEvent event) {
-	}
+	public void GuildCreate(GuildCreateEvent e) {}
 
 	@Override
-	public void GuildEmojiDelete(GuildEmojiDeleteEvent event) {
-	}
+	public void GuildDelete(GuildDeleteEvent e) {}
 
 	@Override
-	public void GuildEmojisUpdate(Map<Long, IGuildEmoji> emojis) {
-	}
+	public void GuildEmojiCreate(GuildEmojiCreateEvent event) {}
 
 	@Override
-	public void GuildEmojiUpdate(GuildEmojiUpdateEvent event) {
-	}
+	public void GuildEmojiDelete(GuildEmojiDeleteEvent event) {}
 
 	@Override
-	public void GuildMemberAdd(GuildMemberAddEvent e) {
-	}
+	public void GuildEmojisUpdate(Map<Long, IGuildEmoji> emojis) {}
 
 	@Override
-	public void GuildMemberAvailable(GuildMember member) {
-	}
+	public void GuildEmojiUpdate(GuildEmojiUpdateEvent event) {}
 
 	@Override
-	public void GuildMemberEvent(io.discloader.discloader.common.event.guild.member.GuildMemberEvent event) {
-	}
+	public void GuildEvent(io.discloader.discloader.common.event.guild.GuildEvent e) {}
 
 	@Override
-	public void GuildMemberNicknameUpdated(GuildMemberEvent.NicknameUpdateEvent event) {
-	}
+	public void GuildMemberAdd(GuildMemberAddEvent e) {}
 
 	@Override
-	public void GuildMemberRemove(GuildMemberRemoveEvent e) {
-	}
+	public void GuildMemberAvailable(GuildMember member) {}
 
 	@Override
-	public void GuildMemberRoleAdd() {
-	}
+	public void GuildMemberEvent(GuildMemberEvent event) {}
 
 	@Override
-	public void GuildMemberRoleRemove() {
-	}
+	public void GuildMemberNicknameUpdated(GuildMemberEvent.NicknameUpdateEvent event) {}
 
 	@Override
-	public void GuildMembersChunk(GuildMembersChunkEvent event) {
-	}
+	public void GuildMemberRemove(GuildMemberRemoveEvent e) {}
 
 	@Override
-	public void GuildMemberUpdate(GuildMemberUpdateEvent e) {
-	}
+	public void GuildMemberRoleAdd() {}
 
 	@Override
-	public void GuildMemberVoiceJoin(VoiceJoinEvent event) {
-	}
+	public void GuildMemberRoleRemove() {}
 
 	@Override
-	public void GuildMemberVoiceLeave(VoiceLeaveEvent event) {
-	}
+	public void GuildMembersChunk(GuildMembersChunkEvent event) {}
 
 	@Override
-	public void GuildMemberVoiceSwitch(VoiceSwitchEvent event) {
-	}
+	public void GuildMemberUpdate(GuildMemberUpdateEvent e) {}
 
 	@Override
-	public void GuildMessageCreate(GuildMessageCreateEvent event) {
-	}
+	public void GuildMemberVoiceJoin(VoiceJoinEvent event) {}
 
 	@Override
-	public void GuildMessageDelete(GuildMessageDeleteEvent event) {
-	}
+	public void GuildMemberVoiceLeave(VoiceLeaveEvent event) {}
 
 	@Override
-	public void GuildMessageUpdate(GuildMessageUpdateEvent event) {
-	}
+	public void GuildMemberVoiceSwitch(VoiceSwitchEvent event) {}
 
 	@Override
-	public void GuildRoleCreate(GuildRoleCreateEvent e) {
-	}
+	public void GuildMessageCreate(GuildMessageCreateEvent event) {}
 
 	@Override
-	public void GuildRoleDelete(GuildRoleDeleteEvent e) {
-	}
+	public void GuildMessageDelete(GuildMessageDeleteEvent event) {}
 
 	@Override
-	public void GuildRoleUpdate(GuildRoleUpdateEvent e) {
-	}
+	public void GuildMessageUpdate(GuildMessageUpdateEvent event) {}
 
 	@Override
-	public void GuildSync(GuildSyncEvent event) {
-	}
+	public void GuildRoleCreate(GuildRoleCreateEvent e) {}
 
 	@Override
-	public void GuildUpdate(GuildUpdateEvent e) {
-	}
+	public void GuildRoleDelete(GuildRoleDeleteEvent e) {}
 
 	@Override
-	public void MessageCreate(MessageCreateEvent e) {
-	}
+	public void GuildRoleEvent(io.discloader.discloader.common.event.guild.role.GuildRoleEvent e) {}
 
 	@Override
-	public void MessageDelete(MessageDeleteEvent e) {
-	}
+	public void GuildRoleUpdate(GuildRoleUpdateEvent e) {}
 
 	@Override
-	public void MessageUpdate(MessageUpdateEvent e) {
-	}
+	public void GuildSync(GuildSyncEvent event) {}
 
 	@Override
-	public void PhaseChange() {
-	}
+	public void GuildUpdate(GuildUpdateEvent e) {}
 
 	@Override
-	public void PreInit(DLPreInitEvent preInitEvent) {
-	}
+	public void MessageCreate(MessageCreateEvent e) {}
 
 	@Override
-	public void PresenceUpdate() {
-	}
+	public void MessageDelete(MessageDeleteEvent e) {}
 
 	@Override
-	public void PrivateMessageCreate(PrivateMessageCreateEvent e) {
-	}
+	public void MessageReactionAdd(MessageReactionAddEvent e) {}
 
 	@Override
-	public void PrivateMessageDelete(PrivateMessageDeleteEvent e) {
-	}
+	public void MessageReactionRemove(MessageReactionRemoveEvent e) {}
 
 	@Override
-	public void PrivateMessageUpdate(PrivateMessageUpdateEvent e) {
-	}
+	public void MessageUpdate(MessageUpdateEvent e) {}
 
 	@Override
-	public void RawPacket(RawEvent event) {
-	}
+	public void PhaseChange() {}
 
 	@Override
-	public void Ready(ReadyEvent event) {
-	}
+	public void PreInit(DLPreInitEvent preInitEvent) {}
+
+	@Override
+	public void PresenceUpdate() {}
+
+	@Override
+	public void PrivateMessageCreate(PrivateMessageCreateEvent e) {}
+
+	@Override
+	public void PrivateMessageDelete(PrivateMessageDeleteEvent e) {}
+
+	@Override
+	public void PrivateMessageUpdate(PrivateMessageUpdateEvent e) {}
+
+	@Override
+	public void RawPacket(RawEvent event) {}
+
+	@Override
+	public void Ready(ReadyEvent event) {}
 
 	public void Reconnect(ReconnectEvent e) {
 
 	}
 
 	@Override
-	public void TypingStart(TypingStartEvent event) {
-	}
+	public void TypingStart(TypingStartEvent event) {}
 
 	@Override
-	public void UserUpdate(UserUpdateEvent e) {
-	}
+	public void UserUpdate(UserUpdateEvent e) {}
 
 	@Override
-	public void VoiceStateUpdate(VoiceStateUpdateEvent e) {
-	}
-
-	@Override
-	public void MessageReactionAdd(MessageReactionAddEvent e) {
-	}
-
-	@Override
-	public void MessageReactionRemove(MessageReactionRemoveEvent e) {
-	}
-
-	@Override
-	public void GuildEvent(io.discloader.discloader.common.event.guild.GuildEvent e) {
-	}
-
-	@Override
-	public void GuildRoleEvent(io.discloader.discloader.common.event.guild.role.GuildRoleEvent e) {
-	}
+	public void VoiceStateUpdate(VoiceStateUpdateEvent e) {}
 
 }
