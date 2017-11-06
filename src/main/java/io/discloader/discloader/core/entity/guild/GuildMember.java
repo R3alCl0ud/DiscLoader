@@ -11,6 +11,7 @@ import org.json.JSONObject;
 
 import io.discloader.discloader.common.DiscLoader;
 import io.discloader.discloader.common.event.EventListenerAdapter;
+import io.discloader.discloader.common.event.IEventListener;
 import io.discloader.discloader.common.event.guild.member.GuildMemberUpdateEvent;
 import io.discloader.discloader.common.exceptions.PermissionsException;
 import io.discloader.discloader.common.exceptions.VoiceConnectionException;
@@ -75,18 +76,6 @@ public class GuildMember implements IGuildMember {
 	 */
 	public final OffsetDateTime joinedAt;
 
-	public GuildMember(IGuild guild, MemberJSON data) {
-		user = EntityRegistry.addUser(data.user);
-		this.guild = guild;
-		nick = data.nick != null ? data.nick : user.getUsername();
-		joinedAt = data.joined_at == null ? user.createdAt() : OffsetDateTime.parse(data.joined_at);
-		roleIDs = data.roles != null ? data.roles : new String[] {};
-
-		deaf = data.deaf;
-		mute = deaf || data.mute;
-
-	}
-
 	public GuildMember(IGuild guild, IUser user) {
 		this.user = user;
 
@@ -105,6 +94,18 @@ public class GuildMember implements IGuildMember {
 		joinedAt = OffsetDateTime.now();
 		this.deaf = deaf;
 		this.mute = deaf || mute;
+	}
+
+	public GuildMember(IGuild guild, MemberJSON data) {
+		user = EntityRegistry.addUser(data.user);
+		this.guild = guild;
+		nick = data.nick != null ? data.nick : user.getUsername();
+		joinedAt = data.joined_at == null ? user.createdAt() : OffsetDateTime.parse(data.joined_at);
+		roleIDs = data.roles != null ? data.roles : new String[] {};
+
+		deaf = data.deaf;
+		mute = deaf || data.mute;
+
 	}
 
 	public GuildMember(IGuildMember member) {
@@ -146,6 +147,11 @@ public class GuildMember implements IGuildMember {
 		return guild.ban(this);
 	}
 
+	@Override
+	public CompletableFuture<IGuildMember> ban(String reason) {
+		return guild.ban(this, reason);
+	}
+
 	/**
 	 * Server deafens a {@link GuildMember} if they are not already server deafened
 	 * 
@@ -184,6 +190,16 @@ public class GuildMember implements IGuildMember {
 	@Override
 	public long getID() {
 		return user.getID();
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see io.discloader.discloader.entity.guild.IGuildMember#getJoinTime()
+	 */
+	@Override
+	public OffsetDateTime getJoinTime() {
+		return joinedAt;
 	}
 
 	@Override
@@ -337,6 +353,16 @@ public class GuildMember implements IGuildMember {
 		return (getName() + getID()).hashCode();
 	}
 
+	@Override
+	public boolean hasRole(IRole role) {
+		for (IRole memberRole : getRoles()) {
+			if (memberRole.getID() == role.getID()) {
+				return true;
+			}
+		}
+		return false;
+	}
+
 	/**
 	 * Determines if the member is connected to a voice channel in their
 	 * {@link #guild}
@@ -358,6 +384,11 @@ public class GuildMember implements IGuildMember {
 		return hasVoiceConnection() ? (getVoiceState().mute || mute) : mute;
 	}
 
+	@Override
+	public boolean isOwner() {
+		return guild.isOwner(this);
+	}
+
 	/**
 	 * Kicks the member from the {@link Guild} if the {@link DiscLoader client} has
 	 * sufficient permissions
@@ -370,7 +401,12 @@ public class GuildMember implements IGuildMember {
 	 */
 	@Override
 	public CompletableFuture<IGuildMember> kick() {
-		return guild.kickMember(this);
+		return guild.kick(this);
+	}
+
+	@Override
+	public CompletableFuture<IGuildMember> kick(String reason) {
+		return guild.kick(this, reason);
 	}
 
 	public List<IRole> mergeRoles(IRole... roles) {
@@ -458,15 +494,47 @@ public class GuildMember implements IGuildMember {
 	 *             if the current user doesn't have the MANAGE_ROLE permission.
 	 */
 	@Override
-	public CompletableFuture<IGuildMember> takeRole(IRole role) {
+	public CompletableFuture<IGuildMember> takeRole(IRole... roles) {
 		if (!guild.hasPermission(Permissions.MANAGE_ROLES)) {
 			throw new PermissionsException("Insuccficient Permissions");
 		}
 
-		if (!guild.isOwner() && role.getPosition() >= guild.getCurrentMember().getHighestRole().getPosition())
-			throw new PermissionsException("Cannot take away roles higher than your's");
+		List<IRole> rls = getRoles();
 
-		return getLoader().rest.takeRole(this, role);
+		for (IRole role : roles) {
+			if (!guild.isOwner() && role.getPosition() >= guild.getCurrentMember().getHighestRole().getPosition()) {
+				throw new PermissionsException("Cannot take away roles higher than your's");
+			}
+
+			if (hasRole(role)) {
+				rls.remove(role);
+			}
+		}
+
+		CompletableFuture<IGuildMember> future = new CompletableFuture<>();
+
+		String[] ids = new String[rls.size()];
+		for (int i = 0; i < ids.length; i++) {
+			ids[i] = SnowflakeUtil.asString(rls.get(i));
+		}
+
+		JSONObject payload = new JSONObject().put("roles", ids);
+		CompletableFuture<Void> tcf = getLoader().rest.request(Methods.PATCH, Endpoints.guildMember(getGuild().getID(), getID()), new RESTOptions(payload), Void.class);
+		IEventListener iel = new EventListenerAdapter() {
+			public void GuildMemberUpdate(GuildMemberUpdateEvent e) {
+				if (e.member.getID() == getID()) {
+					future.complete(e.member);
+					getLoader().removeEventHandler(this);
+				}
+			}
+		};
+		getLoader().addEventHandler(iel);
+		tcf.exceptionally(ex -> {
+			getLoader().removeEventHandler(iel);
+			future.completeExceptionally(ex);
+			return null;
+		});
+		return future;
 	}
 
 	@Override
@@ -482,31 +550,6 @@ public class GuildMember implements IGuildMember {
 	@Override
 	public CompletableFuture<IGuildMember> unMute() {
 		return new ModifyMember(this, nick, getRoles(), false, deaf, getVoiceChannel()).execute();
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see io.discloader.discloader.entity.guild.IGuildMember#getJoinTime()
-	 */
-	@Override
-	public OffsetDateTime getJoinTime() {
-		return joinedAt;
-	}
-
-	@Override
-	public boolean isOwner() {
-		return guild.isOwner(this);
-	}
-
-	@Override
-	public boolean hasRole(IRole role) {
-		for (IRole memberRole : getRoles()) {
-			if (memberRole.getID() == role.getID()) {
-				return true;
-			}
-		}
-		return false;
 	}
 
 }

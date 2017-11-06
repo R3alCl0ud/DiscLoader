@@ -32,6 +32,7 @@ public class RESTOptions {
 	
 	public RESTOptions(String reason) {
 		this(true, reason, null);
+		System.out.println(this.reason);
 	}
 	
 	/**

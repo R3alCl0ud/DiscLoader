@@ -186,8 +186,10 @@ public class Route<T> {
 		HttpRequest httprequest = base.getHttpRequest();
 		if (auth && rest.loader.token != null)
 			httprequest.header("Authorization", rest.loader.token);
-		if (request.getOptions() != null && request.getOptions().getReason() != null)
+		if (request.getOptions() != null && request.getOptions().getReason() != null) {
 			httprequest.header("X-Audit-Log-Reason", request.getOptions().getReason());
+			System.out.println("is this thing working?");
+		}
 		httprequest.header("user-agent", "DiscordBot (http://discloader.io, v0.2.0)");
 		httprequest.header("Accept-Encoding", "gzip");
 		return base;

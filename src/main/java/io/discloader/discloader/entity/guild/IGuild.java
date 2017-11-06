@@ -414,8 +414,10 @@ public interface IGuild extends ISnowflake, ICreationTime {
 	 * @throws PermissionsException Thrown if the current user doesn't have the
 	 *             {@link Permissions#KICK_MEMBERS} permission.
 	 */
-	CompletableFuture<IGuildMember> kickMember(IGuildMember guildMember);
+	CompletableFuture<IGuildMember> kick(IGuildMember member);
 
+	CompletableFuture<IGuildMember> kick(IGuildMember member, String reason);
+	
 	/**
 	 * Makes the client leave the guild
 	 * 

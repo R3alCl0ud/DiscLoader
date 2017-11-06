@@ -918,17 +918,34 @@ public class Guild implements IGuild {
 		return loader.isGuildSyncing(this);
 	}
 
-	public CompletableFuture<IGuildMember> kickMember(IGuildMember guildMember) {
-		if (!isOwner() && getCurrentMember().getPermissions().hasPermission(Permissions.KICK_MEMBERS))
-			throw new PermissionsException();
+	public CompletableFuture<IGuildMember> kick(IGuildMember guildMember) {
+		return kick(guildMember, null);
+	}
 
-		return loader.rest.removeMember(this, guildMember);
+	@Override
+	public CompletableFuture<IGuildMember> kick(IGuildMember member, String reason) {
+		if (!isOwner() && getCurrentMember().getPermissions().hasPermission(Permissions.KICK_MEMBERS))
+			throw new PermissionsException("Insufficient Permissions");
+
+		CompletableFuture<IGuildMember> future = new CompletableFuture<>();
+		CompletableFuture<Void> kickFuture = loader.rest.request(Methods.DELETE, Endpoints.guildMember(getID(), member.getID()), new RESTOptions(reason), Void.class);
+		
+		kickFuture.thenAcceptAsync(n -> {
+			future.complete(member);
+		});
+		
+		kickFuture.exceptionally(ex -> {
+			future.completeExceptionally(ex);
+			return null;
+		});
+		
+		return future;
 	}
 
 	@Override
 	public CompletableFuture<IGuild> leave() {
 		CompletableFuture<IGuild> future = new CompletableFuture<>();
-		this.kickMember(getCurrentMember()).thenAcceptAsync(action -> {
+		this.kick(getCurrentMember()).thenAcceptAsync(action -> {
 			future.complete(this);
 		});
 

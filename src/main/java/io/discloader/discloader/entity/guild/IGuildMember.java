@@ -22,6 +22,8 @@ public interface IGuildMember extends ISnowflake, IMentionable {
 	
 	CompletableFuture<IGuildMember> ban();
 	
+	CompletableFuture<IGuildMember> ban(String reason);
+	
 	CompletableFuture<IGuildMember> deafen();
 	
 	IGuild getGuild();
@@ -60,10 +62,11 @@ public interface IGuildMember extends ISnowflake, IMentionable {
 	boolean isOwner();
 	
 	CompletableFuture<IGuildMember> kick();
+	CompletableFuture<IGuildMember> kick(String reason);
 	
 	CompletableFuture<IGuildMember> mute();
 	
-	CompletableFuture<IGuildMember> takeRole(IRole role);
+	CompletableFuture<IGuildMember> takeRole(IRole... roles);
 	
 	CompletableFuture<IGuildMember> unDeafen();
 	
