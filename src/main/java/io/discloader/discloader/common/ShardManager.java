@@ -9,11 +9,11 @@ import java.util.logging.Logger;
 
 import io.discloader.discloader.client.logger.DLLogger;
 import io.discloader.discloader.common.event.sharding.IShardingListener;
+import io.discloader.discloader.common.registry.EntityRegistry;
 
 /**
- * Class used to handling the shards of a sharded connection to Discord's Gateway
- * Usage:
- * <code>
+ * Class used to handling the shards of a sharded connection to Discord's
+ * Gateway Usage: <code>
  * DLOptions options = new DLOptions();
  * 
  * ShardManager manager = new ShardManager(
@@ -87,6 +87,7 @@ public final class ShardManager {
 					options.defaultCommands = ShardManager.this.options.defaultCommands;
 					Shard shard = new Shard(options, ShardManager.this);
 					shards.add(shard);
+					EntityRegistry.addShard(shard);
 					shard.launch();
 					try {
 						sleep(5500L);
@@ -105,13 +106,15 @@ public final class ShardManager {
 	}
 
 	/**
-	 * @param token the token to set
+	 * @param token
+	 *            the token to set
 	 */
 	public void setToken(String token) {
 		this.token = token;
 	}
 
 	public void setTotalShards(int shards) {
-		if (shards >= 1) shardCount = shards;
+		if (shards >= 1)
+			shardCount = shards;
 	}
 }

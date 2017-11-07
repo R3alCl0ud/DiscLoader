@@ -174,7 +174,7 @@ public class GuildChannel extends Channel implements IGuildChannel {
 		CompletableFuture<IGuildChannel> future = new CompletableFuture<>();
 		JSONObject settings = new JSONObject().put("name", name).put("position", position).put("nsfw", nsfw).put("permission_overwrites", overwrites);
 		loader.rest.request(Methods.PATCH, Endpoints.channel(getID()), new RESTOptions(settings), ChannelJSON.class).thenAcceptAsync(data -> {
-			IChannel newChannel = EntityBuilder.getChannelFactory().buildChannel(data, guild, false);
+			IChannel newChannel = EntityBuilder.getChannelFactory().buildChannel(data, getLoader(), guild, false);
 			if (newChannel instanceof IGuildChannel) future.complete((IGuildChannel) newChannel);
 		}).exceptionally(ex -> {
 			future.completeExceptionally(ex);
@@ -281,7 +281,7 @@ public class GuildChannel extends Channel implements IGuildChannel {
 		CompletableFuture<IGuildChannel> future = new CompletableFuture<>();
 		JSONObject settings = new JSONObject().put("parent_id", SnowflakeUtil.asString(category));
 		loader.rest.request(Methods.PATCH, Endpoints.channel(getID()), new RESTOptions(settings), ChannelJSON.class).thenAcceptAsync(data -> {
-			IGuildChannel newChannel = (IGuildChannel) EntityBuilder.getChannelFactory().buildChannel(data, guild, false);
+			IGuildChannel newChannel = (IGuildChannel) EntityBuilder.getChannelFactory().buildChannel(data, getLoader(), guild, false);
 			future.complete(newChannel);
 		}).exceptionally(ex -> {
 			future.completeExceptionally(ex);
@@ -307,6 +307,7 @@ public class GuildChannel extends Channel implements IGuildChannel {
 
 	@Override
 	public CompletableFuture<List<IOverwrite>> setOverwrite(IOverwrite... overwrites) {
+		
 		return null;
 	}
 

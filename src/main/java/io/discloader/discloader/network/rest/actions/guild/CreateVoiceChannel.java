@@ -34,7 +34,7 @@ public class CreateVoiceChannel extends RESTAction<IGuildVoiceChannel> {
 		}
 
 		ChannelJSON data = gson.fromJson(packet, ChannelJSON.class);
-		future.complete((IGuildVoiceChannel) EntityRegistry.addChannel(data));
+		future.complete((IGuildVoiceChannel) EntityRegistry.addChannel(data,loader));
 	}
 
 }

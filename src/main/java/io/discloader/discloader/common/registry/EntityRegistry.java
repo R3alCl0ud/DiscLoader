@@ -6,6 +6,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import io.discloader.discloader.common.DiscLoader;
 import io.discloader.discloader.common.Shard;
 import io.discloader.discloader.core.entity.Webhook;
 import io.discloader.discloader.entity.IWebhook;
@@ -39,21 +40,28 @@ public class EntityRegistry {
 	private static final Map<Long, IPrivateChannel> privateChannels = new HashMap<>();
 	private static final Map<Long, IVoiceChannel> voiceChannels = new HashMap<>();
 	private static final Map<Long, IGuildChannel> guildChannels = new HashMap<>();
+	private static final Map<Integer, Shard> shards = new HashMap<>();
 
-	public static IChannel addChannel(ChannelJSON data) {
-		return addChannel(data, null);
+	public static IChannel addChannel(ChannelJSON data, DiscLoader loader) {
+		return addChannel(data, loader, null);
 	}
 
-	public static IChannel addChannel(ChannelJSON data, IGuild guild) {
-		IChannel channel = EntityBuilder.getChannelFactory().buildChannel(data, guild);
+	public static IChannel addChannel(ChannelJSON data, DiscLoader loader, IGuild guild) {
+		IChannel channel = EntityBuilder.getChannelFactory().buildChannel(data, loader, guild);
 		if (channel != null) {
 			channels.put(channel.getID(), channel);
-			if (channel instanceof ITextChannel) textChannels.put(channel.getID(), (ITextChannel) channel);
-			if (channel instanceof IPrivateChannel) privateChannels.put(channel.getID(), (IPrivateChannel) channel);
-			if (channel instanceof IGroupChannel) groupChannels.put(channel.getID(), (IGroupChannel) channel);
-			if (channel instanceof IVoiceChannel) voiceChannels.put(channel.getID(), (IVoiceChannel) channel);
-			if (channel instanceof IGuildChannel) guildChannels.put(channel.getID(), (IGuildChannel) channel);
-			if (channel instanceof IChannelCategory) categories.put(channel.getID(), (IChannelCategory) channel);
+			if (channel instanceof ITextChannel)
+				textChannels.put(channel.getID(), (ITextChannel) channel);
+			if (channel instanceof IPrivateChannel)
+				privateChannels.put(channel.getID(), (IPrivateChannel) channel);
+			if (channel instanceof IGroupChannel)
+				groupChannels.put(channel.getID(), (IGroupChannel) channel);
+			if (channel instanceof IVoiceChannel)
+				voiceChannels.put(channel.getID(), (IVoiceChannel) channel);
+			if (channel instanceof IGuildChannel)
+				guildChannels.put(channel.getID(), (IGuildChannel) channel);
+			if (channel instanceof IChannelCategory)
+				categories.put(channel.getID(), (IChannelCategory) channel);
 		}
 		return channel;
 	}
@@ -64,8 +72,13 @@ public class EntityRegistry {
 		return guild;
 	}
 
+	public static Shard addShard(Shard shard) {
+		return shards.put(shard.getShardID(), shard);
+	}
+
 	public static IUser addUser(UserJSON data) {
-		if (userExists(data.id == null ? "0" : data.id)) return getUserByID(data.id == null ? "0" : data.id);
+		if (userExists(data.id == null ? "0" : data.id))
+			return getUserByID(data.id == null ? "0" : data.id);
 		IUser user = EntityBuilder.getUserFactory().buildUser(data);
 		users.put(user.getID(), user);
 		return user;
@@ -137,10 +150,12 @@ public class EntityRegistry {
 	}
 
 	public static List<IGuild> getGuildsOnShard(Shard shard) {
-		if (shard == null) return new ArrayList<>();
+		if (shard == null)
+			return new ArrayList<>();
 		List<IGuild> sgs = new ArrayList<>();
 		for (IGuild guild : getGuilds()) {
-			if ((guild.getID() >> 22) % shard.getShardCount() == shard.getShardID()) sgs.add(guild);
+			if ((guild.getID() >> 22) % shard.getShardCount() == shard.getShardID())
+				sgs.add(guild);
 		}
 		return sgs;
 	}
@@ -154,13 +169,15 @@ public class EntityRegistry {
 	}
 
 	public static IPrivateChannel getPrivateChannelByUser(IUser user) {
-		if (user == null) return null;
+		if (user == null)
+			return null;
 		return getPrivateChannelByUserID(user.getID());
 	}
 
 	public static IPrivateChannel getPrivateChannelByUserID(long userID) {
 		for (IPrivateChannel channel : getPrivateChannels())
-			if (channel.getRecipient().getID() == userID) return channel;
+			if (channel.getRecipient().getID() == userID)
+				return channel;
 		return null;
 	}
 
@@ -209,7 +226,8 @@ public class EntityRegistry {
 	}
 
 	public static VoiceConnection getVoiceConnectionByGuild(IGuild guild) {
-		if (guild == null) return null;
+		if (guild == null)
+			return null;
 		return getVoiceConnectionByID(guild.getID());
 	}
 
@@ -237,7 +255,8 @@ public class EntityRegistry {
 	}
 
 	public static boolean guildExists(IGuild guild) {
-		if (guild == null) return false;
+		if (guild == null)
+			return false;
 		return guilds.containsValue(guild);
 	}
 
@@ -250,7 +269,8 @@ public class EntityRegistry {
 	}
 
 	public static boolean hasVoiceConnection(IGuild guild) {
-		if (guild == null) return false;
+		if (guild == null)
+			return false;
 		return voiceConnections.containsKey(guild.getID());
 	}
 
@@ -263,7 +283,8 @@ public class EntityRegistry {
 	}
 
 	public static void removeChannel(IChannel channel) {
-		if (channel == null) return;
+		if (channel == null)
+			return;
 		channels.remove(channel.getID());
 		if (channel.getType() == ChannelTypes.TEXT) {
 			textChannels.remove(channel.getID());
@@ -277,7 +298,8 @@ public class EntityRegistry {
 	}
 
 	public static void removeGuild(IGuild guild) {
-		if (guild == null) return;
+		if (guild == null)
+			return;
 		guilds.remove(guild.getID());
 	}
 
@@ -299,5 +321,13 @@ public class EntityRegistry {
 
 	public static boolean webhookExists(String webhookID) {
 		return webhookExists(SnowflakeUtil.parse(webhookID));
+	}
+
+	public static Collection<Shard> getShards() {
+		return shards.values();
+	}
+
+	public static Shard getShardByID(int shardID) {
+		return shards.get(shardID);
 	}
 }

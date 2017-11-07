@@ -25,9 +25,9 @@ public class ChannelDelete extends AbstractHandler {
 		IChannel channel = null;
 		if (data.guild_id != null) {
 			guild = EntityRegistry.getGuildByID(data.guild_id);
-			channel = EntityRegistry.addChannel(data, guild);
+			channel = EntityRegistry.addChannel(data,loader, guild);
 		} else {
-			channel = EntityRegistry.addChannel(data);
+			channel = EntityRegistry.addChannel(data,loader);
 		}
 		switch (channel.getType()) {
 		case TEXT:

@@ -34,7 +34,7 @@ public class CreateTextChannel extends RESTAction<IGuildTextChannel> {
 		}
 
 		ChannelJSON data = gson.fromJson(packet, ChannelJSON.class);
-		future.complete((IGuildTextChannel) EntityRegistry.addChannel(data));
+		future.complete((IGuildTextChannel) EntityRegistry.addChannel(data, loader));
 	}
 
 }

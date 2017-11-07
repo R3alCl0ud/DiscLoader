@@ -26,7 +26,7 @@ public class ChannelCreate extends AbstractHandler {
 		ChannelJSON data = gson.fromJson(d, ChannelJSON.class);
 		
 		IGuild guild = EntityRegistry.getGuildByID(data.guild_id);
-		IChannel channel = EntityRegistry.addChannel(data, guild);
+		IChannel channel = EntityRegistry.addChannel(data,loader, guild);
 		ChannelCreateEvent event = new ChannelCreateEvent(channel);
 		loader.emit(Events.CHANNEL_CREATE, event);
 		loader.emit(event);

@@ -34,6 +34,7 @@ import io.discloader.discloader.core.entity.user.DLUser;
 import io.discloader.discloader.entity.guild.IGuild;
 import io.discloader.discloader.entity.invite.IInvite;
 import io.discloader.discloader.entity.sendable.Packet;
+import io.discloader.discloader.entity.util.SnowflakeUtil;
 import io.discloader.discloader.network.gateway.Gateway;
 import io.discloader.discloader.network.json.GatewayJSON;
 import io.discloader.discloader.network.rest.RESTManager;
@@ -130,8 +131,7 @@ public class DiscLoader {
 	// public HashMap<Long, IPrivateChannel> privateChannels;
 
 	/**
-	 * A HashMap of the client's cached TextChannels. Indexed by
-	 * {@link Channel#id}.
+	 * A HashMap of the client's cached TextChannels. Indexed by {@link Channel#id}.
 	 * 
 	 * @see Channel
 	 * @see TextChannel
@@ -209,7 +209,8 @@ public class DiscLoader {
 	 * }
 	 * </pre>
 	 * 
-	 * @param options Options to be passed to the client
+	 * @param options
+	 *            Options to be passed to the client
 	 */
 	public DiscLoader(DLOptions options) {
 		this(options.shard, options.shards);
@@ -251,16 +252,20 @@ public class DiscLoader {
 	 * }
 	 * </pre>
 	 * 
-	 * @param shards The total number of shards
-	 * @param shard The number id of this shard
+	 * @param shards
+	 *            The total number of shards
+	 * @param shard
+	 *            The number id of this shard
 	 * @author Perry Berman
 	 * @since 0.0.3
 	 */
 	public DiscLoader(int shard, int shards) {
 		this.shards = shards;
 		this.shardid = shard;
-		if (!(System.out instanceof DLPrintStream)) System.setOut(new DLPrintStream(System.out, LOG));
-		if (!(System.err instanceof DLErrorStream)) System.setErr(new DLErrorStream(System.err, LOG));
+		if (!(System.out instanceof DLPrintStream))
+			System.setOut(new DLPrintStream(System.out, LOG));
+		if (!(System.err instanceof DLErrorStream))
+			System.setErr(new DLErrorStream(System.err, LOG));
 		System.setProperty("http.agent", "DiscLoader");
 		socket = new Gateway(this);
 		rest = new RESTManager(this);
@@ -278,8 +283,9 @@ public class DiscLoader {
 		this.shard = shard;
 	}
 
-	public void addEventHandler(IEventListener e) {
+	public DiscLoader addEventHandler(IEventListener e) {
 		eventManager.addEventHandler(e);
+		return this;
 	}
 
 	public void checkReady() {
@@ -373,7 +379,7 @@ public class DiscLoader {
 	}
 
 	public boolean isGuildSyncing(String guildID) {
-		return syncingGuilds.containsKey(guildID);
+		return syncingGuilds.containsKey(SnowflakeUtil.parse(guildID));
 	}
 
 	/**
@@ -381,20 +387,19 @@ public class DiscLoader {
 	 * You can use {@link DLOptions} to set the token when you create a new
 	 * DiscLoader object.
 	 * 
-	 * @return A CompletableFuture that completes with {@code this} if
-	 *         successful.
+	 * @return A CompletableFuture that completes with {@code this} if successful.
 	 */
 	public CompletableFuture<DiscLoader> login() {
 		return login(token);
 	}
 
 	/**
-	 * Connects the current instance of the {@link DiscLoader loader} into
-	 * Discord's gateway servers
+	 * Connects the current instance of the {@link DiscLoader loader} into Discord's
+	 * gateway servers
 	 * 
-	 * @param token your API token
-	 * @return A CompletableFuture that completes with {@code this} if
-	 *         successful.
+	 * @param token
+	 *            your API token
+	 * @return A CompletableFuture that completes with {@code this} if successful.
 	 */
 	public CompletableFuture<DiscLoader> login(String token) {
 		LOG.info("Attempting to login");
@@ -448,16 +453,16 @@ public class DiscLoader {
 		return this;
 	}
 
-	public void removeEventHandler(IEventListener e) {
+	public DiscLoader removeEventHandler(IEventListener e) {
 		eventManager.removeEventHandler(e);
+		return this;
 	}
 
 	/**
-	 * This method gets called in {@link #login(String)} before attempting to
-	 * login now.<br>
+	 * This method gets called in {@link #login(String)} before attempting to login
+	 * now.<br>
 	 * <br>
-	 * <strike>This method <u><b>must</b></u> be called to start DiscLoader.
-	 * <br>
+	 * <strike>This method <u><b>must</b></u> be called to start DiscLoader. <br>
 	 * As it begins the setup process for DiscLoader to be able to function
 	 * correctly.<br>
 	 * It <u><b>will</b></u> crash otherwise</strike>
@@ -495,7 +500,8 @@ public class DiscLoader {
 	/**
 	 * Sets the clients options;
 	 * 
-	 * @param options The new options to use
+	 * @param options
+	 *            The new options to use
 	 * @return this.
 	 */
 	public DiscLoader setOptions(DLOptions options) {
@@ -512,16 +518,19 @@ public class DiscLoader {
 	/**
 	 * Syncs guilds to client if the logged in user is not a bot
 	 * 
-	 * @param guilds the guilds to sync
+	 * @param guilds
+	 *            the guilds to sync
 	 * @throws GuildSyncException
 	 * @throws AccountTypeException
 	 */
 	public void syncGuilds(IGuild... guilds) throws GuildSyncException, AccountTypeException {
-		if (user.bot) throw new AccountTypeException("Only user accounts are allowed to sync guilds");
+		if (user.bot)
+			throw new AccountTypeException("Only user accounts are allowed to sync guilds");
 
 		String[] ids = new String[guilds.length];
 		for (int i = 0; i < guilds.length; i++) {
-			if (isGuildSyncing(guilds[i])) throw new GuildSyncException("Cannot syncing a guild that is currently syncing");
+			if (isGuildSyncing(guilds[i]))
+				throw new GuildSyncException("Cannot syncing a guild that is currently syncing");
 			ids[i] = Long.toUnsignedString(guilds[i].getID());
 		}
 
@@ -532,12 +541,14 @@ public class DiscLoader {
 	/**
 	 * Syncs guilds to client if the logged in user is not a bot
 	 * 
-	 * @param guildIDs the ids of the guilds to sync
+	 * @param guildIDs
+	 *            the ids of the guilds to sync
 	 * @throws AccountTypeException
 	 * @throws GuildSyncException
 	 */
 	public void syncGuilds(long... guildIDs) throws AccountTypeException, GuildSyncException {
-		if (user.isBot()) throw new AccountTypeException("Only user accounts are allowed to sync guilds");
+		if (user.isBot())
+			throw new AccountTypeException("Only user accounts are allowed to sync guilds");
 
 		String[] ids = new String[guildIDs.length];
 		for (int i = 0; i < guildIDs.length; i++) {
@@ -551,15 +562,18 @@ public class DiscLoader {
 	/**
 	 * Syncs guilds to client if the logged in user is not a bot
 	 * 
-	 * @param guildIDs the ids of the guilds to sync
+	 * @param guildIDs
+	 *            the ids of the guilds to sync
 	 * @throws AccountTypeException
 	 * @throws GuildSyncException
 	 */
 	public void syncGuilds(String... guildIDs) throws AccountTypeException, GuildSyncException {
-		if (user.isBot()) throw new AccountTypeException("Only user accounts are allowed to sync guilds");
+		if (user.isBot())
+			throw new AccountTypeException("Only user accounts are allowed to sync guilds");
 
 		for (String id : guildIDs) {
-			if (isGuildSyncing(id)) throw new GuildSyncException("Cannot syncing a guild that is currently syncing");
+			if (isGuildSyncing(id))
+				throw new GuildSyncException("Cannot syncing a guild that is currently syncing");
 		}
 
 		Packet packet = new Packet(12, guildIDs);

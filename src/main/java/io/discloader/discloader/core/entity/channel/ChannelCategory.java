@@ -7,7 +7,6 @@ import java.util.concurrent.CompletableFuture;
 import org.json.JSONObject;
 
 import io.discloader.discloader.common.registry.EntityBuilder;
-import io.discloader.discloader.common.registry.EntityRegistry;
 import io.discloader.discloader.entity.IOverwrite;
 import io.discloader.discloader.entity.channel.ChannelTypes;
 import io.discloader.discloader.entity.channel.IChannelCategory;
@@ -34,7 +33,7 @@ public class ChannelCategory extends GuildChannel implements IChannelCategory {
 		JSONObject data = new JSONObject().put("parent_id", SnowflakeUtil.asString(this));
 		loader.rest.request(Methods.PATCH, Endpoints.channel(channel.getID()), new RESTOptions(data), ChannelJSON.class).thenAcceptAsync(d -> {
 			@SuppressWarnings("unchecked")
-			T newChannel = (T) EntityBuilder.getChannelFactory().buildChannel(d, guild, false);
+			T newChannel = (T) EntityBuilder.getChannelFactory().buildChannel(d, getLoader(), guild, false);
 			future.complete(newChannel);
 		}).exceptionally(ex -> {
 			future.completeExceptionally(ex);
@@ -50,7 +49,7 @@ public class ChannelCategory extends GuildChannel implements IChannelCategory {
 		CompletableFuture<ChannelJSON> cf = loader.rest.request(Methods.POST, Endpoints.guildChannels(getGuild().getID()), new RESTOptions(data), ChannelJSON.class);
 		cf.thenAcceptAsync(channelJSON -> {
 			if (channelJSON != null) {
-				IGuildChannel channel = (IGuildChannel) EntityRegistry.addChannel(channelJSON, getGuild());
+				IGuildChannel channel = (IGuildChannel) EntityBuilder.getChannelFactory().buildChannel(channelJSON, getLoader(), getGuild(), false);
 				if (channel != null)
 					future.complete(channel);
 			}
@@ -71,7 +70,7 @@ public class ChannelCategory extends GuildChannel implements IChannelCategory {
 		CompletableFuture<ChannelJSON> cf = loader.rest.request(Methods.POST, Endpoints.guildChannels(getGuild().getID()), new RESTOptions(data), ChannelJSON.class);
 		cf.thenAcceptAsync(channelJSON -> {
 			if (channelJSON != null) {
-				IGuildChannel channel = (IGuildChannel) EntityRegistry.addChannel(channelJSON, getGuild());
+				IGuildChannel channel = (IGuildChannel) EntityBuilder.getChannelFactory().buildChannel(channelJSON, getLoader(), getGuild(), false);
 				if (channel != null)
 					future.complete(channel);
 			}
@@ -91,7 +90,7 @@ public class ChannelCategory extends GuildChannel implements IChannelCategory {
 		CompletableFuture<ChannelJSON> cf = loader.rest.request(Methods.POST, Endpoints.guildChannels(getGuild().getID()), new RESTOptions(data), ChannelJSON.class);
 		cf.thenAcceptAsync(channelJSON -> {
 			if (channelJSON != null) {
-				IGuildTextChannel channel = (IGuildTextChannel) EntityRegistry.addChannel(channelJSON, getGuild());
+				IGuildTextChannel channel = (IGuildTextChannel) EntityBuilder.getChannelFactory().buildChannel(channelJSON, getLoader(), getGuild(), false);
 				if (channel != null)
 					future.complete(channel);
 			}
@@ -110,7 +109,7 @@ public class ChannelCategory extends GuildChannel implements IChannelCategory {
 		CompletableFuture<ChannelJSON> cf = loader.rest.request(Methods.POST, Endpoints.guildChannels(getGuild().getID()), new RESTOptions(data), ChannelJSON.class);
 		cf.thenAcceptAsync(channelJSON -> {
 			if (channelJSON != null) {
-				IGuildTextChannel channel = (IGuildTextChannel) EntityRegistry.addChannel(channelJSON, getGuild());
+				IGuildTextChannel channel = (IGuildTextChannel) EntityBuilder.getChannelFactory().buildChannel(channelJSON, getLoader(), getGuild(), false);
 				if (channel != null)
 					future.complete(channel);
 			}
@@ -129,7 +128,7 @@ public class ChannelCategory extends GuildChannel implements IChannelCategory {
 		CompletableFuture<ChannelJSON> cf = loader.rest.request(Methods.POST, Endpoints.guildChannels(getGuild().getID()), new RESTOptions(data), ChannelJSON.class);
 		cf.thenAcceptAsync(channelJSON -> {
 			if (channelJSON != null) {
-				IGuildVoiceChannel channel = (IGuildVoiceChannel) EntityRegistry.addChannel(channelJSON, getGuild());
+				IGuildVoiceChannel channel = (IGuildVoiceChannel) EntityBuilder.getChannelFactory().buildChannel(channelJSON, getLoader(), getGuild(), false);
 				if (channel != null)
 					future.complete(channel);
 			}
@@ -143,7 +142,21 @@ public class ChannelCategory extends GuildChannel implements IChannelCategory {
 
 	@Override
 	public CompletableFuture<IGuildVoiceChannel> createVoiceChannel(String name, IOverwrite... overwrites) {
-		return null;
+		CompletableFuture<IGuildVoiceChannel> future = new CompletableFuture<>();
+		ChannelPayload data = new ChannelPayload(name, ChannelTypes.VOICE, overwrites);
+		CompletableFuture<ChannelJSON> cf = loader.rest.request(Methods.POST, Endpoints.guildChannels(getGuild().getID()), new RESTOptions(data), ChannelJSON.class);
+		cf.thenAcceptAsync(channelJSON -> {
+			if (channelJSON != null) {
+				IGuildVoiceChannel channel = (IGuildVoiceChannel) EntityBuilder.getChannelFactory().buildChannel(channelJSON, getLoader(), getGuild(), false);
+				if (channel != null)
+					future.complete(channel);
+			}
+		});
+		cf.exceptionally(ex -> {
+			future.completeExceptionally(ex);
+			return null;
+		});
+		return future;
 	}
 
 	@Override
@@ -182,7 +195,7 @@ public class ChannelCategory extends GuildChannel implements IChannelCategory {
 		JSONObject settings = new JSONObject().put("parent_id", (String) null);
 		loader.rest.request(Methods.PATCH, Endpoints.channel(channel.getID()), new RESTOptions(settings), ChannelJSON.class).thenAcceptAsync(data -> {
 			@SuppressWarnings("unchecked")
-			T newChannel = (T) EntityBuilder.getChannelFactory().buildChannel(data, guild, false);
+			T newChannel = (T) EntityBuilder.getChannelFactory().buildChannel(data, getLoader(), guild, false);
 			future.complete(newChannel);
 		}).exceptionally(ex -> {
 			future.completeExceptionally(ex);

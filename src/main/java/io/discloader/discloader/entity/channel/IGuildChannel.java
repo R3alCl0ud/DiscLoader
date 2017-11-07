@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 
+import io.discloader.discloader.common.exceptions.DiscordException;
 import io.discloader.discloader.common.exceptions.PermissionsException;
 import io.discloader.discloader.core.entity.guild.Guild;
 import io.discloader.discloader.core.entity.guild.Role;
@@ -107,7 +108,12 @@ public interface IGuildChannel extends IChannel {
 	 */
 	IPermission permissionsOf(IGuildMember iGuildMember);
 
-	CompletableFuture<IGuildChannel> setCategory(IChannelCategory category);
+	/**
+	 * @param category
+	 * @return
+	 * @throws PermissionsException
+	 */
+	CompletableFuture<IGuildChannel> setCategory(IChannelCategory category) throws PermissionsException;
 
 	/**
 	 * Sets the name of the channel.
@@ -115,8 +121,11 @@ public interface IGuildChannel extends IChannel {
 	 * @param name
 	 *            New name for the channel who we are modifying.
 	 * @return A completed future object with the new name set, if successful.
+	 * @throws PermissionsException
+	 * @throws DiscordException
 	 */
-	CompletableFuture<? extends IGuildChannel> setName(String name);
+
+	CompletableFuture<? extends IGuildChannel> setName(String name) throws PermissionsException, DiscordException;
 
 	CompletableFuture<? extends IGuildChannel> setNSFW(boolean nswf);
 

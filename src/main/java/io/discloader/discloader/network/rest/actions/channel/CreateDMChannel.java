@@ -38,7 +38,7 @@ public class CreateDMChannel extends RESTAction<IPrivateChannel> {
 		}
 
 		ChannelJSON data = gson.fromJson(packet, ChannelJSON.class);
-		future.complete((IPrivateChannel) EntityRegistry.addChannel(data));
+		future.complete((IPrivateChannel) EntityRegistry.addChannel(data, loader));
 	}
 
 }

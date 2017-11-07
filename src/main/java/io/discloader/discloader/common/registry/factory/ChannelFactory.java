@@ -3,6 +3,7 @@ package io.discloader.discloader.common.registry.factory;
 import io.discloader.discloader.common.DiscLoader;
 import io.discloader.discloader.core.entity.channel.Channel;
 import io.discloader.discloader.core.entity.channel.ChannelCategory;
+import io.discloader.discloader.core.entity.channel.GroupChannel;
 import io.discloader.discloader.core.entity.channel.PrivateChannel;
 import io.discloader.discloader.core.entity.channel.TextChannel;
 import io.discloader.discloader.core.entity.channel.VoiceChannel;
@@ -19,16 +20,16 @@ import io.discloader.discloader.util.DLUtil;
 
 public class ChannelFactory {
 
-	public IChannel buildChannel(ChannelJSON data, IGuild guild) {
-		return buildChannel(data, guild, true);
+	public IChannel buildChannel(ChannelJSON data, DiscLoader loader, IGuild guild) {
+		return buildChannel(data, loader, guild, true);
 	}
 
-	public IChannel buildChannel(ChannelJSON data, IGuild guild, boolean insert) {
+	public IChannel buildChannel(ChannelJSON data, DiscLoader loader, IGuild guild, boolean insert) {
 		IChannel channel = null;
 		if (data.type == DLUtil.ChannelTypes.DM) {
 			channel = new PrivateChannel(DiscLoader.getDiscLoader(), data);
 		} else if (data.type == DLUtil.ChannelTypes.groupDM) {
-			channel = new Channel(DiscLoader.getDiscLoader(), data);
+			channel = new GroupChannel(DiscLoader.getDiscLoader(), data);
 		} else {
 			if (guild != null) {
 				if (data.type == DLUtil.ChannelTypes.text) {

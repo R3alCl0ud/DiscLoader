@@ -68,19 +68,23 @@ public class RESTManager {
 	}
 
 	/**
-	 * @param <T> The type to parse request response data as
+	 * @param <T>
+	 *            The type to parse request response data as
 	 * @param method
 	 * @param url
 	 * @param options
-	 * @param cls The {@link Class} of Type param
-	 * @return A {@link CompletableFuture}<T> Object that completes with an
-	 *         Object of Type <T> if applicable.
+	 * @param cls
+	 *            The {@link Class} of Type param
+	 * @return A {@link CompletableFuture}<T> Object that completes with an Object
+	 *         of Type <T> if applicable.
 	 */
 	@SuppressWarnings("unchecked")
 	public <T> CompletableFuture<T> request(Methods method, String url, RESTOptions options, Class<T> cls) {
-		if (options == null) options = new RESTOptions();
+		if (options == null)
+			options = new RESTOptions();
 		Request<T> apiRequest = new Request<T>(options.getPayload());
-		if (!routes.containsKey(url)) routes.put(url, new Route<T>(this, url, method, options.isAuth(), cls));
+		if (!routes.containsKey(url))
+			routes.put(url, new Route<T>(this, url, method, options.isAuth(), cls));
 		return ((Route<T>) routes.get(url)).push(apiRequest);
 	}
 
@@ -113,7 +117,7 @@ public class RESTManager {
 	public CompletableFuture<TextChannel> createTextChannel(Guild guild, JSONObject data) {
 		CompletableFuture<TextChannel> future = new CompletableFuture<TextChannel>();
 		this.makeRequest(DLUtil.Endpoints.guildChannels(guild.getID()), DLUtil.Methods.POST, true, data.put("type", "text")).thenAcceptAsync(action -> {
-			future.complete((TextChannel) EntityRegistry.addChannel(this.gson.fromJson(action, ChannelJSON.class), guild));
+			future.complete((TextChannel) EntityRegistry.addChannel(this.gson.fromJson(action, ChannelJSON.class), loader, guild));
 		});
 		return future;
 	}
@@ -121,7 +125,7 @@ public class RESTManager {
 	public CompletableFuture<VoiceChannel> createVoiceChannel(Guild guild, JSONObject data) {
 		CompletableFuture<VoiceChannel> future = new CompletableFuture<VoiceChannel>();
 		this.makeRequest(DLUtil.Endpoints.guildChannels(guild.getID()), DLUtil.Methods.POST, true, data.put("type", "voice")).thenAcceptAsync(action -> {
-			future.complete((VoiceChannel) EntityRegistry.addChannel(this.gson.fromJson(action, ChannelJSON.class), guild));
+			future.complete((VoiceChannel) EntityRegistry.addChannel(this.gson.fromJson(action, ChannelJSON.class), loader, guild));
 		});
 		return future;
 	}
@@ -318,7 +322,8 @@ public class RESTManager {
 	}
 
 	/**
-	 * @param globally the globally to set
+	 * @param globally
+	 *            the globally to set
 	 */
 	public void setGlobally(boolean globally) {
 		this.globally = globally;
