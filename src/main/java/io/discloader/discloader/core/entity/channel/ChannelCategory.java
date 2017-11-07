@@ -208,4 +208,17 @@ public class ChannelCategory extends GuildChannel implements IChannelCategory {
 		super.setup(data);
 	}
 
+	@Override
+	public boolean equals(Object obj) {
+		if (!(obj instanceof ChannelCategory))
+			return false;
+		ChannelCategory cat = (ChannelCategory) obj;
+		return (this == cat) || (getID() == cat.getID());
+	}
+
+	@Override
+	public int hashCode() {
+		return Long.hashCode(getID());
+	}
+
 }

@@ -42,8 +42,8 @@ public class GuildChannel extends Channel implements IGuildChannel {
 
 	/**
 	 * The {@link Guild} the channel belongs to. <br>
-	 * This property <u>must</u> be {@code null} if the {@link #type} of the
-	 * channel is {@code "dm"}, or {@code "groupDM"}.
+	 * This property <u>must</u> be {@code null} if the {@link #type} of the channel
+	 * is {@code "dm"}, or {@code "groupDM"}.
 	 * 
 	 * @author Perry Berman
 	 * @since 0.0.1
@@ -61,8 +61,8 @@ public class GuildChannel extends Channel implements IGuildChannel {
 	public int position;
 
 	/**
-	 * A {@link HashMap} of the channel's {@link Overwrite overwrites}. Indexed
-	 * by {@link Overwrite#id}.
+	 * A {@link HashMap} of the channel's {@link Overwrite overwrites}. Indexed by
+	 * {@link Overwrite#id}.
 	 * 
 	 * @author Perry Berman
 	 * @since 0.0.1
@@ -85,7 +85,7 @@ public class GuildChannel extends Channel implements IGuildChannel {
 	public CompletableFuture<IGuildChannel> delete() {
 		return new CloseGuildChannel(this).execute();
 	}
-	
+
 	// @Override
 	// public CompletableFuture<IGuildChannel> clone() {
 	// return guild.createTextChannel(name);
@@ -175,7 +175,8 @@ public class GuildChannel extends Channel implements IGuildChannel {
 		JSONObject settings = new JSONObject().put("name", name).put("position", position).put("nsfw", nsfw).put("permission_overwrites", overwrites);
 		loader.rest.request(Methods.PATCH, Endpoints.channel(getID()), new RESTOptions(settings), ChannelJSON.class).thenAcceptAsync(data -> {
 			IChannel newChannel = EntityBuilder.getChannelFactory().buildChannel(data, getLoader(), guild, false);
-			if (newChannel instanceof IGuildChannel) future.complete((IGuildChannel) newChannel);
+			if (newChannel instanceof IGuildChannel)
+				future.complete((IGuildChannel) newChannel);
 		}).exceptionally(ex -> {
 			future.completeExceptionally(ex);
 			return null;
@@ -202,7 +203,8 @@ public class GuildChannel extends Channel implements IGuildChannel {
 	public Map<Long, IGuildMember> getMembers() {
 		Map<Long, IGuildMember> members = new HashMap<>();
 		for (IGuildMember member : guild.getMembers().values()) {
-			if (permissionsOf(member).hasPermission(Permissions.READ_MESSAGES, false)) members.put(member.getID(), member);
+			if (permissionsOf(member).hasPermission(Permissions.READ_MESSAGES, false))
+				members.put(member.getID(), member);
 		}
 		return members;
 	}
@@ -250,16 +252,19 @@ public class GuildChannel extends Channel implements IGuildChannel {
 	public List<IOverwrite> overwritesOf(IGuildMember member) {
 		List<IOverwrite> Overwrites = new ArrayList<>();
 		for (IRole role : member.getRoles()) {
-			if (role != null && overwrites.get(role.getID()) != null) Overwrites.add(overwrites.get(role.getID()));
+			if (role != null && overwrites.get(role.getID()) != null)
+				Overwrites.add(overwrites.get(role.getID()));
 		}
-		if (overwrites.get(member.getID()) != null) Overwrites.add(overwrites.get(member.getID()));
+		if (overwrites.get(member.getID()) != null)
+			Overwrites.add(overwrites.get(member.getID()));
 		return Overwrites;
 	}
 
 	@Override
 	public IPermission permissionsOf(IGuildMember member) {
 		long raw = 0;
-		if (guild.isOwner(member)) return new Permission(member, this, 2146958463);
+		if (guild.isOwner(member))
+			return new Permission(member, this, 2146958463);
 		for (IRole role : member.getRoles()) {
 			if (role != null) {
 				raw |= role.getPermissions().toLong();
@@ -307,7 +312,7 @@ public class GuildChannel extends Channel implements IGuildChannel {
 
 	@Override
 	public CompletableFuture<List<IOverwrite>> setOverwrite(IOverwrite... overwrites) {
-		
+
 		return null;
 	}
 
@@ -332,6 +337,19 @@ public class GuildChannel extends Channel implements IGuildChannel {
 		name = data.name;
 		position = data.position;
 
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (!(obj instanceof GuildChannel))
+			return false;
+		GuildChannel chan = (GuildChannel) obj;
+		return (this == chan) || (getID() == chan.getID());
+	}
+
+	@Override
+	public int hashCode() {
+		return Long.hashCode(getID());
 	}
 
 }

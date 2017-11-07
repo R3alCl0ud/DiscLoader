@@ -350,7 +350,7 @@ public class GuildMember implements IGuildMember {
 
 	@Override
 	public int hashCode() {
-		return (getName() + getID()).hashCode();
+		return Long.hashCode(getID());
 	}
 
 	@Override

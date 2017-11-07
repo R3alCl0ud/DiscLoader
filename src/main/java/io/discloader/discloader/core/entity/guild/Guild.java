@@ -489,15 +489,8 @@ public class Guild implements IGuild {
 		if (!(object instanceof Guild))
 			return false;
 		Guild guild = (Guild) object;
-		if (!guild.id.equals(id))
-			return false;
-		for (IRole role : roles.values())
-			if (!guild.roles.containsKey(role.getID()))
-				return false;
-		for (IGuildMember member : members.values())
-			if (!guild.members.containsKey(member.getID()))
-				return false;
-		return guild.name.equals(name) && guild.ownerID == ownerID && guild.icon.equals(icon) && (isSyncing() == guild.isSyncing());
+
+		return this == guild || getID() == guild.getID();
 	}
 
 	@Override
@@ -871,7 +864,7 @@ public class Guild implements IGuild {
 
 	@Override
 	public int hashCode() {
-		return id.hashCode();
+		return Long.hashCode(getID());
 	}
 
 	@Override

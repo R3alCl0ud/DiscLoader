@@ -29,7 +29,8 @@ public class Channel implements IChannel {
 
 		type = data.type;
 
-		if (data != null) setup(data);
+		if (data != null)
+			setup(data);
 	}
 
 	@Override
@@ -63,5 +64,18 @@ public class Channel implements IChannel {
 	@Override
 	public OffsetDateTime createdAt() {
 		return SnowflakeUtil.creationTime(this);
+	}
+
+	@Override
+	public boolean equals(Object o) {
+		if (!(o instanceof Channel)) return false;
+		
+		Channel c = (Channel) o;
+		return this==c||getID() == c.getID();
+	}
+	
+	@Override
+	public int hashCode() {
+		return Long.hashCode(getID());
 	}
 }
