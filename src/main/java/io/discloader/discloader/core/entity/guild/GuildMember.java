@@ -12,6 +12,7 @@ import org.json.JSONObject;
 import io.discloader.discloader.common.DiscLoader;
 import io.discloader.discloader.common.event.EventListenerAdapter;
 import io.discloader.discloader.common.event.IEventListener;
+import io.discloader.discloader.common.event.guild.member.GuildMemberEvent.NicknameUpdateEvent;
 import io.discloader.discloader.common.event.guild.member.GuildMemberUpdateEvent;
 import io.discloader.discloader.common.exceptions.PermissionsException;
 import io.discloader.discloader.common.exceptions.VoiceConnectionException;
@@ -473,12 +474,28 @@ public class GuildMember implements IGuildMember {
 	 */
 	@Override
 	public CompletableFuture<IGuildMember> setNick(String nick) {
-		if (!guild.hasPermission(Permissions.MANAGE_NICKNAMES)) {
+		if ((equals(guild.getCurrentMember()) && !guild.hasPermission(Permissions.CHANGE_NICKNAME)) || (!equals(guild.getCurrentMember()) && !guild.hasPermission(Permissions.MANAGE_NICKNAMES))) {
 			throw new PermissionsException("Insuccficient Permissions");
 		}
 
-		CompletableFuture<IGuildMember> future = getLoader().rest.setNick(this, nick);
-		future.thenAcceptAsync(action -> this.nick = nick);
+		CompletableFuture<IGuildMember> future = new CompletableFuture<>();
+		JSONObject payload = new JSONObject().put("nick", nick);
+		String endpoint = equals(guild.getCurrentMember()) ? Endpoints.guildNick(guild.getID()) : Endpoints.guildMember(guild.getID(), getID());
+		CompletableFuture<Void> cf = getLoader().rest.request(Methods.PATCH, endpoint, new RESTOptions(payload), Void.class);
+		IEventListener iel = new EventListenerAdapter() {
+			public void GuildMemberNicknameUpdated(NicknameUpdateEvent e) {
+				if (e.getMember().getID() == getID() && e.getGuild().equals(guild)) {
+					future.complete(e.getMember());
+					getLoader().removeEventHandler(this);
+				}
+			}
+		};
+		getLoader().addEventHandler(iel);
+		cf.exceptionally(ex -> {
+			getLoader().removeEventHandler(iel);
+			future.completeExceptionally(ex);
+			return null;
+		});
 		return future;
 	}
 

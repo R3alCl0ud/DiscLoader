@@ -68,12 +68,13 @@ public class Channel implements IChannel {
 
 	@Override
 	public boolean equals(Object o) {
-		if (!(o instanceof Channel)) return false;
-		
+		if (!(o instanceof Channel))
+			return false;
+
 		Channel c = (Channel) o;
-		return this==c||getID() == c.getID();
+		return this == c || getID() == c.getID();
 	}
-	
+
 	@Override
 	public int hashCode() {
 		return Long.hashCode(getID());

@@ -81,6 +81,7 @@ public class Route<T> {
 					if (code == 429) {
 						queue.add(0, apiRequest);
 						rateLimiter.limitRoute(rest.isGlobally(), rateLimiter.retryIn());
+						return;// return early so handle() at the end of handle() doesn't get called
 					} else if (code >= 500 && code < 600) {
 						queue.add(0, apiRequest);
 					} else if (code >= 400 && code < 500) {
@@ -91,6 +92,7 @@ public class Route<T> {
 						T res = gson.fromJson(response.getBody(), cls);
 						apiRequest.getFuture().complete(res);
 					}
+					handle();
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
@@ -99,7 +101,7 @@ public class Route<T> {
 			@Override
 			public void failed(UnirestException e) {
 				queue.add(0, apiRequest);
-
+				handle();
 			}
 
 			@Override

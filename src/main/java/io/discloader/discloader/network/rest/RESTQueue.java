@@ -195,6 +195,7 @@ public class RESTQueue {
 				@Override
 				public void failed(UnirestException e) {
 					apiRequest.future.completeExceptionally(e);
+					handle();
 				}
 			});
 		} catch (Exception e) {

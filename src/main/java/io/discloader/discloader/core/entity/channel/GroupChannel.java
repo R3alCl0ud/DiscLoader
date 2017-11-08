@@ -104,7 +104,8 @@ public class GroupChannel extends Channel implements IGroupChannel, IVoiceChanne
 	public long getLastMessageID() {
 		long lastMsgID = 0l;
 		for (IMessage message : messages.values()) {
-			if ((message.getID() >> 22) > (lastMsgID >> 22)) lastMsgID = message.getID();
+			if ((message.getID() >> 22) > (lastMsgID >> 22))
+				lastMsgID = message.getID();
 		}
 		return lastMsgID;
 	}
@@ -133,7 +134,8 @@ public class GroupChannel extends Channel implements IGroupChannel, IVoiceChanne
 	public Map<Long, IMessage> getPinnedMessages() {
 		HashMap<Long, IMessage> pins = new HashMap<>();
 		for (IMessage message : messages.values()) {
-			if (message.isPinned()) pins.put(message.getID(), message);
+			if (message.isPinned())
+				pins.put(message.getID(), message);
 		}
 		return pins;
 	}
@@ -227,10 +229,9 @@ public class GroupChannel extends Channel implements IGroupChannel, IVoiceChanne
 
 	/*
 	 * (non-Javadoc)
-	 * @see
-	 * io.discloader.discloader.entity.channel.ITextChannel#sendMessage(java.
-	 * lang.String,
-	 * io.discloader.discloader.core.entity.RichEmbed,
+	 * 
+	 * @see io.discloader.discloader.entity.channel.ITextChannel#sendMessage(java.
+	 * lang.String, io.discloader.discloader.core.entity.RichEmbed,
 	 * io.discloader.discloader.entity.sendable.Attachment)
 	 */
 	@Override
@@ -238,4 +239,16 @@ public class GroupChannel extends Channel implements IGroupChannel, IVoiceChanne
 		return null;
 	}
 
+	@Override
+	public boolean equals(Object o) {
+		if (!(o instanceof GroupChannel))
+			return false;
+		GroupChannel groupChannel = (GroupChannel) o;
+		return (this == groupChannel) || (groupChannel.getID() == getID());
+	}
+
+	@Override
+	public int hashCode() {
+		return Long.hashCode(getID());
+	}
 }

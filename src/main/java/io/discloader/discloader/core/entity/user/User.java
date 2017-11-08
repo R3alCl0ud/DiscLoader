@@ -25,77 +25,76 @@ import io.discloader.discloader.network.rest.actions.channel.CreateDMChannel;
  * @author Perry Berman
  */
 public class User implements IUser {
-	
+
 	/**
 	 * The loader instance that cached the user.
 	 */
 	public DiscLoader loader;
-	
+
 	/**
 	 * The user's unique Snowflake ID.
 	 */
 	private long id;
-	
+
 	/**
 	 * The user's username
 	 */
 	private String username;
-	
+
 	/**
 	 * The hash of the user's avatar
 	 */
 	protected String avatar;
-	
+
 	/**
 	 * The user's four digit discriminator
 	 */
 	private short discriminator;
-	
+
 	/**
 	 * Whether or not the user is a bot account
 	 */
 	public boolean bot;
-	
+
 	/**
 	 * Whether or not the user has verified their email address
 	 */
 	private boolean verified;
-	
+
 	/**
 	 * Whether or not the user has 2FA enabled
 	 */
 	private boolean mfa;
-	
+
 	public User(DiscLoader loader, UserJSON user) {
 		this.loader = loader;
-		
+
 		this.id = SnowflakeUtil.parse(user.id == null ? "0" : user.id);
-		
+
 		if (user.username != null) {
 			this.setup(user);
 		}
 	}
-	
+
 	public User(IUser user) {
 		this.loader = user.getLoader();
-		
+
 		this.id = user.getID();
-		
+
 		this.username = user.getUsername();
-		
+
 		this.discriminator = user.getDiscriminator();
-		
+
 		this.avatar = user.getAvatar().getHash();
-		
+
 		this.bot = user.isBot();
 	}
-	
+
 	/**
 	 * 
 	 */
-	public User() {
-	}
-	
+	public User() {}
+
 	/**
 	 * toStrings the user in mention format
 	 * 
@@ -105,12 +104,12 @@ public class User implements IUser {
 	public String asMention() {
 		return String.format("<@%s>", id);
 	}
-	
+
 	@Override
 	public OffsetDateTime createdAt() {
 		return SnowflakeUtil.creationTime(this);
 	}
-	
+
 	// public IUser clone() {
 	// User cloned = new User();
 	// cloned.loader = this.loader;
@@ -122,27 +121,28 @@ public class User implements IUser {
 	// cloned.mfa = this.mfa;
 	// cloned.verified = this.verified;
 	// }
-	
+
 	@Override
 	public boolean equals(Object object) {
-		if (!(object instanceof User)) return false;
+		if (!(object instanceof User))
+			return false;
 		User user = (User) object;
 		if (this == user) {
 			return true;
 		}
-		return id == user.id && username.equals(user.username) && discriminator == user.discriminator && mfa == user.mfa && verified == user.verified;
+		return id == user.id && username.equals(user.username) && discriminator == user.discriminator && mfa == user.mfa && verified == user.verified && bot;
 	}
-	
+
 	@Override
 	public IIcon getAvatar() {
 		return new UserAvatar(avatar, id, discriminator);
 	}
-	
+
 	@Override
 	public short getDiscriminator() {
 		return discriminator;
 	}
-	
+
 	/**
 	 * @return the id
 	 */
@@ -150,17 +150,17 @@ public class User implements IUser {
 	public long getID() {
 		return id;
 	}
-	
+
 	@Override
 	public DiscLoader getLoader() {
 		return loader;
 	}
-	
+
 	@Override
 	public IPrivateChannel getPrivateChannel() {
 		return EntityRegistry.getPrivateChannelByUser(this);
 	}
-	
+
 	/**
 	 * @return A Future that completes with the user's profile if successful.
 	 */
@@ -168,7 +168,7 @@ public class User implements IUser {
 	public CompletableFuture<IUserProfile> getProfile() {
 		return new FetchUserProfile(this).execute();
 	}
-	
+
 	/**
 	 * @return the username
 	 */
@@ -176,57 +176,62 @@ public class User implements IUser {
 	public String getUsername() {
 		return username;
 	}
-	
+
 	@Override
 	public boolean isBot() {
 		return bot;
 	}
-	
+
 	@Override
 	public boolean isVerified() {
 		return verified;
 	}
-	
+
 	@Override
 	public boolean MFAEnabled() {
 		return mfa;
 	}
-	
+
 	@Override
 	public CompletableFuture<IPrivateChannel> openPrivateChannel() {
-		if (getPrivateChannel() != null) return CompletableFuture.completedFuture(getPrivateChannel());
+		if (getPrivateChannel() != null)
+			return CompletableFuture.completedFuture(getPrivateChannel());
 		return new CreateDMChannel(this).execute();
 	}
-	
+
 	@Override
 	public CompletableFuture<IMessage> sendEmbed(RichEmbed embed) {
-		if (embed.getThumbnail() != null && embed.getThumbnail().resource != null) return sendMessage(null, embed, (Resource) null);
-		if (embed.getImage() != null && embed.getImage().resource != null) return sendMessage(null, embed, (Resource) null);
+		if (embed.getThumbnail() != null && embed.getThumbnail().resource != null)
+			return sendMessage(null, embed, (Resource) null);
+		if (embed.getImage() != null && embed.getImage().resource != null)
+			return sendMessage(null, embed, (Resource) null);
 		return sendMessage(null, embed, (File) null);
 	}
-	
+
 	@Override
 	public CompletableFuture<IMessage> sendFile(File file) {
 		return sendMessage(null, null, file);
 	}
-	
+
 	@Override
 	public CompletableFuture<IMessage> sendFile(Resource resource) {
 		return sendMessage(null, null, resource);
 	}
-	
+
 	@Override
 	public CompletableFuture<IMessage> sendMessage(String content) {
 		return sendMessage(content, null, (File) null);
 	}
-	
+
 	@Override
 	public CompletableFuture<IMessage> sendMessage(String content, RichEmbed embed) {
-		if ((embed.getThumbnail() != null && embed.getThumbnail().resource != null)) return sendMessage(content, embed, (Resource) null);
-		if ((embed.getImage() != null && embed.getImage().resource != null)) return sendMessage(content, embed, (Resource) null);
+		if ((embed.getThumbnail() != null && embed.getThumbnail().resource != null))
+			return sendMessage(content, embed, (Resource) null);
+		if ((embed.getImage() != null && embed.getImage().resource != null))
+			return sendMessage(content, embed, (Resource) null);
 		return sendMessage(content, embed, (File) null);
 	}
-	
+
 	@Override
 	public CompletableFuture<IMessage> sendMessage(String content, RichEmbed embed, File file) {
 		CompletableFuture<IMessage> future = new CompletableFuture<>();
@@ -242,7 +247,7 @@ public class User implements IUser {
 		}
 		return channel.sendMessage(content, embed, file);
 	}
-	
+
 	@Override
 	public CompletableFuture<IMessage> sendMessage(String content, RichEmbed embed, Resource resource) {
 		CompletableFuture<IMessage> future = new CompletableFuture<>();
@@ -258,22 +263,23 @@ public class User implements IUser {
 		}
 		return channel.sendMessage(content, embed, resource);
 	}
-	
+
 	@Override
 	public void setup(UserJSON data) {
-		if (data.username != null) username = data.username;
-		
+		if (data.username != null)
+			username = data.username;
+
 		// Short.p
 		discriminator = data.discriminator == null ? 0000 : Short.parseShort(data.discriminator, 10);
-		
+
 		avatar = data.avatar;
-		
+
 		bot = data.bot;
 	}
-	
+
 	@Override
 	public String toString() {
 		return String.format("%s#%s", username, discriminator);
 	}
-	
+
 }
