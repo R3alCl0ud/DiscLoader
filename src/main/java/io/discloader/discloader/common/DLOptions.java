@@ -55,6 +55,10 @@ public class DLOptions {
 		this("TOKEN", "/", true, false, false, shard, shards);
 	}
 
+	public DLOptions(String token) {
+		this(token, "/", true, false, false, 0, 1);
+	}
+
 	public DLOptions(String token, String prefix) {
 		this(token, prefix, true, false, false, 0, 1);
 	}
@@ -109,7 +113,8 @@ public class DLOptions {
 	}
 
 	/**
-	 * @param useModloader the useModloader to set
+	 * @param useModloader
+	 *            the useModloader to set
 	 */
 	public DLOptions loadMods(boolean useModloader) {
 		this.useModloader = useModloader;
