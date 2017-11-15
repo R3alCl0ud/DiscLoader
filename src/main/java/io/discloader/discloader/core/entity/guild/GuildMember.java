@@ -410,7 +410,7 @@ public class GuildMember implements IGuildMember {
 		return guild.kick(this, reason);
 	}
 
-	public List<IRole> mergeRoles(IRole... roles) {
+	protected List<IRole> mergeRoles(IRole... roles) {
 		List<IRole> rls = getRoles();
 		for (int i = 0; i < roles.length; i++) {
 			if (!hasRole(roles[i])) {

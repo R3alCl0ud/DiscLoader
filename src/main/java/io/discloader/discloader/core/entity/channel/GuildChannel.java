@@ -16,9 +16,11 @@ import io.discloader.discloader.core.entity.guild.Guild;
 import io.discloader.discloader.core.entity.guild.Role;
 import io.discloader.discloader.entity.IOverwrite;
 import io.discloader.discloader.entity.IPermission;
+import io.discloader.discloader.entity.channel.ChannelTypes;
 import io.discloader.discloader.entity.channel.IChannel;
 import io.discloader.discloader.entity.channel.IChannelCategory;
 import io.discloader.discloader.entity.channel.IGuildChannel;
+import io.discloader.discloader.entity.channel.IGuildTextChannel;
 import io.discloader.discloader.entity.guild.IGuild;
 import io.discloader.discloader.entity.guild.IGuildMember;
 import io.discloader.discloader.entity.guild.IRole;
@@ -312,8 +314,16 @@ public class GuildChannel extends Channel implements IGuildChannel {
 
 	@Override
 	public CompletableFuture<List<IOverwrite>> setOverwrite(IOverwrite... overwrites) {
-
-		return null;
+		CompletableFuture<List<IOverwrite>> future = new CompletableFuture<>();
+		CompletableFuture<? extends IGuildChannel> cf = edit(name, position, nsfw, overwrites);
+		cf.thenAcceptAsync(channel -> {
+			future.complete(new ArrayList<>(channel.getOverwrites().values()));
+		});
+		cf.exceptionally(ex -> {
+			future.completeExceptionally(ex);
+			return null;
+		});
+		return future;
 	}
 
 	@Override
@@ -328,7 +338,18 @@ public class GuildChannel extends Channel implements IGuildChannel {
 
 	@Override
 	public CompletableFuture<? extends IGuildChannel> setPosition(int position) {
-		return edit(name, position);
+		CompletableFuture<? extends IGuildChannel> future = new CompletableFuture<>();
+		if (this.getType() == ChannelTypes.TEXT) {
+			List<JSONObject> positions = new ArrayList<>();
+			List<IGuildTextChannel> channels = new ArrayList<>(guild.getTextChannels().values());
+			for (IGuildTextChannel channel : channels) {
+				if (channel.getID() == getID()) {
+					positions.add(new JSONObject().put("id", SnowflakeUtil.asString(channel)).put("position", position));
+				}
+			}
+		}
+
+		return future;
 	}
 
 	@Override
