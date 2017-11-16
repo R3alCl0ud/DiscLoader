@@ -176,5 +176,5 @@ public interface IGuildChannel extends IChannel {
 	 *            The new possition of the channel
 	 * @return A completed future with the position set.
 	 */
-	CompletableFuture<? extends IGuildChannel> setPosition(int position);
+	CompletableFuture<IGuildChannel> setPosition(int position);
 }

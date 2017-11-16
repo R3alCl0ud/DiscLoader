@@ -144,6 +144,8 @@ public class Route<T> {
 				try {
 					if (request.getData() instanceof JSONObject) {
 						body.field("payload_json", request.getData().toString());
+					} else if (request.getData() instanceof String) {
+						body.field("payload_json", request.getData());
 					} else {
 						body.field("payload_json", gson.toJson(request.getData()));
 					}
@@ -154,6 +156,8 @@ public class Route<T> {
 				base.getHttpRequest().header("Content-Type", "application/json");
 				if (request.getData() instanceof JSONObject) {
 					((HttpRequestWithBody) base).body(request.getData().toString());
+				} else if (request.getData() instanceof String) {
+					((HttpRequestWithBody) base).body(request.getData());
 				} else {
 					((HttpRequestWithBody) base).body(gson.toJson(request.getData()));
 				}
@@ -167,6 +171,8 @@ public class Route<T> {
 			base.getHttpRequest().header("Content-Type", "application/json");
 			if (request.getData() instanceof JSONObject) {
 				((HttpRequestWithBody) base).body(request.getData().toString());
+			} else if (request.getData() instanceof String) {
+				((HttpRequestWithBody) base).body(request.getData().toString());
 			} else {
 				((HttpRequestWithBody) base).body(gson.toJson(request.getData()));
 			}
@@ -176,6 +182,8 @@ public class Route<T> {
 			base.getHttpRequest().header("Content-Type", "application/json");
 			if (request.getData() instanceof JSONObject) {
 				((HttpRequestWithBody) base).body(request.getData().toString());
+			} else if (request.getData() instanceof String) {
+				((HttpRequestWithBody) base).body(request.getData());
 			} else {
 				((HttpRequestWithBody) base).body(gson.toJson(request.getData()));
 			}
@@ -184,6 +192,7 @@ public class Route<T> {
 			base = Unirest.get(endpoint);
 			break;
 		}
+
 		// body.
 		HttpRequest httprequest = base.getHttpRequest();
 		if (auth && rest.loader.token != null)

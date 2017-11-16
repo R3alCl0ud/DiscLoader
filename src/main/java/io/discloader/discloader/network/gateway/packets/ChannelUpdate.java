@@ -4,8 +4,10 @@
 package io.discloader.discloader.network.gateway.packets;
 
 import io.discloader.discloader.common.event.channel.ChannelUpdateEvent;
+import io.discloader.discloader.common.event.channel.GuildChannelUpdateEvent;
 import io.discloader.discloader.common.registry.EntityRegistry;
 import io.discloader.discloader.entity.channel.IChannel;
+import io.discloader.discloader.entity.channel.IGuildChannel;
 import io.discloader.discloader.entity.channel.ITextChannel;
 import io.discloader.discloader.entity.guild.IGuild;
 import io.discloader.discloader.entity.message.IMessage;
@@ -31,10 +33,8 @@ public class ChannelUpdate extends AbstractHandler {
 		IChannel channel = null;
 		if (data.guild_id != null) {
 			guild = EntityRegistry.getGuildByID(data.guild_id);
-			channel = EntityRegistry.addChannel(data, loader, guild);
-		} else {
-			channel = EntityRegistry.addChannel(data, loader);
 		}
+		channel = EntityRegistry.addChannel(data, loader, guild);
 		if (oldChannel instanceof ITextChannel) {
 			ITextChannel oitc = (ITextChannel) oldChannel, itc = (ITextChannel) channel;
 			for (IMessage message : oitc.getMessages().values()) {
@@ -42,6 +42,9 @@ public class ChannelUpdate extends AbstractHandler {
 			}
 		}
 		ChannelUpdateEvent event = new ChannelUpdateEvent(channel, oldChannel);
+		if (channel instanceof IGuildChannel && oldChannel instanceof IGuildChannel) {
+			loader.emit(new GuildChannelUpdateEvent((IGuildChannel) channel, (IGuildChannel) oldChannel));
+		}
 		loader.emit(Events.CHANNEL_UPDATE, event);
 		loader.emit(event);
 	}

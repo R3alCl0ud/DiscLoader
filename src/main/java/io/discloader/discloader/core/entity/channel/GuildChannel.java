@@ -8,6 +8,8 @@ import java.util.concurrent.CompletableFuture;
 
 import org.json.JSONObject;
 
+import io.discloader.discloader.common.event.EventListenerAdapter;
+import io.discloader.discloader.common.event.channel.GuildChannelUpdateEvent;
 import io.discloader.discloader.common.exceptions.PermissionsException;
 import io.discloader.discloader.common.registry.EntityBuilder;
 import io.discloader.discloader.core.entity.Overwrite;
@@ -16,11 +18,9 @@ import io.discloader.discloader.core.entity.guild.Guild;
 import io.discloader.discloader.core.entity.guild.Role;
 import io.discloader.discloader.entity.IOverwrite;
 import io.discloader.discloader.entity.IPermission;
-import io.discloader.discloader.entity.channel.ChannelTypes;
 import io.discloader.discloader.entity.channel.IChannel;
 import io.discloader.discloader.entity.channel.IChannelCategory;
 import io.discloader.discloader.entity.channel.IGuildChannel;
-import io.discloader.discloader.entity.channel.IGuildTextChannel;
 import io.discloader.discloader.entity.guild.IGuild;
 import io.discloader.discloader.entity.guild.IGuildMember;
 import io.discloader.discloader.entity.guild.IRole;
@@ -337,17 +337,62 @@ public class GuildChannel extends Channel implements IGuildChannel {
 	}
 
 	@Override
-	public CompletableFuture<? extends IGuildChannel> setPosition(int position) {
-		CompletableFuture<? extends IGuildChannel> future = new CompletableFuture<>();
-		if (this.getType() == ChannelTypes.TEXT) {
-			List<JSONObject> positions = new ArrayList<>();
-			List<IGuildTextChannel> channels = new ArrayList<>(guild.getTextChannels().values());
-			for (IGuildTextChannel channel : channels) {
-				if (channel.getID() == getID()) {
-					positions.add(new JSONObject().put("id", SnowflakeUtil.asString(channel)).put("position", position));
-				}
+	public CompletableFuture<IGuildChannel> setPosition(int position) {
+		CompletableFuture<IGuildChannel> future = new CompletableFuture<>();
+		List<JSONObject> positions = new ArrayList<>();
+		boolean normalize = position < 0;
+		List<IGuildChannel> channels;
+		switch (getType()) {
+		case CATEGORY:
+			channels = new ArrayList<>(guild.getChannelCategories().values());
+			break;
+		case TEXT:
+			channels = new ArrayList<>(guild.getTextChannels().values());
+			break;
+		case VOICE:
+			channels = new ArrayList<>(guild.getVoiceChannels().values());
+			break;
+		default:
+			channels = new ArrayList<>();
+			break;
+		}
+		for (IGuildChannel channel : channels) {
+			if (channel.getID() == getID()) {
+				positions.add(new JSONObject().put("id", SnowflakeUtil.asString(channel)).put("position", position));
+			} else if (channel.getPosition() >= position) {
+				positions.add(new JSONObject().put("id", SnowflakeUtil.asString(channel)).put("position", channel.getPosition() + 1));
+			} else {
+				positions.add(new JSONObject().put("id", SnowflakeUtil.asString(channel)).put("position", channel.getPosition()));
+			}
+			if (channel.getPosition() < 0)
+				normalize = true;
+		}
+		positions.sort((a, b) -> {
+			if (a.getInt("position") < b.getInt("position"))
+				return -1;
+			if (a.getInt("position") > b.getInt("position"))
+				return 1;
+			return 0;
+		});
+		if (normalize) {
+			for (int i = 0; i < positions.size(); i++) {
+				positions.get(i).put("position", i);
 			}
 		}
+
+		getLoader().addEventHandler(new EventListenerAdapter() {
+			@Override
+			public void GuildChannelUpdate(GuildChannelUpdateEvent e) {
+				if (getID() == e.getChannel().getID()) {
+					future.complete(e.getChannel());
+					getLoader().removeEventHandler(this);
+				}
+			}
+		});
+		getLoader().rest.request(Methods.PATCH, Endpoints.guildChannels(getGuild().getID()), new RESTOptions(true, null, positions.toString()), Void.class).exceptionally(ex -> {
+			future.completeExceptionally(ex);
+			return null;
+		});
 
 		return future;
 	}
