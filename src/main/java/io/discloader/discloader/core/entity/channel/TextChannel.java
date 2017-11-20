@@ -178,6 +178,16 @@ public class TextChannel extends GuildChannel implements IGuildTextChannel {
 	}
 
 	@Override
+	public boolean equals(Object object) {
+		if (!(object instanceof TextChannel))
+			return false;
+		TextChannel channel = (TextChannel) object;
+
+		return (this == channel) || (getID() == channel.getID());
+
+	}
+
+	@Override
 	public CompletableFuture<IMessage> fetchMessage(long id) {
 		return new FetchMessage<IGuildTextChannel>(this, id).execute();
 	}

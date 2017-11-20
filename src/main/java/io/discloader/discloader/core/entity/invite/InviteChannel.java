@@ -49,4 +49,19 @@ public class InviteChannel implements IInviteChannel {
 		return type;
 	}
 
+	@Override
+	public boolean equals(Object object) {
+		if (!(object instanceof InviteChannel))
+			return false;
+		InviteChannel ic = (InviteChannel) object;
+
+		return (this == ic) || getID() == ic.getID();
+
+	}
+
+	@Override
+	public int hashCode() {
+		return Long.hashCode(getID());
+	}
+
 }

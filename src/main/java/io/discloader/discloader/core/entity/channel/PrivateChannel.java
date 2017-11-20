@@ -10,13 +10,17 @@ import io.discloader.discloader.client.render.util.Resource;
 import io.discloader.discloader.common.DiscLoader;
 import io.discloader.discloader.common.registry.EntityRegistry;
 import io.discloader.discloader.core.entity.RichEmbed;
+import io.discloader.discloader.core.entity.message.Message;
 import io.discloader.discloader.core.entity.message.MessageFetchOptions;
 import io.discloader.discloader.entity.channel.IPrivateChannel;
 import io.discloader.discloader.entity.message.IMessage;
 import io.discloader.discloader.entity.sendable.Attachment;
+import io.discloader.discloader.entity.sendable.SendableMessage;
 import io.discloader.discloader.entity.user.IUser;
 import io.discloader.discloader.entity.util.SnowflakeUtil;
 import io.discloader.discloader.network.json.ChannelJSON;
+import io.discloader.discloader.network.json.MessageJSON;
+import io.discloader.discloader.network.rest.RESTOptions;
 import io.discloader.discloader.network.rest.actions.channel.BulkDelete;
 import io.discloader.discloader.network.rest.actions.channel.FetchMessage;
 import io.discloader.discloader.network.rest.actions.channel.FetchMessages;
@@ -26,6 +30,8 @@ import io.discloader.discloader.network.rest.actions.channel.close.CloseChannel;
 import io.discloader.discloader.network.rest.actions.channel.pin.PinMessage;
 import io.discloader.discloader.network.rest.actions.channel.pin.PinnedMessages;
 import io.discloader.discloader.network.rest.actions.channel.pin.UnpinMessage;
+import io.discloader.discloader.network.util.Endpoints;
+import io.discloader.discloader.network.util.Methods;
 
 /**
  * Represents a DM Channel on discord
@@ -54,6 +60,14 @@ public class PrivateChannel extends Channel implements IPrivateChannel {
 
 	public CompletableFuture<IPrivateChannel> close() {
 		return new CloseChannel<IPrivateChannel>(this).execute();
+	}
+
+	@Override
+	public boolean equals(Object object) {
+		if (!(object instanceof PrivateChannel))
+			return false;
+		PrivateChannel channel = (PrivateChannel) object;
+		return (this == channel) || getID() == channel.getID();
 	}
 
 	@Override
@@ -99,7 +113,8 @@ public class PrivateChannel extends Channel implements IPrivateChannel {
 	public long getLastMessageID() {
 		long lastMsgID = 0l;
 		for (IMessage message : messages.values()) {
-			if ((message.getID() >> 22) > (lastMsgID >> 22)) lastMsgID = message.getID();
+			if ((message.getID() >> 22) > (lastMsgID >> 22))
+				lastMsgID = message.getID();
 		}
 		return lastMsgID;
 	}
@@ -128,7 +143,8 @@ public class PrivateChannel extends Channel implements IPrivateChannel {
 	public Map<Long, IMessage> getPinnedMessages() {
 		HashMap<Long, IMessage> pins = new HashMap<>();
 		for (IMessage message : messages.values()) {
-			if (message.isPinned()) pins.put(message.getID(), message);
+			if (message.isPinned())
+				pins.put(message.getID(), message);
 		}
 		return pins;
 	}
@@ -178,10 +194,33 @@ public class PrivateChannel extends Channel implements IPrivateChannel {
 		return sendMessage(content, embed, (File) null);
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see io.discloader.discloader.entity.channel.ITextChannel#sendMessage(java.
+	 * lang.String, io.discloader.discloader.core.entity.RichEmbed,
+	 * io.discloader.discloader.entity.sendable.Attachment)
+	 */
+	@Override
+	public CompletableFuture<IMessage> sendMessage(String content, RichEmbed embed, Attachment attachment) {
+		SendableMessage sendable = new SendableMessage(content, false, embed, attachment, new File(attachment.filename));
+		CompletableFuture<IMessage> future = new CompletableFuture<>();
+		CompletableFuture<MessageJSON> mcf = loader.rest.request(Methods.POST, Endpoints.messages(getID()), new RESTOptions(sendable), MessageJSON.class);
+		mcf.thenAcceptAsync(e -> {
+			future.complete(new Message<>(this, e));
+		});
+		mcf.exceptionally(ex -> {
+			future.completeExceptionally(ex);
+			return null;
+		});
+		return future;
+	}
+
 	@Override
 	public CompletableFuture<IMessage> sendMessage(String content, RichEmbed embed, File file) {
 		Attachment attachment = null;
-		if (file != null) attachment = new Attachment(file.getName());
+		if (file != null)
+			attachment = new Attachment(file.getName());
 		if (embed != null && embed.getThumbnail() != null && embed.getThumbnail().file != null) {
 			file = embed.getThumbnail().file;
 			embed.getThumbnail().file = null;
@@ -220,19 +259,6 @@ public class PrivateChannel extends Channel implements IPrivateChannel {
 	@Override
 	public CompletableFuture<IMessage> unpinMessage(IMessage message) {
 		return new UnpinMessage<IPrivateChannel>(message).execute();
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * @see
-	 * io.discloader.discloader.entity.channel.ITextChannel#sendMessage(java.
-	 * lang.String,
-	 * io.discloader.discloader.core.entity.RichEmbed,
-	 * io.discloader.discloader.entity.sendable.Attachment)
-	 */
-	@Override
-	public CompletableFuture<IMessage> sendMessage(String content, RichEmbed embed, Attachment attachment) {
-		return null;
 	}
 
 }

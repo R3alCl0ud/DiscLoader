@@ -380,12 +380,12 @@ public class GuildChannel extends Channel implements IGuildChannel {
 			}
 		}
 
-		getLoader().addEventHandler(new EventListenerAdapter() {
+		getLoader().addEventListener(new EventListenerAdapter() {
 			@Override
 			public void GuildChannelUpdate(GuildChannelUpdateEvent e) {
 				if (getID() == e.getChannel().getID()) {
 					future.complete(e.getChannel());
-					getLoader().removeEventHandler(this);
+					getLoader().removeEventListener(this);
 				}
 			}
 		});
@@ -403,6 +403,11 @@ public class GuildChannel extends Channel implements IGuildChannel {
 		name = data.name;
 		position = data.position;
 
+	}
+
+	@Override
+	public String toString() {
+		return getName();
 	}
 
 	@Override

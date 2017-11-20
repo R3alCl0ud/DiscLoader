@@ -89,7 +89,7 @@ public class Main {
 
 				public void ShardLaunched(Shard shard) {
 					LOGGER.info(String.format("Shard #%d: Launched", shard.getShardID()));
-					shard.getLoader().addEventHandler(new EventListenerAdapter() {
+					shard.getLoader().addEventListener(new EventListenerAdapter() {
 
 						public void Ready(ReadyEvent e) {
 
@@ -127,7 +127,7 @@ public class Main {
 			manager.launchShards();
 		} else {
 			loader = new DiscLoader(options);
-			loader.addEventHandler(new EventListenerAdapter() {
+			loader.addEventListener(new EventListenerAdapter() {
 
 				@Override
 				public void MessageCreate(MessageCreateEvent e) {

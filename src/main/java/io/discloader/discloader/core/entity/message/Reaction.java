@@ -25,8 +25,10 @@ public class Reaction implements IReaction {
 		this.message = message;
 		me = data.me;
 		count = data.count;
-		if (data.emoji.id != null) emoji = new GuildEmoji(data.emoji, message.getGuild());
-		else emoji = new Emoji(data.emoji, message.getLoader());
+		if (data.emoji.id != null)
+			emoji = new GuildEmoji(data.emoji, message.getGuild());
+		else
+			emoji = new Emoji(data.emoji, message.getLoader());
 	}
 
 	/**
@@ -77,7 +79,7 @@ public class Reaction implements IReaction {
 
 			@Override
 			public CompletableFuture<Void> execute() {
-				return super.execute(loader.rest.makeRequest(Endpoints.userReaction(message.getChannel().getID(), message.getID(), user.getID(),SnowflakeUtil.asString(emoji)), Methods.DELETE, true));
+				return super.execute(loader.rest.makeRequest(Endpoints.userReaction(message.getChannel().getID(), message.getID(), user.getID(), SnowflakeUtil.asString(emoji)), Methods.DELETE, true));
 			}
 
 		}.execute();
@@ -85,7 +87,6 @@ public class Reaction implements IReaction {
 
 	@Override
 	public CompletableFuture<Void> removeReaction() {
-
 		return new RESTAction<Void>(message.getLoader()) {
 
 			@Override

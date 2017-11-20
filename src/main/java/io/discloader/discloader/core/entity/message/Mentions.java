@@ -154,4 +154,18 @@ public class Mentions implements IMentions {
 		return roles.size() + users.size();
 	}
 
+	@Override
+	public boolean equals(Object object) {
+		if (!(object instanceof Mentions))
+			return false;
+		Mentions mentions = (Mentions) object;
+
+		return (this == mentions) || getMessage().equals(mentions.getMessage());
+	}
+
+	@Override
+	public int hashCode() {
+		return getMessage().hashCode();
+	}
+
 }

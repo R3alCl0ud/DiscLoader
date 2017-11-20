@@ -141,6 +141,10 @@ public class Endpoints {
 		return String.format("%s/prune", guild(guildID));
 	}
 
+	public static final String guildRegions(long guildID) {
+		return String.format("%s/regions", guild(guildID));
+	}
+
 	public static final String guildRole(long guildID, long roleID) {
 		return String.format("%s/%d", guildRoles(guildID), roleID);
 	}

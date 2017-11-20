@@ -283,10 +283,19 @@ public class DiscLoader {
 		this.shard = shard;
 	}
 
+	/**
+	 * @deprecated Use {@link #addEventListener(IEventListener)} instead
+	 */
 	public DiscLoader addEventHandler(IEventListener e) {
+		return addEventListener(e);
+	}
+
+	public DiscLoader addEventListener(IEventListener e) {
 		eventManager.addEventHandler(e);
 		return this;
 	}
+
+	// public DiscLoader addEventListener(IEvent)
 
 	public void checkReady() {
 		try {
@@ -453,8 +462,15 @@ public class DiscLoader {
 		return this;
 	}
 
+	/**
+	 * @deprecated Use {@link #removeEventListener(IEventListener)} instead
+	 */
 	public DiscLoader removeEventHandler(IEventListener e) {
-		eventManager.removeEventHandler(e);
+		return removeEventListener(e);
+	}
+
+	public DiscLoader removeEventListener(IEventListener eventListener) {
+		eventManager.removeEventHandler(eventListener);
 		return this;
 	}
 

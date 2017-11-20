@@ -319,10 +319,10 @@ public class GuildMember implements IGuildMember {
 		System.out.println(payload);
 		CompletableFuture<Void> vcf = getLoader().rest.request(Methods.PATCH, Endpoints.guildMember(getGuild().getID(), getID()), new RESTOptions(payload), Void.class);
 		vcf.thenAcceptAsync(v -> {
-			getLoader().addEventHandler(new EventListenerAdapter() {
+			getLoader().addEventListener(new EventListenerAdapter() {
 				public void GuildMemberUpdate(GuildMemberUpdateEvent e) {
 					future.complete(e.member);
-					getLoader().removeEventHandler(this);
+					getLoader().removeEventListener(this);
 				}
 			});
 		});
@@ -486,13 +486,13 @@ public class GuildMember implements IGuildMember {
 			public void GuildMemberNicknameUpdated(NicknameUpdateEvent e) {
 				if (e.getMember().getID() == getID() && e.getGuild().equals(guild)) {
 					future.complete(e.getMember());
-					getLoader().removeEventHandler(this);
+					getLoader().removeEventListener(this);
 				}
 			}
 		};
-		getLoader().addEventHandler(iel);
+		getLoader().addEventListener(iel);
 		cf.exceptionally(ex -> {
-			getLoader().removeEventHandler(iel);
+			getLoader().removeEventListener(iel);
 			future.completeExceptionally(ex);
 			return null;
 		});
@@ -541,13 +541,13 @@ public class GuildMember implements IGuildMember {
 			public void GuildMemberUpdate(GuildMemberUpdateEvent e) {
 				if (e.member.getID() == getID()) {
 					future.complete(e.member);
-					getLoader().removeEventHandler(this);
+					getLoader().removeEventListener(this);
 				}
 			}
 		};
-		getLoader().addEventHandler(iel);
+		getLoader().addEventListener(iel);
 		tcf.exceptionally(ex -> {
-			getLoader().removeEventHandler(iel);
+			getLoader().removeEventListener(iel);
 			future.completeExceptionally(ex);
 			return null;
 		});

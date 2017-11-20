@@ -24,4 +24,7 @@ public interface IGuildVoiceChannel extends IGuildChannel, IVoiceChannel {
 		return future;
 	}
 
+	int getBitrate();
+	int getUserLimit();
+	
 }

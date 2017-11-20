@@ -57,8 +57,8 @@ public class Message<T extends ITextChannel> implements IMessage {
 	private String content;
 
 	/**
-	 * The time at which the message has been edited. is null if the message has
-	 * not been edited
+	 * The time at which the message has been edited. is null if the message has not
+	 * been edited
 	 */
 	public String edited_timestamp;
 
@@ -91,8 +91,7 @@ public class Message<T extends ITextChannel> implements IMessage {
 	// private String editedAt;
 
 	/**
-	 * An object containing the information about who was mentioned in the
-	 * message
+	 * An object containing the information about who was mentioned in the message
 	 */
 	public Mentions mentions;
 
@@ -109,8 +108,8 @@ public class Message<T extends ITextChannel> implements IMessage {
 	public final IUser author;
 
 	/**
-	 * The guild the {@link #channel} is in. is {@code null} if
-	 * {@link Channel#type} is "dm" or "groupDM"
+	 * The guild the {@link #channel} is in. is {@code null} if {@link Channel#type}
+	 * is "dm" or "groupDM"
 	 */
 	public IGuild guild;
 
@@ -125,8 +124,10 @@ public class Message<T extends ITextChannel> implements IMessage {
 	/**
 	 * Creates a new message object
 	 * 
-	 * @param channel The channel the message was sent in
-	 * @param data The message's data
+	 * @param channel
+	 *            The channel the message was sent in
+	 * @param data
+	 *            The message's data
 	 */
 	public Message(T channel, MessageJSON data) {
 		id = SnowflakeUtil.parse(data.id);
@@ -193,6 +194,19 @@ public class Message<T extends ITextChannel> implements IMessage {
 	}
 
 	@Override
+	public boolean equals(Object object) {
+		if (!(object instanceof Message<?>))
+			return false;
+		Message<?> message = (Message<?>) object;
+		return (this == message) || getID() == message.getID();
+	}
+
+	@Override
+	public int hashCode() {
+		return Long.hashCode(getID());
+	}
+
+	@Override
 	public CompletableFuture<IMessage> delete() {
 		return new DeleteMessage<T>(this.channel, this).execute();
 	}
@@ -214,10 +228,11 @@ public class Message<T extends ITextChannel> implements IMessage {
 	}
 
 	/**
-	 * Edit's the messages content. Only possible if the {@link DiscLoader
-	 * loader} is the message's {@link #author}
+	 * Edit's the messages content. Only possible if the {@link DiscLoader loader}
+	 * is the message's {@link #author}
 	 * 
-	 * @param embed The new embed for the message
+	 * @param embed
+	 *            The new embed for the message
 	 * @return A Future that completes with {@literal this} when sucessfull
 	 */
 	@Override
@@ -226,10 +241,11 @@ public class Message<T extends ITextChannel> implements IMessage {
 	}
 
 	/**
-	 * Edit's the messages content. Only possible if the {@link DiscLoader
-	 * loader} is the message's {@link #author}
+	 * Edit's the messages content. Only possible if the {@link DiscLoader loader}
+	 * is the message's {@link #author}
 	 * 
-	 * @param content The new content of the message
+	 * @param content
+	 *            The new content of the message
 	 * @return A Future that completes with {@literal this} when sucessfull
 	 */
 	@Override
@@ -238,11 +254,13 @@ public class Message<T extends ITextChannel> implements IMessage {
 	}
 
 	/**
-	 * Edit's the messages content. Only possible if the {@link DiscLoader
-	 * loader} is the message's {@link #author}
+	 * Edit's the messages content. Only possible if the {@link DiscLoader loader}
+	 * is the message's {@link #author}
 	 * 
-	 * @param content The new content of the message
-	 * @param embed The new embed for the message
+	 * @param content
+	 *            The new content of the message
+	 * @param embed
+	 *            The new embed for the message
 	 * @return A Future that completes with {@literal this} when sucessfull
 	 */
 	@Override
@@ -334,8 +352,8 @@ public class Message<T extends ITextChannel> implements IMessage {
 	/**
 	 * Whether or not you can edit the message.
 	 * 
-	 * @return {@code true} when {@link #author}.id equals {@link #loader}
-	 *         .user.id, {@code false} otherwise.
+	 * @return {@code true} when {@link #author}.id equals {@link #loader} .user.id,
+	 *         {@code false} otherwise.
 	 * @since 0.1.0
 	 */
 	public boolean isEditable() {
@@ -358,10 +376,8 @@ public class Message<T extends ITextChannel> implements IMessage {
 	}
 
 	/**
-	 * Checks if the message was sent by a user or if it is a system message.
-	 * <br>
-	 * Ex: "user has pinned a message to this channel." would be a system
-	 * message
+	 * Checks if the message was sent by a user or if it is a system message. <br>
+	 * Ex: "user has pinned a message to this channel." would be a system message
 	 * 
 	 * @return true if the message is a system message, false otherwise.
 	 * @since 0.1.0
@@ -454,7 +470,8 @@ public class Message<T extends ITextChannel> implements IMessage {
 	@Override
 	public IReaction getReaction(String unicode) {
 		for (IReaction reaction : reactions) {
-			if (unicode.equals(SnowflakeUtil.asString(reaction.getEmoji()))) return reaction;
+			if (unicode.equals(SnowflakeUtil.asString(reaction.getEmoji())))
+				return reaction;
 		}
 		return null;
 	}

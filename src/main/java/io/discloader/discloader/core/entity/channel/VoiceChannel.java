@@ -27,22 +27,26 @@ public class VoiceChannel extends GuildChannel implements IGuildVoiceChannel {
 	public int userLimit;
 
 	/**
-	 * @param guild The guild the channel is in
-	 * @param data The channel's data
+	 * @param guild
+	 *            The guild the channel is in
+	 * @param data
+	 *            The channel's data
 	 */
 	public VoiceChannel(IGuild guild, ChannelJSON data) {
 		super(guild, data);
 
 		// this.type = ChannelType.VOICE;
 
-		this.name = data.name;
+		// this.name = data.name;
 	}
 
 	/**
 	 * Changes the channels settings
 	 * 
-	 * @param name The new name for the channel
-	 * @param position The new position for the channel
+	 * @param name
+	 *            The new name for the channel
+	 * @param position
+	 *            The new position for the channel
 	 * @return A Future that completes with a voice channel if successful
 	 */
 	public CompletableFuture<IGuildChannel> edit(String name, int position) {
@@ -52,10 +56,14 @@ public class VoiceChannel extends GuildChannel implements IGuildVoiceChannel {
 	/**
 	 * Changes the channels settings
 	 * 
-	 * @param name The new name for the channel
-	 * @param position The new position for the channel
-	 * @param bitrate The new {@link #bitrate}
-	 * @param userLimit The new {@link #userLimit}
+	 * @param name
+	 *            The new name for the channel
+	 * @param position
+	 *            The new position for the channel
+	 * @param bitrate
+	 *            The new {@link #bitrate}
+	 * @param userLimit
+	 *            The new {@link #userLimit}
 	 * @return A Future that completes with a voice channel if successful
 	 */
 	public CompletableFuture<IGuildChannel> edit(String name, int position, int bitrate, int userLimit) {
@@ -64,6 +72,16 @@ public class VoiceChannel extends GuildChannel implements IGuildVoiceChannel {
 			future.complete(channel);
 		});
 		return future;
+	}
+
+	@Override
+	public boolean equals(Object object) {
+		if (!(object instanceof VoiceChannel))
+			return false;
+		VoiceChannel channel = (VoiceChannel) object;
+
+		return (this == channel) || getID() == channel.getID();
+
 	}
 
 	@Override
@@ -112,5 +130,15 @@ public class VoiceChannel extends GuildChannel implements IGuildVoiceChannel {
 
 	public CompletableFuture<IGuildChannel> setUserLimit(int userLimit) {
 		return edit(name, position, bitrate, userLimit);
+	}
+
+	@Override
+	public int getBitrate() {
+		return bitrate;
+	}
+
+	@Override
+	public int getUserLimit() {
+		return userLimit;
 	}
 }

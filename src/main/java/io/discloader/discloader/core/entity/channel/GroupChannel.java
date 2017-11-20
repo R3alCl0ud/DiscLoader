@@ -9,6 +9,7 @@ import java.util.concurrent.CompletableFuture;
 import io.discloader.discloader.client.render.util.Resource;
 import io.discloader.discloader.common.DiscLoader;
 import io.discloader.discloader.core.entity.RichEmbed;
+import io.discloader.discloader.core.entity.message.Message;
 import io.discloader.discloader.core.entity.message.MessageFetchOptions;
 import io.discloader.discloader.core.entity.user.User;
 import io.discloader.discloader.entity.channel.IGroupChannel;
@@ -16,10 +17,13 @@ import io.discloader.discloader.entity.channel.ITextChannel;
 import io.discloader.discloader.entity.channel.IVoiceChannel;
 import io.discloader.discloader.entity.message.IMessage;
 import io.discloader.discloader.entity.sendable.Attachment;
+import io.discloader.discloader.entity.sendable.SendableMessage;
 import io.discloader.discloader.entity.user.IUser;
 import io.discloader.discloader.entity.util.SnowflakeUtil;
 import io.discloader.discloader.entity.voice.VoiceConnection;
 import io.discloader.discloader.network.json.ChannelJSON;
+import io.discloader.discloader.network.json.MessageJSON;
+import io.discloader.discloader.network.rest.RESTOptions;
 import io.discloader.discloader.network.rest.actions.channel.BulkDelete;
 import io.discloader.discloader.network.rest.actions.channel.FetchMessage;
 import io.discloader.discloader.network.rest.actions.channel.FetchMessages;
@@ -28,6 +32,8 @@ import io.discloader.discloader.network.rest.actions.channel.StartTyping;
 import io.discloader.discloader.network.rest.actions.channel.pin.PinMessage;
 import io.discloader.discloader.network.rest.actions.channel.pin.PinnedMessages;
 import io.discloader.discloader.network.rest.actions.channel.pin.UnpinMessage;
+import io.discloader.discloader.network.util.Endpoints;
+import io.discloader.discloader.network.util.Methods;
 
 /**
  * Represents a GroupDMChannel on discord. GroupChannels are only available for
@@ -73,6 +79,14 @@ public class GroupChannel extends Channel implements IGroupChannel, IVoiceChanne
 	@Override
 	public CompletableFuture<Map<Long, IMessage>> deleteMessages(Map<Long, IMessage> messages) {
 		return new BulkDelete<ITextChannel>(this, messages).execute();
+	}
+
+	@Override
+	public boolean equals(Object o) {
+		if (!(o instanceof GroupChannel))
+			return false;
+		GroupChannel groupChannel = (GroupChannel) o;
+		return (this == groupChannel) || (groupChannel.getID() == getID());
 	}
 
 	@Override
@@ -151,6 +165,11 @@ public class GroupChannel extends Channel implements IGroupChannel, IVoiceChanne
 	}
 
 	@Override
+	public int hashCode() {
+		return Long.hashCode(getID());
+	}
+
+	@Override
 	public boolean isTyping(IUser user) {
 		return typing.containsKey(user.getID());
 	}
@@ -195,6 +214,28 @@ public class GroupChannel extends Channel implements IGroupChannel, IVoiceChanne
 		return sendMessage(content, embed, (File) null);
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see io.discloader.discloader.entity.channel.ITextChannel#sendMessage(java.
+	 * lang.String, io.discloader.discloader.core.entity.RichEmbed,
+	 * io.discloader.discloader.entity.sendable.Attachment)
+	 */
+	@Override
+	public CompletableFuture<IMessage> sendMessage(String content, RichEmbed embed, Attachment attachment) {
+		SendableMessage sendable = new SendableMessage(content, false, embed, attachment, new File(attachment.filename));
+		CompletableFuture<IMessage> future = new CompletableFuture<>();
+		CompletableFuture<MessageJSON> mcf = loader.rest.request(Methods.POST, Endpoints.messages(getID()), new RESTOptions(sendable), MessageJSON.class);
+		mcf.thenAcceptAsync(e -> {
+			future.complete(new Message<>(this, e));
+		});
+		mcf.exceptionally(ex -> {
+			future.completeExceptionally(ex);
+			return null;
+		});
+		return future;
+	}
+
 	@Override
 	public CompletableFuture<IMessage> sendMessage(String content, RichEmbed embed, File file) {
 		Attachment attachment = null;
@@ -225,30 +266,5 @@ public class GroupChannel extends Channel implements IGroupChannel, IVoiceChanne
 	@Override
 	public CompletableFuture<IMessage> unpinMessage(IMessage message) {
 		return new UnpinMessage<IGroupChannel>(message).execute();
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see io.discloader.discloader.entity.channel.ITextChannel#sendMessage(java.
-	 * lang.String, io.discloader.discloader.core.entity.RichEmbed,
-	 * io.discloader.discloader.entity.sendable.Attachment)
-	 */
-	@Override
-	public CompletableFuture<IMessage> sendMessage(String content, RichEmbed embed, Attachment attachment) {
-		return null;
-	}
-
-	@Override
-	public boolean equals(Object o) {
-		if (!(o instanceof GroupChannel))
-			return false;
-		GroupChannel groupChannel = (GroupChannel) o;
-		return (this == groupChannel) || (groupChannel.getID() == getID());
-	}
-
-	@Override
-	public int hashCode() {
-		return Long.hashCode(getID());
 	}
 }

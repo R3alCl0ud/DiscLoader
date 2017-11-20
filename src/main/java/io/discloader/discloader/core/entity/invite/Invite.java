@@ -75,6 +75,32 @@ public class Invite implements IInvite {
 		createdAt = data.created_at;
 		channel = new InviteChannel(data.channel);
 		guild = new InviteGuild(data.guild);
+		// code.ha
+	}
+
+	@Override
+	public CompletableFuture<IInvite> accept() {
+		return new InviteAction(this, Methods.POST).execute();
+	}
+
+	@Override
+	public boolean equals(Object object) {
+		if (!(object instanceof Invite))
+			return false;
+		Invite invite = (Invite) object;
+
+		return (this == invite) || code.equals(invite.code);
+
+	}
+
+	@Override
+	public int hashCode() {
+		return code == null || code.isEmpty() ? 0 : code.hashCode();
+	}
+
+	@Override
+	public CompletableFuture<IInvite> delete() {
+		return new InviteAction(this, Methods.DELETE).execute();
 	}
 
 	@Override
@@ -125,16 +151,6 @@ public class Invite implements IInvite {
 	@Override
 	public boolean isValid() {
 		return !revoked;
-	}
-
-	@Override
-	public CompletableFuture<IInvite> accept() {
-		return new InviteAction(this, Methods.POST).execute();
-	}
-
-	@Override
-	public CompletableFuture<IInvite> delete() {
-		return new InviteAction(this, Methods.DELETE).execute();
 	}
 
 }

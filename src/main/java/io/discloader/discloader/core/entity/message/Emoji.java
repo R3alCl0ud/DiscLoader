@@ -34,4 +34,18 @@ public class Emoji implements IEmoji {
 		return name;
 	}
 
+	@Override
+	public boolean equals(Object object) {
+		if (!(object instanceof Emoji))
+			return false;
+		Emoji emoji = (Emoji) object;
+
+		return (this == emoji) || getName().equals(emoji.getName());
+	}
+
+	@Override
+	public int hashCode() {
+		return getName().hashCode();
+	}
+
 }

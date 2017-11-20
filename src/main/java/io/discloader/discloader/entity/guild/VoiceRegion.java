@@ -1,5 +1,7 @@
 package io.discloader.discloader.entity.guild;
 
+import io.discloader.discloader.network.json.VoiceRegionJSON;
+
 public class VoiceRegion {
 
 	public final String id;
@@ -11,6 +13,15 @@ public class VoiceRegion {
 
 	public VoiceRegion(String id) {
 		this.id = id;
+	}
+
+	public VoiceRegion(VoiceRegionJSON data) {
+		this(data.id);
+		this.name = data.name;
+		this.custom = data.custom;
+		this.deprecated = data.deprecated;
+		this.optimal = data.optimal;
+		this.vip = data.vip;
 	}
 
 	public String getID() {

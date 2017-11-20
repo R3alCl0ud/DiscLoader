@@ -107,7 +107,7 @@ public class VoiceConnection {
 		}
 	}
 	
-	private IGuildVoiceChannel channel;
+	private IVoiceChannel channel;
 	private VoiceGateway ws;
 	private UDPVoiceClient udpClient;
 	private AudioPlayer player;
@@ -129,7 +129,7 @@ public class VoiceConnection {
 	private boolean stateUpdated;
 	protected final TrackScheduler trackSchedule;
 	
-	public VoiceConnection(IGuildVoiceChannel voiceChannel, CompletableFuture<VoiceConnection> future) {
+	public VoiceConnection(IVoiceChannel voiceChannel, CompletableFuture<VoiceConnection> future) {
 		channel = voiceChannel;
 		this.future = future;
 		logger = new DLLogger(getGuild() == null ? "VoiceConnection - Channel: " + channel.getID() : "VoiceConnection - Guild: " + getGuild().getID()).getLogger();
@@ -200,7 +200,7 @@ public class VoiceConnection {
 		}
 	}
 	
-	public IGuildVoiceChannel getChannel() {
+	public IVoiceChannel getChannel() {
 		return channel;
 	}
 	

@@ -3,6 +3,7 @@ package io.discloader.discloader.entity.guild;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 
+import io.discloader.discloader.common.exceptions.PermissionsException;
 import io.discloader.discloader.entity.IEmoji;
 
 /**
@@ -14,11 +15,11 @@ public interface IGuildEmoji extends IEmoji {
 
 	IGuild getGuild();
 
-	Map<String, IRole> getRoles();
+	Map<Long, IRole> getRoles();
 
 	boolean requiresColons();
 
-	CompletableFuture<IGuildEmoji> setName(String name);
+	CompletableFuture<IGuildEmoji> setName(String name) throws PermissionsException;
 
 	CompletableFuture<IGuildEmoji> setRoles(IRole... roles);
 

@@ -67,6 +67,7 @@ import io.discloader.discloader.network.json.GuildJSON;
 import io.discloader.discloader.network.json.MemberJSON;
 import io.discloader.discloader.network.json.PresenceJSON;
 import io.discloader.discloader.network.json.RoleJSON;
+import io.discloader.discloader.network.json.VoiceRegionJSON;
 import io.discloader.discloader.network.json.VoiceStateJSON;
 import io.discloader.discloader.network.rest.RESTOptions;
 import io.discloader.discloader.network.rest.actions.guild.CreateRole;
@@ -854,7 +855,17 @@ public class Guild implements IGuild {
 
 	@Override
 	public CompletableFuture<List<VoiceRegion>> getVoiceRegions() {
-		return new CompletableFuture<>();
+		CompletableFuture<List<VoiceRegion>> future = new CompletableFuture<List<VoiceRegion>>();
+		CompletableFuture<VoiceRegionJSON[]> cf = getLoader().rest.request(Methods.GET, Endpoints.guildRegions(getID()), new RESTOptions(), VoiceRegionJSON[].class);
+		cf.thenAcceptAsync(regions -> {
+			List<VoiceRegion> rgs = new ArrayList<>();
+			for (VoiceRegionJSON region : regions) {
+				rgs.add(new VoiceRegion(region));
+			}
+			
+			future.complete(rgs);
+		});
+		return future;
 	}
 
 	@Override

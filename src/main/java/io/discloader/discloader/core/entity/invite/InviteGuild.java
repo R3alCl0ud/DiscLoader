@@ -57,7 +57,7 @@ public class InviteGuild implements IInviteGuild {
 		public InviteIcon(String hash, long guildID) {
 			this.hash = hash;
 			this.guildID = guildID;
-			
+
 		}
 
 		@Override
@@ -93,7 +93,19 @@ public class InviteGuild implements IInviteGuild {
 
 	@Override
 	public String getName() {
-		return null;
+		return name;
 	}
 
+	@Override
+	public boolean equals(Object object) {
+		if (!(object instanceof InviteChannel))
+			return false;
+		InviteGuild ig = (InviteGuild) object;
+		return (this == ig) || getID() == ig.getID();
+	}
+
+	@Override
+	public int hashCode() {
+		return Long.hashCode(getID());
+	}
 }
