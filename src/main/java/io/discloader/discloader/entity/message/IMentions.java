@@ -39,7 +39,7 @@ public interface IMentions {
 	/**
 	 * Whether or not {@literal @everyone} was mentioned
 	 * 
-	 * @return true if the {@link #message}'s content contains {@literal @everyone},
+	 * @return true if the {@link #getMessage message}'s content contains {@literal @everyone},
 	 *         false otherwise
 	 */
 	boolean mentionedEveryone();

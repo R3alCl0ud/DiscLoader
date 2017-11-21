@@ -502,8 +502,8 @@ public class GuildMember implements IGuildMember {
 	/**
 	 * Takes a role away from a member
 	 * 
-	 * @param role
-	 *            The role to take away from the member
+	 * @param roles
+	 *            The role(s) to take away from the member
 	 * @return A Future that completes with the member if successful.
 	 * @throws PermissionsException
 	 *             thrown if a role with a higher position than the current user's

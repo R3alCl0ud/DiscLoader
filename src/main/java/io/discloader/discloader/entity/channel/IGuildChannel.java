@@ -91,7 +91,7 @@ public interface IGuildChannel extends IChannel {
 	 *            The member of whom we are looking for overwrites that apply.
 	 * @author Perry Berman
 	 * @return A {@link List} of {@link IOverwrite} objects.
-	 * @version <strike>0.0.1</strike> Updated in version 0.1.1
+	 * @version 0.1.1
 	 * @since April 7, 2017.
 	 */
 	List<IOverwrite> overwritesOf(IGuildMember member);

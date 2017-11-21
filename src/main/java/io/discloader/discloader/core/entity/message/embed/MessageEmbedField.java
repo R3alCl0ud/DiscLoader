@@ -9,6 +9,10 @@ import io.discloader.discloader.network.json.EmbedFieldJSON;
  * @author Perry Berman
  * @since 0.0.1
  */
+/**
+ * @author perryberman
+ *
+ */
 public class MessageEmbedField implements IEmbedField {
 
 	/**
@@ -24,10 +28,9 @@ public class MessageEmbedField implements IEmbedField {
 	 */
 	private String value;
 
+
 	/**
-	 * @param name The name of the field
-	 * @param value The content of the field
-	 * @param inline Should the field be displayed inline
+	 * @param data The field's data
 	 */
 	public MessageEmbedField(EmbedFieldJSON data) {
 		name = data.name;

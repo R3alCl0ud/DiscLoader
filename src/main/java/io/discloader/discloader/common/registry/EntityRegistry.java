@@ -248,7 +248,7 @@ public class EntityRegistry {
 	}
 
 	/**
-	 * @return {@codewebhooks}
+	 * @return {@code webhooks}
 	 */
 	public static Map<Long, IWebhook> getWebhooks() {
 		return webhooks;

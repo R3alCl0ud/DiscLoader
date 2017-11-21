@@ -19,8 +19,8 @@ public class GuildBanRemoveEvent extends DLEvent {
 	/**
 	 * Creates a new GuildBanRemoveEvent Object
 	 * 
-	 * @param guild2 The guild the user was unbanned from
-	 * @param user2 The use that has been unbanned
+	 * @param guild The guild the user was unbanned from
+	 * @param user The use that has been unbanned
 	 */
 	public GuildBanRemoveEvent(IGuild guild, IUser user) {
 		super(guild.getLoader());

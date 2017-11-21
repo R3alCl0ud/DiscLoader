@@ -1,6 +1,3 @@
-/**
- * 
- */
 package io.discloader.discloader.entity.voice;
 
 import com.sedmelluq.discord.lavaplayer.player.AudioLoadResultHandler;
@@ -18,7 +15,8 @@ public interface IVoiceEventListener extends AudioLoadResultHandler {
 	/**
 	 * Executed when the voice connection gets disconnected
 	 * 
-	 * @param reason The reason the voice connection was disconnected
+	 * @param event
+	 *            an event object
 	 */
 	void disconnected(VoiceConnectionDisconnectEvent event);
 

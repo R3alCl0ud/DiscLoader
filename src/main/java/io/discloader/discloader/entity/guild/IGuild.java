@@ -395,7 +395,7 @@ public interface IGuild extends ISnowflake, ICreationTime {
 	/**
 	 * Whether or not the guild has at least 250 members.
 	 * 
-	 * @return {@code if} {@link #memberCount} is greater than or equal to 250,
+	 * @return {@code if} {@link #getMemberCount()} is greater than or equal to 250,
 	 *         {@code false} otherwise.
 	 */
 	boolean isLarge();
@@ -433,7 +433,7 @@ public interface IGuild extends ISnowflake, ICreationTime {
 	 * {@link #getCurrentMember() current member} has the
 	 * {@link Permissions#KICK_MEMBERS} permission.
 	 * 
-	 * @param guildMember
+	 * @param member
 	 *            The {@link IGuildMember member} to kick from the guild.
 	 * @see Permissions
 	 * @return A CompletableFuture that completes with {@code this} if successful.
@@ -516,8 +516,8 @@ public interface IGuild extends ISnowflake, ICreationTime {
 	 * @param member
 	 *            The member to set as the {@link IGuild guild's} {@link #getOwner()
 	 *            owner}.
-	 * @return A Future that completes with <strike>the new {@link #getOwner()
-	 *         owner} of the {@link IGuild guild} if successful.</strike>
+	 * @return A Future that completes with the new {@link #getOwner()
+	 *         owner} of the {@link IGuild guild} if successful.
 	 *         {@link IGuild this} if successful.
 	 * @throws UnauthorizedException
 	 *             Thrown if you are not the owner of theS guild.

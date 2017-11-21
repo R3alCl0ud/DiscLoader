@@ -106,7 +106,7 @@ public class DLOptions {
 	}
 
 	/**
-	 * @return {@codeuseModloader}
+	 * @return {@code useModloader}
 	 */
 	public boolean isUsingModloader() {
 		return useModloader;

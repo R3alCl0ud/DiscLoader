@@ -24,7 +24,7 @@ import io.discloader.discloader.util.DLUtil;
  * 
  * <pre>
  * 
- * IMessage message = <ITextChannel>.sendMessage((String) content).join();
+ * IMessage message = iTextChannel.sendMessage((String) content).join();
  * </pre>
  * 
  * @author Perry Berman
@@ -89,7 +89,7 @@ public interface IMessage extends ISnowflake, Comparable<IMessage> {
 	CompletableFuture<IMessage> edit(RichEmbed embed);
 
 	/**
-	 * @param embed
+	 * @param content The new message content
 	 * @return A CompletableFuture that completes with {@code this} if
 	 *         successful.
 	 * @see #canEdit()

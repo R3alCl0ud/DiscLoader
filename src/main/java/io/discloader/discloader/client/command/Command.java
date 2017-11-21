@@ -75,6 +75,7 @@ public class Command {
 
 	/**
 	 * Get a list of aliases for this command. <b>Never return null!</b>
+	 * @return a List of aliases
 	 */
 	public List<String> getAliases() {
 		return new ArrayList<>();

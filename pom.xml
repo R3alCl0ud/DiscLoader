@@ -228,10 +228,24 @@
 				<configuration>
 					<reportOutputDirectory>${basedir}</reportOutputDirectory>
 					<destDir>docs/${project.version}</destDir>
+					<source>${java.source.version}</source>
+					<target>${java.target.version}</target>
+					<compilerVersion>${java.source.version}</compilerVersion>
+					<compilerArgument>-Xlint:all</compilerArgument>
 					<overview>${basedir}/docs/index.html</overview>
 					<minmemory>128m</minmemory>
 					<maxmemory>1g</maxmemory>
+					<encoding>${project.build.sourceEncoding}</encoding>
+					<javadocVersion>1.8</javadocVersion>
 				</configuration>
+				<executions>
+					<execution>
+						<id>attach-javadocs</id>
+						<goals>
+							<goal>jar</goal>
+						</goals>
+					</execution>
+				</executions>
 			</plugin>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
@@ -248,6 +262,18 @@
 						<phase>verify</phase>
 						<goals>
 							<goal>check</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-source-plugin</artifactId>
+				<executions>
+					<execution>
+						<id>attach-sources</id>
+						<goals>
+							<goal>jar</goal>
 						</goals>
 					</execution>
 				</executions>

@@ -73,7 +73,7 @@ public interface IGuildMember extends ISnowflake, IMentionable {
 	CompletableFuture<IGuildMember> unMute();
 	
 	/**
-	 * Determines the member's highest role in the {@link #guild}'s role hiarchy
+	 * Determines the member's highest role in the {@link #getGuild guild}'s role hiarchy
 	 * 
 	 * @return A Role object
 	 */

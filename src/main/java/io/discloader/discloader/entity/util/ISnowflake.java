@@ -1,8 +1,11 @@
 package io.discloader.discloader.entity.util;
 
 import io.discloader.discloader.entity.channel.IChannel;
+import io.discloader.discloader.entity.guild.IGuild;
 import io.discloader.discloader.entity.guild.IGuildEmoji;
 import io.discloader.discloader.entity.message.IMessage;
+import io.discloader.discloader.entity.message.IMessageAttachment;
+import io.discloader.discloader.entity.user.IUser;
 
 /**
  * Discord utilizes Twitter's snowflake format for uniquely identifiable
@@ -10,8 +13,7 @@ import io.discloader.discloader.entity.message.IMessage;
  * therefore are always returned as strings in the API to prevent integer
  * overflows in some languages. Snowflake ID's are guaranteed to be unique
  * across all of Discord, except in some unique scenarios in which child objects
- * share their parents ID.
- * <br>
+ * share their parents ID. <br>
  * <br>
  * All objects with IDs <u>must</u> implement this interface<br>
  * Objects that have Snowflake IDs.
@@ -36,7 +38,5 @@ public interface ISnowflake {
 
 	@Override
 	int hashCode();
-
-	// long getIDAsLong();
 
 }

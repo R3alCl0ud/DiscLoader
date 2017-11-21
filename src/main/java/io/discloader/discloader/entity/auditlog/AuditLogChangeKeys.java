@@ -24,14 +24,14 @@ public enum AuditLogChangeKeys {
 	}
 
 	/**
-	 * @return {@codeobjChanged}
+	 * @return {@code objChanged}
 	 */
 	public String getObjChanged() {
 		return objChanged;
 	}
 
 	/**
-	 * @return {@codetype}
+	 * @return {@code type}
 	 */
 	public String getType() {
 		return type;

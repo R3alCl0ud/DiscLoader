@@ -102,6 +102,10 @@ public class RichEmbed {
 		fields = new ArrayList<EmbedField>();
 	}
 
+	public RichEmbed addField() {
+		return addField("\u200B", "\u200B", true);
+	}
+	
 	/**
 	 * Adds a new field to the embed
 	 * 
@@ -279,8 +283,8 @@ public class RichEmbed {
 	}
 
 	/**
-	 * @param image
-	 *            the image to set
+	 * @param url The image's URL
+	 *            
 	 */
 	public RichEmbed setImage(String url) {
 		image = new EmbedImage(url);

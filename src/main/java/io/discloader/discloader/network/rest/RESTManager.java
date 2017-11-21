@@ -75,8 +75,8 @@ public class RESTManager {
 	 * @param options
 	 * @param cls
 	 *            The {@link Class} of Type param
-	 * @return A {@link CompletableFuture}<T> Object that completes with an Object
-	 *         of Type <T> if applicable.
+	 * @return A {@link CompletableFuture} Object that completes with an Object
+	 *         of Type if applicable.
 	 */
 	@SuppressWarnings("unchecked")
 	public <T> CompletableFuture<T> request(Methods method, String url, RESTOptions options, Class<T> cls) {
