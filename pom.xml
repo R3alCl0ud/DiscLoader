@@ -4,7 +4,7 @@
 
 	<groupId>io.discloader</groupId>
 	<artifactId>discloader</artifactId>
-	<version>0.2.0</version>
+	<version>0.2.2</version>
 
 	<name>DiscLoader</name>
 	<description>A simple easy to use Discord API rest/gateway client</description>
@@ -23,6 +23,7 @@
 		<maven.compiler.source>1.8</maven.compiler.source>
 		<maven.compiler.target>1.8</maven.compiler.target>
 		<maven.build.timestamp.format>MMM.dd.yyyy</maven.build.timestamp.format>
+	<!-- 	<project.build. -->
 	</properties>
 
 	<dependencies>
@@ -286,6 +287,7 @@
 					</execution>
 				</executions>
 			</plugin>
+			
 		</plugins>
 	</build>
 </project>

@@ -14,3 +14,4 @@ drowning.mp3
 dependency-reduced-pom.xml
 *.DS_Store
 .DS_Store
+/docs/

@@ -24,8 +24,13 @@ public class Ready extends AbstractHandler {
 		// setup the Loaders user object
 		try {
 			loader.user = new DLUser(EntityRegistry.addUser(readyJSON.user));
-			if (loader.user.bot) {
-				loader.token = "Bot " + loader.token;
+			
+			/* 
+			 * need to make sure that we don't already have the 'Bot ' prefix on the token
+			 * otherwise bots fail to work if they've had to start a completely new session after disconnecting
+			 */
+			if (loader.user.bot && !loader.token.startsWith("Bot ")) { 
+				loader.token = "Bot " + loader.token; 
 			}
 
 			// load the guilds
