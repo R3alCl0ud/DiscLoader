@@ -53,7 +53,6 @@ public class RESTManager {
 	public HashMap<String, RESTQueue> queues;
 	public DiscLoader loader;
 	private final Map<String, Route<?>> routes;
-	// private final Map<>
 
 	private boolean globally;
 

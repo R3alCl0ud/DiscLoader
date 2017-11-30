@@ -29,7 +29,6 @@ import io.discloader.discloader.common.event.sharding.ShardingListenerAdapter;
 import io.discloader.discloader.common.registry.CommandRegistry;
 import io.discloader.discloader.common.registry.EntityRegistry;
 import io.discloader.discloader.common.registry.ModRegistry;
-import io.discloader.discloader.entity.auditlog.AuditLogChangeKeys;
 
 /**
  * DiscLoader client entry point
@@ -111,7 +110,8 @@ public class Main {
 
 						@Override
 						public void GuildMessageCreate(GuildMessageCreateEvent e) {
-							if (e.getGuild().getID() != 282226852616077312l) return;
+							if (e.getGuild().getID() != 282226852616077312l)
+								return;
 							if (e.getMessage().getContent().startsWith("logs")) {
 								String[] args = e.getMessage().getContent().split(" ");
 								if (args.length == 1) {

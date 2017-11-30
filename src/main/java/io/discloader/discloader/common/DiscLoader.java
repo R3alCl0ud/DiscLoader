@@ -416,14 +416,16 @@ public class DiscLoader {
 
 		Command.registerCommands();
 		this.token = token;
-		rest.request(Methods.GET, Endpoints.gateway, new RESTOptions(), GatewayJSON.class).thenAcceptAsync(gateway -> {
+		CompletableFuture<GatewayJSON> cf = rest.request(Methods.GET, Endpoints.gateway, new RESTOptions(), GatewayJSON.class);
+		cf.thenAcceptAsync(gateway -> {
 			try {
 				socket.connectSocket(gateway.url + DLUtil.GatewaySuffix);
 			} catch (WebSocketException | IOException e1) {
 				e1.printStackTrace();
 				rf.completeExceptionally(e1);
 			}
-		}).exceptionally(e -> {
+		});
+		cf.exceptionally(e -> {
 			rf.completeExceptionally(e);
 			return null;
 		});

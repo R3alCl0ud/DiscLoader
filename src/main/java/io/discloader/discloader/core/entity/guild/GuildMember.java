@@ -499,17 +499,7 @@ public class GuildMember implements IGuildMember {
 		return future;
 	}
 
-	/**
-	 * Takes a role away from a member
-	 * 
-	 * @param roles
-	 *            The role(s) to take away from the member
-	 * @return A Future that completes with the member if successful.
-	 * @throws PermissionsException
-	 *             thrown if a role with a higher position than the current user's
-	 *             highest role is attempted to be given to the member. Also thrown
-	 *             if the current user doesn't have the MANAGE_ROLE permission.
-	 */
+
 	@Override
 	public CompletableFuture<IGuildMember> takeRole(IRole... roles) {
 		if (!guild.hasPermission(Permissions.MANAGE_ROLES)) {

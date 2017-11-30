@@ -61,31 +61,31 @@ import io.discloader.discloader.util.DLUtil.Status;
 import io.discloader.discloader.util.DLUtil.WSEvents;
 
 public class GatewayListener extends WebSocketAdapter {
-	
+
 	public Gson gson = new Gson();
-	
+
 	public DiscLoader loader;
-	
+
 	public Gateway socket;
-	
+
 	private int tries = 0;
-	
+
 	private long timeout = 5000;
-	
+
 	private final Logger logger;
-	
+
 	public HashMap<String, AbstractHandler> handlers;
-	
+
 	public List<SocketPacket> queue;
-	
+
 	private String token;
-	
+
 	private final String logname;
-	
+
 	private Thread reconnection = null;
-	
+
 	private boolean connected = false;
-	
+
 	public GatewayListener(Gateway socket) {
 		this.socket = socket;
 		this.loader = this.socket.loader;
@@ -121,24 +121,24 @@ public class GatewayListener extends WebSocketAdapter {
 		this.register(WSEvents.TYPING_START, new TypingStart(this.socket));
 		this.register(WSEvents.VOICE_STATE_UPDATE, new VoiceStateUpdate(this.socket));
 		this.register(WSEvents.VOICE_SERVER_UPDATE, new VoiceServerUpdate(this.socket));
-		
+
 	}
-	
+
 	public void handle(SocketPacket packet) {
 		if (packet.op == OPCodes.RECONNECT) {
 			this.setSequence(packet.s);
 			return;
 		}
-		
+
 		if (packet.op == OPCodes.INVALID_SESSION) {
 			sendNewIdentify();
 			return;
 		}
-		
+
 		if (packet.op == OPCodes.HELLO) {
 			this.handlers.get(WSEvents.HELLO).handle(packet);
 		}
-		
+
 		if (packet.op == DLUtil.OPCodes.HEARTBEAT_ACK) {
 			socket.lastHeartbeatAck = true;
 			// loader.emit("debug", "Heartbeat Acknowledged");
@@ -148,18 +148,19 @@ public class GatewayListener extends WebSocketAdapter {
 			JSONObject payload = new JSONObject().put("op", OPCodes.HEARTBEAT).put("d", socket.s);
 			socket.send(payload, true);
 		}
-		
+
 		setSequence(packet.s);
-		
+
 		if (socket.status != Status.READY && socket.status != Status.RECONNECTING) {
 			if (DLUtil.EventWhitelist.indexOf(packet.t) == -1) {
 				queue.add(packet);
 				return;
 			}
 		}
-		
+
 		if (packet.op == OPCodes.DISPATCH) {
-			if (!handlers.containsKey(packet.t)) return;
+			if (!handlers.containsKey(packet.t))
+				return;
 			try {
 				handlers.get(packet.t).handle(packet);
 			} catch (Exception e) {
@@ -167,14 +168,14 @@ public class GatewayListener extends WebSocketAdapter {
 			}
 		}
 	}
-	
+
 	public void handleQueue() {
 		this.queue.forEach(packet -> {
 			this.handle(packet);
 			this.queue.remove(packet);
 		});
 	}
-	
+
 	public void onConnected(WebSocket ws, Map<String, List<String>> arg1) throws Exception {
 		connected = true;
 		logger.info("Connected to the gateway");
@@ -190,7 +191,7 @@ public class GatewayListener extends WebSocketAdapter {
 			sendResume();
 		}
 	}
-	
+
 	public void onDisconnected(WebSocket ws, WebSocketFrame server_frame, WebSocketFrame frame_2, boolean isServer) throws Exception {
 		socket.killHeartbeat();
 		loader.emit(new DisconnectEvent(loader));
@@ -216,38 +217,42 @@ public class GatewayListener extends WebSocketAdapter {
 				}
 			}
 		}
-		
+
 	}
-	
+
 	@Override
 	public void onFrame(WebSocket ws, WebSocketFrame frame) {
 		RawEvent event = new RawEvent(loader, frame);
 		loader.emit(event);
 		loader.emit("RawPacket", event);
 	}
-	
+
 	@Override
 	public void onTextMessage(WebSocket ws, String text) throws Exception {
-		// System.out.println(Thread.currentThread().getName());
-		SocketPacket packet = gson.fromJson(text, SocketPacket.class);
-		this.handle(packet);
+		try {
+			SocketPacket packet = gson.fromJson(text, SocketPacket.class);
+			this.handle(packet);
+		} catch (Exception e) {
+			e.printStackTrace();
+			throw e;
+		}
 	}
-	
+
 	public void register(String event, AbstractHandler handler) {
 		this.handlers.put(event, handler);
 	}
-	
+
 	public void setRetries(int i) {
 		tries = i;
 	}
-	
+
 	public void sendNewIdentify() {
 		if (!loader.token.startsWith("Bot")) {
 			token = loader.token;
 		}
-		
+
 		GatewayIdentify payload = new GatewayIdentify(token, 250, new Properties("DiscLoader", "DiscLoader", "DiscLoader"));
-		
+
 		try {
 			if (this.loader.shards > 1) {
 				payload.setShard(loader.shardid, loader.shards);
@@ -260,11 +265,12 @@ public class GatewayListener extends WebSocketAdapter {
 		socket.s = -1;
 		tries = 0;
 	}
-	
+
 	public void setSequence(int s) {
-		if (s > this.socket.s) this.socket.s = s;
+		if (s > this.socket.s)
+			this.socket.s = s;
 	}
-	
+
 	public void sendResume() {
 		if (tries >= 3) {
 			sendNewIdentify();
@@ -273,13 +279,13 @@ public class GatewayListener extends WebSocketAdapter {
 		Packet d = new Packet(OPCodes.RESUME, new GatewayResume(socket.sessionID, token, socket.s));
 		socket.send(d, true);
 	}
-	
+
 	public void tryReconnecting() {
 		this.socket.status = Status.RECONNECTING;
 		logger.info("Waiting to reconnect to the gateway");
 		if (reconnection == null) {
 			reconnection = new Thread(logname + " Reconnector") {
-				
+
 				public void run() {
 					if (socket.status == Status.RECONNECTING && !this.isInterrupted()) {
 						try {

@@ -2,8 +2,8 @@ package io.discloader.discloader.common.event.channel;
 
 import io.discloader.discloader.common.event.DLEvent;
 import io.discloader.discloader.common.event.IEventListener;
-import io.discloader.discloader.core.entity.user.User;
 import io.discloader.discloader.entity.channel.ITextChannel;
+import io.discloader.discloader.entity.user.IUser;
 
 /**
  * Object passed to {@link IEventListener#TypingStart(TypingStartEvent)}
@@ -13,11 +13,11 @@ import io.discloader.discloader.entity.channel.ITextChannel;
  */
 public class TypingStartEvent extends DLEvent {
 
-	private User user;
+	private IUser user;
 	private ITextChannel channel;
 
-	public TypingStartEvent(User user, ITextChannel channel) {
-		super(user.loader);
+	public TypingStartEvent(IUser user, ITextChannel channel) {
+		super(user.getLoader());
 		this.user = user;
 		this.channel = channel;
 	}
@@ -32,7 +32,7 @@ public class TypingStartEvent extends DLEvent {
 	/**
 	 * @return the user that started typing.
 	 */
-	public User getUser() {
+	public IUser getUser() {
 		return user;
 	}
 
