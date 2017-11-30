@@ -7,6 +7,7 @@
 -protected
 -sourcepath
 '/Users/perryberman/Documents/github/discloader/src/main/java:/Users/perryberman/Documents/github/discloader/target/generated-sources/annotations:/Users/perryberman/Documents/github/discloader/src/main/javadoc'
+-Xdoclint:none
 -author
 -bottom
 'Copyright &#169; 2017. All rights reserved.'

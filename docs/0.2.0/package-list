@@ -1,4 +1,3 @@
-com.iwebpp.crypto
 io.discloader.discloader.client.command
 io.discloader.discloader.client.logger
 io.discloader.discloader.client.registry
@@ -25,16 +24,6 @@ io.discloader.discloader.common.registry
 io.discloader.discloader.common.registry.factory
 io.discloader.discloader.common.start
 io.discloader.discloader.core.entity
-io.discloader.discloader.core.entity.auditlog
-io.discloader.discloader.core.entity.channel
-io.discloader.discloader.core.entity.client
-io.discloader.discloader.core.entity.emoji
-io.discloader.discloader.core.entity.guild
-io.discloader.discloader.core.entity.invite
-io.discloader.discloader.core.entity.message
-io.discloader.discloader.core.entity.message.embed
-io.discloader.discloader.core.entity.user
-io.discloader.discloader.core.entity.util
 io.discloader.discloader.entity
 io.discloader.discloader.entity.auditlog
 io.discloader.discloader.entity.channel

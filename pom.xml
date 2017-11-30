@@ -12,22 +12,16 @@
 
 	<distributionManagement>
 		<repository>
-			<id>maven</id>
-			<name>DiscLoader Maven Repo</name>
-			<url>http://repo.discloader.io/repository/maven/</url>
+			<id>bintray-r3alcl0ud-DiscLoader</id>
+			<name>r3alcl0ud-DiscLoader</name>
+			<url>https://api.bintray.com/maven/r3alcl0ud/DiscLoader/DiscLoader/;publish=1</url>
 		</repository>
-		<snapshotRepository>
-			<id>archiva.snapshots</id>
-			<name>Internal Snapshot Repository</name>
-			<url>http://repo.discloader.io/repository/snapshots/</url>
-		</snapshotRepository>
 	</distributionManagement>
 
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<maven.compiler.source>1.8</maven.compiler.source>
 		<maven.compiler.target>1.8</maven.compiler.target>
-		<lwjgl.version>3.1.1</lwjgl.version>
 		<maven.build.timestamp.format>MMM.dd.yyyy</maven.build.timestamp.format>
 	</properties>
 
@@ -77,7 +71,7 @@
 			<artifactId>git-commit-id-plugin</artifactId>
 			<version>2.2.2</version>
 			<type>maven-plugin</type>
-			<scope>runtime</scope>
+			<scope>test</scope>
 		</dependency>
 		<dependency>
 			<groupId>commons-io</groupId>
@@ -100,6 +94,18 @@
 			<url>https://oss.sonatype.org/content/repositories/snapshots/</url>
 		</pluginRepository>
 	</pluginRepositories>
+
+	<profiles>
+		<profile>
+			<id>disable-java8-doclint</id>
+			<activation>
+				<jdk>[1.8,)</jdk>
+			</activation>
+			<properties>
+				<additionalparam>-Xdoclint:none</additionalparam>
+			</properties>
+		</profile>
+	</profiles>
 
 	<build>
 		<finalName>${project.artifactId}-${project.version}</finalName>
@@ -237,6 +243,8 @@
 					<maxmemory>1g</maxmemory>
 					<encoding>${project.build.sourceEncoding}</encoding>
 					<javadocVersion>1.8</javadocVersion>
+					<failOnError>false</failOnError>
+					<excludePackageNames>com.iwebpp.crypto:io.discloader.discloader.core.entity.*</excludePackageNames>
 				</configuration>
 				<executions>
 					<execution>

@@ -1,5 +1,5 @@
 /**
- * Contains all object passed to the methods of {@link IEventListener} objects 
+ * Contains all object passed to the methods of {@link IEventListener} objects
  * 
  * @author Perry Berman
  */
