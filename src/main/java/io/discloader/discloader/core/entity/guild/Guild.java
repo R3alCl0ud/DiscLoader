@@ -53,6 +53,7 @@ import io.discloader.discloader.entity.guild.IIntegration;
 import io.discloader.discloader.entity.guild.IRole;
 import io.discloader.discloader.entity.guild.VoiceRegion;
 import io.discloader.discloader.entity.invite.IInvite;
+import io.discloader.discloader.entity.sendable.CreateEmoji;
 import io.discloader.discloader.entity.sendable.Packet;
 import io.discloader.discloader.entity.sendable.SendableRole;
 import io.discloader.discloader.entity.user.IUser;
@@ -354,18 +355,34 @@ public class Guild implements IGuild {
 		return SnowflakeUtil.creationTime(this);
 	}
 
-	public CompletableFuture<IGuildEmoji> createEmoji(String name, File image) {
+	@Override
+	public CompletableFuture<IGuildEmoji> createEmoji(String name, File image, IRole... roles) {
+		return createEmoji(name, image.getAbsolutePath(), roles);
+	}
+
+	@Override
+	public CompletableFuture<IGuildEmoji> createEmoji(String name, String image, IRole... roles) {
+		CompletableFuture<IGuildEmoji> future = new CompletableFuture<>();
 		String base64 = null;
 		try {
-			base64 = new String("data:image/jpg;base64," + Base64.encodeBase64String(Files.readAllBytes(image.toPath())));
+			base64 = new String("data:image/jpg;base64," + Base64.encodeBase64String(Files.readAllBytes(Paths.get(image))));
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		return this.createEmoji(name, base64);
-	}
-
-	public CompletableFuture<IGuildEmoji> createEmoji(String name, String image) {
-		return this.loader.rest.createEmoji(this, name, image);
+		String[] rids = new String[roles.length];
+		for (int i = 0; i < rids.length; i++) {
+			rids[i] = SnowflakeUtil.asString(roles[i]);
+		}
+		CreateEmoji ce = new CreateEmoji(name, base64, rids);
+		CompletableFuture<EmojiJSON> cf = getLoader().rest.request(Methods.POST, Endpoints.guildEmojis(getID()), new RESTOptions(ce), EmojiJSON.class);
+		cf.thenAcceptAsync(ed -> {
+			future.complete(new GuildEmoji(ed, this));
+		});
+		cf.exceptionally(ex -> {
+			future.completeExceptionally(ex);
+			return null;
+		});
+		return future;
 	}
 
 	/**
@@ -862,7 +879,7 @@ public class Guild implements IGuild {
 			for (VoiceRegionJSON region : regions) {
 				rgs.add(new VoiceRegion(region));
 			}
-			
+
 			future.complete(rgs);
 		});
 		return future;

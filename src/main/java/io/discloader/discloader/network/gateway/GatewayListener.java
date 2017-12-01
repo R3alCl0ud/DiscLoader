@@ -247,10 +247,10 @@ public class GatewayListener extends WebSocketAdapter {
 	}
 
 	public void sendNewIdentify() {
-		if (!loader.token.startsWith("Bot")) {
+		if (!loader.token.startsWith("Bot ")) {
 			token = loader.token;
 		}
-
+		System.out.println(token);
 		GatewayIdentify payload = new GatewayIdentify(token, 250, new Properties("DiscLoader", "DiscLoader", "DiscLoader"));
 
 		try {

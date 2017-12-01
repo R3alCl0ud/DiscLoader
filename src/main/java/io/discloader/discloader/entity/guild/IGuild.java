@@ -133,9 +133,11 @@ public interface IGuild extends ISnowflake, ICreationTime {
 	 *            The name of the new emoji
 	 * @param image
 	 *            The file
+	 * @param roles
+	 *            roles for which the new emoji will be whitelisted.
 	 * @return A Future the completes with the created Emoji if successful.
 	 */
-	CompletableFuture<IGuildEmoji> createEmoji(String name, File image);
+	CompletableFuture<IGuildEmoji> createEmoji(String name, File image, IRole... roles);
 
 	/**
 	 * Creates a new custom emoji
@@ -144,9 +146,11 @@ public interface IGuild extends ISnowflake, ICreationTime {
 	 *            The name of the emoji
 	 * @param image
 	 *            The emoji's image encoded to base64
+	 * @param roles
+	 *            roles for which the new emoji will be whitelisted.
 	 * @return A Future the completes with the created Emoji if successful.
 	 */
-	CompletableFuture<IGuildEmoji> createEmoji(String name, String image);
+	CompletableFuture<IGuildEmoji> createEmoji(String name, String image, IRole... roles);
 
 	CompletableFuture<IRole> createRole(String name);
 
@@ -516,9 +520,9 @@ public interface IGuild extends ISnowflake, ICreationTime {
 	 * @param member
 	 *            The member to set as the {@link IGuild guild's} {@link #getOwner()
 	 *            owner}.
-	 * @return A Future that completes with the new {@link #getOwner()
-	 *         owner} of the {@link IGuild guild} if successful.
-	 *         {@link IGuild this} if successful.
+	 * @return A Future that completes with the new {@link #getOwner() owner} of the
+	 *         {@link IGuild guild} if successful. {@link IGuild this} if
+	 *         successful.
 	 * @throws UnauthorizedException
 	 *             Thrown if you are not the owner of theS guild.
 	 */

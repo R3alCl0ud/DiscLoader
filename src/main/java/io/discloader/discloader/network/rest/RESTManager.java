@@ -87,13 +87,6 @@ public class RESTManager {
 		return ((Route<T>) routes.get(url)).push(apiRequest);
 	}
 
-	public CompletableFuture<IGuildMember> banMember(Guild guild, IGuildMember member) {
-		CompletableFuture<IGuildMember> future = new CompletableFuture<>();
-		this.makeRequest(Endpoints.guildBanMember(member.getGuild().getID(), member.getID()), DLUtil.Methods.PUT, true).thenAcceptAsync(action -> {
-			future.complete(member);
-		});
-		return future;
-	}
 
 	public CompletableFuture<Integer> beginPrune(Guild guild, int days) {
 		CompletableFuture<Integer> future = new CompletableFuture<>();

@@ -26,10 +26,10 @@ public class EmojiUpdate extends AbstractHandler {
 		EmojiUpdateJSON data = gson.fromJson(d, EmojiUpdateJSON.class);
 		IGuild guild = EntityRegistry.getGuildByID(data.guild_id);
 
-		HashMap<String, IGuildEmoji> emojis = new HashMap<>();
+		HashMap<Long, IGuildEmoji> emojis = new HashMap<>();
 		for (EmojiJSON e : data.emojis) {
 			IGuildEmoji emoji = new GuildEmoji(e, guild);
-			emojis.put(e.id, emoji);
+			emojis.put(emoji.getID(), emoji);
 		}
 
 		if (shouldEmit()) {
@@ -61,7 +61,8 @@ public class EmojiUpdate extends AbstractHandler {
 				}
 			}
 		}
-
+		guild.getEmojis().clear();
+		emojis.forEach((key, emoji) -> guild.getEmojis().put(key, emoji));
 	}
 
 }

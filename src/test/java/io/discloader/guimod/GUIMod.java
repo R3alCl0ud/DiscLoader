@@ -27,7 +27,7 @@ public class GUIMod {
 	}
 
 	public static void main(String... args) {
-		DLOptions options = new DLOptions("mfa.0-m9z_HyPdDdACfLKwC1YX_X1E55EJaWrSa5-fYQzbVklhAya5LHCx98EtcfLpYewamwhpz3NaIGfKH--F7g", "c!");
+		DLOptions options = new DLOptions("It was invalid anyways", "c!");
 		DiscLoader loader = new DiscLoader(options);
 		loader.addEventListener(new GUIEvents());
 		loader.login();

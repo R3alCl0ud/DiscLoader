@@ -15,16 +15,14 @@ import com.mashape.unirest.http.HttpResponse;
 import com.mashape.unirest.http.async.Callback;
 import com.mashape.unirest.http.exceptions.UnirestException;
 import com.mashape.unirest.request.BaseRequest;
-import com.mashape.unirest.request.GetRequest;
 import com.mashape.unirest.request.HttpRequest;
-import com.mashape.unirest.request.body.MultipartBody;
 
 import io.discloader.discloader.common.DiscLoader;
 import io.discloader.discloader.common.event.RawEvent;
 import io.discloader.discloader.common.exceptions.AccountTypeException;
+import io.discloader.discloader.common.exceptions.DiscordException;
 import io.discloader.discloader.common.exceptions.PermissionsException;
 import io.discloader.discloader.common.exceptions.UnauthorizedException;
-import io.discloader.discloader.common.exceptions.DiscordException;
 import io.discloader.discloader.network.json.ExceptionJSON;
 
 /**
@@ -40,7 +38,7 @@ public class RESTQueue {
 
 	// public Timer timer;
 
-	private RateLimiter limiter;
+//	private RateLimiter limiter;
 
 	private boolean waiting;
 
@@ -211,13 +209,23 @@ public class RESTQueue {
 	public <T extends BaseRequest> T addHeaders(T baseRequest, boolean auth, boolean multi) {
 		HttpRequest request = baseRequest.getHttpRequest();
 
-		if (auth && loader.token != null) request.header("authorization", loader.token);
+		if (auth && loader.token != null)
+			request.header("authorization", loader.token);
 
-		request.header("user-agent", "DiscordBot (http://discloader.io, v0.1.1)");
-		if (!multi) request.header("content-type", "application/json");
+		request.header("user-agent", "DiscordBot (http://discloader.io, v0.2.2)");
+		if (!multi)
+			request.header("content-type", "application/json");
 
 		request.header("Accept-Encoding", "gzip");
 		return baseRequest;
+	}
+
+	public int getRateLimit() {
+		return rateLimit;
+	}
+
+	public void setRateLimit(int rateLimit) {
+		this.rateLimit = rateLimit;
 	}
 
 }
