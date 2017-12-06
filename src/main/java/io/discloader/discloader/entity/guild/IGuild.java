@@ -13,6 +13,7 @@ import io.discloader.discloader.common.exceptions.GuildSyncException;
 import io.discloader.discloader.common.exceptions.MissmatchException;
 import io.discloader.discloader.common.exceptions.PermissionsException;
 import io.discloader.discloader.common.exceptions.UnauthorizedException;
+import io.discloader.discloader.core.entity.channel.VoiceChannel;
 import io.discloader.discloader.core.entity.guild.Guild;
 import io.discloader.discloader.core.entity.guild.GuildMember;
 import io.discloader.discloader.core.entity.user.User;
@@ -173,15 +174,56 @@ public interface IGuild extends ISnowflake, ICreationTime {
 	 */
 	CompletableFuture<IRole> createRole(String name, long permissions, int color, boolean hoist, boolean mentionable);
 
-	CompletableFuture<IGuildTextChannel> createTextChannel(String name);
+	// CompletableFuture<IGuildTextChannel> createTextChannel(String name);
 
 	CompletableFuture<IGuildTextChannel> createTextChannel(String name, IOverwrite... overwrites);
 
-	CompletableFuture<IGuildVoiceChannel> createVoiceChannel(String name);
+	CompletableFuture<IGuildTextChannel> createTextChannel(String name, IChannelCategory category, IOverwrite... overwrites);
 
-	CompletableFuture<IGuildTextChannel> createVoiceChannel(String name, int bitRate, IOverwrite... overwrites);
+	/**
+	 * Creates a new {@link VoiceChannel}
+	 * 
+	 * @param name
+	 *            The name of the channel
+	 * @param bitrate
+	 *            The channel's bitrate
+	 * @param userLimit
+	 *            The channel's userlimit
+	 * @param overwrites
+	 *            The channel's overwrites
+	 * @return A future that completes with a new {@link VoiceChannel} Object if
+	 *         successful.
+	 */
+	CompletableFuture<IGuildVoiceChannel> createVoiceChannel(String name, int bitRate, int userLimit, IOverwrite... overwrites);
 
-	CompletableFuture<IGuildTextChannel> createVoiceChannel(String name, IOverwrite... overwrites);
+	CompletableFuture<IGuildVoiceChannel> createVoiceChannel(String name, int bitRate, IOverwrite... overwrites);
+
+	CompletableFuture<IGuildVoiceChannel> createVoiceChannel(String name, IOverwrite... overwrites);
+
+	CompletableFuture<IGuildVoiceChannel> createVoiceChannel(String name, IChannelCategory category, IOverwrite... overwrites);
+
+	/**
+	 * Creates a new {@link VoiceChannel}
+	 * 
+	 * @param name
+	 *            The name of the channel
+	 * @param bitRate
+	 *            The channel's bitrate in kilobits per second (kbps).
+	 *            <code>1kb</code> is equal to <code>1000bits (125Bytes)</code>. The
+	 *            bitrate is normalized to be within the range of
+	 *            <code>8 to 128kbps</code>
+	 * @param userLimit
+	 *            The channel's userlimit with a maximum value of
+	 *            <code>99 users</code>. A userLimit of <code>0</code> signifies no
+	 *            limit.
+	 * @param category
+	 *            The category to put the channel in
+	 * @param overwrites
+	 *            The channel's overwrites
+	 * @return A future that completes with a new {@link VoiceChannel} Object if
+	 *         successful.
+	 */
+	CompletableFuture<IGuildVoiceChannel> createVoiceChannel(String name, int bitRate, int userLimit, IChannelCategory category, IOverwrite... overwrites) throws PermissionsException;
 
 	/**
 	 * Deletes the Guild if the user you have logged in as is the owner of the guild

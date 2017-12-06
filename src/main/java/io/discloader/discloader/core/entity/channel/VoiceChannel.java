@@ -2,12 +2,16 @@ package io.discloader.discloader.core.entity.channel;
 
 import java.util.concurrent.CompletableFuture;
 
+import io.discloader.discloader.common.registry.EntityBuilder;
 import io.discloader.discloader.common.registry.EntityRegistry;
-import io.discloader.discloader.entity.channel.IGuildChannel;
 import io.discloader.discloader.entity.channel.IGuildVoiceChannel;
 import io.discloader.discloader.entity.guild.IGuild;
+import io.discloader.discloader.entity.sendable.EditChannel;
 import io.discloader.discloader.entity.voice.VoiceConnection;
 import io.discloader.discloader.network.json.ChannelJSON;
+import io.discloader.discloader.network.rest.RESTOptions;
+import io.discloader.discloader.network.util.Endpoints;
+import io.discloader.discloader.network.util.Methods;
 
 /**
  * Represents a voice channel in a guild
@@ -49,7 +53,7 @@ public class VoiceChannel extends GuildChannel implements IGuildVoiceChannel {
 	 *            The new position for the channel
 	 * @return A Future that completes with a voice channel if successful
 	 */
-	public CompletableFuture<IGuildChannel> edit(String name, int position) {
+	public CompletableFuture<IGuildVoiceChannel> edit(String name, int position) {
 		return edit(name, position, bitrate, userLimit);
 	}
 
@@ -66,10 +70,20 @@ public class VoiceChannel extends GuildChannel implements IGuildVoiceChannel {
 	 *            The new {@link #userLimit}
 	 * @return A Future that completes with a voice channel if successful
 	 */
-	public CompletableFuture<IGuildChannel> edit(String name, int position, int bitrate, int userLimit) {
-		CompletableFuture<IGuildChannel> future = new CompletableFuture<>();
-		loader.rest.modifyGuildChannel(this, name, null, position, bitrate, userLimit).thenAcceptAsync(channel -> {
-			future.complete(channel);
+	public CompletableFuture<IGuildVoiceChannel> edit(String name, int position, int bitrate, int userLimit) {
+		CompletableFuture<IGuildVoiceChannel> future = new CompletableFuture<>();
+		EditChannel d = new EditChannel(name, null, position, bitrate, userLimit);
+		CompletableFuture<ChannelJSON> cf = loader.rest.request(Methods.PATCH, Endpoints.channel(getID()), new RESTOptions(d), ChannelJSON.class);
+		cf.thenAcceptAsync(channelJSON -> {
+			if (channelJSON != null) {
+				IGuildVoiceChannel channel = (IGuildVoiceChannel) EntityBuilder.getChannelFactory().buildChannel(channelJSON, getLoader(), getGuild(), false);
+				if (channel != null)
+					future.complete(channel);
+			}
+		});
+		cf.exceptionally(ex -> {
+			future.completeExceptionally(ex);
+			return null;
 		});
 		return future;
 	}
@@ -105,17 +119,12 @@ public class VoiceChannel extends GuildChannel implements IGuildVoiceChannel {
 		return null;
 	}
 
-	public CompletableFuture<IGuildChannel> setBitrate(int bitrate) {
+	public CompletableFuture<IGuildVoiceChannel> setBitrate(int bitrate) {
 		return edit(name, position, bitrate, userLimit);
 	}
 
 	@Override
-	public CompletableFuture<IGuildChannel> setName(String name) {
-		return edit(name, position, bitrate, userLimit);
-	}
-
-	@Override
-	public CompletableFuture<IGuildChannel> setPosition(int position) {
+	public CompletableFuture<IGuildVoiceChannel> setName(String name) {
 		return edit(name, position, bitrate, userLimit);
 	}
 
@@ -128,7 +137,7 @@ public class VoiceChannel extends GuildChannel implements IGuildVoiceChannel {
 		this.userLimit = data.user_limit;
 	}
 
-	public CompletableFuture<IGuildChannel> setUserLimit(int userLimit) {
+	public CompletableFuture<IGuildVoiceChannel> setUserLimit(int userLimit) {
 		return edit(name, position, bitrate, userLimit);
 	}
 
