@@ -1,6 +1,7 @@
 package io.discloader.discloader.network.rest.actions;
 
 import java.util.concurrent.CompletableFuture;
+import java.util.function.Consumer;
 
 import com.google.gson.Gson;
 
@@ -38,6 +39,19 @@ public abstract class RESTAction<T> {
 			return;
 		}
 		future.complete((T) null);
+	}
+
+	public RESTAction<T> thenAccept(Consumer<T> action) {
+		future.thenAcceptAsync(action);
+		return this;
+	}
+
+	public RESTAction<T> exceptionally(Consumer<Throwable> action) {
+		future.exceptionally(ex -> {
+			action.accept(ex);
+			return null;
+		});
+		return this;
 	}
 
 }

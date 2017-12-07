@@ -40,6 +40,7 @@ import io.discloader.discloader.entity.IPresence;
 import io.discloader.discloader.entity.auditlog.ActionTypes;
 import io.discloader.discloader.entity.auditlog.IAuditLog;
 import io.discloader.discloader.entity.auditlog.IAuditLogEntry;
+import io.discloader.discloader.entity.channel.ChannelTypes;
 import io.discloader.discloader.entity.channel.IChannel;
 import io.discloader.discloader.entity.channel.IChannelCategory;
 import io.discloader.discloader.entity.channel.IGuildChannel;
@@ -421,23 +422,36 @@ public class Guild implements IGuild {
 		return new CreateRole(this, new SendableRole(name, permissions, color, hoist, mentionable)).execute();
 	}
 
-	public CompletableFuture<IGuildTextChannel> createTextChannel(String name) {
-		return null;
-	}
-
 	@Override
 	public CompletableFuture<IGuildTextChannel> createTextChannel(String name, IChannelCategory category, IOverwrite... overwrites) {
-		return null;
+		CompletableFuture<IGuildTextChannel> future = new CompletableFuture<>();
+		if (!hasPermission(Permissions.MANAGE_CHANNELS)) {
+			PermissionsException ex = new PermissionsException("Insufficient Permissions");
+			future.completeExceptionally(ex);
+			return future; // return early
+		}
+		ChannelPayload data = new ChannelPayload(name, ChannelTypes.TEXT, overwrites);
+		data.setParent(category);
+		CompletableFuture<ChannelJSON> cf = getLoader().rest.request(Methods.POST, Endpoints.guildChannels(getID()), new RESTOptions(data), ChannelJSON.class);
+		cf.thenAcceptAsync(channelJSON -> {
+			IGuildTextChannel channel = (IGuildTextChannel) EntityBuilder.getChannelFactory().buildChannel(channelJSON, getLoader(), this, false);
+			future.complete(channel);
+		});
+		cf.exceptionally(ex -> {
+			future.completeExceptionally(ex);
+			return null;
+		});
+		return future;
 	}
 
 	@Override
 	public CompletableFuture<IGuildTextChannel> createTextChannel(String name, IOverwrite... overwrites) {
-		return null;
+		return createTextChannel(name, null, overwrites);
 	}
 
 	@Override
 	public CompletableFuture<IGuildVoiceChannel> createVoiceChannel(String name, IChannelCategory category, IOverwrite... overwrites) {
-		return null;
+		return createVoiceChannel(name, 64, 0, category, overwrites);
 	}
 
 	@Override

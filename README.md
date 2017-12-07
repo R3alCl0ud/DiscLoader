@@ -6,21 +6,27 @@ Created to replace the method daisy chaining confusion of other Java libraries f
 
 [Discord Guild](https://discord.gg/7zfDPhE)
 
+[Programming Help](http://discord.me/cm)
+
 [Example](https://github.com/R3alCl0ud/DiscLoader/blob/master/example/com/example/Example.java)
 
 [Contribution guildlines](https://github.com/R3alCl0ud/DiscLoader/blob/master/CONTRIBUTING.md)
 
 ```xml
-<repository>
-  <id>maven</id>
-  <name>DiscLoader Maven Repo</name>
-  <url>http://repo.discloader.io/repository/maven/</url>
-</repository>
-<dependency>
-  <groupId>io.discloader</groupId>
-  <artifactId>discloader</artifactId>
-  <version>0.1.1</version>
-</dependency>
+<dependencies>
+    <dependency>
+        <groupId>io.discloader</groupId>
+        <artifactId>discloader</artifactId>
+        <version>0.2.2</version>
+    </dependency>
+</dependencies>
+<repositories>
+    <repository>
+        <id>jcenter</id>
+        <name>jcenter-bintray</name>
+        <url>http://jcenter.bintray.com</url>
+    </repository>
+</repositories>
 ```
 
 
@@ -30,10 +36,14 @@ Created to replace the method daisy chaining confusion of other Java libraries f
 - Change avatar/guild icon
 - Sending messages
 - Sending embeds
+- Sending Files
 - Editing messages and embeds
 - Deleting messages
 - Command System
-- A Voice connection system
+- Voice Connections
+- Gateway reconnecting and resuming
+- Added Channel Categories
+
 
 # Todo
 - Finish constants registry.

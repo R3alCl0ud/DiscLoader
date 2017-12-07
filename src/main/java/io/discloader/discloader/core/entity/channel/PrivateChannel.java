@@ -63,14 +63,6 @@ public class PrivateChannel extends Channel implements IPrivateChannel {
 	}
 
 	@Override
-	public boolean equals(Object object) {
-		if (!(object instanceof PrivateChannel))
-			return false;
-		PrivateChannel channel = (PrivateChannel) object;
-		return (this == channel) || getID() == channel.getID();
-	}
-
-	@Override
 	public CompletableFuture<Map<Long, IMessage>> deleteMessages(IMessage... messages) {
 		HashMap<Long, IMessage> msgs = new HashMap<>();
 		for (IMessage message : messages) {
@@ -82,6 +74,14 @@ public class PrivateChannel extends Channel implements IPrivateChannel {
 	@Override
 	public CompletableFuture<Map<Long, IMessage>> deleteMessages(Map<Long, IMessage> messages) {
 		return new BulkDelete<IPrivateChannel>(this, messages).execute();
+	}
+
+	@Override
+	public boolean equals(Object object) {
+		if (!(object instanceof PrivateChannel))
+			return false;
+		PrivateChannel channel = (PrivateChannel) object;
+		return (this == channel) || getID() == channel.getID();
 	}
 
 	@Override
@@ -175,13 +175,33 @@ public class PrivateChannel extends Channel implements IPrivateChannel {
 	}
 
 	@Override
+	public CompletableFuture<IMessage> sendFile(Attachment attachment) {
+		return sendMessage(null, null, attachment);
+	}
+
+	@Override
+	public CompletableFuture<IMessage> sendFile(Attachment attachment, String content) {
+		return sendMessage(content, null, attachment);
+	}
+
+	@Override
 	public CompletableFuture<IMessage> sendFile(File file) {
 		return sendMessage(null, null, file);
 	}
 
 	@Override
+	public CompletableFuture<IMessage> sendFile(File file, String content) {
+		return sendMessage(content, null, file);
+	}
+
+	@Override
 	public CompletableFuture<IMessage> sendFile(Resource resource) {
 		return sendMessage(null, null, resource);
+	}
+
+	@Override
+	public CompletableFuture<IMessage> sendFile(Resource resource, String content) {
+		return sendMessage(content, null, resource);
 	}
 
 	@Override

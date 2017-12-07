@@ -128,6 +128,14 @@ public interface ITextChannel extends IChannel {
 	CompletableFuture<IMessage> sendFile(File file);
 
 	CompletableFuture<IMessage> sendFile(Resource resource);
+	
+	CompletableFuture<IMessage> sendFile(Attachment attachment);
+	
+	CompletableFuture<IMessage> sendFile(File file, String content);
+
+	CompletableFuture<IMessage> sendFile(Resource resource, String content);
+	
+	CompletableFuture<IMessage> sendFile(Attachment attachment, String content);
 
 	/**
 	 * Sends a {@link Message} to the channel.

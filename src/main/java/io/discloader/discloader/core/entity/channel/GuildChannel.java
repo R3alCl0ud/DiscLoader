@@ -153,7 +153,7 @@ public class GuildChannel extends Channel implements IGuildChannel {
 
 	@Override
 	public CompletableFuture<? extends IGuildChannel> edit(int position, boolean nsfw) {
-		return null;
+		return edit(name, position, nsfw);
 	}
 
 	@Override
