@@ -65,6 +65,7 @@ import io.discloader.discloader.network.json.AuditLogJSON;
 import io.discloader.discloader.network.json.ChannelJSON;
 import io.discloader.discloader.network.json.EmojiJSON;
 import io.discloader.discloader.network.json.GuildJSON;
+import io.discloader.discloader.network.json.InviteJSON;
 import io.discloader.discloader.network.json.MemberJSON;
 import io.discloader.discloader.network.json.PresenceJSON;
 import io.discloader.discloader.network.json.PruneCountJSON;
@@ -509,9 +510,23 @@ public class Guild implements IGuild {
 	}
 
 	public CompletableFuture<IGuild> edit(String name, String icon, IGuildVoiceChannel afkChannel) throws IOException {
-		if (!isOwner() && getCurrentMember().getPermissions().hasPermission(Permissions.MANAGE_GUILD))
+		if (!isOwner() && !getCurrentMember().getPermissions().hasPermission(Permissions.MANAGE_GUILD)) {
 			throw new PermissionsException();
-		return new CompletableFuture<>();
+		}
+		CompletableFuture<IGuild> future = new CompletableFuture<>();
+		String base64 = new String("data:image/jpg;base64," + Base64.encodeBase64String(Files.readAllBytes(Paths.get(icon))));
+		JSONObject payload = new JSONObject().put("name", name).put("icon", base64);
+		CompletableFuture<GuildJSON> cf = getLoader().rest.request(Methods.PATCH, Endpoints.guild(getID()), new RESTOptions(payload), GuildJSON.class);
+		cf.thenAcceptAsync(guildJSON -> {
+			IGuild guild = clone();
+			guild.setup(guildJSON);
+			future.complete(guild);
+		});
+		cf.exceptionally(ex -> {
+			future.completeExceptionally(ex);
+			return null;
+		});
+		return future;
 	}
 
 	/**
@@ -528,7 +543,18 @@ public class Guild implements IGuild {
 
 	@Override
 	public CompletableFuture<List<IInvite>> fetchInvites() {
-		return null;
+		CompletableFuture<List<IInvite>> future = new CompletableFuture<List<IInvite>>();
+		CompletableFuture<InviteJSON[]> cf = getLoader().rest.request(Methods.GET, Endpoints.guildInvites(getID()), new RESTOptions(), InviteJSON[].class);
+		cf.thenAcceptAsync(inJ -> {
+			List<IInvite> ins = new ArrayList<>();
+			for (int i = 0; i < inJ.length; i++) {
+				IInvite in = new Invite(inJ[i], getLoader());
+				invites.put(in.getCode(), in);
+				ins.add(in);
+			}
+			future.complete(ins);
+		});
+		return future;
 	}
 
 	public CompletableFuture<IGuildMember> fetchMember(long memberID) {
@@ -569,18 +595,45 @@ public class Guild implements IGuild {
 	@Override
 	public CompletableFuture<IAuditLog> getAuditLog(ActionTypes action) {
 		CompletableFuture<IAuditLog> future = new CompletableFuture<>();
+		JSONObject params = new JSONObject().put("action_type", action.toInt());
+		CompletableFuture<AuditLogJSON> cf = loader.rest.request(Methods.GET, Endpoints.auditLogs(getID()), new RESTOptions(params), AuditLogJSON.class);
+		cf.thenAcceptAsync(al -> {
+			future.complete(new AuditLog(this, al));
+		});
+		cf.exceptionally(ex -> {
+			future.completeExceptionally(ex);
+			return null;
+		});
 		return future;
 	}
 
 	@Override
 	public CompletableFuture<IAuditLog> getAuditLog(IAuditLogEntry before) {
 		CompletableFuture<IAuditLog> future = new CompletableFuture<>();
+		JSONObject params = new JSONObject().put("before", SnowflakeUtil.asString(before));
+		CompletableFuture<AuditLogJSON> cf = loader.rest.request(Methods.GET, Endpoints.auditLogs(getID()), new RESTOptions(params), AuditLogJSON.class);
+		cf.thenAcceptAsync(al -> {
+			future.complete(new AuditLog(this, al));
+		});
+		cf.exceptionally(ex -> {
+			future.completeExceptionally(ex);
+			return null;
+		});
 		return future;
 	}
 
 	@Override
 	public CompletableFuture<IAuditLog> getAuditLog(IUser user) {
 		CompletableFuture<IAuditLog> future = new CompletableFuture<>();
+		JSONObject params = new JSONObject().put("user_id", SnowflakeUtil.asString(user));
+		CompletableFuture<AuditLogJSON> cf = loader.rest.request(Methods.GET, Endpoints.auditLogs(getID()), new RESTOptions(params), AuditLogJSON.class);
+		cf.thenAcceptAsync(al -> {
+			future.complete(new AuditLog(this, al));
+		});
+		cf.exceptionally(ex -> {
+			future.completeExceptionally(ex);
+			return null;
+		});
 		return future;
 	}
 
@@ -588,9 +641,11 @@ public class Guild implements IGuild {
 	public CompletableFuture<IAuditLog> getAuditLog(IUser user, ActionTypes action, IAuditLogEntry before, short limit) {
 		CompletableFuture<IAuditLog> future = new CompletableFuture<>();
 		JSONObject params = new JSONObject().put("user_id", SnowflakeUtil.asString(user)).put("action_type", action.toInt()).put("before", SnowflakeUtil.asString(before)).put("limit", limit);
-		loader.rest.request(Methods.GET, Endpoints.auditLogs(getID()), new RESTOptions(params), AuditLogJSON.class).thenAcceptAsync(al -> {
+		CompletableFuture<AuditLogJSON> cf = loader.rest.request(Methods.GET, Endpoints.auditLogs(getID()), new RESTOptions(params), AuditLogJSON.class);
+		cf.thenAcceptAsync(al -> {
 			future.complete(new AuditLog(this, al));
-		}).exceptionally(ex -> {
+		});
+		cf.exceptionally(ex -> {
 			future.completeExceptionally(ex);
 			return null;
 		});
@@ -599,7 +654,17 @@ public class Guild implements IGuild {
 
 	@Override
 	public CompletableFuture<IAuditLog> getAuditLog(short limit) {
-		return null;
+		CompletableFuture<IAuditLog> future = new CompletableFuture<>();
+		JSONObject params = new JSONObject().put("limit", limit);
+		CompletableFuture<AuditLogJSON> cf = loader.rest.request(Methods.GET, Endpoints.auditLogs(getID()), new RESTOptions(params), AuditLogJSON.class);
+		cf.thenAcceptAsync(al -> {
+			future.complete(new AuditLog(this, al));
+		});
+		cf.exceptionally(ex -> {
+			future.completeExceptionally(ex);
+			return null;
+		});
+		return future;
 	}
 
 	@Override
@@ -609,16 +674,21 @@ public class Guild implements IGuild {
 
 	@Override
 	public IChannelCategory getChannelCategoryByID(long id) {
-		return null;
+		return categories.get(id);
 	}
 
 	@Override
 	public IChannelCategory getChannelCategoryByID(String id) {
-		return null;
+		return getChannelCategoryByID(SnowflakeUtil.parse(id));
 	}
 
 	@Override
 	public IChannelCategory getChannelCategoryByName(String name) {
+		for (IChannelCategory cat : categories.values()) {
+			if (cat.getName().equals(name)) {
+				return cat;
+			}
+		}
 		return null;
 	}
 
@@ -694,15 +764,9 @@ public class Guild implements IGuild {
 
 	@Override
 	public IInvite getInvite(String code) {
-		return null;
+		return invites.get(code);
 	}
 
-	/**
-	 * Retrieves the guild's invites from Discord's API
-	 * 
-	 * @return A Future that completes with a HashMap of Invite objects, indexed by
-	 *         {@link Invite#code}, if successful.
-	 */
 	@Override
 	public List<IInvite> getInvites() {
 		return new ArrayList<>(invites.values());
@@ -762,10 +826,12 @@ public class Guild implements IGuild {
 		return presences;
 	}
 
+	@Override
 	public CompletableFuture<Integer> getPruneCount() {
 		return getPruneCount(1);
 	}
 
+	@Override
 	public CompletableFuture<Integer> getPruneCount(int days) {
 		CompletableFuture<Integer> future = new CompletableFuture<>();
 		JSONObject payload = new JSONObject().put("days", days);

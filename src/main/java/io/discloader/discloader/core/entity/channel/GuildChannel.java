@@ -12,6 +12,7 @@ import io.discloader.discloader.common.event.EventListenerAdapter;
 import io.discloader.discloader.common.event.channel.GuildChannelUpdateEvent;
 import io.discloader.discloader.common.exceptions.PermissionsException;
 import io.discloader.discloader.common.registry.EntityBuilder;
+import io.discloader.discloader.common.registry.EntityRegistry;
 import io.discloader.discloader.core.entity.Overwrite;
 import io.discloader.discloader.core.entity.Permission;
 import io.discloader.discloader.core.entity.guild.Guild;
@@ -176,7 +177,7 @@ public class GuildChannel extends Channel implements IGuildChannel {
 		CompletableFuture<IGuildChannel> future = new CompletableFuture<>();
 		JSONObject settings = new JSONObject().put("name", name).put("position", position).put("nsfw", nsfw).put("permission_overwrites", overwrites);
 		loader.rest.request(Methods.PATCH, Endpoints.channel(getID()), new RESTOptions(settings), ChannelJSON.class).thenAcceptAsync(data -> {
-			IChannel newChannel = EntityBuilder.getChannelFactory().buildChannel(data, getLoader(), guild, false);
+			IChannel newChannel = EntityBuilder.getChannelFactory().buildChannel(data, getLoader(), getGuild(), false);
 			if (newChannel instanceof IGuildChannel)
 				future.complete((IGuildChannel) newChannel);
 		}).exceptionally(ex -> {
@@ -188,12 +189,12 @@ public class GuildChannel extends Channel implements IGuildChannel {
 
 	@Override
 	public IChannelCategory getCategory() {
-		return guild.getChannelCategoryByID(parentID);
+		return getGuild().getChannelCategoryByID(parentID);
 	}
 
 	@Override
 	public IGuild getGuild() {
-		return guild;
+		return EntityRegistry.getGuildByID(guild.getID());
 	}
 
 	@Override
@@ -204,7 +205,7 @@ public class GuildChannel extends Channel implements IGuildChannel {
 	@Override
 	public Map<Long, IGuildMember> getMembers() {
 		Map<Long, IGuildMember> members = new HashMap<>();
-		for (IGuildMember member : guild.getMembers().values()) {
+		for (IGuildMember member : getGuild().getMembers().values()) {
 			if (permissionsOf(member).hasPermission(Permissions.READ_MESSAGES, false))
 				members.put(member.getID(), member);
 		}
@@ -265,7 +266,7 @@ public class GuildChannel extends Channel implements IGuildChannel {
 	@Override
 	public IPermission permissionsOf(IGuildMember member) {
 		long raw = 0;
-		if (guild.isOwner(member))
+		if (getGuild().isOwner(member))
 			return new Permission(member, this, 2146958463);
 		for (IRole role : member.getRoles()) {
 			if (role != null) {
@@ -288,7 +289,7 @@ public class GuildChannel extends Channel implements IGuildChannel {
 		CompletableFuture<IGuildChannel> future = new CompletableFuture<>();
 		JSONObject settings = new JSONObject().put("parent_id", SnowflakeUtil.asString(category));
 		loader.rest.request(Methods.PATCH, Endpoints.channel(getID()), new RESTOptions(settings), ChannelJSON.class).thenAcceptAsync(data -> {
-			IGuildChannel newChannel = (IGuildChannel) EntityBuilder.getChannelFactory().buildChannel(data, getLoader(), guild, false);
+			IGuildChannel newChannel = (IGuildChannel) EntityBuilder.getChannelFactory().buildChannel(data, getLoader(), getGuild(), false);
 			future.complete(newChannel);
 		}).exceptionally(ex -> {
 			future.completeExceptionally(ex);
@@ -344,13 +345,13 @@ public class GuildChannel extends Channel implements IGuildChannel {
 		List<IGuildChannel> channels;
 		switch (getType()) {
 		case CATEGORY:
-			channels = new ArrayList<>(guild.getChannelCategories().values());
+			channels = new ArrayList<>(getGuild().getChannelCategories().values());
 			break;
 		case TEXT:
-			channels = new ArrayList<>(guild.getTextChannels().values());
+			channels = new ArrayList<>(getGuild().getTextChannels().values());
 			break;
 		case VOICE:
-			channels = new ArrayList<>(guild.getVoiceChannels().values());
+			channels = new ArrayList<>(getGuild().getVoiceChannels().values());
 			break;
 		default:
 			channels = new ArrayList<>();
