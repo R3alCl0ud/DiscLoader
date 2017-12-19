@@ -3,6 +3,7 @@ package io.discloader.discloader.network.rest;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import com.google.gson.Gson;
 
@@ -16,14 +17,16 @@ public class RESTManager {
 	public DiscLoader loader;
 	private final Map<String, Route<?>> routes;
 
-	private boolean globally;
+	/**
+	 * Concurrently stores whether or not the global limit for REST requests has been reached. 
+	 */
+	private static AtomicBoolean globally = new AtomicBoolean(false);
 
 	public RESTManager(DiscLoader loader) {
 		this.loader = loader;
 		gson = new Gson();
 		queues = new HashMap<>();
 		routes = new HashMap<>();
-		setGlobally(false);
 	}
 
 	/**
@@ -72,15 +75,15 @@ public class RESTManager {
 	 * @return the globally
 	 */
 	public boolean isGlobally() {
-		return this.globally;
+		return globally.get();
 	}
 
 	/**
 	 * @param globally
 	 *            the globally to set
 	 */
-	public void setGlobally(boolean globally) {
-		this.globally = globally;
+	public void setGlobally(boolean isGlobally) {
+		RESTManager.globally.set(isGlobally);
 	}
 
 }

@@ -24,6 +24,7 @@ import io.discloader.discloader.entity.message.IMessage;
 import io.discloader.discloader.entity.message.IMessageAttachment;
 import io.discloader.discloader.entity.message.IMessageEmbed;
 import io.discloader.discloader.entity.message.IReaction;
+import io.discloader.discloader.entity.sendable.Attachment;
 import io.discloader.discloader.entity.sendable.SendableMessage;
 import io.discloader.discloader.entity.user.IUser;
 import io.discloader.discloader.entity.util.ISnowflake;
@@ -33,14 +34,13 @@ import io.discloader.discloader.network.json.EmbedJSON;
 import io.discloader.discloader.network.json.MessageJSON;
 import io.discloader.discloader.network.json.ReactionJSON;
 import io.discloader.discloader.network.json.UserJSON;
-import io.discloader.discloader.network.rest.actions.RESTAction;
+import io.discloader.discloader.network.rest.RESTOptions;
 import io.discloader.discloader.network.rest.actions.channel.pin.PinMessage;
 import io.discloader.discloader.network.rest.actions.channel.pin.UnpinMessage;
 import io.discloader.discloader.network.rest.actions.message.CreateReaction;
-import io.discloader.discloader.network.rest.actions.message.DeleteMessage;
 import io.discloader.discloader.network.rest.actions.message.DeleteReaction;
-import io.discloader.discloader.util.DLUtil.Endpoints;
-import io.discloader.discloader.util.DLUtil.Methods;
+import io.discloader.discloader.network.util.Endpoints;
+import io.discloader.discloader.network.util.Methods;
 
 public class Message<T extends ITextChannel> implements IMessage {
 
@@ -185,7 +185,7 @@ public class Message<T extends ITextChannel> implements IMessage {
 
 	@Override
 	public int compareTo(IMessage message) {
-		return message.createdAt().compareTo(createdAt());
+		return message.getContent().compareTo(getContent());
 	}
 
 	@Override
@@ -208,7 +208,16 @@ public class Message<T extends ITextChannel> implements IMessage {
 
 	@Override
 	public CompletableFuture<IMessage> delete() {
-		return new DeleteMessage<T>(this.channel, this).execute();
+		CompletableFuture<IMessage> future = new CompletableFuture<>();
+		CompletableFuture<Void> cf = loader.rest.request(Methods.DELETE, Endpoints.message(getChannel().getID(), getID()),new RESTOptions(), Void.class);
+		cf.thenAcceptAsync(Null -> {
+			future.complete(this);
+		});
+		cf.exceptionally(ex -> {
+			future.completeExceptionally(ex);
+			return null;
+		});
+		return future;
 	}
 
 	@Override
@@ -220,9 +229,13 @@ public class Message<T extends ITextChannel> implements IMessage {
 				return future;
 			}
 		}
-		loader.rest.makeRequest(Endpoints.messageReactions(channel.getID(), id), Methods.DELETE, true).thenAcceptAsync(data -> {
+		CompletableFuture<Void> cf = loader.rest.request(Methods.DELETE, Endpoints.messageReactions(getChannel().getID(), getID()), new RESTOptions(), Void.class);
+		cf.thenAcceptAsync(Null -> {
 			future.complete(this);
-			reactions.clear();
+		});
+		cf.exceptionally(ex -> {
+			future.completeExceptionally(ex);
+			return null;
 		});
 		return future;
 	}
@@ -265,23 +278,40 @@ public class Message<T extends ITextChannel> implements IMessage {
 	 */
 	@Override
 	public CompletableFuture<IMessage> edit(String content, RichEmbed embed) {
-		return new RESTAction<IMessage>(loader) {
+		CompletableFuture<IMessage> future = new CompletableFuture<>();
+		if (!canEdit()) {
+			future.completeExceptionally(new PermissionsException("Only messages author by you can be editted"));
+			return future;
+		}
 
-			@Override
-			public CompletableFuture<IMessage> execute() {
-				SendableMessage sendable = new SendableMessage(content, false, embed, null, (File) null);
-				return super.execute(loader.rest.makeRequest(Endpoints.message(channel.getID(), id), Methods.PATCH, true, sendable));
+		SendableMessage sendable = null;
+		Attachment attachment = null;
+		File file = null;
+		if (embed != null) {
+			if ((embed.getThumbnail() != null && embed.getThumbnail().resource != null)) {
+				attachment = new Attachment(embed.getThumbnail().resource.getName());
 			}
-
-			public void complete(String str, Throwable ex) {
-				if (ex != null) {
-					future.completeExceptionally(ex);
-					return;
-				}
-				future.complete(EntityBuilder.getChannelFactory().buildMessage(channel, gson.fromJson(str, MessageJSON.class)));
+			if (embed.getThumbnail() != null && embed.getThumbnail().file != null) {
+				attachment = new Attachment(embed.getThumbnail().file.getName());
 			}
+			if ((embed.getImage() != null && embed.getImage().resource != null)) {
+				attachment = new Attachment(embed.getImage().resource.getName());
+			}
+			if (embed.getImage() != null && embed.getImage().file != null) {
+				attachment = new Attachment(embed.getImage().file.getName());
+			}
+		}
+		sendable = new SendableMessage(content, false, embed, attachment, file);
+		CompletableFuture<MessageJSON> cf = loader.rest.request(Methods.PATCH, Endpoints.message(getChannel().getID(), getID()), new RESTOptions(sendable), MessageJSON.class);
+		cf.thenAcceptAsync(messageJSON -> {
+			future.complete(EntityBuilder.getChannelFactory().buildMessage(channel, messageJSON));
+		});
 
-		}.execute();
+		cf.exceptionally(ex -> {
+			future.completeExceptionally(ex);
+			return null;
+		});
+		return future;
 	}
 
 	@Override

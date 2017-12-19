@@ -458,9 +458,14 @@ public class TextChannel extends GuildChannel implements IGuildTextChannel {
 	@Override
 	public CompletableFuture<Map<Long, IUser>> startTyping() {
 		CompletableFuture<Map<Long, IUser>> future = new CompletableFuture<>();
-		loader.rest.request(Methods.POST, Endpoints.channelTyping(getID()), new RESTOptions(), null).thenAcceptAsync(n -> {
+		CompletableFuture<Void> cf = loader.rest.request(Methods.POST, Endpoints.channelTyping(getID()), new RESTOptions(),Void.class);
+		cf.thenAcceptAsync(n -> {
 			typing.put(loader.user.getID(), loader.user);
 			future.complete(typing);
+		});
+		cf.exceptionally(ex->{
+			future.completeExceptionally(ex);
+			return null;
 		});
 		return future;
 	}

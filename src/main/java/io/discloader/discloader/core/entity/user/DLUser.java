@@ -16,8 +16,8 @@ import io.discloader.discloader.entity.sendable.Packet;
 import io.discloader.discloader.entity.user.IUser;
 import io.discloader.discloader.network.gateway.packets.request.PresenceUpdate;
 import io.discloader.discloader.network.json.OAuthApplicationJSON;
+import io.discloader.discloader.network.json.UserJSON;
 import io.discloader.discloader.network.rest.RESTOptions;
-import io.discloader.discloader.network.rest.actions.ModifyUser;
 import io.discloader.discloader.network.util.Endpoints;
 import io.discloader.discloader.network.util.Methods;
 
@@ -103,11 +103,13 @@ public class DLUser extends User {
 	public CompletableFuture<DLUser> setAvatar(String avatarLocation) throws IOException {
 		CompletableFuture<DLUser> future = new CompletableFuture<>();
 		String base64 = new String("data:image/jpg;base64," + Base64.encodeBase64String(Files.readAllBytes(Paths.get(avatarLocation))));
-		CompletableFuture<DLUser> fm = new ModifyUser(this, new JSONObject().put("avatar", base64)).execute();
-		fm.handleAsync((dlu, ex) -> {
-			if (ex != null)
-				future.completeExceptionally(ex.getCause());
-			future.complete(dlu);
+		CompletableFuture<UserJSON> cf = loader.rest.request(Methods.PATCH, Endpoints.currentUser, new RESTOptions(new JSONObject().put("avatar", base64)), UserJSON.class);
+		cf.thenAcceptAsync(data -> {
+			setup(data);
+			future.complete(this);
+		});
+		cf.exceptionally(ex -> {
+			future.completeExceptionally(ex);
 			return null;
 		});
 		return future;
@@ -170,11 +172,13 @@ public class DLUser extends User {
 	 */
 	public CompletableFuture<DLUser> setUsername(String username) {
 		CompletableFuture<DLUser> future = new CompletableFuture<>();
-		CompletableFuture<DLUser> fm = new ModifyUser(this, new JSONObject().put("username", username)).execute();
-		fm.handleAsync((dlu, ex) -> {
-			if (ex != null)
-				future.completeExceptionally(ex.getCause());
-			future.complete(dlu);
+		CompletableFuture<UserJSON> cf = loader.rest.request(Methods.PATCH, Endpoints.currentUser, new RESTOptions(new JSONObject().put("username", username)), UserJSON.class);
+		cf.thenAcceptAsync(data -> {
+			setup(data);
+			future.complete(this);
+		});
+		cf.exceptionally(ex -> {
+			future.completeExceptionally(ex);
 			return null;
 		});
 		return future;

@@ -192,13 +192,13 @@ public class GatewayListener extends WebSocketAdapter {
 		}
 	}
 
-	public void onDisconnected(WebSocket ws, WebSocketFrame server_frame, WebSocketFrame frame_2, boolean isServer) throws Exception {
+	public void onDisconnected(WebSocket ws, WebSocketFrame serverFrame, WebSocketFrame clientFrame, boolean isServer) throws Exception {
 		socket.killHeartbeat();
-		loader.emit(new DisconnectEvent(loader));
+		loader.emit(new DisconnectEvent(loader, serverFrame, clientFrame, isServer));
 		connected = false;
 		if (isServer) {
-			logger.severe(String.format("Gateway connection was closed by the server. Close Code: %d, Reason: %s", server_frame.getCloseCode(), server_frame.getCloseReason()));
-			if (server_frame.getCloseCode() != 1000) {
+			logger.severe(String.format("Gateway connection was closed by the server. Close Code: %d, Reason: %s", serverFrame.getCloseCode(), serverFrame.getCloseReason()));
+			if (serverFrame.getCloseCode() != 1000) {
 				if (tries > 3) {
 					loader.login();
 				} else {
@@ -207,8 +207,8 @@ public class GatewayListener extends WebSocketAdapter {
 				}
 			}
 		} else {
-			logger.severe(String.format("Client was disconnected from the gateway, Code: %d", frame_2.getCloseCode()));
-			if (frame_2.getCloseCode() != 1000) {
+			logger.severe(String.format("Client was disconnected from the gateway, Code: %d", clientFrame.getCloseCode()));
+			if (clientFrame.getCloseCode() != 1000) {
 				if (tries > 3) {
 					loader.login();
 				} else {

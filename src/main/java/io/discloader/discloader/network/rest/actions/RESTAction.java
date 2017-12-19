@@ -7,10 +7,15 @@ import com.google.gson.Gson;
 
 import io.discloader.discloader.common.DiscLoader;
 
+
+@Deprecated
 public abstract class RESTAction<T> {
 
 	protected CompletableFuture<String> request;
 	protected CompletableFuture<T> future;
+	protected static final Consumer<Object> defaultSuccess = (t -> {});
+	protected static final Consumer<Throwable> defaultFailure = (ex -> {});
+	
 	protected DiscLoader loader;
 	protected Gson gson;
 
@@ -41,7 +46,7 @@ public abstract class RESTAction<T> {
 		future.complete((T) null);
 	}
 
-	public RESTAction<T> thenAccept(Consumer<T> action) {
+	public RESTAction<T> onSuccess(Consumer<T> action) {
 		future.thenAcceptAsync(action);
 		return this;
 	}
