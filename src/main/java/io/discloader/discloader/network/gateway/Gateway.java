@@ -84,21 +84,22 @@ public class Gateway {
 		if (!ws.isOpen() || remaining == 0 || queue.isEmpty())
 			return;
 
-		Object payload = queue.get(0);
+		Object raw_payload = queue.get(0);
+		// loader.em
 		remaining--;
-		if (payload instanceof JSONObject) {
-			logger.info(payload.toString());
-			ws.sendText(payload.toString());
+		String payload = "";
+		if (raw_payload instanceof JSONObject) {
+			payload = raw_payload.toString();
 		} else {
-			if (payload instanceof Packet && ((Packet) payload).d instanceof VoiceStateUpdate) {
-				logger.info(gson.toJson(payload));
-				ws.sendText(gson.toJson(payload));
+			if (raw_payload instanceof Packet && ((Packet) raw_payload).d instanceof VoiceStateUpdate) {
+				payload = gson.toJson(raw_payload);
 			} else {
-				logger.info(DLUtil.gson.toJson(payload));
-				ws.sendText(DLUtil.gson.toJson(payload));
+				payload = DLUtil.gson.toJson(raw_payload);
 			}
 		}
-		queue.remove(payload);
+		logger.info(payload);
+		ws.sendText(payload);
+		queue.remove(raw_payload);
 		handleQueue();
 	}
 
