@@ -97,7 +97,7 @@ public class Gateway {
 				payload = DLUtil.gson.toJson(raw_payload);
 			}
 		}
-		logger.info(payload);
+		logger.info("Sending: " + payload);
 		ws.sendText(payload);
 		queue.remove(raw_payload);
 		handleQueue();
@@ -172,7 +172,7 @@ public class Gateway {
 	public void send(JSONObject payload, boolean force) {
 		if (force && remaining != 0) {
 			remaining--;
-			logger.info(payload.toString());
+			logger.info("Sending: " + payload.toString());
 			ws.sendText(payload.toString());
 			return;
 		}
@@ -188,10 +188,10 @@ public class Gateway {
 		if (force && remaining != 0) {
 			remaining--;
 			if (payload instanceof Packet && ((Packet) payload).d instanceof VoiceStateUpdate) {
-				logger.info(gson.toJson(payload));
+				logger.info("Sending: " + gson.toJson(payload));
 				ws.sendText(gson.toJson(payload));
 			} else {
-				logger.info(DLUtil.gson.toJson(payload));
+				logger.info("Sending: " + DLUtil.gson.toJson(payload));
 				ws.sendText(DLUtil.gson.toJson(payload));
 			}
 			return;

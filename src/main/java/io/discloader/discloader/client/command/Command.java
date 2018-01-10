@@ -57,24 +57,28 @@ public class Command {
 	/**
 	 * executes the command
 	 * 
-	 * @param e The MessageCreateEvent
+	 * @param e
+	 *            The MessageCreateEvent
 	 */
-	public void execute(MessageCreateEvent e) {
+	public void execute(MessageCreateEvent e) throws Exception {
 		return;
 	}
 
 	/**
 	 * executes the command
 	 * 
-	 * @param e The MessageCreateEvent
-	 * @param args The args parsed from {@link #getArgsPattern()}
+	 * @param e
+	 *            The MessageCreateEvent
+	 * @param args
+	 *            The args parsed from {@link #getArgsPattern()}
 	 */
-	public void execute(MessageCreateEvent e, String[] args) {
+	public void execute(MessageCreateEvent e, String[] args) throws Exception {
 		execute(e);
 	}
 
 	/**
 	 * Get a list of aliases for this command. <b>Never return null!</b>
+	 * 
 	 * @return a List of aliases
 	 */
 	public List<String> getAliases() {
@@ -145,14 +149,16 @@ public class Command {
 	}
 
 	/**
-	 * @param argsRegex the argsRegex to set
+	 * @param argsRegex
+	 *            the argsRegex to set
 	 */
 	public void setArgsRegex(String argsRegex) {
 		this.argsRegex = argsRegex;
 	}
 
 	/**
-	 * @param description the description to set
+	 * @param description
+	 *            the description to set
 	 * @return this.
 	 */
 	public Command setDescription(String description) {
@@ -161,14 +167,16 @@ public class Command {
 	}
 
 	/**
-	 * @param fullDescription the fullDescription to set
+	 * @param fullDescription
+	 *            the fullDescription to set
 	 */
 	public void setFullDescription(String fullDescription) {
 		this.fullDescription = fullDescription;
 	}
 
 	/**
-	 * @param id the id to set
+	 * @param id
+	 *            the id to set
 	 * @return this.
 	 */
 	public Command setId(int id) {
@@ -179,7 +187,8 @@ public class Command {
 	/**
 	 * Sets the name of the texture for this command
 	 * 
-	 * @param textureName MODID:icons.commands.unlocalizedName
+	 * @param textureName
+	 *            MODID:icons.commands.unlocalizedName
 	 * @return this.
 	 */
 	public Command setTextureName(String textureName) {
@@ -188,7 +197,8 @@ public class Command {
 	}
 
 	/**
-	 * @param unlocalizedName The new unlocalizedName for the command
+	 * @param unlocalizedName
+	 *            The new unlocalizedName for the command
 	 * @return this
 	 */
 	public Command setUnlocalizedName(String unlocalizedName) {
@@ -197,7 +207,8 @@ public class Command {
 	}
 
 	/**
-	 * @param usage the usage to set
+	 * @param usage
+	 *            the usage to set
 	 * @return this.
 	 */
 	public Command setUsage(String usage) {

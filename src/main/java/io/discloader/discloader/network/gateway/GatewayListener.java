@@ -22,36 +22,7 @@ import io.discloader.discloader.common.event.DisconnectEvent;
 import io.discloader.discloader.common.event.RawEvent;
 import io.discloader.discloader.common.event.ReconnectEvent;
 import io.discloader.discloader.entity.sendable.Packet;
-import io.discloader.discloader.network.gateway.packets.AbstractHandler;
-import io.discloader.discloader.network.gateway.packets.ChannelCreate;
-import io.discloader.discloader.network.gateway.packets.ChannelDelete;
-import io.discloader.discloader.network.gateway.packets.ChannelUpdate;
-import io.discloader.discloader.network.gateway.packets.EmojiUpdate;
-import io.discloader.discloader.network.gateway.packets.GuildBanAdd;
-import io.discloader.discloader.network.gateway.packets.GuildBanRemove;
-import io.discloader.discloader.network.gateway.packets.GuildCreate;
-import io.discloader.discloader.network.gateway.packets.GuildDelete;
-import io.discloader.discloader.network.gateway.packets.GuildMemberAdd;
-import io.discloader.discloader.network.gateway.packets.GuildMemberRemove;
-import io.discloader.discloader.network.gateway.packets.GuildMemberUpdate;
-import io.discloader.discloader.network.gateway.packets.GuildMembersChunk;
-import io.discloader.discloader.network.gateway.packets.GuildUpdate;
-import io.discloader.discloader.network.gateway.packets.Hello;
-import io.discloader.discloader.network.gateway.packets.MessageCreate;
-import io.discloader.discloader.network.gateway.packets.MessageDelete;
-import io.discloader.discloader.network.gateway.packets.MessageUpdate;
-import io.discloader.discloader.network.gateway.packets.PresenceUpdate;
-import io.discloader.discloader.network.gateway.packets.ReactionAdd;
-import io.discloader.discloader.network.gateway.packets.ReactionRemove;
-import io.discloader.discloader.network.gateway.packets.Ready;
-import io.discloader.discloader.network.gateway.packets.Resumed;
-import io.discloader.discloader.network.gateway.packets.RoleCreate;
-import io.discloader.discloader.network.gateway.packets.RoleDelete;
-import io.discloader.discloader.network.gateway.packets.RoleUpdate;
-import io.discloader.discloader.network.gateway.packets.SocketPacket;
-import io.discloader.discloader.network.gateway.packets.TypingStart;
-import io.discloader.discloader.network.gateway.packets.VoiceServerUpdate;
-import io.discloader.discloader.network.gateway.packets.VoiceStateUpdate;
+import io.discloader.discloader.network.gateway.packets.*;
 import io.discloader.discloader.network.gateway.packets.request.GatewayIdentify;
 import io.discloader.discloader.network.gateway.packets.request.GatewayResume;
 import io.discloader.discloader.network.gateway.packets.request.Properties;
@@ -131,6 +102,8 @@ public class GatewayListener extends WebSocketAdapter {
 		}
 
 		if (packet.op == OPCodes.INVALID_SESSION) {
+			
+			
 			sendNewIdentify();
 			return;
 		}

@@ -14,7 +14,7 @@ import io.discloader.discloader.core.entity.Presence;
 import io.discloader.discloader.entity.IPresence;
 import io.discloader.discloader.entity.sendable.Packet;
 import io.discloader.discloader.entity.user.IUser;
-import io.discloader.discloader.network.gateway.packets.request.PresenceUpdate;
+import io.discloader.discloader.network.gateway.packets.request.StatusUpdate;
 import io.discloader.discloader.network.json.OAuthApplicationJSON;
 import io.discloader.discloader.network.json.UserJSON;
 import io.discloader.discloader.network.rest.RESTOptions;
@@ -138,7 +138,7 @@ public class DLUser extends User {
 	 * @return this
 	 */
 	public DLUser setPresence(String status, Game game, boolean afk) {
-		PresenceUpdate d = new PresenceUpdate(game, status, afk, 0);
+		StatusUpdate d = new StatusUpdate(game, status, afk, 0);
 		Packet payload = new Packet(3, d);
 		presence.update(status, game);
 		loader.socket.send(payload);
