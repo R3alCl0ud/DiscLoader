@@ -308,6 +308,12 @@ public interface IEventListener {
 	void Reconnect(ReconnectEvent e);
 
 	/**
+	 * @param obj
+	 *            the object being sent over the gateway
+	 */
+	void SendingPacket(Object obj);
+
+	/**
 	 * Emitted when a user starts typing in an {@link ITextChannel}
 	 * 
 	 * @param event

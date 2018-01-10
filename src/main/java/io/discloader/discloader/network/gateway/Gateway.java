@@ -24,97 +24,102 @@ import io.discloader.discloader.util.DLUtil.Status;
  * @author Perry Berman
  */
 public class Gateway {
-	
+
 	/**
 	 * The current instance of DiscLoader
 	 */
 	public DiscLoader loader;
-	
+
 	private GatewayListener socketListener;
-	
+
 	public WebSocket ws;
-	
+
 	public String sessionID;
-	
+
 	public int s;
-	
+
 	public int status;
-	
+
 	public boolean lastHeartbeatAck;
-	
+
 	public boolean first = true;
-	
+
 	public boolean normalReady = false;
-	
+
 	public boolean reconnecting = false;
-	
+
 	private Thread heartbeatThread = null;
-	
+
 	private Thread resetRemaining = null;
-	
+
 	private int remaining = 115, interval = 0;
-	
+
 	private Gson gson = new GsonBuilder().serializeNulls().create();
-	
+
 	private ArrayList<Object> queue;
-	
+
 	private final Logger logger;
-	
+
 	private final String logname;
-	
+
 	public Gateway(DiscLoader loader) {
 		this.loader = loader;
 		logname = loader.shards > 1 ? "Gateway (Shard: #" + loader.shardid + ")" : "Gateway";
 		logger = new DLLogger(logname).getLogger();
 		socketListener = new GatewayListener(this);
-		
+
 		status = Status.IDLE;
-		
+
 		queue = new ArrayList<>();
 	}
-	
+
 	public void connectSocket(String gateway) throws WebSocketException, IOException {
 		logger.info(String.format("Connecting to Gateway with Endpoint: %s", gateway));
 		ws = new WebSocketFactory().setConnectionTimeout(15000).createSocket(gateway).addHeader("Accept-Encoding", "gzip");
 		ws.addListener(socketListener);
 		ws.connect();
 	}
-	
+
 	public void handleQueue() {
-		if (!ws.isOpen() || remaining == 0 || queue.isEmpty()) return;
-		
-		Object payload = queue.get(0);
+		if (!ws.isOpen() || remaining == 0 || queue.isEmpty())
+			return;
+
+		Object raw_payload = queue.get(0);
+		// loader.em
 		remaining--;
-		if (payload instanceof JSONObject) {
-			ws.sendText(payload.toString());
+		String payload = "";
+		if (raw_payload instanceof JSONObject) {
+			payload = raw_payload.toString();
 		} else {
-			if (payload instanceof Packet && ((Packet) payload).d instanceof VoiceStateUpdate) {
-				ws.sendText(gson.toJson(payload));
+			if (raw_payload instanceof Packet && ((Packet) raw_payload).d instanceof VoiceStateUpdate) {
+				payload = gson.toJson(raw_payload);
 			} else {
-				ws.sendText(DLUtil.gson.toJson(payload));
+				payload = DLUtil.gson.toJson(raw_payload);
 			}
 		}
-		queue.remove(payload);
+		logger.info("Sending: " + payload);
+		ws.sendText(payload);
+		queue.remove(raw_payload);
 		handleQueue();
 	}
-	
+
 	public void keepAlive() {
 		keepAlive(interval);
 	}
-	
+
 	public void keepAlive(final int interval) {
 		this.interval = interval;
 		heartbeatThread = new Thread(logname + " - Heartbeat") {
-			
+
 			@Override
 			public void run() {
-				
+
 				try {
 					Thread.sleep(interval);
 				} catch (InterruptedException e) {
 					logger.warning(String.format("The thread: %s - Heartbeat, has been interrupted", logname));
 				}
-				
+
 				while (ws.isOpen() && !this.isInterrupted()) {
 					sendHeartbeat(true);
 					try {
@@ -123,7 +128,7 @@ public class Gateway {
 						logger.warning(String.format("The thread: %s - Heartbeat, has been interrupted", logname));
 					}
 				}
-				
+
 			}
 		};
 		resetRemaining = new Thread(logname + " - Rate Limiter") {
@@ -136,7 +141,7 @@ public class Gateway {
 					} catch (InterruptedException e) {
 						logger.warning(String.format("The thread: %s - Rate Limiter, has been interrupted", logname));
 					}
-					
+
 				}
 			}
 		};
@@ -147,7 +152,7 @@ public class Gateway {
 		heartbeatThread.setDaemon(true);
 		heartbeatThread.start();
 	}
-	
+
 	public void killHeartbeat() {
 		logger.severe("Killing heartbeat");
 		if (heartbeatThread != null) {
@@ -159,17 +164,34 @@ public class Gateway {
 			resetRemaining = null;
 		}
 	}
-	
+
+	public void send(JSONObject payload) {
+		send(payload, false);
+	}
+
+	public void send(JSONObject payload, boolean force) {
+		if (force && remaining != 0) {
+			remaining--;
+			logger.info("Sending: " + payload.toString());
+			ws.sendText(payload.toString());
+			return;
+		}
+		queue.add(payload);
+		handleQueue();
+	}
+
 	public void send(Object payload) {
 		send(payload, false);
 	}
-	
+
 	public void send(Object payload, boolean force) {
 		if (force && remaining != 0) {
 			remaining--;
 			if (payload instanceof Packet && ((Packet) payload).d instanceof VoiceStateUpdate) {
+				logger.info("Sending: " + gson.toJson(payload));
 				ws.sendText(gson.toJson(payload));
 			} else {
+				logger.info("Sending: " + DLUtil.gson.toJson(payload));
 				ws.sendText(DLUtil.gson.toJson(payload));
 			}
 			return;
@@ -177,21 +199,7 @@ public class Gateway {
 		queue.add(payload);
 		handleQueue();
 	}
-	
-	public void send(JSONObject payload) {
-		send(payload, false);
-	}
-	
-	public void send(JSONObject payload, boolean force) {
-		if (force && remaining != 0) {
-			remaining--;
-			ws.sendText(payload.toString());
-			return;
-		}
-		queue.add(payload);
-		handleQueue();
-	}
-	
+
 	public void sendHeartbeat(boolean normal) {
 		if (normal && !lastHeartbeatAck) {
 			ws.disconnect(1007);
@@ -204,16 +212,16 @@ public class Gateway {
 		lastHeartbeatAck = false;
 		send(payload, true);
 	}
-	
-	public void startGuildSync() {
-		
+
+	public void setReady() {
+		status = Status.READY;
 	}
-	
+
 	public void setRetries(int i) {
 		socketListener.setRetries(i);
 	}
-	
-	public void setReady() {
-		status = Status.READY;
+
+	public void startGuildSync() {
+
 	}
 }

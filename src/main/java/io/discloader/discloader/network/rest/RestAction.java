@@ -1,28 +1,46 @@
 package io.discloader.discloader.network.rest;
 
 import java.util.concurrent.CompletableFuture;
+import java.util.function.Consumer;
+import java.util.logging.Logger;
+
+import io.discloader.discloader.client.logger.DLLogger;
+import io.discloader.discloader.common.DiscLoader;
+import io.discloader.discloader.network.util.Methods;
 
 /**
  * @author Perry Berman
  *
- * @param <T> Completion type
- * @param <U> Parse type
+ * @param <T>
+ *            Completion type
  */
-public class RestAction<T, U> {
-	
-	private final CompletableFuture<T> future;
-	
-	/**
-	 * 
-	 */
-	public RestAction() {
-		future = new CompletableFuture<>();
+public abstract class RestAction<T> {
+
+	public static final Logger LOG = new DLLogger(RestAction.class).getLogger();
+
+	protected final DiscLoader loader;
+
+	private final String endpoint;
+	public static Consumer DEFAULT_SUCCESS = o -> {};
+	public static Consumer<Throwable> DEFAULT_FAILURE = t -> {
+		LOG.throwing(t.getStackTrace()[0].getClassName(), t.getStackTrace()[0].getMethodName(), t);
+	};
+	// private Consumer<? super T> success = (obj -> {});
+	// private Consumer<Throwable> failure = (ex -> {});
+	private RESTOptions options;
+
+	public RestAction(DiscLoader loader, String endpoint, RESTOptions options) {
+		this.loader = loader;
+		this.endpoint = endpoint;
 	}
-	
-	/**
-	 * @return the future
-	 */
-	public CompletableFuture<T> getFuture() {
-		return this.future;
+
+	public RestAction<T> onSuccess(Consumer<? super T> action) {
+		// this.success = action;
+		return this;
+	}
+
+	public <U> RestAction<T> execute(Class<U> cls) {
+		CompletableFuture<U> future = loader.rest.request(Methods.GET, endpoint, options, cls);
+		return this;
 	}
 }

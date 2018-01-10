@@ -306,13 +306,33 @@ public class TextChannel extends GuildChannel implements IGuildTextChannel {
 	}
 
 	@Override
+	public CompletableFuture<IMessage> sendFile(Attachment attachment) {
+		return sendMessage(null, null, attachment);
+	}
+
+	@Override
+	public CompletableFuture<IMessage> sendFile(Attachment attachment, String content) {
+		return sendMessage(content, null, attachment);
+	}
+
+	@Override
 	public CompletableFuture<IMessage> sendFile(File file) {
 		return sendMessage(null, null, file);
 	}
 
 	@Override
+	public CompletableFuture<IMessage> sendFile(File file, String content) {
+		return sendMessage(content, null, file);
+	}
+
+	@Override
 	public CompletableFuture<IMessage> sendFile(Resource resource) {
 		return sendMessage(null, null, resource);
+	}
+
+	@Override
+	public CompletableFuture<IMessage> sendFile(Resource resource, String content) {
+		return sendMessage(content, null, resource);
 	}
 
 	@Override
@@ -438,9 +458,14 @@ public class TextChannel extends GuildChannel implements IGuildTextChannel {
 	@Override
 	public CompletableFuture<Map<Long, IUser>> startTyping() {
 		CompletableFuture<Map<Long, IUser>> future = new CompletableFuture<>();
-		loader.rest.request(Methods.POST, Endpoints.channelTyping(getID()), new RESTOptions(), null).thenAcceptAsync(n -> {
+		CompletableFuture<Void> cf = loader.rest.request(Methods.POST, Endpoints.channelTyping(getID()), new RESTOptions(),Void.class);
+		cf.thenAcceptAsync(n -> {
 			typing.put(loader.user.getID(), loader.user);
 			future.complete(typing);
+		});
+		cf.exceptionally(ex->{
+			future.completeExceptionally(ex);
+			return null;
 		});
 		return future;
 	}

@@ -4,13 +4,15 @@ import java.time.OffsetDateTime;
 import java.util.concurrent.CompletableFuture;
 
 import io.discloader.discloader.common.DiscLoader;
+import io.discloader.discloader.common.exceptions.AccountTypeException;
 import io.discloader.discloader.entity.invite.IInvite;
 import io.discloader.discloader.entity.invite.IInviteChannel;
 import io.discloader.discloader.entity.invite.IInviteGuild;
 import io.discloader.discloader.entity.user.IUser;
 import io.discloader.discloader.network.json.InviteJSON;
-import io.discloader.discloader.network.rest.actions.InviteAction;
-import io.discloader.discloader.util.DLUtil.Methods;
+import io.discloader.discloader.network.rest.RESTOptions;
+import io.discloader.discloader.network.util.Endpoints;
+import io.discloader.discloader.network.util.Methods;
 
 /**
  * Represents an invite object in Discord's API
@@ -66,6 +68,8 @@ public class Invite implements IInvite {
 
 	private String createdAt;
 
+	private final DiscLoader loader;
+
 	public Invite(InviteJSON data, DiscLoader loader) {
 		code = data.code;
 		maxAge = data.max_age;
@@ -76,11 +80,25 @@ public class Invite implements IInvite {
 		channel = new InviteChannel(data.channel);
 		guild = new InviteGuild(data.guild);
 		// code.ha
+		this.loader = loader;
 	}
 
 	@Override
 	public CompletableFuture<IInvite> accept() {
-		return new InviteAction(this, Methods.POST).execute();
+		if (getLoader().user.isBot())
+			throw new AccountTypeException("Bot's cannot accept invites");
+		DiscLoader.LOG.warning("Accepting invites can deverify and/or get your account banned from Discord.");
+		CompletableFuture<IInvite> future = new CompletableFuture<>();
+		CompletableFuture<InviteJSON> cf = loader.rest.request(Methods.POST, Endpoints.invite(code), new RESTOptions(), InviteJSON.class);
+		cf.thenAcceptAsync(inviteJSON -> {
+			future.complete(new Invite(inviteJSON, loader));
+		});
+		cf.exceptionally(ex -> {
+			future.completeExceptionally(ex);
+			return null;
+		});
+		return future;
+//		return new InviteAction(this, Methods.POST).execute();
 	}
 
 	@Override
@@ -100,7 +118,16 @@ public class Invite implements IInvite {
 
 	@Override
 	public CompletableFuture<IInvite> delete() {
-		return new InviteAction(this, Methods.DELETE).execute();
+		CompletableFuture<IInvite> future = new CompletableFuture<>();
+		CompletableFuture<InviteJSON> cf = loader.rest.request(Methods.DELETE, Endpoints.invite(code), new RESTOptions(), InviteJSON.class);
+		cf.thenAcceptAsync(inviteJSON -> {
+			future.complete(new Invite(inviteJSON, loader));
+		});
+		cf.exceptionally(ex -> {
+			future.completeExceptionally(ex);
+			return null;
+		});
+		return future;
 	}
 
 	@Override
@@ -151,6 +178,10 @@ public class Invite implements IInvite {
 	@Override
 	public boolean isValid() {
 		return !revoked;
+	}
+
+	public DiscLoader getLoader() {
+		return loader;
 	}
 
 }

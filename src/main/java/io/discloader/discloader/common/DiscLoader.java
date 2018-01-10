@@ -30,6 +30,7 @@ import io.discloader.discloader.common.start.Main;
 import io.discloader.discloader.core.entity.channel.Channel;
 import io.discloader.discloader.core.entity.channel.VoiceChannel;
 import io.discloader.discloader.core.entity.guild.Guild;
+import io.discloader.discloader.core.entity.invite.Invite;
 import io.discloader.discloader.core.entity.user.DLUser;
 import io.discloader.discloader.entity.guild.IGuild;
 import io.discloader.discloader.entity.invite.IInvite;
@@ -37,9 +38,9 @@ import io.discloader.discloader.entity.sendable.Packet;
 import io.discloader.discloader.entity.util.SnowflakeUtil;
 import io.discloader.discloader.network.gateway.Gateway;
 import io.discloader.discloader.network.json.GatewayJSON;
+import io.discloader.discloader.network.json.InviteJSON;
 import io.discloader.discloader.network.rest.RESTManager;
 import io.discloader.discloader.network.rest.RESTOptions;
-import io.discloader.discloader.network.rest.actions.InviteAction;
 import io.discloader.discloader.network.util.Methods;
 import io.discloader.discloader.util.DLUtil;
 import io.discloader.discloader.util.DLUtil.Endpoints;
@@ -366,7 +367,17 @@ public class DiscLoader {
 	}
 
 	public CompletableFuture<IInvite> getInvite(String code) {
-		return new InviteAction(code, DLUtil.Methods.GET).execute();
+		CompletableFuture<IInvite> future = new CompletableFuture<>();
+		CompletableFuture<InviteJSON> cf = rest.request(Methods.GET, Endpoints.invite(code), new RESTOptions(), InviteJSON.class);
+		cf.thenAcceptAsync(inviteJSON -> {
+			future.complete(new Invite(inviteJSON, this));
+		});
+		cf.exceptionally(ex -> {
+			future.completeExceptionally(ex);
+			return null;
+		});
+		return future;
+		// return new InviteAction(code, DLUtil.Methods.GET).execute();
 	}
 
 	/**

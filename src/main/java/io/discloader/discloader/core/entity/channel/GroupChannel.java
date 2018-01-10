@@ -195,13 +195,33 @@ public class GroupChannel extends Channel implements IGroupChannel, IVoiceChanne
 	}
 
 	@Override
+	public CompletableFuture<IMessage> sendFile(Attachment attachment) {
+		return sendMessage(null, null, attachment);
+	}
+
+	@Override
+	public CompletableFuture<IMessage> sendFile(Attachment attachment, String content) {
+		return sendMessage(content, null, attachment);
+	}
+
+	@Override
 	public CompletableFuture<IMessage> sendFile(File file) {
 		return sendMessage(null, null, file);
 	}
 
 	@Override
+	public CompletableFuture<IMessage> sendFile(File file, String content) {
+		return sendMessage(content, null, file);
+	}
+
+	@Override
 	public CompletableFuture<IMessage> sendFile(Resource resource) {
 		return sendMessage(null, null, resource);
+	}
+
+	@Override
+	public CompletableFuture<IMessage> sendFile(Resource resource, String content) {
+		return sendMessage(content, null, resource);
 	}
 
 	@Override

@@ -13,19 +13,21 @@ public class ChannelPayload {
 	private IOverwrite[] overwrites;
 
 	public ChannelPayload(String name) {
-		this.name = name;
+		setName(name);
 		this.type = 0;
 	}
 
-	public ChannelPayload(String name, ChannelTypes type) {
-		this.name = name;
-		setType(type);
-	}
-
 	public ChannelPayload(String name, ChannelTypes type, IOverwrite... overwrites) {
-		this.name = name;
+		setName(name);
 		setType(type);
 		setOverwrites(overwrites);
+	}
+
+	public ChannelPayload(String name, int bitrate, int user_limit, IOverwrite... overwrites) {
+		setName(name);
+		setBitrate(bitrate);
+		setUserLimit(user_limit);
+		this.type = 2;
 	}
 
 	public int getBitrate() {

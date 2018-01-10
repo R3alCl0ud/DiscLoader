@@ -32,7 +32,6 @@ import io.discloader.discloader.common.registry.EntityRegistry;
 import io.discloader.discloader.common.registry.factory.GuildFactory;
 import io.discloader.discloader.core.entity.Presence;
 import io.discloader.discloader.core.entity.auditlog.AuditLog;
-import io.discloader.discloader.core.entity.channel.VoiceChannel;
 import io.discloader.discloader.core.entity.invite.Invite;
 import io.discloader.discloader.core.entity.user.User;
 import io.discloader.discloader.entity.IIcon;
@@ -41,6 +40,7 @@ import io.discloader.discloader.entity.IPresence;
 import io.discloader.discloader.entity.auditlog.ActionTypes;
 import io.discloader.discloader.entity.auditlog.IAuditLog;
 import io.discloader.discloader.entity.auditlog.IAuditLogEntry;
+import io.discloader.discloader.entity.channel.ChannelTypes;
 import io.discloader.discloader.entity.channel.IChannel;
 import io.discloader.discloader.entity.channel.IChannelCategory;
 import io.discloader.discloader.entity.channel.IGuildChannel;
@@ -65,14 +65,17 @@ import io.discloader.discloader.network.json.AuditLogJSON;
 import io.discloader.discloader.network.json.ChannelJSON;
 import io.discloader.discloader.network.json.EmojiJSON;
 import io.discloader.discloader.network.json.GuildJSON;
+import io.discloader.discloader.network.json.InviteJSON;
 import io.discloader.discloader.network.json.MemberJSON;
 import io.discloader.discloader.network.json.PresenceJSON;
+import io.discloader.discloader.network.json.PruneCountJSON;
 import io.discloader.discloader.network.json.RoleJSON;
 import io.discloader.discloader.network.json.VoiceRegionJSON;
 import io.discloader.discloader.network.json.VoiceStateJSON;
 import io.discloader.discloader.network.rest.RESTOptions;
 import io.discloader.discloader.network.rest.actions.guild.CreateRole;
 import io.discloader.discloader.network.rest.actions.guild.ModifyGuild;
+import io.discloader.discloader.network.rest.payloads.ChannelPayload;
 import io.discloader.discloader.network.util.Endpoints;
 import io.discloader.discloader.network.util.Methods;
 import io.discloader.discloader.util.DLUtil;
@@ -420,67 +423,80 @@ public class Guild implements IGuild {
 		return new CreateRole(this, new SendableRole(name, permissions, color, hoist, mentionable)).execute();
 	}
 
-	public CompletableFuture<IGuildTextChannel> createTextChannel(String name) {
-		return null;
+	@Override
+	public CompletableFuture<IGuildTextChannel> createTextChannel(String name, IChannelCategory category, IOverwrite... overwrites) {
+		CompletableFuture<IGuildTextChannel> future = new CompletableFuture<>();
+		if (!hasPermission(Permissions.MANAGE_CHANNELS)) {
+			PermissionsException ex = new PermissionsException("Insufficient Permissions");
+			future.completeExceptionally(ex);
+			return future; // return early
+		}
+		ChannelPayload data = new ChannelPayload(name, ChannelTypes.TEXT, overwrites);
+		data.setParent(category);
+		CompletableFuture<ChannelJSON> cf = getLoader().rest.request(Methods.POST, Endpoints.guildChannels(getID()), new RESTOptions(data), ChannelJSON.class);
+		cf.thenAcceptAsync(channelJSON -> {
+			IGuildTextChannel channel = (IGuildTextChannel) EntityBuilder.getChannelFactory().buildChannel(channelJSON, getLoader(), this, false);
+			future.complete(channel);
+		});
+		cf.exceptionally(ex -> {
+			future.completeExceptionally(ex);
+			return null;
+		});
+		return future;
 	}
 
 	@Override
 	public CompletableFuture<IGuildTextChannel> createTextChannel(String name, IOverwrite... overwrites) {
-		return null;
-	}
-
-	/**
-	 * Creates a new {@link VoiceChannel}
-	 * 
-	 * @param name
-	 *            The channel's name
-	 * @return A future that completes with a new {@link VoiceChannel} Object if
-	 *         successful.
-	 */
-	public CompletableFuture<IGuildVoiceChannel> createVoiceChannel(String name) {
-		return null;
-		// this.loader.rest.createVoiceChannel(this, new
-		// JSONObject().put("name", name));
-	}
-
-	/**
-	 * Creates a new {@link VoiceChannel}
-	 * 
-	 * @param name
-	 *            The name of the channel
-	 * @param bitrate
-	 *            The channel's bitrate
-	 * @return A future that completes with a new {@link VoiceChannel} Object if
-	 *         successful.
-	 */
-	public CompletableFuture<VoiceChannel> createVoiceChannel(String name, int bitrate) {
-		return this.loader.rest.createVoiceChannel(this, new JSONObject().put("name", name).put("bitrate", bitrate));
-	}
-
-	/**
-	 * Creates a new {@link VoiceChannel}
-	 * 
-	 * @param name
-	 *            The name of the channel
-	 * @param bitrate
-	 *            The channel's bitrate
-	 * @param userLimit
-	 *            the channel's userlimit
-	 * @return A future that completes with a new {@link VoiceChannel} Object if
-	 *         successful.
-	 */
-	public CompletableFuture<VoiceChannel> createVoiceChannel(String name, int bitrate, int userLimit) {
-		return this.loader.rest.createVoiceChannel(this, new JSONObject().put("name", name).put("bitrate", bitrate).put("user_limit", userLimit));
+		return createTextChannel(name, null, overwrites);
 	}
 
 	@Override
-	public CompletableFuture<IGuildTextChannel> createVoiceChannel(String name, int bitRate, IOverwrite... overwrites) {
-		return null;
+	public CompletableFuture<IGuildVoiceChannel> createVoiceChannel(String name, IChannelCategory category, IOverwrite... overwrites) {
+		return createVoiceChannel(name, 64, 0, category, overwrites);
 	}
 
 	@Override
-	public CompletableFuture<IGuildTextChannel> createVoiceChannel(String name, IOverwrite... overwrites) {
-		return null;
+	public CompletableFuture<IGuildVoiceChannel> createVoiceChannel(String name, int bitRate, int userLimit, IChannelCategory category, IOverwrite... overwrites) {
+		CompletableFuture<IGuildVoiceChannel> future = new CompletableFuture<>();
+		if (!hasPermission(Permissions.MANAGE_CHANNELS)) {
+			PermissionsException ex = new PermissionsException("Insufficient Permissions");
+			future.completeExceptionally(ex);
+			return future; // return early
+		}
+		bitRate = Math.max(8, Math.min(96, bitRate)) * 1000; // normalize
+		userLimit = Math.max(0, Math.min(99, userLimit)); // normalize
+		ChannelPayload data = new ChannelPayload(name, bitRate, userLimit, overwrites);
+		if (category != null && getChannelCategoryByID(category.getID()) != null) {
+			data.setParent(category);
+		}
+		CompletableFuture<ChannelJSON> cf = loader.rest.request(Methods.POST, Endpoints.guildChannels(getID()), new RESTOptions(data), ChannelJSON.class);
+		cf.thenAcceptAsync(channelJSON -> {
+			if (channelJSON != null) {
+				IGuildVoiceChannel channel = (IGuildVoiceChannel) EntityBuilder.getChannelFactory().buildChannel(channelJSON, getLoader(), this, false);
+				if (channel != null)
+					future.complete(channel);
+			}
+		});
+		cf.exceptionally(ex -> {
+			future.completeExceptionally(ex);
+			return null;
+		});
+		return future;
+	}
+
+	@Override
+	public CompletableFuture<IGuildVoiceChannel> createVoiceChannel(String name, int bitRate, int userLimit, IOverwrite... overwrites) {
+		return createVoiceChannel(name, bitRate, userLimit, null, overwrites);
+	}
+
+	@Override
+	public CompletableFuture<IGuildVoiceChannel> createVoiceChannel(String name, int bitRate, IOverwrite... overwrites) {
+		return createVoiceChannel(name, bitRate, 0, null, overwrites);
+	}
+
+	@Override
+	public CompletableFuture<IGuildVoiceChannel> createVoiceChannel(String name, IOverwrite... overwrites) {
+		return createVoiceChannel(name, 64, 0, null, overwrites);
 	}
 
 	public CompletableFuture<IGuild> delete() {
@@ -494,9 +510,23 @@ public class Guild implements IGuild {
 	}
 
 	public CompletableFuture<IGuild> edit(String name, String icon, IGuildVoiceChannel afkChannel) throws IOException {
-		if (!isOwner() && getCurrentMember().getPermissions().hasPermission(Permissions.MANAGE_GUILD))
+		if (!isOwner() && !getCurrentMember().getPermissions().hasPermission(Permissions.MANAGE_GUILD)) {
 			throw new PermissionsException();
-		return new CompletableFuture<>();
+		}
+		CompletableFuture<IGuild> future = new CompletableFuture<>();
+		String base64 = new String("data:image/jpg;base64," + Base64.encodeBase64String(Files.readAllBytes(Paths.get(icon))));
+		JSONObject payload = new JSONObject().put("name", name).put("icon", base64);
+		CompletableFuture<GuildJSON> cf = getLoader().rest.request(Methods.PATCH, Endpoints.guild(getID()), new RESTOptions(payload), GuildJSON.class);
+		cf.thenAcceptAsync(guildJSON -> {
+			IGuild guild = clone();
+			guild.setup(guildJSON);
+			future.complete(guild);
+		});
+		cf.exceptionally(ex -> {
+			future.completeExceptionally(ex);
+			return null;
+		});
+		return future;
 	}
 
 	/**
@@ -513,11 +543,27 @@ public class Guild implements IGuild {
 
 	@Override
 	public CompletableFuture<List<IInvite>> fetchInvites() {
-		return null;
+		CompletableFuture<List<IInvite>> future = new CompletableFuture<List<IInvite>>();
+		CompletableFuture<InviteJSON[]> cf = getLoader().rest.request(Methods.GET, Endpoints.guildInvites(getID()), new RESTOptions(), InviteJSON[].class);
+		cf.thenAcceptAsync(inJ -> {
+			List<IInvite> ins = new ArrayList<>();
+			for (int i = 0; i < inJ.length; i++) {
+				IInvite in = new Invite(inJ[i], getLoader());
+				invites.put(in.getCode(), in);
+				ins.add(in);
+			}
+			future.complete(ins);
+		});
+		return future;
 	}
 
 	public CompletableFuture<IGuildMember> fetchMember(long memberID) {
-		return loader.rest.loadGuildMember(this, memberID);
+		CompletableFuture<IGuildMember> future = new CompletableFuture<IGuildMember>();
+		CompletableFuture<MemberJSON> cf = loader.rest.request(Methods.GET, Endpoints.guildMember(getID(), memberID), new RESTOptions(), MemberJSON.class);
+		cf.thenAcceptAsync(data -> {
+			future.complete(addMember(data, true));
+		});
+		return future;
 	}
 
 	public CompletableFuture<Map<Long, IGuildMember>> fetchMembers() {
@@ -540,33 +586,6 @@ public class Guild implements IGuild {
 	}
 
 	/**
-	 * Gets a HashMap of GuildMembers that are in the guild.
-	 * 
-	 * @param limit
-	 *            max number of members to return (1-1000) default 50
-	 * @param after
-	 *            The highest user id in the previous page
-	 * @return A CompletableFuture that completes with a HashMap of GuildMembers if
-	 *         successful, null otherwise.
-	 */
-	public CompletableFuture<Map<Long, IGuildMember>> fetchMembers(int limit, long after) {
-		return loader.rest.loadGuildMembers(this, limit, after);
-	}
-
-	/**
-	 * Gets a HashMap of GuildMembers that are in the guild. <u>Only retrieves 50
-	 * members</u>
-	 * 
-	 * @param after
-	 *            The highest user id in the previous page
-	 * @return A CompletableFuture that completes with a HashMap of GuildMembers if
-	 *         successful, null otherwise.
-	 */
-	public CompletableFuture<Map<Long, IGuildMember>> fetchMembers(long after) {
-		return loader.rest.loadGuildMembers(this, 50, after);
-	}
-
-	/**
 	 * @return the afk_channel_id
 	 */
 	public IGuildVoiceChannel getAfkChannel() {
@@ -576,18 +595,45 @@ public class Guild implements IGuild {
 	@Override
 	public CompletableFuture<IAuditLog> getAuditLog(ActionTypes action) {
 		CompletableFuture<IAuditLog> future = new CompletableFuture<>();
+		JSONObject params = new JSONObject().put("action_type", action.toInt());
+		CompletableFuture<AuditLogJSON> cf = loader.rest.request(Methods.GET, Endpoints.auditLogs(getID()), new RESTOptions(params), AuditLogJSON.class);
+		cf.thenAcceptAsync(al -> {
+			future.complete(new AuditLog(this, al));
+		});
+		cf.exceptionally(ex -> {
+			future.completeExceptionally(ex);
+			return null;
+		});
 		return future;
 	}
 
 	@Override
 	public CompletableFuture<IAuditLog> getAuditLog(IAuditLogEntry before) {
 		CompletableFuture<IAuditLog> future = new CompletableFuture<>();
+		JSONObject params = new JSONObject().put("before", SnowflakeUtil.asString(before));
+		CompletableFuture<AuditLogJSON> cf = loader.rest.request(Methods.GET, Endpoints.auditLogs(getID()), new RESTOptions(params), AuditLogJSON.class);
+		cf.thenAcceptAsync(al -> {
+			future.complete(new AuditLog(this, al));
+		});
+		cf.exceptionally(ex -> {
+			future.completeExceptionally(ex);
+			return null;
+		});
 		return future;
 	}
 
 	@Override
 	public CompletableFuture<IAuditLog> getAuditLog(IUser user) {
 		CompletableFuture<IAuditLog> future = new CompletableFuture<>();
+		JSONObject params = new JSONObject().put("user_id", SnowflakeUtil.asString(user));
+		CompletableFuture<AuditLogJSON> cf = loader.rest.request(Methods.GET, Endpoints.auditLogs(getID()), new RESTOptions(params), AuditLogJSON.class);
+		cf.thenAcceptAsync(al -> {
+			future.complete(new AuditLog(this, al));
+		});
+		cf.exceptionally(ex -> {
+			future.completeExceptionally(ex);
+			return null;
+		});
 		return future;
 	}
 
@@ -595,9 +641,11 @@ public class Guild implements IGuild {
 	public CompletableFuture<IAuditLog> getAuditLog(IUser user, ActionTypes action, IAuditLogEntry before, short limit) {
 		CompletableFuture<IAuditLog> future = new CompletableFuture<>();
 		JSONObject params = new JSONObject().put("user_id", SnowflakeUtil.asString(user)).put("action_type", action.toInt()).put("before", SnowflakeUtil.asString(before)).put("limit", limit);
-		loader.rest.request(Methods.GET, Endpoints.auditLogs(getID()), new RESTOptions(params), AuditLogJSON.class).thenAcceptAsync(al -> {
+		CompletableFuture<AuditLogJSON> cf = loader.rest.request(Methods.GET, Endpoints.auditLogs(getID()), new RESTOptions(params), AuditLogJSON.class);
+		cf.thenAcceptAsync(al -> {
 			future.complete(new AuditLog(this, al));
-		}).exceptionally(ex -> {
+		});
+		cf.exceptionally(ex -> {
 			future.completeExceptionally(ex);
 			return null;
 		});
@@ -606,7 +654,17 @@ public class Guild implements IGuild {
 
 	@Override
 	public CompletableFuture<IAuditLog> getAuditLog(short limit) {
-		return null;
+		CompletableFuture<IAuditLog> future = new CompletableFuture<>();
+		JSONObject params = new JSONObject().put("limit", limit);
+		CompletableFuture<AuditLogJSON> cf = loader.rest.request(Methods.GET, Endpoints.auditLogs(getID()), new RESTOptions(params), AuditLogJSON.class);
+		cf.thenAcceptAsync(al -> {
+			future.complete(new AuditLog(this, al));
+		});
+		cf.exceptionally(ex -> {
+			future.completeExceptionally(ex);
+			return null;
+		});
+		return future;
 	}
 
 	@Override
@@ -616,16 +674,21 @@ public class Guild implements IGuild {
 
 	@Override
 	public IChannelCategory getChannelCategoryByID(long id) {
-		return null;
+		return categories.get(id);
 	}
 
 	@Override
 	public IChannelCategory getChannelCategoryByID(String id) {
-		return null;
+		return getChannelCategoryByID(SnowflakeUtil.parse(id));
 	}
 
 	@Override
 	public IChannelCategory getChannelCategoryByName(String name) {
+		for (IChannelCategory cat : categories.values()) {
+			if (cat.getName().equals(name)) {
+				return cat;
+			}
+		}
 		return null;
 	}
 
@@ -701,15 +764,9 @@ public class Guild implements IGuild {
 
 	@Override
 	public IInvite getInvite(String code) {
-		return null;
+		return invites.get(code);
 	}
 
-	/**
-	 * Retrieves the guild's invites from Discord's API
-	 * 
-	 * @return A Future that completes with a HashMap of Invite objects, indexed by
-	 *         {@link Invite#code}, if successful.
-	 */
 	@Override
 	public List<IInvite> getInvites() {
 		return new ArrayList<>(invites.values());
@@ -769,12 +826,24 @@ public class Guild implements IGuild {
 		return presences;
 	}
 
+	@Override
 	public CompletableFuture<Integer> getPruneCount() {
 		return getPruneCount(1);
 	}
 
+	@Override
 	public CompletableFuture<Integer> getPruneCount(int days) {
-		return loader.rest.pruneCount(this, days);
+		CompletableFuture<Integer> future = new CompletableFuture<>();
+		JSONObject payload = new JSONObject().put("days", days);
+		CompletableFuture<PruneCountJSON> cf = getLoader().rest.request(Methods.GET, Endpoints.guildPrune(getID()), new RESTOptions(payload), PruneCountJSON.class);
+		cf.thenAcceptAsync(data -> {
+			future.complete(Integer.valueOf(data.pruned));
+		});
+		cf.exceptionally(ex -> {
+			future.completeExceptionally(ex);
+			return null;
+		});
+		return future;
 	}
 
 	@Override

@@ -25,13 +25,14 @@ public class CommandHandler {
 	public static void handleMessageCreate(MessageCreateEvent e) {
 		try {
 			IMessage message = e.getMessage();
-			if (!handleCommands || message.getAuthor() == null || message.getAuthor().isBot() || ((!e.loader.user.bot && selfBot) && message.getAuthor().getID() != e.loader.user.getID()) || message.getContent().length() < prefix.length()) {
+			if (!handleCommands || e.loader.user == null || message.getAuthor() == null || message.getAuthor().isBot() || ((!e.loader.user.bot && selfBot) && message.getAuthor().getID() != e.loader.user.getID()) || message.getContent().length() < prefix.length()) {
 				return;
 			}
 			String[] Args = e.args;
 			String label = Args[0];
 			String rest = "";
-			if (label.length() < message.getContent().length()) rest = message.getContent().substring(label.length() + 1);
+			if (label.length() < message.getContent().length())
+				rest = message.getContent().substring(label.length() + 1);
 			int argc = Args.length > 1 ? Args.length - 1 : 0;
 
 			if (label.length() < prefix.length() || !label.substring(0, prefix.length()).equals(prefix)) {
@@ -44,7 +45,8 @@ public class CommandHandler {
 			}
 			Command command = getCommand(label, message);
 			if (command != null) {
-				if (message.getChannel() instanceof IGuildTextChannel && !command.shouldExecute(message.getMember(), (IGuildTextChannel) message.getChannel())) return;
+				if (message.getChannel() instanceof IGuildTextChannel && !command.shouldExecute(message.getMember(), (IGuildTextChannel) message.getChannel()))
+					return;
 				String[] args = new String[argc];
 				Matcher argM = command.getArgsPattern().matcher(rest);
 				int n = 0;
@@ -67,8 +69,10 @@ public class CommandHandler {
 	}
 
 	/**
-	 * @param label The label of the command
-	 * @param message The message the label is from
+	 * @param label
+	 *            The label of the command
+	 * @param message
+	 *            The message the label is from
 	 * @return A Command if a command was found, {@code null} if no command was
 	 *         found
 	 */
@@ -82,7 +86,7 @@ public class CommandHandler {
 		}
 		for (Command command : CommandRegistry.commands.entries()) {
 			String localized = LanguageRegistry.getLocalized(locale, "command." + command.getUnlocalizedName() + ".name");
-			if ((localized != null && localized.equals(label)) || command.getUnlocalizedName().equals(label)|| command.getAliases().contains(label)) {
+			if ((localized != null && localized.equals(label)) || command.getUnlocalizedName().equals(label) || command.getAliases().contains(label)) {
 				return command;
 			}
 		}

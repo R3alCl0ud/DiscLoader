@@ -88,7 +88,16 @@ public class GuildEmoji implements IGuildEmoji {
 	 */
 	@Override
 	public CompletableFuture<IGuildEmoji> delete() {
-		return this.loader.rest.deleteEmoji(this);
+		CompletableFuture<IGuildEmoji> future = new CompletableFuture<>();
+		CompletableFuture<Void> cf = getLoader().rest.request(Methods.DELETE, Endpoints.guildEmoji(getGuild().getID(), getID()), new RESTOptions(), Void.class);
+		cf.thenAcceptAsync(Null -> {
+			future.complete(GuildEmoji.this);
+		});
+		cf.exceptionally(ex -> {
+			future.completeExceptionally(ex);
+			return null;
+		});
+		return future;
 	}
 
 	public boolean equals(Object object) {
@@ -201,7 +210,7 @@ public class GuildEmoji implements IGuildEmoji {
 		for (int i = 0; i < roles.length; i++) {
 			payload[i] = SnowflakeUtil.asString(roles[i]);
 		}
-		
+
 		IEventListener el = new EventListenerAdapter() {
 			@Override
 			public void GuildEmojiUpdate(GuildEmojiUpdateEvent event) {

@@ -14,7 +14,7 @@ public class CommandTree extends Command {
 		setUnlocalizedName(unlocalizedName);
 	}
 
-	public void execute(MessageCreateEvent e, String[] args) {
+	public void execute(MessageCreateEvent e, String[] args) throws Exception {
 		if (args.length == 0) {
 			defaultResponse(e);
 			return;
@@ -47,7 +47,8 @@ public class CommandTree extends Command {
 	}
 
 	private String[] slice(String[] strings) {
-		if (strings.length <= 1) return new String[0];
+		if (strings.length <= 1)
+			return new String[0];
 		String[] b = new String[strings.length - 1];
 		for (int i = 1; i < strings.length; i++)
 			b[i - 1] = strings[i];
@@ -67,8 +68,10 @@ public class CommandTree extends Command {
 	protected String subsText(CommandTree cmdt, int l) {
 		String text = "";
 		for (Command sub : getSubCommands().values()) {
-			if (sub instanceof CommandTree) text += subsText((CommandTree) sub, l + 1);
-			else text += (sub.getUnlocalizedName() + "\n");
+			if (sub instanceof CommandTree)
+				text += subsText((CommandTree) sub, l + 1);
+			else
+				text += (sub.getUnlocalizedName() + "\n");
 		}
 		return text;
 	}

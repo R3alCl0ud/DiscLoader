@@ -67,9 +67,8 @@ public abstract class EventListenerAdapter implements IEventListener {
 	@Override
 	public void ChannelUpdate(ChannelUpdateEvent e) {}
 
-	public void Disconnected(DisconnectEvent e) {
-
-	}
+	@Override
+	public void Disconnected(DisconnectEvent e) {}
 
 	@Override
 	public void GroupMessageCreate(GroupMessageCreateEvent e) {}
@@ -221,6 +220,9 @@ public abstract class EventListenerAdapter implements IEventListener {
 	public void Reconnect(ReconnectEvent e) {
 
 	}
+
+	@Override
+	public void SendingPacket(Object obj) {}
 
 	@Override
 	public void TypingStart(TypingStartEvent event) {}

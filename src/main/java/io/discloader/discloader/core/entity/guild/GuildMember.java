@@ -296,19 +296,22 @@ public class GuildMember implements IGuildMember {
 	 */
 	@Override
 	public CompletableFuture<IGuildMember> giveRole(IRole... roles) {
+		CompletableFuture<IGuildMember> future = new CompletableFuture<>();
 		if (!guild.hasPermission(Permissions.MANAGE_ROLES)) {
-			throw new PermissionsException("Insufficient Permissions");
+			future.completeExceptionally(new PermissionsException("Insufficient Permissions"));
+			return future;
 		}
 
 		for (IRole role : roles) {
 			if (role == null)
 				continue;
 			if (!guild.isOwner() && role.getPosition() >= guild.getCurrentMember().getHighestRole().getPosition()) {
-				throw new PermissionsException("Can not assign higher role");
+				future.completeExceptionally(new PermissionsException("Can not assign higher role"));
+				return future;
+				// throw ;
 			}
 		}
 
-		CompletableFuture<IGuildMember> future = new CompletableFuture<>();
 		List<IRole> rls = mergeRoles(roles);
 		String[] ids = new String[rls.size()];
 		for (int i = 0; i < ids.length; i++) {
@@ -498,7 +501,6 @@ public class GuildMember implements IGuildMember {
 		});
 		return future;
 	}
-
 
 	@Override
 	public CompletableFuture<IGuildMember> takeRole(IRole... roles) {

@@ -46,12 +46,12 @@ public class Route<T> {
 	private boolean waiting;
 
 	public Route(RESTManager rest, String endpoint, Methods method, boolean auth, Class<T> cls) {
-		queue = new ArrayList<>();
+		this.queue = new ArrayList<>();
 		this.method = method;
 		this.endpoint = endpoint;
 		this.auth = auth;
-		rateLimiter = new RateLimiter(this);
-		waiting = false;
+		this.rateLimiter = new RateLimiter(this);
+		this.waiting = false;
 		this.rest = rest;
 		this.cls = cls;
 	}
@@ -81,7 +81,7 @@ public class Route<T> {
 					if (code == 429) {
 						queue.add(0, apiRequest);
 						rateLimiter.limitRoute(rest.isGlobally(), rateLimiter.retryIn());
-						return;// return early so handle() at the end of handle() doesn't get called
+						return; // return early so handle() at the end of handle() doesn't get called
 					} else if (code >= 500 && code < 600) {
 						queue.add(0, apiRequest);
 					} else if (code >= 400 && code < 500) {
