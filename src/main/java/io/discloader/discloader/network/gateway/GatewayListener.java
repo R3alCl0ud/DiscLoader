@@ -172,21 +172,21 @@ public class GatewayListener extends WebSocketAdapter {
 		if (isServer) {
 			logger.severe(String.format("Gateway connection was closed by the server. Close Code: %d, Reason: %s", serverFrame.getCloseCode(), serverFrame.getCloseReason()));
 			if (serverFrame.getCloseCode() != 1000) {
-				if (tries > 3) {
-					loader.login();
-				} else {
+				if (shouldResume(serverFrame)) {
 					// if connection wasn't closed properly try to reconnect
 					tryReconnecting();
+				} else {
+					loader.login();
 				}
 			}
 		} else {
 			logger.severe(String.format("Client was disconnected from the gateway, Code: %d", clientFrame.getCloseCode()));
 			if (clientFrame.getCloseCode() != 1000) {
-				if (tries > 3) {
-					loader.login();
-				} else {
+				if (shouldResume(clientFrame)) {
 					// if connection wasn't closed properly try to reconnect
 					tryReconnecting();
+				} else {
+					loader.login();
 				}
 			}
 		}
@@ -215,6 +215,10 @@ public class GatewayListener extends WebSocketAdapter {
 		this.handlers.put(event, handler);
 	}
 
+	public boolean shouldResume(WebSocketFrame socketFrame) {
+		return tries < 3 && socketFrame.getCloseCode() != 1007;
+	}
+	
 	public void setRetries(int i) {
 		tries = i;
 	}
