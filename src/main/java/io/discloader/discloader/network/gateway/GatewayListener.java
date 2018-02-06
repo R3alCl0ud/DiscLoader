@@ -180,7 +180,7 @@ public class GatewayListener extends WebSocketAdapter {
 				}
 			}
 		} else {
-			logger.severe(String.format("Client was disconnected from the gateway, Code: %d", clientFrame.getCloseCode()));
+			logger.severe(String.format("Client disconnected from the gateway, Close Code: %d, Reason: %s", clientFrame.getCloseCode(), clientFrame.getCloseReason()));
 			if (clientFrame.getCloseCode() != 1000) {
 				if (shouldResume(clientFrame)) {
 					// if connection wasn't closed properly try to reconnect
