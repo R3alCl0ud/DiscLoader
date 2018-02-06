@@ -202,7 +202,8 @@ public class Gateway {
 
 	public void sendHeartbeat(boolean normal) {
 		if (normal && !lastHeartbeatAck) {
-			ws.disconnect(1007);
+			logger.severe("Heartbeat Not Acknowledged");
+			ws.disconnect(1007, "Heartbeat Not Acknowledged");
 			return;
 		}
 		loader.emit("debug", "Attempting to Heartbeat");
