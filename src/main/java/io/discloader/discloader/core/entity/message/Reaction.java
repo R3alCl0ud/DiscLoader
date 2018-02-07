@@ -1,5 +1,6 @@
 package io.discloader.discloader.core.entity.message;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 
@@ -10,9 +11,9 @@ import io.discloader.discloader.entity.message.IReaction;
 import io.discloader.discloader.entity.user.IUser;
 import io.discloader.discloader.entity.util.SnowflakeUtil;
 import io.discloader.discloader.network.json.ReactionJSON;
-import io.discloader.discloader.network.rest.actions.RESTAction;
-import io.discloader.discloader.util.DLUtil.Endpoints;
-import io.discloader.discloader.util.DLUtil.Methods;
+import io.discloader.discloader.network.rest.RESTOptions;
+import io.discloader.discloader.network.util.Endpoints;
+import io.discloader.discloader.network.util.Methods;
 
 public class Reaction implements IReaction {
 
@@ -56,44 +57,42 @@ public class Reaction implements IReaction {
 
 	@Override
 	public CompletableFuture<List<IUser>> getUsers() {
-		return new RESTAction<List<IUser>>(message.getLoader()) {
-
-			@Override
-			public CompletableFuture<List<IUser>> execute() {
-				return super.execute(loader.rest.makeRequest(Endpoints.messageReaction(message.getChannel().getID(), message.getID(), SnowflakeUtil.asString(emoji)), Methods.GET, true));
+		CompletableFuture<List<IUser>> future = new CompletableFuture<>();
+		CompletableFuture<IUser[]> cf = message.getLoader().rest.request(Methods.GET, Endpoints.messageReaction(message.getChannel().getID(), message.getID(), SnowflakeUtil.asString(emoji)), new RESTOptions(), IUser[].class);
+		cf.thenAcceptAsync(ius -> {
+			List<IUser> users = new ArrayList<>();
+			for (IUser usr : ius) {
+				users.add(usr);
 			}
-
-			@Override
-			public void complete(String text, Throwable ex) {
-				if (ex != null) {
-					future.completeExceptionally(ex);
-					return;
-				}
-			}
-		}.execute();
+			future.complete(users);
+		});
+		return future;
+		// return new RESTAction<List<IUser>>(message.getLoader()) {
+		//
+		// @Override
+		// public CompletableFuture<List<IUser>> execute() {
+		// return
+		// super.execute(loader.rest.makeRequest(Endpoints.messageReaction(message.getChannel().getID(),
+		// message.getID(), SnowflakeUtil.asString(emoji)), Methods.GET, true));
+		// }
+		//
+		// @Override
+		// public void complete(String text, Throwable ex) {
+		// if (ex != null) {
+		// future.completeExceptionally(ex);
+		// return;
+		// }
+		// }
+		// }.execute();
 	}
 
 	@Override
 	public CompletableFuture<Void> removeUserReaction(IUser user) {
-		return new RESTAction<Void>(message.getLoader()) {
-
-			@Override
-			public CompletableFuture<Void> execute() {
-				return super.execute(loader.rest.makeRequest(Endpoints.userReaction(message.getChannel().getID(), message.getID(), user.getID(), SnowflakeUtil.asString(emoji)), Methods.DELETE, true));
-			}
-
-		}.execute();
+		return message.getLoader().rest.request(Methods.DELETE, Endpoints.userReaction(message.getChannel().getID(), message.getID(), user.getID(), SnowflakeUtil.asString(emoji)), new RESTOptions(), Void.class);
 	}
 
 	@Override
 	public CompletableFuture<Void> removeReaction() {
-		return new RESTAction<Void>(message.getLoader()) {
-
-			@Override
-			public CompletableFuture<Void> execute() {
-				return super.execute(loader.rest.makeRequest(Endpoints.currentUserReaction(message.getChannel().getID(), message.getID(), SnowflakeUtil.asString(emoji)), Methods.DELETE, true));
-			}
-
-		}.execute();
+		return message.getLoader().rest.request(Methods.DELETE, Endpoints.currentUserReaction(message.getChannel().getID(), message.getID(), SnowflakeUtil.asString(emoji)), new RESTOptions(), Void.class);
 	}
 }

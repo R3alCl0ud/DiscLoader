@@ -209,7 +209,7 @@ public class Message<T extends ITextChannel> implements IMessage {
 	@Override
 	public CompletableFuture<IMessage> delete() {
 		CompletableFuture<IMessage> future = new CompletableFuture<>();
-		CompletableFuture<Void> cf = loader.rest.request(Methods.DELETE, Endpoints.message(getChannel().getID(), getID()),new RESTOptions(), Void.class);
+		CompletableFuture<Void> cf = loader.rest.request(Methods.DELETE, Endpoints.message(getChannel().getID(), getID()), new RESTOptions(), Void.class);
 		cf.thenAcceptAsync(Null -> {
 			future.complete(this);
 		});
