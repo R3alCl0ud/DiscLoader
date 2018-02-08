@@ -553,7 +553,7 @@ public class DiscLoader {
 	 * @throws AccountTypeException
 	 */
 	public void syncGuilds(IGuild... guilds) throws GuildSyncException, AccountTypeException {
-		if (user.bot)
+		if (user.isBot())
 			throw new AccountTypeException("Only user accounts are allowed to sync guilds");
 
 		String[] ids = new String[guilds.length];

@@ -8,6 +8,7 @@ import java.util.concurrent.CompletableFuture;
 import org.apache.commons.codec.binary.Base64;
 import org.json.JSONObject;
 
+import io.discloader.discloader.common.exceptions.AccountTypeException;
 import io.discloader.discloader.common.registry.EntityRegistry;
 import io.discloader.discloader.core.entity.Game;
 import io.discloader.discloader.core.entity.Presence;
@@ -60,13 +61,20 @@ public class DLUser extends User {
 	}
 
 	/**
-	 * Gets the OAuth2 application of the logged in user, if the {@link User#bot} is
-	 * true
+	 * Gets the OAuth2 application of the logged in user, if {@link User#isBot()}
+	 * returns true
 	 * 
 	 * @return A Future that completes with a new {@link OAuth2Application} if
-	 *         successful
+	 *         successful.
+	 * @throws AccountTypeException
+	 *             Thrown if the account the client is logged in as is a user
+	 *             account.
+	 * 
 	 */
 	public CompletableFuture<OAuth2Application> getOAuth2Application() {
+		if (!isBot()) {			
+			throw new AccountTypeException("Cannot fetch the OAuth2Application details of a User Account.");
+		}
 		CompletableFuture<OAuth2Application> future = new CompletableFuture<>();
 		CompletableFuture<OAuthApplicationJSON> cf = getLoader().rest.request(Methods.GET, Endpoints.currentOAuthApplication, new RESTOptions(), OAuthApplicationJSON.class);
 		cf.thenAcceptAsync(appData -> {

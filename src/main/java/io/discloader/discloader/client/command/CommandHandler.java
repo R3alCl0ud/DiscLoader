@@ -25,7 +25,7 @@ public class CommandHandler {
 	public static void handleMessageCreate(MessageCreateEvent e) {
 		try {
 			IMessage message = e.getMessage();
-			if (!handleCommands || e.loader.user == null || message.getAuthor() == null || message.getAuthor().isBot() || ((!e.loader.user.bot && selfBot) && message.getAuthor().getID() != e.loader.user.getID()) || message.getContent().length() < prefix.length()) {
+			if (!handleCommands || e.loader.user == null || message.getAuthor() == null || message.getAuthor().isBot() || ((!e.loader.user.isBot() && selfBot) && message.getAuthor().getID() != e.loader.user.getID()) || message.getContent().length() < prefix.length()) {
 				return;
 			}
 			String[] Args = e.args;

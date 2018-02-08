@@ -359,9 +359,11 @@ public class GuildMember implements IGuildMember {
 
 	@Override
 	public boolean hasRole(IRole role) {
-		for (IRole memberRole : getRoles()) {
-			if (memberRole.getID() == role.getID()) {
-				return true;
+		if (role != null) {
+			for (IRole memberRole : getRoles()) {
+				if (memberRole.getID() == role.getID()) {
+					return true;
+				}
 			}
 		}
 		return false;

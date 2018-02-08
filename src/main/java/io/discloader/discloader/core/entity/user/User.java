@@ -54,7 +54,7 @@ public class User implements IUser {
 	/**
 	 * Whether or not the user is a bot account
 	 */
-	public boolean bot;
+	private boolean bot;
 
 	/**
 	 * Whether or not the user has verified their email address
@@ -130,7 +130,7 @@ public class User implements IUser {
 		if (this == user) {
 			return true;
 		}
-		return id == user.id && username.equals(user.username) && discriminator == user.discriminator && mfa == user.mfa && verified == user.verified && bot;
+		return id == user.id && username.equals(user.username) && discriminator == user.discriminator && mfa == user.mfa && verified == user.verified && isBot() && user.isBot();
 	}
 
 	@Override

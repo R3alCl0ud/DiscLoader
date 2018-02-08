@@ -29,7 +29,7 @@ public class Ready extends AbstractHandler {
 			 * need to make sure that we don't already have the 'Bot ' prefix on the token
 			 * otherwise bots fail to work if they've had to start a completely new session after disconnecting
 			 */
-			if (loader.user.bot && !loader.token.startsWith("Bot ")) { 
+			if (loader.user.isBot() && !loader.token.startsWith("Bot ")) { 
 				loader.token = "Bot " + loader.token; 
 			}
 
