@@ -15,7 +15,6 @@ import com.neovisionaries.ws.client.WebSocketFrame;
 
 import io.discloader.discloader.client.command.Command;
 import io.discloader.discloader.client.logger.DLLogger;
-import io.discloader.discloader.client.render.WindowFrame;
 import io.discloader.discloader.common.DLOptions;
 import io.discloader.discloader.common.DiscLoader;
 import io.discloader.discloader.common.Shard;
@@ -40,7 +39,7 @@ public class Main {
 
 	public static final Gson gson = new Gson();
 
-	public static WindowFrame window;
+	
 
 	public static DiscLoader loader;
 
@@ -161,19 +160,17 @@ public class Main {
 	}
 
 	public static DLOptions parseArgs(String... args) {
-		DLOptions options = new DLOptions(false, false);
+		DLOptions options = new DLOptions(false);
 		for (String arg : args) {
 			if (arg.startsWith("-") && !arg.startsWith("--") && !arg.contains("=")) {
 				if (arg.contains("d")) {
-					options = new DLOptions(options.token, options.prefix, true, options.useWindow, options.shard, options.shards);
+					options = new DLOptions(options.token, options.prefix, true, options.isUsingModloader(), options.shard, options.shards);
 				}
 				if (arg.contains("g")) {
 					options = new DLOptions(options.token, options.prefix, options.defaultCommands, true, options.shard, options.shards);
 				}
-			} else if (arg.equals("usegui")) {
-				options = new DLOptions(options.token, options.prefix, options.defaultCommands, true, options.shard, options.shards);
 			} else if (arg.equalsIgnoreCase("--defaultcmd")) {
-				options = new DLOptions(options.token, options.prefix, true, options.useWindow, options.shard, options.shards);
+				options = new DLOptions(options.token, options.prefix, true, options.shard, options.shards);
 			}
 			Matcher tokenMatcher = tokenPat.matcher(arg), prefixMatcher = prefixPat.matcher(arg), shardMatcher = shardPat.matcher(arg);
 			if (tokenMatcher.find()) {

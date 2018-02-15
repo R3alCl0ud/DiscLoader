@@ -15,10 +15,8 @@ public enum ChannelTypes {
 
 	public static ChannelTypes fromCode(int code) {
 		for (ChannelTypes type : values()) {
-			if (type.identifier == code) return type; // if the identifier
-														// number is the same as
-														// code return the
-														// channel type
+			if (type.identifier == code)
+				return type; // if the identifier number is the same as code return the channel type
 		}
 		return CHANNEL; // just return text by default
 	}

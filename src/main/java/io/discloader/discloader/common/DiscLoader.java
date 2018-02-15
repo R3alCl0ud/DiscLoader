@@ -26,7 +26,6 @@ import io.discloader.discloader.common.logger.DLErrorStream;
 import io.discloader.discloader.common.logger.DLPrintStream;
 import io.discloader.discloader.common.registry.EntityRegistry;
 import io.discloader.discloader.common.registry.ModRegistry;
-import io.discloader.discloader.common.start.Main;
 import io.discloader.discloader.core.entity.channel.Channel;
 import io.discloader.discloader.core.entity.channel.VoiceChannel;
 import io.discloader.discloader.core.entity.guild.Guild;
@@ -537,7 +536,6 @@ public class DiscLoader {
 		shardid = options.shard;
 		shards = options.shards;
 		token = options.token;
-		Main.usegui = options.useWindow;
 		Command.defaultCommands = options.defaultCommands;
 		CommandHandler.prefix = options.prefix;
 		this.options = options;

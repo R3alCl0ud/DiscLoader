@@ -102,8 +102,7 @@ public class GatewayListener extends WebSocketAdapter {
 		}
 
 		if (packet.op == OPCodes.INVALID_SESSION) {
-			
-			
+
 			sendNewIdentify();
 			return;
 		}
@@ -171,13 +170,11 @@ public class GatewayListener extends WebSocketAdapter {
 		connected = false;
 		if (isServer) {
 			logger.severe(String.format("Gateway connection was closed by the server. Close Code: %d, Reason: %s", serverFrame.getCloseCode(), serverFrame.getCloseReason()));
-			if (serverFrame.getCloseCode() != 1000) {
-				if (shouldResume(serverFrame)) {
-					// if connection wasn't closed properly try to reconnect
-					tryReconnecting();
-				} else {
-					loader.login();
-				}
+			if (shouldResume(serverFrame)) {
+				// if connection wasn't closed properly try to reconnect
+				tryReconnecting();
+			} else {
+				loader.login();
 			}
 		} else {
 			logger.severe(String.format("Client disconnected from the gateway, Close Code: %d, Reason: %s", clientFrame.getCloseCode(), clientFrame.getCloseReason()));
@@ -216,9 +213,9 @@ public class GatewayListener extends WebSocketAdapter {
 	}
 
 	public boolean shouldResume(WebSocketFrame socketFrame) {
-		return tries < 3 && socketFrame.getCloseCode() != 1007;
+		return tries < 3 && socketFrame.getCloseCode() != 4007;
 	}
-	
+
 	public void setRetries(int i) {
 		tries = i;
 	}
