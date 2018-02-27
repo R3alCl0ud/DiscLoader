@@ -39,8 +39,6 @@ public class Main {
 
 	public static final Gson gson = new Gson();
 
-	
-
 	public static DiscLoader loader;
 
 	public static boolean usegui = false;
@@ -164,13 +162,13 @@ public class Main {
 		for (String arg : args) {
 			if (arg.startsWith("-") && !arg.startsWith("--") && !arg.contains("=")) {
 				if (arg.contains("d")) {
-					options = new DLOptions(options.token, options.prefix, true, options.isUsingModloader(), options.shard, options.shards);
+					options = new DLOptions(options.token, options.prefix, true, options.isUsingModloader(), options.isDebug(), options.shard, options.shards);
 				}
 				if (arg.contains("g")) {
-					options = new DLOptions(options.token, options.prefix, options.defaultCommands, true, options.shard, options.shards);
+					options = new DLOptions(options.token, options.prefix, options.defaultCommands, true, options.isDebug(), options.shard, options.shards);
 				}
 			} else if (arg.equalsIgnoreCase("--defaultcmd")) {
-				options = new DLOptions(options.token, options.prefix, true, options.shard, options.shards);
+				options = new DLOptions(options.token, options.prefix, true, options.isDebug(), options.shard, options.shards);
 			}
 			Matcher tokenMatcher = tokenPat.matcher(arg), prefixMatcher = prefixPat.matcher(arg), shardMatcher = shardPat.matcher(arg);
 			if (tokenMatcher.find()) {

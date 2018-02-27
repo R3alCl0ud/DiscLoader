@@ -3,6 +3,7 @@ package io.discloader.discloader.common;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 import java.util.function.Consumer;
 import java.util.function.Function;
@@ -26,9 +27,6 @@ import io.discloader.discloader.common.logger.DLErrorStream;
 import io.discloader.discloader.common.logger.DLPrintStream;
 import io.discloader.discloader.common.registry.EntityRegistry;
 import io.discloader.discloader.common.registry.ModRegistry;
-import io.discloader.discloader.core.entity.channel.Channel;
-import io.discloader.discloader.core.entity.channel.VoiceChannel;
-import io.discloader.discloader.core.entity.guild.Guild;
 import io.discloader.discloader.core.entity.invite.Invite;
 import io.discloader.discloader.core.entity.user.DLUser;
 import io.discloader.discloader.entity.guild.IGuild;
@@ -87,88 +85,24 @@ public class DiscLoader {
 
 	public RESTManager rest;
 
-	public int shards;
+	public int shards, shardid;
 
-	public int shardid;
-
-	/**
-	 * A HashMap of the client's cached users. Indexed by {@link User#id}.
-	 * 
-	 * @author Perry Berman
-	 * @see User
-	 * @see HashMap
-	 */
-	// public HashMap<Long, IUser> users;
-
-	/**
-	 * A HashMap of the client's cached channels. Indexed by {@link Channel#id}.
-	 * 
-	 * @author Perry Berman
-	 * @see Channel
-	 * @see HashMap
-	 */
-	// public HashMap<Long, IChannel> channels;
-
-	/**
-	 * A HashMap of the client's cached groupDM channels. Indexed by
-	 * {@link Channel#id}
-	 * 
-	 * @author Perry Berman
-	 */
-	// public HashMap<Long, IGroupChannel> groupChannels;
-	//
-	// public HashMap<Long, IGuildChannel> guildChannels;
-
-	/**
-	 * A HashMap of the client's cached PrivateChannels. Indexed by
-	 * {@link Channel#id}.
-	 * 
-	 * @see Channel
-	 * @see PrivateChannel
-	 * @see HashMap
-	 * @author Perry Berman
-	 */
-	// public HashMap<Long, IPrivateChannel> privateChannels;
-
-	/**
-	 * A HashMap of the client's cached TextChannels. Indexed by {@link Channel#id}.
-	 * 
-	 * @see Channel
-	 * @see TextChannel
-	 * @see HashMap
-	 * @author Perry Berman
-	 */
-	// public HashMap<Long, ITextChannel> textChannels;
-
-	/**
-	 * A HashMap of the client's cached VoiceChannels. Indexed by
-	 * {@link Channel#id}.
-	 * 
-	 * @see Channel
-	 * @see VoiceChannel
-	 * @see HashMap
-	 * @author Perry Berman
-	 */
-	// public HashMap<Long, IVoiceChannel> voiceChannels;
+	// public Map<Long, IUser> users;
+	// public Map<Long, IChannel> channels;
+	// public Map<Long, IGroupChannel> groupChannels;
+	// public Map<Long, IGuildChannel> guildChannels;
+	// public Map<Long, IPrivateChannel> privateChannels;
+	// public Map<Long, ITextChannel> textChannels;
+	// public Map<Long, IVoiceChannel> voiceChannels;
+	// public Map<Long, VoiceConnection> voiceConnections;
 
 	private CompletableFuture<DiscLoader> rf;
+	private Map<Long, IGuild> syncingGuilds;
 
-	/**
-	 * A HashMap of the client's voice connections. Indexed by {@link Guild#id}.
-	 * 
-	 * @author Perry Berman
-	 * @since 0.0.3
-	 */
-	// public HashMap<Long, VoiceConnection> voiceConnections;
-
-	private HashMap<Long, IGuild> syncingGuilds;
-
-	// public Timer timer;
 
 	/**
 	 * The User we are currently logged in as.
 	 * 
-	 * @author Perry Berman
 	 */
 	public DLUser user;
 
@@ -256,7 +190,6 @@ public class DiscLoader {
 	 *            The total number of shards
 	 * @param shard
 	 *            The number id of this shard
-	 * @author Perry Berman
 	 * @since 0.0.3
 	 */
 	public DiscLoader(int shard, int shards) {
@@ -290,12 +223,16 @@ public class DiscLoader {
 		return addEventListener(e);
 	}
 
+	/**
+	 * Adds an event listener to the client.
+	 * 
+	 * @param e The IEventListener to add
+	 * @return {@code this}
+	 */
 	public DiscLoader addEventListener(IEventListener e) {
 		eventManager.addEventHandler(e);
 		return this;
 	}
-
-	// public DiscLoader addEventListener(IEvent)
 
 	public void checkReady() {
 		try {
@@ -365,6 +302,10 @@ public class DiscLoader {
 		emit(event);
 	}
 
+	/**
+	 * @param code
+	 * @return A CompletableFuture that completes with an IInvite object if successful.
+	 */
 	public CompletableFuture<IInvite> getInvite(String code) {
 		CompletableFuture<IInvite> future = new CompletableFuture<>();
 		CompletableFuture<InviteJSON> cf = rest.request(Methods.GET, Endpoints.invite(code), new RESTOptions(), InviteJSON.class);
@@ -376,10 +317,11 @@ public class DiscLoader {
 			return null;
 		});
 		return future;
-		// return new InviteAction(code, DLUtil.Methods.GET).execute();
 	}
 
 	/**
+	 * Returns the client options.
+	 * 
 	 * @return the options
 	 */
 	public DLOptions getOptions() {
@@ -387,10 +329,21 @@ public class DiscLoader {
 	}
 
 	/**
+	 * Returns a shard object if the connection is sharded.
+	 * 
 	 * @return the shard
 	 */
 	public Shard getShard() {
 		return this.shard;
+	}
+	
+	/**
+	 * Returns a DLUser object representing the user you are logged in as.
+	 * 
+	 * @return a DLUser object representing the user you are logged in as.
+	 */
+	public DLUser getSelfUser() {
+		return user;
 	}
 
 	public boolean isGuildSyncing(IGuild guild) {

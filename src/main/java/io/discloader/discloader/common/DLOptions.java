@@ -28,6 +28,8 @@ public class DLOptions {
 
 	private boolean useModloader = false;
 
+	private boolean debug = false;
+
 	public boolean selfbot = false;
 
 	public int shard = 0;
@@ -39,40 +41,53 @@ public class DLOptions {
 	}
 
 	public DLOptions(boolean defaultCommands) {
-		this("TOKEN", "/", defaultCommands, false, 0, 1);
+		this("TOKEN", "/", defaultCommands, false, false, 0, 1);
+	}
+
+	public DLOptions(boolean defaultCommands, boolean loadMods) {
+		this("TOKEN", "/", defaultCommands, loadMods, false, 0, 1);
+	}
+
+	public DLOptions(boolean defaultCommands, boolean loadMods, boolean debug) {
+		this("TOKEN", "/", defaultCommands, loadMods, debug, 0, 1);
 	}
 
 	public DLOptions(int shard, int shards) {
-		this("TOKEN", "/", true, false, shard, shards);
+		this("TOKEN", "/", true, false, false, shard, shards);
 	}
 
 	public DLOptions(String token) {
-		this(token, "/", true, false, 0, 1);
+		this(token, "/", true, false, false, 0, 1);
 	}
 
 	public DLOptions(String token, String prefix) {
-		this(token, prefix, true, false, 0, 1);
+		this(token, prefix, true, false, false, 0, 1);
 	}
 
 	public DLOptions(String token, String prefix, boolean defaultCommands) {
-		this(token, prefix, defaultCommands, false, 0, 1);
+		this(token, prefix, defaultCommands, false, false, 0, 1);
 	}
 
-	public DLOptions(String token, String prefix, boolean defaultCommands, boolean loadMods, int shard, int shards) {
+	public DLOptions(String token, String prefix, boolean defaultCommands, boolean loadMods, boolean debug, int shard, int shards) {
 		this.token = token;
 		this.prefix = prefix;
 		this.defaultCommands = defaultCommands;
 		this.useModloader = loadMods;
+		this.debug = debug;
 		this.shard = shard;
 		this.shards = shards;
 	}
 
+	public DLOptions(String token, String prefix, boolean defaultCommands, boolean loadMods, int shard, int shards) {
+		this(token, prefix, defaultCommands, loadMods, false, 0, 1);
+	}
+
 	public DLOptions(String token, String prefix, boolean defaultCommands, int shard, int shards) {
-		this(token, prefix, defaultCommands, false, shard, shards);
+		this(token, prefix, defaultCommands, false, false, shard, shards);
 	}
 
 	public DLOptions(String token, String prefix, int shard, int shards) {
-		this(token, prefix, true, false, shard, shards);
+		this(token, prefix, true, false, false, shard, shards);
 	}
 
 	public int getShardCount() {
@@ -81,6 +96,15 @@ public class DLOptions {
 
 	public int getShardID() {
 		return shard;
+	}
+
+	/**
+	 * Returns whether or not the client is running in debug mode
+	 * 
+	 * @return debug
+	 */
+	public boolean isDebug() {
+		return debug;
 	}
 
 	public boolean isSelfbot() {
@@ -105,6 +129,16 @@ public class DLOptions {
 	public DLOptions loadMods(boolean useModloader) {
 		this.useModloader = useModloader;
 		return this;
+	}
+
+	/**
+	 * Set whether or not the client is running in debug mode
+	 * 
+	 * @param debug
+	 *            whether or not the client should run in debug mode
+	 */
+	public void setDebug(boolean debug) {
+		this.debug = debug;
 	}
 
 	public DLOptions setPrefix(String prefix) {

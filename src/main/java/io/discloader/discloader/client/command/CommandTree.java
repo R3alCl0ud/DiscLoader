@@ -14,6 +14,7 @@ public class CommandTree extends Command {
 		setUnlocalizedName(unlocalizedName);
 	}
 
+	@Override
 	public void execute(MessageCreateEvent e, String[] args) throws Exception {
 		if (args.length == 0) {
 			defaultResponse(e);
@@ -36,13 +37,15 @@ public class CommandTree extends Command {
 							}
 						}
 					}
-					if (e.getMessage().getGuild() != null && cmd.shouldExecute(e.getMessage().getMember(), (IGuildTextChannel) e.getChannel())) {
-						cmd.execute(e, argc);
+					if (e.getMessage().getGuild() != null && !cmd.shouldExecute(e.getMessage().getMember(), (IGuildTextChannel) e.getChannel())) {
+						break;
 					} else {
 						cmd.execute(e, argc);
+						return;
 					}
 				}
 			}
+			defaultResponse(e);
 		}
 	}
 

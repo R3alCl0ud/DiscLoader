@@ -28,16 +28,87 @@ import io.discloader.discloader.network.json.UserJSON;
 import io.discloader.discloader.network.json.WebhookJSON;
 
 public class EntityRegistry {
-
+	/**
+	 * A Map of the client's cached guilds. Indexed by {@link IGuild#getID()}.
+	 * 
+	 *
+	 * @see IGuild
+	 * @see Map
+	 */
 	private static final Map<Long, IGuild> guilds = new HashMap<>();
+	/**
+	 * A Map of the client's cached users. Indexed by {@link IUser#getID()}.
+	 * 
+	 * @see IUser
+	 * @see Map
+	 */
 	private static final Map<Long, IUser> users = new HashMap<>();
+	/**
+	 * A Map of the client's cached webhooks. Indexed by {@link IWebhook#getID()}.
+	 * 
+	 * @see IWebhook
+	 * @see Map
+	 */
 	private static final Map<Long, IWebhook> webhooks = new HashMap<>();
+	/**
+	 * A Map of the client's cached VoiceConnections. Indexed by {@link IGuild#getID()}.
+	 * 
+	 *
+	 * @see VoiceConnection
+	 * @see Map
+	 */
 	private static final Map<Long, VoiceConnection> voiceConnections = new HashMap<>();
+	/**
+	 * A Map of the client's cached channels. Indexed by {@link IChannel#getID()}.
+	 * 
+	 * @see IChannel
+	 * @see Map
+	 */
 	private static final Map<Long, IChannel> channels = new HashMap<>();
+	/**
+	 * A Map of the client's cached category channels. Indexed by {@link IChannel#getID()}.
+	 * 
+	 * @see IChannel
+	 * @see IChannelCategory
+	 * @see Map
+	 */
 	private static final Map<Long, IChannelCategory> categories = new HashMap<>();
+	/**
+	 * A Map of the client's cached TextChannels. Indexed by
+	 * {@link IChannel#getID()}.
+	 * 
+	 * @see IChannel
+	 * @see ITextChannel
+	 * @see Map
+	 */
 	private static final Map<Long, ITextChannel> textChannels = new HashMap<>();
+
+	/**
+	 * A HashMap of the client's cached GroupDM channels. Indexed by
+	 * {@link IChannel#getID()}
+	 * 
+	 * @see IChannel
+	 * @see IGroupChannel
+	 * @see Map
+	 */
 	private static final Map<Long, IGroupChannel> groupChannels = new HashMap<>();
+	/**
+	 * A HashMap of the client's cached PrivateChannels. Indexed by
+	 * {@link IChannel#getID()}.
+	 * 
+	 * @see IChannel
+	 * @see IPrivateChannel
+	 * @see Map
+	 */
 	private static final Map<Long, IPrivateChannel> privateChannels = new HashMap<>();
+	/**
+	 * A Map of the client's cached VoiceChannels. Indexed by
+	 * {@link IChannel#getID()}.
+	 * 
+	 * @see IChannel
+	 * @see IVoiceChannel
+	 * @see Map
+	 */
 	private static final Map<Long, IVoiceChannel> voiceChannels = new HashMap<>();
 	private static final Map<Long, IGuildChannel> guildChannels = new HashMap<>();
 	private static final Map<Integer, Shard> shards = new HashMap<>();

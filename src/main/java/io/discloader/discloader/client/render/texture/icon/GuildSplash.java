@@ -13,6 +13,10 @@ import io.discloader.discloader.entity.IIcon;
 import io.discloader.discloader.util.DLUtil;
 import io.discloader.discloader.util.DLUtil.Endpoints;
 
+/**
+ * 
+ * @author Perry Berman
+ */
 public class GuildSplash extends AbstractTexture implements IIcon {
 
 	private Guild guild = null;
@@ -26,10 +30,6 @@ public class GuildSplash extends AbstractTexture implements IIcon {
 		this.partGuild = guild;
 	}
 
-	/**
-	 * @author Perry Berman
-	 * @return The link to the splash's image
-	 */
 	public String toString() {
 		if ((guild != null && guild.getSplashHash() == null) || (partGuild != null && partGuild.splashHash == null)) {
 			return null;
@@ -58,8 +58,7 @@ public class GuildSplash extends AbstractTexture implements IIcon {
 			} catch (MalformedURLException e) {
 				try {
 					imgURL = DLUtil.MissingTexture.toURI().toURL();
-				} catch (MalformedURLException e1) {
-				}
+				} catch (MalformedURLException e1) {}
 			}
 		}
 		if (imgURL != null) {
