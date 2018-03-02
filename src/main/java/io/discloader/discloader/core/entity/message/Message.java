@@ -21,6 +21,8 @@ import io.discloader.discloader.entity.guild.IGuild;
 import io.discloader.discloader.entity.guild.IGuildMember;
 import io.discloader.discloader.entity.message.IMentions;
 import io.discloader.discloader.entity.message.IMessage;
+import io.discloader.discloader.entity.message.IMessageActivity;
+import io.discloader.discloader.entity.message.IMessageApplication;
 import io.discloader.discloader.entity.message.IMessageAttachment;
 import io.discloader.discloader.entity.message.IMessageEmbed;
 import io.discloader.discloader.entity.message.IReaction;
@@ -68,6 +70,11 @@ public class Message<T extends ITextChannel> implements IMessage {
 	public String nonce;
 
 	/**
+	 * The time at which the message was sent
+	 */
+	private String timestamp;
+
+	/**
 	 * The id of the webhook that sent the message. {@code null} if sent by a
 	 * bot/user account
 	 */
@@ -79,11 +86,6 @@ public class Message<T extends ITextChannel> implements IMessage {
 	private boolean tts;
 
 	private boolean pinned;
-
-	/**
-	 * The time at which the message was sent
-	 */
-	private String timestamp;
 
 	/**
 	 * The time at which the message was lasted edited at
@@ -120,6 +122,9 @@ public class Message<T extends ITextChannel> implements IMessage {
 	private List<IMessageEmbed> embeds;
 
 	private List<IReaction> reactions;
+
+	private IMessageApplication application;
+	private IMessageActivity activity;
 
 	/**
 	 * Creates a new message object
@@ -191,19 +196,6 @@ public class Message<T extends ITextChannel> implements IMessage {
 	@Override
 	public OffsetDateTime createdAt() {
 		return OffsetDateTime.parse(timestamp);
-	}
-
-	@Override
-	public boolean equals(Object object) {
-		if (!(object instanceof Message<?>))
-			return false;
-		Message<?> message = (Message<?>) object;
-		return (this == message) || getID() == message.getID();
-	}
-
-	@Override
-	public int hashCode() {
-		return Long.hashCode(getID());
 	}
 
 	@Override
@@ -315,6 +307,24 @@ public class Message<T extends ITextChannel> implements IMessage {
 	}
 
 	@Override
+	public boolean equals(Object object) {
+		if (!(object instanceof Message<?>))
+			return false;
+		Message<?> message = (Message<?>) object;
+		return (this == message) || getID() == message.getID();
+	}
+
+	@Override
+	public IMessageActivity getActivity() {
+		return activity;
+	}
+
+	@Override
+	public IMessageApplication getApplication() {
+		return application;
+	}
+
+	@Override
 	public List<IMessageAttachment> getAttachments() {
 		return attachments;
 	}
@@ -375,8 +385,27 @@ public class Message<T extends ITextChannel> implements IMessage {
 	}
 
 	@Override
+	public IReaction getReaction(IEmoji emoji) {
+		return getReaction(SnowflakeUtil.asString(emoji));
+	}
+
+	@Override
+	public IReaction getReaction(String unicode) {
+		for (IReaction reaction : reactions) {
+			if (unicode.equals(SnowflakeUtil.asString(reaction.getEmoji())))
+				return reaction;
+		}
+		return null;
+	}
+
+	@Override
 	public List<IReaction> getReactions() {
 		return reactions;
+	}
+
+	@Override
+	public int hashCode() {
+		return Long.hashCode(getID());
 	}
 
 	/**
@@ -478,6 +507,12 @@ public class Message<T extends ITextChannel> implements IMessage {
 				reactions.add(new Reaction(r, this));
 			}
 		}
+		if (data.activity != null) {
+			activity = new MessageActivity(data.activity);
+		}
+		if (data.application != null) {
+			application = new MessageApplication(data.application);
+		}
 	}
 
 	/**
@@ -490,19 +525,5 @@ public class Message<T extends ITextChannel> implements IMessage {
 		CompletableFuture<IMessage> future = new UnpinMessage<T>(this).execute();
 		future.thenAcceptAsync(action -> this.pinned = false);
 		return future;
-	}
-
-	@Override
-	public IReaction getReaction(IEmoji emoji) {
-		return getReaction(SnowflakeUtil.asString(emoji));
-	}
-
-	@Override
-	public IReaction getReaction(String unicode) {
-		for (IReaction reaction : reactions) {
-			if (unicode.equals(SnowflakeUtil.asString(reaction.getEmoji())))
-				return reaction;
-		}
-		return null;
 	}
 }

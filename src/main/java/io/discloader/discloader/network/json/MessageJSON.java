@@ -17,6 +17,8 @@ public class MessageJSON {
 	public boolean pinned;
 
 	public UserJSON author;
+	public MessageActivityJSON activity;
+	public MessageApplicationJSON application;
 
 	public UserJSON[] mentions;
 	public String[] mention_roles;

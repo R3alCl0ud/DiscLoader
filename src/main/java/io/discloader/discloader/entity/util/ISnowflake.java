@@ -28,10 +28,10 @@ import io.discloader.discloader.entity.user.IUser;
  * 
  * @author Perry Berman
  */
-@FunctionalInterface
 public interface ISnowflake {
 
 	/**
+	 * Returns the object's Snowflake ID as an unsigned long.
 	 * @return The object's Snowflake ID.
 	 */
 	long getID();
