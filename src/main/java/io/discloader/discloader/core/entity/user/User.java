@@ -49,7 +49,7 @@ public class User implements IUser {
 	/**
 	 * The user's four digit discriminator
 	 */
-	private short discriminator;
+	private short discriminator = 0;
 
 	/**
 	 * Whether or not the user is a bot account
@@ -143,9 +143,6 @@ public class User implements IUser {
 		return discriminator;
 	}
 
-	/**
-	 * @return the id
-	 */
 	@Override
 	public long getID() {
 		return id;
@@ -169,9 +166,6 @@ public class User implements IUser {
 		return new FetchUserProfile(this).execute();
 	}
 
-	/**
-	 * @return the username
-	 */
 	@Override
 	public String getUsername() {
 		return username;
@@ -258,8 +252,8 @@ public class User implements IUser {
 				return channel.sendMessage(content, embed, resource);
 			} catch (ExecutionException | InterruptedException e) {
 				future.completeExceptionally(e.getCause());
+				return future;
 			}
-			return future;
 		}
 		return channel.sendMessage(content, embed, resource);
 	}
@@ -270,7 +264,8 @@ public class User implements IUser {
 			username = data.username;
 
 		// Short.p
-		discriminator = data.discriminator == null ? 0000 : Short.parseShort(data.discriminator, 10);
+		if (data.discriminator != null)
+			discriminator = Short.parseShort(data.discriminator, 10);
 
 		avatar = data.avatar;
 
@@ -279,7 +274,7 @@ public class User implements IUser {
 
 	@Override
 	public String toString() {
-		return String.format("%s#%s", username, discriminator);
+		return String.format("%s#%04d", username, discriminator);
 	}
 
 }

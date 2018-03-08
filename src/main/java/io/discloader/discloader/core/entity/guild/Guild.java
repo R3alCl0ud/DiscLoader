@@ -774,7 +774,7 @@ public class Guild implements IGuild {
 
 	@Override
 	public DiscLoader getLoader() {
-		return DiscLoader.getDiscLoader();
+		return loader;
 	}
 
 	@Override
@@ -1056,11 +1056,11 @@ public class Guild implements IGuild {
 	}
 
 	public CompletableFuture<IGuild> setAFKChannel(IGuildVoiceChannel channel) {
-		if (!isOwner() && !getCurrentMember().getPermissions().hasPermission(Permissions.MANAGE_GUILD))
-			throw new PermissionsException("Insuficient Permissions");
-		if (!id.equals(channel.getGuild().getID()))
-			throw new MissmatchException("Afk Channel cannot be set to a voice channel from another guild");
-		return new ModifyGuild(this, new JSONObject().put("afk_channel_id", channel.getID())).execute();
+		if (!isOwner() && !getCurrentMember().getPermissions().hasPermission(Permissions.MANAGE_GUILD)) // check if we have the proper permissions to change the guild's afk channel
+			throw new PermissionsException("Insuficient Permissions"); // throw an exception if we don't
+		if (getID() != (channel.getGuild().getID())) // check if the channel is from this guild
+			throw new MissmatchException("Afk Channel cannot be set to a voice channel from another guild"); // throw an exception if it isn't
+		return new ModifyGuild(this, new JSONObject().put("afk_channel_id", channel.getID())).execute(); // execute the request and return a CompletableFuture
 	}
 
 	public CompletableFuture<IGuild> setIcon(String icon) throws IOException {
@@ -1077,9 +1077,9 @@ public class Guild implements IGuild {
 	}
 
 	public CompletableFuture<IGuild> setOwner(IGuildMember member) {
-		if (!isOwner())
-			throw new UnauthorizedException("Only the guild's owner can delete a guild");
-		return new ModifyGuild(this, new JSONObject().put("owner_id", SnowflakeUtil.asString(member))).execute();
+		if (!isOwner()) // check if we are the guild's owner
+			throw new UnauthorizedException("Only the guild's owner can delete a guild"); // throw an exception if we aren't
+		return new ModifyGuild(this, new JSONObject().put("owner_id", SnowflakeUtil.asString(member))).execute(); //
 	}
 
 	@Override
@@ -1088,16 +1088,14 @@ public class Guild implements IGuild {
 	}
 
 	public void setPresence(PresenceJSON guildPresence, boolean shouldEmit) {
-		IPresence presence = new Presence(guildPresence);
-		if (guildPresence.user.id == null) {
-			System.out.println("user is null");
-			return;
+		IPresence presence = new Presence(guildPresence); // create a new IPresence object
+		if (guildPresence.user.id == null) { // check if we were never sent the id of the user whose presence has changed
+			return; // return early if we don't have the user's id.
 		}
-		if (guildPresence.user.id.equals(this.loader.user.getID())) {
-			System.out.println(DLUtil.gson.toJson(guildPresence));
-			loader.user.getPresence().update(guildPresence);
+		if (SnowflakeUtil.parse(guildPresence.user.id) == (this.loader.user.getID())) { // checks if our presence updated
+			loader.user.getPresence().update(guildPresence); // update our presence if the updated presence is our own.
 		}
-		presences.put(SnowflakeUtil.parse(guildPresence.user.id), presence);
+		presences.put(SnowflakeUtil.parse(guildPresence.user.id), presence); // add the presence object to the map of presences
 	}
 
 	/**

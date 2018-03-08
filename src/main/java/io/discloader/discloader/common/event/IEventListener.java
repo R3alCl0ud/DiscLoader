@@ -67,7 +67,7 @@ import io.discloader.discloader.entity.voice.VoiceConnection;
  * loader.addListener(new EventListenerAdapter() {
  * 
  * 	&#64;Override
- * 	public void Ready(DiscLoader loader) {
+ * 	public void Ready(ReadyEvent event) {
  * 		// do something
  * 	}
  * 

@@ -7,16 +7,17 @@ import java.util.concurrent.CompletableFuture;
 import io.discloader.discloader.common.DiscLoader;
 import io.discloader.discloader.common.exceptions.PermissionsException;
 import io.discloader.discloader.core.entity.RichEmbed;
+import io.discloader.discloader.core.entity.user.DLUser;
 import io.discloader.discloader.entity.IEmoji;
 import io.discloader.discloader.entity.channel.IGuildTextChannel;
 import io.discloader.discloader.entity.channel.ITextChannel;
 import io.discloader.discloader.entity.guild.IGuild;
 import io.discloader.discloader.entity.guild.IGuildMember;
 import io.discloader.discloader.entity.user.IUser;
+import io.discloader.discloader.entity.util.ICreationTime;
 import io.discloader.discloader.entity.util.ISnowflake;
 import io.discloader.discloader.entity.util.Permissions;
 import io.discloader.discloader.network.json.MessageJSON;
-import io.discloader.discloader.util.DLUtil;
 
 /**
  * Represents a message object on the api <br>
@@ -36,7 +37,7 @@ import io.discloader.discloader.util.DLUtil;
  * @see ITextChannel#sendMessage(String, RichEmbed)
  * @see ISnowflake
  */
-public interface IMessage extends ISnowflake, Comparable<IMessage> {
+public interface IMessage extends ISnowflake, Comparable<IMessage>, ICreationTime {
 
 	CompletableFuture<Void> addReaction(IReaction reaction);
 
@@ -63,12 +64,10 @@ public interface IMessage extends ISnowflake, Comparable<IMessage> {
 	 */
 	boolean canEdit();
 
-	OffsetDateTime createdAt();
-
 	/**
 	 * Deletes the message if the loader has sufficient permissions
 	 * 
-	 * @see DLUtil.PermissionFlags
+	 * @see Permissions
 	 * @return A Future that completes with {@literal this} when successful
 	 */
 	CompletableFuture<IMessage> delete();
@@ -124,8 +123,14 @@ public interface IMessage extends ISnowflake, Comparable<IMessage> {
 	 */
 	CompletableFuture<IMessage> edit(String content, RichEmbed embed);
 
+	/**
+	 * @return The activity
+	 */
 	IMessageActivity getActivity();
 
+	/**
+	 * @return The application
+	 */
 	IMessageApplication getApplication();
 
 	/**
@@ -177,14 +182,29 @@ public interface IMessage extends ISnowflake, Comparable<IMessage> {
 
 	IMentions getMentions();
 
+	/**
+	 * Returns the message's nonce.
+	 * 
+	 * @return The message's nonce.
+	 */
 	String getNonce();
 
+	/**
+	 * Returns a List of {@link IReaction} Objects.
+	 * 
+	 * @return A List of {@link IReaction} Objects.
+	 */
 	List<IReaction> getReactions();
 
 	IReaction getReaction(IEmoji emoji);
 
 	IReaction getReaction(String unicode);
 
+	/**
+	 * Returns {@code true} if the message has been edited, {@code false} otherwise.
+	 * 
+	 * @return {@code true} if the message has been edited, {@code false} otherwise.
+	 */
 	boolean isEdited();
 
 	/**
@@ -194,12 +214,23 @@ public interface IMessage extends ISnowflake, Comparable<IMessage> {
 	boolean isPinned();
 
 	/**
-	 * @return
+	 * Returns {@code true} if the message is a system message, {@code false}
+	 * otherwise.
+	 * 
+	 * @return {@code true} if the message is a system message, {@code false}
+	 *         otherwise.
 	 */
 	boolean isSystem();
 
 	boolean isTTS();
 
+	/**
+	 * Pins the message to the {@link #getChannel() channel} it was sent in. <br>
+	 * The {@link Permissions#MANAGE_MESSAGES} permission is required to pin a
+	 * message.
+	 * 
+	 * @return A CompletableFuture that completes with {@code this} if successfull.
+	 */
 	CompletableFuture<IMessage> pin();
 
 	CompletableFuture<IMessage> removeReaction(IReaction reaction);
@@ -210,5 +241,13 @@ public interface IMessage extends ISnowflake, Comparable<IMessage> {
 
 	void setup(MessageJSON data);
 
+	/**
+	 * Unpins the message from the {@link #getChannel() channel} it was sent in.
+	 * <br>
+	 * The {@link Permissions#MANAGE_MESSAGES} permission is required to unpin a
+	 * message.
+	 * 
+	 * @return A CompletableFuture that completes with {@code this} if successful.
+	 */
 	CompletableFuture<IMessage> unpin();
 }

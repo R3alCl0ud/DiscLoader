@@ -31,7 +31,7 @@ public class Command {
 		}
 	}
 
-	private String unlocalizedName;
+	private String unlocalizedName = "";
 
 	private String textureName = "discloader:missing-texture";
 

@@ -51,7 +51,8 @@ public class EntityRegistry {
 	 */
 	private static final Map<Long, IWebhook> webhooks = new HashMap<>();
 	/**
-	 * A Map of the client's cached VoiceConnections. Indexed by {@link IGuild#getID()}.
+	 * A Map of the client's cached VoiceConnections. Indexed by
+	 * {@link IGuild#getID()}.
 	 * 
 	 *
 	 * @see VoiceConnection
@@ -66,7 +67,8 @@ public class EntityRegistry {
 	 */
 	private static final Map<Long, IChannel> channels = new HashMap<>();
 	/**
-	 * A Map of the client's cached category channels. Indexed by {@link IChannel#getID()}.
+	 * A Map of the client's cached category channels. Indexed by
+	 * {@link IChannel#getID()}.
 	 * 
 	 * @see IChannel
 	 * @see IChannelCategory
@@ -148,6 +150,8 @@ public class EntityRegistry {
 	}
 
 	public static IUser addUser(UserJSON data) {
+		if (data == null)
+			return null;
 		if (userExists(data.id == null ? "0" : data.id))
 			return getUserByID(data.id == null ? "0" : data.id);
 		IUser user = EntityBuilder.getUserFactory().buildUser(data);
@@ -214,7 +218,7 @@ public class EntityRegistry {
 	 * @return A Collection of {@link IGuild} objects
 	 * @see IGuild
 	 * @see #getGuildByID(long) getGuildByID(guildID)
-	 * @author Perry Berman
+	 *
 	 */
 	public static Collection<IGuild> getGuilds() {
 		return guilds.values();

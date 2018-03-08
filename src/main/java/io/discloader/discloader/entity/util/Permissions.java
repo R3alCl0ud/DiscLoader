@@ -35,8 +35,8 @@ public enum Permissions {
 	 */
 	ADD_REACTIONS(0x40, 1 << 6),
 	/**
-	 * Allows reading messages in a channel. The channel will not appear for
-	 * users without this permission
+	 * Allows reading messages in a channel. The channel will not appear for users
+	 * without this permission
 	 */
 	READ_MESSAGES(0x400, 1 << 10),
 	/**
@@ -48,7 +48,8 @@ public enum Permissions {
 	 */
 	SEND_TTS_MESSAGES(0x1000, 1 << 12),
 	/**
-	 * Allows for deletion of other users messages
+	 * Allows for deletion of other users messages. Also allows you to manage pinned
+	 * messages.
 	 */
 	MANAGE_MESSAGES(0x2000, 1 << 13),
 	/**

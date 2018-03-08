@@ -18,8 +18,7 @@ import io.discloader.discloader.network.json.OverwriteJSON;
 public class Overwrite implements IOverwrite {
 
 	/**
-	 * The id of the {@link Role} or {@link GuildMember} the overwrite applies
-	 * to.
+	 * The id of the {@link Role} or {@link GuildMember} the overwrite applies to.
 	 */
 	public transient long id;
 
@@ -48,7 +47,7 @@ public class Overwrite implements IOverwrite {
 	 * The {@link GuildMember} the overwrite applies to. null if type is
 	 * {@literal "role"}
 	 * 
-	 * @author Perry Berman
+	 *
 	 */
 	public transient IGuildMember member;
 
@@ -85,8 +84,10 @@ public class Overwrite implements IOverwrite {
 
 	public Overwrite(OverwriteJSON data) {
 		this(data.allow, data.deny);
-		if (data.id != null) this.id = SnowflakeUtil.parse(data.id);
-		if (data.type != null) this.type = data.type;
+		if (data.id != null)
+			this.id = SnowflakeUtil.parse(data.id);
+		if (data.type != null)
+			this.type = data.type;
 	}
 
 	public long getAllowed() {

@@ -22,6 +22,8 @@ import io.discloader.discloader.entity.user.IUser;
  */
 public class Client implements IClient {
 
+	
+	
 	/**
 	 * @return
 	 */

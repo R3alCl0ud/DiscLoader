@@ -1,7 +1,12 @@
 package io.discloader.discloader.entity.message;
 
+/**
+ * Enumeration containing constants for different Rich Presence Message Activity Types
+ * 
+ * @author Perry Berman
+ */
 public enum MessageActivityType {
-	JOIN(1), SPECTATE(2), LISTEN(3), JOIN_REQUEST(5), UNKNOWN(0);
+	UNKNOWN(0), JOIN(1), SPECTATE(2), LISTEN(3), JOIN_REQUEST(5);
 
 	private int value;
 

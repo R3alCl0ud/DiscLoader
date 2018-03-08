@@ -21,24 +21,26 @@ public class CommandHelp extends Command {
 
 	public CommandHelp() {
 		super();
+		setUnlocalizedName("help");
 		setTextureName("discloader:help").setDescription("Displays information about the available commands").setUsage("help [<command>]");
 	}
 
 	@Override
 	public void execute(MessageCreateEvent e, String[] args) {
 		IMessage message = e.getMessage();
-		RichEmbed embed = new RichEmbed().setFooter(String.format("type `%shelp <page>` to tab through the pages", CommandHandler.prefix), e.loader.user.getAvatar().toString())
-				.setAuthor(e.loader.user.getUsername(), "http://discloader.io", e.loader.user.getAvatar().toString()).setColor(0x08a2ff);
+		RichEmbed embed = new RichEmbed().setFooter(String.format("type `%shelp <page>` to tab through the pages", CommandHandler.prefix), e.loader.user.getAvatar().toString()).setAuthor(e.loader.user.getUsername(), "http://discloader.io", e.loader.user.getAvatar().toString()).setColor(0x08a2ff);
 		Command command;
 		embed.setThumbnail(getResourceLocation());
 		if (args.length >= 1 && (command = CommandHandler.getCommand(args[0], message)) != null) {
 			if (command != null) {
 				File icon = DLUtil.MissingTexture;
 				embed.setThumbnail(command.getResourceLocation());
-				if (embed.getThumbnail() == null) embed.setThumbnail(icon);
+				if (embed.getThumbnail() == null)
+					embed.setThumbnail(icon);
 				if (args.length > 1 && command instanceof CommandTree) {
 					for (int i = 1; i < args.length; i++) {
-						if (((CommandTree) command).getSubCommands().get(args[i]) != null) command = ((CommandTree) command).getSubCommands().get(args[i]);
+						if (((CommandTree) command).getSubCommands().get(args[i]) != null)
+							command = ((CommandTree) command).getSubCommands().get(args[i]);
 					}
 				}
 
@@ -60,8 +62,10 @@ public class CommandHelp extends Command {
 			int size = CommandRegistry.commands.entries().size();
 			List<Command> cmdList = Lists.newArrayList(CommandRegistry.commands.entries().toArray(new Command[size]));
 			cmdList.sort((a, b) -> {
-				if (a.getUnlocalizedName().compareToIgnoreCase(b.getUnlocalizedName()) < 0) return -1;
-				if (a.getUnlocalizedName().compareToIgnoreCase(b.getUnlocalizedName()) > 0) return 1;
+				if (a.getUnlocalizedName().compareToIgnoreCase(b.getUnlocalizedName()) < 0)
+					return -1;
+				if (a.getUnlocalizedName().compareToIgnoreCase(b.getUnlocalizedName()) > 0)
+					return 1;
 				return 0;
 			});
 			for (int i = 0 + (10 * (page - 1)); i < (10 * page) && i < size; i++) {
@@ -75,8 +79,10 @@ public class CommandHelp extends Command {
 			int size = CommandRegistry.commands.entries().size();
 			List<Command> cmdList = Lists.newArrayList(CommandRegistry.commands.entries().toArray(new Command[size]));
 			cmdList.sort((a, b) -> {
-				if (a.getUnlocalizedName().compareToIgnoreCase(b.getUnlocalizedName()) < 0) return -1;
-				if (a.getUnlocalizedName().compareToIgnoreCase(b.getUnlocalizedName()) > 0) return 1;
+				if (a.getUnlocalizedName().compareToIgnoreCase(b.getUnlocalizedName()) < 0)
+					return -1;
+				if (a.getUnlocalizedName().compareToIgnoreCase(b.getUnlocalizedName()) > 0)
+					return 1;
 				return 0;
 			});
 			for (int i = 0; i < 10 && i < size; i++) {

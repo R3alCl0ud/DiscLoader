@@ -56,7 +56,9 @@ public interface IGuildChannel extends IChannel {
 	IChannelCategory getCategory();
 
 	/**
-	 * @return
+	 * Returns the {@link IGuild} the channel belongs to.
+	 * 
+	 * @return The {@link IGuild} the channel belongs to.
 	 */
 	IGuild getGuild();
 
@@ -89,9 +91,7 @@ public interface IGuildChannel extends IChannel {
 	 * 
 	 * @param member
 	 *            The member of whom we are looking for overwrites that apply.
-	 * @author Perry Berman
 	 * @return A {@link List} of {@link IOverwrite} objects.
-	 * @version 0.1.1
 	 * @since April 7, 2017.
 	 */
 	List<IOverwrite> overwritesOf(IGuildMember member);
@@ -109,8 +109,12 @@ public interface IGuildChannel extends IChannel {
 	IPermission permissionsOf(IGuildMember iGuildMember);
 
 	/**
+	 * Sets the channel's category.
+	 * 
 	 * @param category
-	 * @return
+	 *            The channel to set as {@code this} channel's category.
+	 * @return A CompletableFuture that completes with the new {@link IGuildChannel}
+	 *         object if successful.
 	 * @throws PermissionsException
 	 */
 	CompletableFuture<IGuildChannel> setCategory(IChannelCategory category) throws PermissionsException;

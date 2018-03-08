@@ -42,7 +42,7 @@ public class AccountTypeException extends RuntimeException {
 	 *            {@link #getCause()} method). (A <tt>null</tt> value is permitted,
 	 *            and indicates that the cause is nonexistent or unknown.)
 	 * @since 1.4
-	 * @author Oracle
+	 *
 	 */
 	public AccountTypeException(Throwable cause) {
 		super(cause);

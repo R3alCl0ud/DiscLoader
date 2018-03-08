@@ -51,7 +51,7 @@ public class GatewayListener extends WebSocketAdapter {
 
 	private String token;
 
-	private final String logname;
+	private final String logName, threadName;
 
 	private Thread reconnection = null;
 
@@ -62,8 +62,9 @@ public class GatewayListener extends WebSocketAdapter {
 		this.loader = this.socket.loader;
 		this.handlers = new HashMap<String, AbstractHandler>();
 		this.queue = new ArrayList<SocketPacket>();
-		logname = loader.shards > 1 ? "Gateway Listener (Shard: #" + loader.shardid + ")" : "Gateway Listener";
-		logger = new DLLogger(logname).getLogger();
+		logName = loader.shards > 1 ? "Gateway Listener (Shard: #" + loader.shardid + ")" : "Gateway Listener";
+		logger = new DLLogger(logName).getLogger();
+		threadName = loader.shards > 1 ? "Gateway (Shard: #" + loader.shardid + ") - Reader" : "Gateway Reader";
 		this.register(WSEvents.HELLO, new Hello(this.socket));
 		this.register(WSEvents.READY, new Ready(this.socket));
 		this.register(WSEvents.RESUMED, new Resumed(this.socket));
@@ -152,6 +153,9 @@ public class GatewayListener extends WebSocketAdapter {
 		connected = true;
 		logger.info("Connected to the gateway");
 		ProgressLogger.stage(2, 3, "Caching API Objects");
+		if (Thread.currentThread().getName().equals("ReadingThread")) {
+			Thread.currentThread().setName(threadName);
+		}
 		if (reconnection != null && !reconnection.isInterrupted()) {
 			reconnection.interrupt();
 			reconnection = null;
@@ -213,7 +217,7 @@ public class GatewayListener extends WebSocketAdapter {
 	}
 
 	public boolean shouldResume(WebSocketFrame socketFrame) {
-		return tries < 3 && socketFrame.getCloseCode() != 4007;
+		return tries < 3 && socketFrame.getCloseCode() != 4007 && socketFrame.getCloseCode() != 4004 && socketFrame.getCloseCode() != 4010 && socketFrame.getCloseCode() != 4011;
 	}
 
 	public void setRetries(int i) {
@@ -258,7 +262,7 @@ public class GatewayListener extends WebSocketAdapter {
 		this.socket.status = Status.RECONNECTING;
 		logger.info("Waiting to reconnect to the gateway");
 		if (reconnection == null) {
-			reconnection = new Thread(logname + " Reconnector") {
+			reconnection = new Thread(logName + " Reconnector") {
 
 				public void run() {
 					if (socket.status == Status.RECONNECTING && !this.isInterrupted()) {

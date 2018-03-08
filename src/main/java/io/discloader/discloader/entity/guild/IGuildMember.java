@@ -12,14 +12,13 @@ import io.discloader.discloader.entity.IPresence;
 import io.discloader.discloader.entity.channel.IGuildVoiceChannel;
 import io.discloader.discloader.entity.user.IUser;
 import io.discloader.discloader.entity.util.ISnowflake;
+import io.discloader.discloader.entity.util.Permissions;
 import io.discloader.discloader.entity.voice.VoiceState;
 
 /**
  * @author Perry Berman
  */
 public interface IGuildMember extends ISnowflake, IMentionable {
-
-	OffsetDateTime getJoinTime();
 
 	CompletableFuture<IGuildMember> ban();
 
@@ -28,6 +27,16 @@ public interface IGuildMember extends ISnowflake, IMentionable {
 	CompletableFuture<IGuildMember> deafen();
 
 	IGuild getGuild();
+
+	/**
+	 * Determines the member's highest role in the {@link #getGuild guild}'s role
+	 * hiarchy
+	 * 
+	 * @return A Role object
+	 */
+	IRole getHighestRole();
+
+	OffsetDateTime getJoinTime();
 
 	DiscLoader getLoader();
 
@@ -47,15 +56,13 @@ public interface IGuildMember extends ISnowflake, IMentionable {
 
 	IUser getUser();
 
-	boolean hasRole(IRole role);
-
-	CompletableFuture<IGuildMember> setNick(String nick);
-
 	IGuildVoiceChannel getVoiceChannel();
 
 	VoiceState getVoiceState();
 
 	CompletableFuture<IGuildMember> giveRole(IRole... roles);
+
+	boolean hasRole(IRole role);
 
 	boolean isDeafened();
 
@@ -67,7 +74,23 @@ public interface IGuildMember extends ISnowflake, IMentionable {
 
 	CompletableFuture<IGuildMember> kick(String reason);
 
+	/**
+	 * Moves the guild member into a different voice channel. <br>
+	 * The {@link Permissions#MOVE_MEMBERS MOVE_MEMBERS} is required to move
+	 * members.
+	 * 
+	 * @param channel
+	 *            The {@link IGuildVoiceChannel} to move the member into.
+	 * @return A CompletableFuture that completes with the new {@link IGuildMember}
+	 *         object if successful.
+	 * @throws PermissionsExecption
+	 *             Thrown if the client doesn't have permission to move this member
+	 */
+	CompletableFuture<IGuildMember> move(IGuildVoiceChannel channel);
+
 	CompletableFuture<IGuildMember> mute();
+
+	CompletableFuture<IGuildMember> setNick(String nick);
 
 	/**
 	 * Takes a role away from a member
@@ -89,18 +112,4 @@ public interface IGuildMember extends ISnowflake, IMentionable {
 	 *         object if successful.
 	 */
 	CompletableFuture<IGuildMember> unMute();
-
-	/**
-	 * Determines the member's highest role in the {@link #getGuild guild}'s role
-	 * hiarchy
-	 * 
-	 * @return A Role object
-	 */
-	IRole getHighestRole();
-
-	/**
-	 * @param channel
-	 * @return
-	 */
-	CompletableFuture<IGuildMember> move(IGuildVoiceChannel channel);
 }

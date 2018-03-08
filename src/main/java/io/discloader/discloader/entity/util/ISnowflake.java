@@ -32,7 +32,8 @@ public interface ISnowflake {
 
 	/**
 	 * Returns the object's Snowflake ID as an unsigned long.
-	 * @return The object's Snowflake ID.
+	 * 
+	 * @return The object's Snowflake ID as an unsigned long.
 	 */
 	long getID();
 

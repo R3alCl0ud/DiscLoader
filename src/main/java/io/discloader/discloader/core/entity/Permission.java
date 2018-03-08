@@ -6,7 +6,6 @@ import io.discloader.discloader.entity.IPermission;
 import io.discloader.discloader.entity.channel.IGuildChannel;
 import io.discloader.discloader.entity.guild.IGuildMember;
 import io.discloader.discloader.entity.util.Permissions;
-import io.discloader.discloader.util.DLUtil;
 
 /**
  * This object contains the {@link #member}'s evaulated permissions integer for
@@ -14,7 +13,7 @@ import io.discloader.discloader.util.DLUtil;
  * 
  * @author Perry Berman
  * @since 0.0.1
- * @see DLUtil.PermissionFlags
+ * @see Permissions
  */
 public class Permission implements IPermission {
 
@@ -85,9 +84,11 @@ public class Permission implements IPermission {
 
 	@Override
 	public boolean hasPermission(Permissions... permissions) {
-		if ((raw & Permissions.ADMINISTRATOR.getValue()) > 0) return true;
+		if ((raw & Permissions.ADMINISTRATOR.getValue()) > 0)
+			return true;
 		for (Permissions permission : permissions) {
-			if (!hasPermission(permission, false)) return false;
+			if (!hasPermission(permission, false))
+				return false;
 		}
 		return true;
 	}
@@ -95,7 +96,8 @@ public class Permission implements IPermission {
 	@Override
 	public boolean hasAny(Permissions... permissions) {
 		for (Permissions permission : permissions) {
-			if (hasPermission(permission, false)) return true;
+			if (hasPermission(permission, false))
+				return true;
 		}
 		return false;
 	}

@@ -139,17 +139,13 @@ public class Message<T extends ITextChannel> implements IMessage {
 
 		this.channel = channel;
 
-		loader = DiscLoader.getDiscLoader();
 		if (channel != null && channel instanceof IGuildTextChannel) {
 			guild = ((IGuildTextChannel) channel).getGuild();
 		}
+		loader = channel.getLoader();
 
 		if (data.author != null) {
-			if (!EntityRegistry.userExists(data.author.id)) {
-				author = EntityRegistry.addUser(data.author);
-			} else {
-				author = EntityRegistry.getUserByID(data.author.id);
-			}
+			author = EntityRegistry.addUser(data.author);
 		} else {
 			UserJSON wh = new UserJSON();
 			wh.id = data.webhook_id == null ? "0" : data.webhook_id;
@@ -190,7 +186,8 @@ public class Message<T extends ITextChannel> implements IMessage {
 
 	@Override
 	public int compareTo(IMessage message) {
-		return message.getContent().compareTo(getContent());
+		int comp = message.getContent().compareTo(getContent());
+		return Math.abs(comp) > Math.abs(createdAt().compareTo(message.createdAt())) ? comp : createdAt().compareTo(message.createdAt());
 	}
 
 	@Override
@@ -513,6 +510,11 @@ public class Message<T extends ITextChannel> implements IMessage {
 		if (data.application != null) {
 			application = new MessageApplication(data.application);
 		}
+	}
+
+	@Override
+	public String toString() {
+		return getContent();
 	}
 
 	/**

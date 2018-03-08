@@ -181,25 +181,56 @@ public interface IGuild extends ISnowflake, ICreationTime {
 	CompletableFuture<IGuildTextChannel> createTextChannel(String name, IChannelCategory category, IOverwrite... overwrites);
 
 	/**
-	 * Creates a new {@link VoiceChannel}
+	 * Creates a new {@link IGuildVoiceChannel}
 	 * 
 	 * @param name
 	 *            The name of the channel
-	 * @param bitrate
+	 * @param bitRate
 	 *            The channel's bitrate
 	 * @param userLimit
 	 *            The channel's userlimit
 	 * @param overwrites
 	 *            The channel's overwrites
-	 * @return A future that completes with a new {@link VoiceChannel} Object if
-	 *         successful.
+	 * @return A future that completes with a new {@link IGuildVoiceChannel} Object
+	 *         if successful.
 	 */
 	CompletableFuture<IGuildVoiceChannel> createVoiceChannel(String name, int bitRate, int userLimit, IOverwrite... overwrites);
 
+	/**
+	 * Creates a new {@link IGuildVoiceChannel}
+	 * 
+	 * @param name
+	 *            The name of the channel
+	 * @param bitRate
+	 *            The channel's bitrate
+	 * @param overwrites
+	 *            The channel's overwrites
+	 * @return A future that completes with a new {@link IGuildVoiceChannel} Object
+	 *         if successful.
+	 */
 	CompletableFuture<IGuildVoiceChannel> createVoiceChannel(String name, int bitRate, IOverwrite... overwrites);
 
+	/**
+	 * Creates a new {@link IGuildVoiceChannel}
+	 * 
+	 * @param name
+	 *            The name of the channel
+	 * @param overwrites
+	 *            The channel's overwrites
+	 * @return A future that completes with a new {@link IGuildVoiceChannel} Object
+	 *         if successful.
+	 */
 	CompletableFuture<IGuildVoiceChannel> createVoiceChannel(String name, IOverwrite... overwrites);
 
+	/**
+	 * @param name
+	 *            The name of the channel
+	 * @param category
+	 * @param overwrites
+	 *            The channel's overwrites
+	 * @return A CompletableFuture that completes with a new
+	 *         {@link IGuildVoiceChannel} Object if successful.
+	 */
 	CompletableFuture<IGuildVoiceChannel> createVoiceChannel(String name, IChannelCategory category, IOverwrite... overwrites);
 
 	/**
@@ -319,7 +350,7 @@ public interface IGuild extends ISnowflake, ICreationTime {
 	IGuildTextChannel getDefaultChannel();
 
 	/**
-	 * @return
+	 * @return The guild's {@literal @}everyone role.
 	 */
 	IRole getDefaultRole();
 
@@ -432,9 +463,9 @@ public interface IGuild extends ISnowflake, ICreationTime {
 	boolean hasPermission(Permissions... permissions);
 
 	/**
+	 * Returns whether or not the guild is available to the client.
 	 * 
-	 * 
-	 * @return
+	 * @return whether or not the guild is available to the client.
 	 */
 	boolean isAvailable();
 

@@ -1,9 +1,9 @@
 package io.discloader.discloader.core.entity;
 
-import io.discloader.discloader.core.entity.guild.GuildMember;
-import io.discloader.discloader.core.entity.user.User;
 import io.discloader.discloader.entity.IGame;
 import io.discloader.discloader.entity.IPresence;
+import io.discloader.discloader.entity.guild.IGuildMember;
+import io.discloader.discloader.entity.user.IUser;
 import io.discloader.discloader.network.json.GameJSON;
 import io.discloader.discloader.network.json.PresenceJSON;
 
@@ -15,20 +15,20 @@ import io.discloader.discloader.network.json.PresenceJSON;
 public class Presence implements IPresence {
 
 	/**
-	 * The {@link Game} the user is currently playing, or null if user isn't
-	 * playing a game
+	 * The {@link Game} the user is currently playing, or null if user isn't playing
+	 * a game
 	 * 
-	 * @author Perry Berman
-	 * @see Game
-	 * @see User
-	 * @see GuildMember
+	 * 
+	 * @see IGame
+	 * @see IUser
+	 * @see IGuildMember
 	 */
 	public Game game;
 	/**
-	 * The status of the current user. can be {@literal online},
-	 * {@literal offline}, {@literal idle}, or {@literal invisible}
+	 * The status of the current user. can be {@literal online}, {@literal offline},
+	 * {@literal idle}, or {@literal invisible}
 	 * 
-	 * @author Perry Berman
+	 * 
 	 */
 	public String status;
 
@@ -90,13 +90,15 @@ public class Presence implements IPresence {
 	}
 
 	public boolean equals(Object obj) {
-		if (!(obj instanceof IPresence)) return false;
+		if (!(obj instanceof IPresence))
+			return false;
 		IPresence p = (IPresence) obj;
 		return status.equals(p.getStatus()) && game.equals(p.getGame());
 	}
 
 	public int hashCode() {
-		if (game != null) return (status + game.hashCode()).hashCode();
+		if (game != null)
+			return (status + game.hashCode()).hashCode();
 		return status.hashCode();
 	}
 

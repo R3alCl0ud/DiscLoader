@@ -14,6 +14,10 @@ import io.discloader.discloader.entity.user.IUser;
 
 public interface IClient {
 
+	CompletableFuture<Void> disconnect();
+
+	CompletableFuture<Void> disconnect(String reason, int code);
+
 	Map<Long, IChannel> getChannels();
 
 	Map<Long, IGuild> getGuilds();
@@ -35,9 +39,5 @@ public interface IClient {
 	CompletableFuture<IClient> login();
 
 	CompletableFuture<IClient> login(String token);
-
-	CompletableFuture<Void> disconnect();
-
-	CompletableFuture<Void> disconnect(String reason, int code);
 
 }

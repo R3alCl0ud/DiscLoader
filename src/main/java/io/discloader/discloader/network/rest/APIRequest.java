@@ -35,10 +35,14 @@ public class APIRequest {
 	/**
 	 * Creates a new APIRequest
 	 * 
-	 * @param url The endpoint's url
-	 * @param method The request method to use
-	 * @param auth Does the endpoint require authorization
-	 * @param data The payload to attach to the request
+	 * @param url
+	 *            The endpoint's url
+	 * @param method
+	 *            The request method to use
+	 * @param auth
+	 *            Does the endpoint require authorization
+	 * @param data
+	 *            The payload to attach to the request
 	 */
 	public APIRequest(String url, int method, boolean auth, Object data) {
 		this.url = url;
@@ -56,8 +60,9 @@ public class APIRequest {
 	/**
 	 * Converts the {@link APIRequest} URL to the corresponding API Endpoint
 	 * 
-	 * @param url The url of the endpoint
-	 * @return API Endpoint {@link DLUtil.Endpoints}
+	 * @param url
+	 *            The url of the endpoint
+	 * @return API Endpoint
 	 */
 	public String getRoute(String url) {
 		String route = url.split("[?]")[0];
@@ -88,12 +93,16 @@ public class APIRequest {
 					File file = sdata.file;
 					Resource resource = sdata.resource;
 					byte[] bytes = new byte[0];
-					if (file != null) bytes = DLUtil.readAllBytes(file);
-					if (resource != null) bytes = DLUtil.readAllBytes(resource);
+					if (file != null)
+						bytes = DLUtil.readAllBytes(file);
+					if (resource != null)
+						bytes = DLUtil.readAllBytes(resource);
 					MultipartBody body = ((HttpRequestWithBody) request).fields(null);
 					String loc = "";
-					if (file != null) loc = file.getName();
-					if (resource != null) loc = resource.getFileName();
+					if (file != null)
+						loc = file.getName();
+					if (resource != null)
+						loc = resource.getFileName();
 					body.field("Content-type", "multipart/form-data").field("file", bytes, loc).field("payload_json", gson.toJson(sdata));
 				} catch (IOException ex) {
 					ex.printStackTrace();

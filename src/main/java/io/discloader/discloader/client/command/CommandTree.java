@@ -38,7 +38,7 @@ public class CommandTree extends Command {
 						}
 					}
 					if (e.getMessage().getGuild() != null && !cmd.shouldExecute(e.getMessage().getMember(), (IGuildTextChannel) e.getChannel())) {
-						break;
+						return;
 					} else {
 						cmd.execute(e, argc);
 						return;

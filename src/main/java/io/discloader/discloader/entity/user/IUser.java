@@ -19,76 +19,83 @@ import io.discloader.discloader.network.json.UserJSON;
  * @author Perry Berman
  */
 public interface IUser extends ISnowflake, ICreationTime, IMentionable {
-	
+
 	/**
 	 * @return A String in discord's mention format
 	 */
 	String asMention();
-	
+
 	/**
-	 * @return
+	 * Returns an IIcon representation of the user's Avatar.
+	 * 
+	 * @return An IIcon representation of the user's Avatar.
 	 */
 	IIcon getAvatar();
-	
+
 	/**
-	 * @return
+	 * @return The user's four digit tag number
 	 */
 	short getDiscriminator();
-	
+
 	/**
-	 * @return
+	 * @return The {@link DiscLoader} object that was used to create the user object
 	 */
 	DiscLoader getLoader();
-	
+
 	IPrivateChannel getPrivateChannel();
-	
+
 	CompletableFuture<IUserProfile> getProfile();
-	
+
 	String getUsername();
-	
+
 	boolean isBot();
-	
+
 	boolean isVerified();
-	
+
 	boolean MFAEnabled();
-	
+
 	CompletableFuture<IPrivateChannel> openPrivateChannel();
-	
+
 	/**
 	 * Sends a {@link Message} to the channel.
 	 * 
-	 * @param embed The embed to send
+	 * @param embed
+	 *            The embed to send
 	 * @return A Future that completes with a {@link Message} if successful,
 	 */
 	CompletableFuture<IMessage> sendEmbed(RichEmbed embed);
-	
+
 	CompletableFuture<IMessage> sendFile(File file);
-	
+
 	CompletableFuture<IMessage> sendFile(Resource resource);
-	
+
 	/**
 	 * Sends a {@link Message} to the channel.
 	 * 
-	 * @param content The message's content
+	 * @param content
+	 *            The message's content
 	 * @return A Future that completes with a {@link Message} if successful,
 	 */
 	CompletableFuture<IMessage> sendMessage(String content);
-	
+
 	/**
 	 * Sends a {@link Message} to the channel.
 	 * 
-	 * @param content The message's content
-	 * @param embed The RichEmbed to send with the message
-	 * @return A Future that completes with the pinned {@link Message} if successful.
+	 * @param content
+	 *            The message's content
+	 * @param embed
+	 *            The RichEmbed to send with the message
+	 * @return A Future that completes with the pinned {@link Message} if
+	 *         successful.
 	 */
 	CompletableFuture<IMessage> sendMessage(String content, RichEmbed embed);
-	
+
 	CompletableFuture<IMessage> sendMessage(String content, RichEmbed embed, File file);
-	
+
 	CompletableFuture<IMessage> sendMessage(String content, RichEmbed embed, Resource resource);
-	
+
 	void setup(UserJSON data);
-	
+
 	/**
 	 * returns a String in the format of
 	 * 
@@ -99,5 +106,5 @@ public interface IUser extends ISnowflake, ICreationTime, IMentionable {
 	 * @return {@link #getUsername()}{@literal #}{@link #getDiscriminator()}
 	 */
 	String toString();
-	
+
 }

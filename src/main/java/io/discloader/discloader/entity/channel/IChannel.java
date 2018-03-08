@@ -23,11 +23,10 @@ public interface IChannel extends ISnowflake, ICreationTime {
 
 	/**
 	 * Whether or not the channel is a dm channel. Is always {@literal true} if
-	 * {@link Channel#type type} is {@literal "groupDM"} or
-	 * {@literal "dm"}
+	 * {@link Channel#type type} is {@literal "groupDM"} or {@literal "dm"}
 	 * 
 	 * @return true if the channel is a dm/groupDM channel, false otherwise
-	 * @author Perry Berman
+	 * 
 	 */
 	boolean isPrivate();
 
@@ -36,13 +35,14 @@ public interface IChannel extends ISnowflake, ICreationTime {
 	/**
 	 * Sets up the channel for use.
 	 * 
-	 * @param data Channel data.
+	 * @param data
+	 *            Channel data.
 	 */
 	void setup(ChannelJSON data);
 
 	/**
-	 * @return A string that is in the correct format for mentioning this
-	 *         channel in a {@link Message}
+	 * @return A string that is in the correct format for mentioning this channel in
+	 *         a {@link Message}
 	 */
 	String toMention();
 

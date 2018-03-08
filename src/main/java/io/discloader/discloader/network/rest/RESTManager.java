@@ -18,7 +18,8 @@ public class RESTManager {
 	private final Map<String, Route<?>> routes;
 
 	/**
-	 * Concurrently stores whether or not the global limit for REST requests has been reached. 
+	 * Concurrently stores whether or not the global limit for REST requests has
+	 * been reached.
 	 */
 	private static AtomicBoolean globally = new AtomicBoolean(false);
 
@@ -72,15 +73,19 @@ public class RESTManager {
 	}
 
 	/**
-	 * @return the globally
+	 * Returns whether or not we have hit the global discord ratelimit.
+	 * 
+	 * @return Whether or not we have hit the global discord ratelimit.
 	 */
 	public boolean isGlobally() {
 		return globally.get();
 	}
 
 	/**
-	 * @param globally
-	 *            the globally to set
+	 * Sets whether or not we have hit the global discord ratelimit.
+	 * 
+	 * @param isGlobally
+	 *            whether or not we have hit the global discord ratelimit.
 	 */
 	public void setGlobally(boolean isGlobally) {
 		RESTManager.globally.set(isGlobally);

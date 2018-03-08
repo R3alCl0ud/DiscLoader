@@ -1,5 +1,7 @@
 /**
- * Contains all object passed to the methods of {@link IEventListener} objects
+ * Contains all object passed to the methods of
+ * {@link io.discloader.discloader.common.event.IEventListener IEventListener}
+ * objects
  * 
  * @author Perry Berman
  */

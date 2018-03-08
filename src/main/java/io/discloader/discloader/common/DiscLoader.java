@@ -23,6 +23,7 @@ import io.discloader.discloader.common.event.IEventListener;
 import io.discloader.discloader.common.event.ReadyEvent;
 import io.discloader.discloader.common.exceptions.AccountTypeException;
 import io.discloader.discloader.common.exceptions.GuildSyncException;
+import io.discloader.discloader.common.exceptions.UnauthorizedException;
 import io.discloader.discloader.common.logger.DLErrorStream;
 import io.discloader.discloader.common.logger.DLPrintStream;
 import io.discloader.discloader.common.registry.EntityRegistry;
@@ -98,7 +99,6 @@ public class DiscLoader {
 
 	private CompletableFuture<DiscLoader> rf;
 	private Map<Long, IGuild> syncingGuilds;
-
 
 	/**
 	 * The User we are currently logged in as.
@@ -226,7 +226,8 @@ public class DiscLoader {
 	/**
 	 * Adds an event listener to the client.
 	 * 
-	 * @param e The IEventListener to add
+	 * @param e
+	 *            The IEventListener to add
 	 * @return {@code this}
 	 */
 	public DiscLoader addEventListener(IEventListener e) {
@@ -280,6 +281,12 @@ public class DiscLoader {
 
 	public void emit(DLEvent event) {
 		eventManager.emit(event);
+		if (event instanceof DisconnectEvent) {
+			DisconnectEvent devent = (DisconnectEvent) event;
+			if ((devent.getClientFrame().getCloseCode() == 4004 || devent.getServerFrame().getCloseCode() == 4004) && !rf.isDone()) {
+				rf.completeExceptionally(new UnauthorizedException("Authentication failed"));
+			}
+		}
 	}
 
 	public void emit(String event) {
@@ -295,6 +302,7 @@ public class DiscLoader {
 	public void emitReady() {
 		socket.setReady();
 		ready = true;
+		// rf.is
 		rf.complete(this);
 		CommandHandler.handleCommands = true;
 		ReadyEvent event = new ReadyEvent(this);
@@ -304,7 +312,8 @@ public class DiscLoader {
 
 	/**
 	 * @param code
-	 * @return A CompletableFuture that completes with an IInvite object if successful.
+	 * @return A CompletableFuture that completes with an IInvite object if
+	 *         successful.
 	 */
 	public CompletableFuture<IInvite> getInvite(String code) {
 		CompletableFuture<IInvite> future = new CompletableFuture<>();
@@ -336,7 +345,7 @@ public class DiscLoader {
 	public Shard getShard() {
 		return this.shard;
 	}
-	
+
 	/**
 	 * Returns a DLUser object representing the user you are logged in as.
 	 * 
@@ -374,6 +383,8 @@ public class DiscLoader {
 	 * @return A CompletableFuture that completes with {@code this} if successful.
 	 */
 	public CompletableFuture<DiscLoader> login(String token) {
+		if (rf != null && rf.isCompletedExceptionally())
+			return rf;
 		LOG.info("Attempting to login");
 		rf = new CompletableFuture<>();
 
