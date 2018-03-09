@@ -4,7 +4,7 @@
 
 	<groupId>io.discloader</groupId>
 	<artifactId>discloader</artifactId>
-	<version>0.2.4</version>
+	<version>0.2.5</version>
 
 	<name>DiscLoader</name>
 	<description>A simple easy to use Discord API rest/gateway client</description>
