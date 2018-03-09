@@ -4,8 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Pattern;
 
-import io.discloader.discloader.client.registry.TextureRegistry;
-import io.discloader.discloader.client.render.util.IRenderable;
 import io.discloader.discloader.client.render.util.Resource;
 import io.discloader.discloader.common.event.message.MessageCreateEvent;
 import io.discloader.discloader.common.registry.CommandRegistry;
@@ -45,13 +43,11 @@ public class Command {
 
 	private int id;
 
-	protected IRenderable renderable;
-
 	/**
 	 * Creates a new Command
 	 */
 	public Command() {
-		this.renderable = null;
+
 	}
 
 	/**
@@ -104,13 +100,6 @@ public class Command {
 	 */
 	public String getFullDescription() {
 		return fullDescription;
-	}
-
-	public IRenderable getIcon() {
-		if (this.renderable == null) {
-			this.renderable = TextureRegistry.registerCommandIcon(this);
-		}
-		return this.renderable;
 	}
 
 	/**
@@ -170,8 +159,9 @@ public class Command {
 	 * @param fullDescription
 	 *            the fullDescription to set
 	 */
-	public void setFullDescription(String fullDescription) {
+	public Command setFullDescription(String fullDescription) {
 		this.fullDescription = fullDescription;
+		return this;
 	}
 
 	/**

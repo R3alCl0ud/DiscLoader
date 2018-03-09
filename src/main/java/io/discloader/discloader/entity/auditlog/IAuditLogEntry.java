@@ -18,6 +18,8 @@ public interface IAuditLogEntry extends ISnowflake {
 	Object getTarget();
 
 	ActionTypes getActionType();
+	
+	long getTargetID();
 
 	default boolean actionInRange(int min, int max) {
 		int at = getActionType().toInt();

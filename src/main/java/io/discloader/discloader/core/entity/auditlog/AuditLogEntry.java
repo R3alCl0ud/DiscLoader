@@ -61,17 +61,29 @@ public class AuditLogEntry implements IAuditLogEntry {
 
 	@Override
 	public Object getTarget() {
-		if (actionType == 1) return getAuditLogs().getGuild();
-		else if (actionInRange(10, 15)) return EntityRegistry.getChannelByID(target_id);
-		else if (actionInRange(20, 25)) return getAuditLogs().getGuild().getMember(target_id);
-		else if (actionInRange(30, 32)) return getAuditLogs().getGuild().getRoleByID(target_id);
-		else if (actionInRange(40, 42)) return getAuditLogs().getGuild().getInvite(target_id);
+		if (actionType == 1)
+			return getAuditLogs().getGuild();
+		else if (actionInRange(10, 15))
+			return EntityRegistry.getChannelByID(target_id);
+		else if (actionInRange(20, 23))
+			return EntityRegistry.getUserByID(target_id);
+		else if (actionInRange(24, 25))
+			return getAuditLogs().getGuild().getMember(target_id);
+		else if (actionInRange(30, 32))
+			return getAuditLogs().getGuild().getRoleByID(target_id);
+		else if (actionInRange(40, 42))
+			return getAuditLogs().getGuild().getInvite(target_id);
 		return null;
 	}
 
 	@Override
 	public ActionTypes getActionType() {
 		return ActionTypes.parseInt(actionType);
+	}
+
+	@Override
+	public long getTargetID() {
+		return SnowflakeUtil.parse(target_id);
 	}
 
 }

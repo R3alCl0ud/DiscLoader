@@ -17,7 +17,7 @@ public class GuildMemberRemoveEvent extends DLEvent {
 	 * @return the guild
 	 */
 	public IGuild getGuild() {
-		return member.getGuild();
+		return getMember().getGuild();
 	}
 
 	/**
