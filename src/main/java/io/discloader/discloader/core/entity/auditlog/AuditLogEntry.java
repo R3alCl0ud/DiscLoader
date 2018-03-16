@@ -14,13 +14,13 @@ import io.discloader.discloader.network.json.AuditLogChangeJSON;
 import io.discloader.discloader.network.json.AuditLogEntryJSON;
 
 public class AuditLogEntry implements IAuditLogEntry {
-
+	
 	private long id, user_id;
 	private int actionType;
 	private String reason, target_id;
 	private List<IAuditLogChange> changes;
 	private IAuditLog logs;
-
+	
 	public AuditLogEntry(IAuditLog logs, AuditLogEntryJSON data) {
 		this.logs = logs;
 		id = SnowflakeUtil.parse(data.id);
@@ -28,37 +28,39 @@ public class AuditLogEntry implements IAuditLogEntry {
 		target_id = data.target_id;
 		actionType = data.action_type;
 		changes = new ArrayList<>();
-
-		for (AuditLogChangeJSON cd : data.changes) {
-			changes.add(new AuditLogChange(cd));
+		
+		if (data.changes != null) {
+			for (AuditLogChangeJSON cd : data.changes) {
+				changes.add(new AuditLogChange(cd));
+			}
 		}
 	}
-
+	
 	@Override
 	public IAuditLog getAuditLogs() {
 		return logs;
 	}
-
+	
 	@Override
 	public IUser getAuthor() {
 		return EntityRegistry.getUserByID(user_id);
 	}
-
+	
 	@Override
 	public List<IAuditLogChange> getChanges() {
 		return changes;
 	}
-
+	
 	@Override
 	public long getID() {
 		return id;
 	}
-
+	
 	@Override
 	public String getReason() {
 		return reason;
 	}
-
+	
 	@Override
 	public Object getTarget() {
 		if (actionType == 1)
@@ -75,15 +77,15 @@ public class AuditLogEntry implements IAuditLogEntry {
 			return getAuditLogs().getGuild().getInvite(target_id);
 		return null;
 	}
-
+	
 	@Override
 	public ActionTypes getActionType() {
 		return ActionTypes.parseInt(actionType);
 	}
-
+	
 	@Override
 	public long getTargetID() {
 		return SnowflakeUtil.parse(target_id);
 	}
-
+	
 }

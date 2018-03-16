@@ -249,9 +249,11 @@ public interface IGuild extends ISnowflake, ICreationTime {
 	 */
 	CompletableFuture<Map<Long, IGuildMember>> fetchMembers(int limit);
 	
+	CompletableFuture<IAuditLog> getAuditLog();
+	
 	CompletableFuture<IAuditLog> getAuditLog(ActionTypes action);
 	
-	CompletableFuture<IAuditLog> getAuditLog(ActionTypes action, int i);
+	CompletableFuture<IAuditLog> getAuditLog(ActionTypes action, int limit);
 	
 	CompletableFuture<IAuditLog> getAuditLog(IAuditLogEntry before);
 	

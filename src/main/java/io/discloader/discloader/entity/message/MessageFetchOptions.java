@@ -1,7 +1,6 @@
-package io.discloader.discloader.core.entity.message;
+package io.discloader.discloader.entity.message;
 
 import io.discloader.discloader.entity.channel.ITextChannel;
-import io.discloader.discloader.entity.message.IMessage;
 
 /**
  * Options for fetching messages from {@link ITextChannel ITextChannels}
