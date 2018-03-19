@@ -1,23 +1,17 @@
-package io.discloader.discloader.client.render.texture.icon;
+package io.discloader.discloader.core.entity.guild;
 
-import java.awt.Image;
 import java.net.MalformedURLException;
 import java.net.URL;
 
-import javax.swing.ImageIcon;
-
-import io.discloader.discloader.client.render.texture.AbstractTexture;
-import io.discloader.discloader.core.entity.guild.Guild;
 import io.discloader.discloader.core.entity.invite.InviteGuild;
 import io.discloader.discloader.entity.IIcon;
-import io.discloader.discloader.util.DLUtil;
 import io.discloader.discloader.util.DLUtil.Endpoints;
 
 /**
  * 
  * @author Perry Berman
  */
-public class GuildSplash extends AbstractTexture implements IIcon {
+public class GuildSplash implements IIcon {
 
 	private Guild guild = null;
 	private InviteGuild partGuild = null;
@@ -38,35 +32,6 @@ public class GuildSplash extends AbstractTexture implements IIcon {
 		} else {
 			return Endpoints.guildSplash(partGuild.getID(), partGuild.splashHash);
 		}
-	}
-
-	@Override
-	public ImageIcon getImageIcon() {
-		return this.createIcon(toString());
-	}
-
-	@Override
-	public Image getImage() {
-		return this.getImageIcon().getImage();
-	}
-
-	protected ImageIcon createIcon(String url) {
-		URL imgURL = null;
-		if (url != null) {
-			try {
-				imgURL = new URL(url);
-			} catch (MalformedURLException e) {
-				try {
-					imgURL = DLUtil.MissingTexture.toURI().toURL();
-				} catch (MalformedURLException e1) {}
-			}
-		}
-		if (imgURL != null) {
-			return new ImageIcon(imgURL);
-		} else {
-			return null;
-		}
-
 	}
 
 	@Override

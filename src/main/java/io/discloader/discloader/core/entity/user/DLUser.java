@@ -10,9 +10,9 @@ import org.json.JSONObject;
 
 import io.discloader.discloader.common.exceptions.AccountTypeException;
 import io.discloader.discloader.common.registry.EntityRegistry;
-import io.discloader.discloader.core.entity.Game;
-import io.discloader.discloader.core.entity.Presence;
-import io.discloader.discloader.entity.IPresence;
+import io.discloader.discloader.core.entity.presence.Activity;
+import io.discloader.discloader.core.entity.presence.Presence;
+import io.discloader.discloader.entity.presence.IPresence;
 import io.discloader.discloader.entity.sendable.Packet;
 import io.discloader.discloader.entity.user.IUser;
 import io.discloader.discloader.network.gateway.packets.request.StatusUpdate;
@@ -72,7 +72,7 @@ public class DLUser extends User {
 	 * 
 	 */
 	public CompletableFuture<OAuth2Application> getOAuth2Application() {
-		if (!isBot()) {			
+		if (!isBot()) {
 			throw new AccountTypeException("Cannot fetch the OAuth2Application details of a User Account.");
 		}
 		CompletableFuture<OAuth2Application> future = new CompletableFuture<>();
@@ -124,14 +124,38 @@ public class DLUser extends User {
 	}
 
 	/**
-	 * Sets the currently loggedin user's game
+	 * Sets the currently logged in user's game.
 	 * 
 	 * @param game
-	 *            The name of the game you are playing
-	 * @return this
+	 *            The name of the game you are playing.
+	 * @return {@code this} object.
+	 * @deprecated Use {@link #setActivity(String)} instead.
 	 */
+	@Deprecated
 	public DLUser setGame(String game) {
-		return setPresence(presence.status, game != null ? new Game(game) : null, this.afk);
+		return setPresence(presence.status, game != null ? new Activity(game) : null, this.afk);
+	}
+
+	/**
+	 * Sets the currently logged in user's activity
+	 * 
+	 * @param activity
+	 *            The name of the activity
+	 * @return {@code this} object.
+	 */
+	public DLUser setActivity(String activity) {
+		return setPresence(presence.status, activity != null ? new Activity(activity) : null, this.afk);
+	}
+
+	/**
+	 * Sets the currently logged in user's activity
+	 * 
+	 * @param activity
+	 *            Your new activity.
+	 * @return {@code this} object.
+	 */
+	public DLUser setActivity(Activity activity) {
+		return setPresence(presence.status, activity, this.afk);
 	}
 
 	/**
@@ -139,24 +163,22 @@ public class DLUser extends User {
 	 * 
 	 * @param status
 	 *            The new status
-	 * @param game
-	 *            The new game
+	 * @param activity
+	 *            The new activity
 	 * @param afk
 	 *            Are you afk?
 	 * @return this
 	 */
-	public DLUser setPresence(String status, Game game, boolean afk) {
-		StatusUpdate d = new StatusUpdate(game, status, afk, 0);
+	public DLUser setPresence(String status, Activity activity, boolean afk) {
+		StatusUpdate d = new StatusUpdate(activity, status, afk, 0);
 		Packet payload = new Packet(3, d);
-		presence.update(status, game);
+		presence.update(status, activity);
 		loader.socket.send(payload);
 		return this;
 	}
 
 	public void setPresence(IPresence presence) {
-		// presence.
-		this.presence.update(presence.getStatus(), (Game) presence.getGame());
-		// this.presence = (Presence) presence;
+		this.presence.update(presence.getStatus(), (Activity) presence.getActivity());
 	}
 
 	/**

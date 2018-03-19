@@ -19,12 +19,15 @@ public class UserAvatar implements IIcon {
 
 	@Override
 	public URL toURL() throws MalformedURLException {
-		if (hash == null) return new URL(Endpoints.defaultAvatar(discrim % 5));
+		if (hash == null)
+			return new URL(Endpoints.defaultAvatar(discrim % 5));
 		return new URL(Endpoints.avatar(userID, hash));
 	}
 
 	public String toString() {
-		if (hash == null) return Endpoints.defaultAvatar(discrim % 5);
+		if (hash == null) {
+			return Endpoints.defaultAvatar(discrim % 5);
+		}
 		return Endpoints.avatar(userID, hash);
 	}
 

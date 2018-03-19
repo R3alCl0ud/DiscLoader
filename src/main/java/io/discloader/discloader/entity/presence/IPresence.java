@@ -1,4 +1,4 @@
-package io.discloader.discloader.entity;
+package io.discloader.discloader.entity.presence;
 
 /**
  * @author Perry Berman
@@ -7,7 +7,10 @@ public interface IPresence {
 
 	String getStatus();
 
-	IGame getGame();
+	@Deprecated
+	IActivity getGame();
+
+	IActivity getActivity();
 
 	boolean equals(Object object);
 

@@ -14,7 +14,6 @@ import com.neovisionaries.ws.client.WebSocketException;
 import io.discloader.discloader.client.command.Command;
 import io.discloader.discloader.client.command.CommandHandler;
 import io.discloader.discloader.client.logger.DLLogger;
-import io.discloader.discloader.client.registry.ClientRegistry;
 import io.discloader.discloader.common.discovery.ModContainer;
 import io.discloader.discloader.common.event.DLEvent;
 import io.discloader.discloader.common.event.DisconnectEvent;
@@ -81,8 +80,6 @@ public class DiscLoader {
 	public boolean ready;
 
 	private EventManager eventManager;
-
-	public final ClientRegistry clientRegistry;
 
 	public RESTManager rest;
 
@@ -202,7 +199,6 @@ public class DiscLoader {
 		System.setProperty("http.agent", "DiscLoader");
 		socket = new Gateway(this);
 		rest = new RESTManager(this);
-		clientRegistry = new ClientRegistry();
 		syncingGuilds = new HashMap<>();
 		ready = false;
 		eventManager = new EventManager();

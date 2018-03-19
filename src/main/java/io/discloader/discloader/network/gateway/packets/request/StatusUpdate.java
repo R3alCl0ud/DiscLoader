@@ -1,15 +1,15 @@
 package io.discloader.discloader.network.gateway.packets.request;
 
-import io.discloader.discloader.core.entity.Game;
+import io.discloader.discloader.core.entity.presence.Activity;
 
 public class StatusUpdate {
-	public Game game;
+	public Activity activity;
 	public boolean afk;
 	public String status;
 	public int since;
 
-	public StatusUpdate(Game game, String status, boolean afk, int since) {
-		this.game = game;
+	public StatusUpdate(Activity activity, String status, boolean afk, int since) {
+		this.activity = activity;
 		this.since = since;
 		this.afk = afk;
 		this.status = status;

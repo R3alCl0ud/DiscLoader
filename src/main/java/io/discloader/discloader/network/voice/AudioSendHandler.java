@@ -11,27 +11,25 @@ import com.sedmelluq.discord.lavaplayer.track.playback.AudioFrame;
 import io.discloader.discloader.entity.voice.VoiceConnection;
 
 public class AudioSendHandler implements AudioOutputHook {
-	
+
 	private final AudioPlayer audioPlayer;
 	private final VoiceConnection connection;
 	private AudioFrame lastFrame;
 	private Thread packetThread;
-	
+
 	// Packet creation variables
 	private char sequence = 0;
 	private int timestamp = 0;
-	private int silent = 0;
-	
-	private byte[] rawAudio;
-	private byte[] rawPacket;
-	
-	private byte[] silentAudio = { (byte) 0xF8, (byte) 0xFF, (byte) 0xFE };
-	
+
+	private byte[] rawAudio, rawPacket;
+
+	// private byte[] silentAudio = { (byte) 0xF8, (byte) 0xFF, (byte) 0xFE };
+
 	public AudioSendHandler(AudioPlayer player, VoiceConnection connection) {
 		audioPlayer = player;
 		this.connection = connection;
 	}
-	
+
 	// converts array of one byte ints to a byte array
 	protected byte[] getBytes(int[] a) {
 		byte[] bytes = new byte[a.length];
@@ -40,13 +38,13 @@ public class AudioSendHandler implements AudioOutputHook {
 		}
 		return bytes;
 	}
-	
+
 	public void sendPackets(DatagramSocket udpSocket) {
 		if (packetThread != null && !packetThread.isInterrupted()) {
 			packetThread.interrupt();
 		}
 		packetThread = new Thread("VoicePacketSender - Guild: " + connection.getGuild().getID()) {
-			
+
 			@Override
 			public void run() {
 				long lastSent = System.currentTimeMillis();
@@ -56,8 +54,9 @@ public class AudioSendHandler implements AudioOutputHook {
 				while (!udpSocket.isClosed() && !this.isInterrupted()) {
 					try {
 						DatagramPacket packet = getNextPacket((System.currentTimeMillis() - lastSent) > 20);
-						if (packet != null) udpSocket.send(packet);
-						
+						if (packet != null)
+							udpSocket.send(packet);
+
 					} catch (Exception e) {
 						e.printStackTrace();
 					} finally {
@@ -75,47 +74,49 @@ public class AudioSendHandler implements AudioOutputHook {
 							lastSent = System.currentTimeMillis();
 						}
 					}
-					
+
 				}
 			}
 		};
 		// }
-		
+
 		packetThread.setPriority((Thread.NORM_PRIORITY + Thread.MAX_PRIORITY) / 2);
 		packetThread.start();
-		
+
 	}
-	
+
 	public boolean canProvide() {
 		lastFrame = audioPlayer.provide();
 		return lastFrame != null;
 	}
-	
+
 	public byte[] provide20MsAudio() {
 		return lastFrame.data;
 	}
-	
+
 	public void stop() {
 		if (packetThread != null) {
 			packetThread.interrupt();
 		}
 	}
-	
+
 	public byte[] getNonce() {
 		return Arrays.copyOf(rawPacket, 12);
 	}
-	
+
 	public DatagramPacket getNextPacket(boolean changeTalking) {
 		DatagramPacket nextPacket = null;
-		
+
 		try {
 			if (canProvide()) {
 				byte[] rawAudio = provide20MsAudio();
 				if (rawAudio == null || rawAudio.length == 0) {
-					if (connection.isSpeaking() && changeTalking) connection.setSpeaking(false);
+					if (connection.isSpeaking() && changeTalking)
+						connection.setSpeaking(false);
 				} else {
 					StreamPacket packet = new StreamPacket(sequence, timestamp, connection.getSSRC(), rawAudio);
-					if (!connection.isSpeaking()) connection.setSpeaking(true);
+					if (!connection.isSpeaking())
+						connection.setSpeaking(true);
 					nextPacket = packet.toEncryptedPacket(connection.getUDPClient().getVoiceGateway(), connection.getWebSocket().getSecretKey());
 					if (sequence + 1 > Character.MAX_VALUE) {
 						sequence = 0;
@@ -123,41 +124,42 @@ public class AudioSendHandler implements AudioOutputHook {
 						sequence++;
 					}
 				}
-			} else if (connection.isSpeaking() && changeTalking) connection.setSpeaking(false);
-			
+			} else if (connection.isSpeaking() && changeTalking)
+				connection.setSpeaking(false);
+
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		
+
 		if (nextPacket != null) {
 			timestamp += 960;
 		}
-		
+
 		return nextPacket;
 	}
-	
+
 	/**
 	 * @return the rawAudio
 	 */
 	public byte[] getRawAudio() {
 		return Arrays.copyOf(this.rawAudio, this.rawAudio.length);
 	}
-	
+
 	/**
 	 * @return the rawPacket
 	 */
 	public byte[] getRawPacket() {
 		return Arrays.copyOf(this.rawPacket, this.rawPacket.length);
 	}
-	
+
 	public boolean isOpen() {
 		return packetThread != null && packetThread.isAlive();
 	}
-	
+
 	@Override
 	public AudioFrame outgoingFrame(AudioPlayer player, AudioFrame frame) {
 		// System.out.println(frame.format.codec.name());
 		return frame;
 	}
-	
+
 }
