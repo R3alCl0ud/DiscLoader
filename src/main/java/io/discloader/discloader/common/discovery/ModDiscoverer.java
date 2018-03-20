@@ -22,7 +22,7 @@ public class ModDiscoverer {
 
 	private static Pattern modExt = Pattern.compile(".(jar|zip)");
 
-	private static Logger logger = new DLLogger(ModDiscoverer.class).getLogger();
+	private static Logger logger = DLLogger.getLogger(ModDiscoverer.class);
 
 	public static final File modsDir = new File("./mods");
 

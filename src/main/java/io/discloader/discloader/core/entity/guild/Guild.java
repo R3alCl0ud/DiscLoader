@@ -570,13 +570,17 @@ public class Guild implements IGuild {
 	@Override
 	public CompletableFuture<Map<Long, IGuildMember>> fetchMembers(int limit) {
 		CompletableFuture<Map<Long, IGuildMember>> future = new CompletableFuture<>();
-		final Consumer<Object> consumer = event -> {
-			if (event instanceof GuildMembersChunkEvent) {
-				GuildMembersChunkEvent gmce = (GuildMembersChunkEvent) event;
-				future.complete(gmce.members);
+		final Consumer<GuildMembersChunkEvent> consumer = new Consumer<GuildMembersChunkEvent>() {
+			@Override
+			public void accept(GuildMembersChunkEvent e) {
+				if (e.getGuild().getID() != getID()) {
+					loader.onceEvent(GuildMembersChunkEvent.class, this);
+					return;
+				}
+				future.complete(e.getMembers());
 			}
 		};
-		loader.onceEvent(consumer, guild -> guild.getID() == getID());
+		loader.onceEvent(GuildMembersChunkEvent.class, consumer);
 		Packet payload = new Packet(8, new MemberQuery(limit, ""));
 		loader.socket.send(payload);
 		return future;

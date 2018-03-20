@@ -5,7 +5,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Consumer;
-import java.util.function.Function;
 
 import io.discloader.discloader.common.event.channel.ChannelCreateEvent;
 import io.discloader.discloader.common.event.channel.ChannelDeleteEvent;
@@ -52,15 +51,14 @@ import io.discloader.discloader.common.event.message.PrivateMessageCreateEvent;
 import io.discloader.discloader.common.event.message.PrivateMessageDeleteEvent;
 import io.discloader.discloader.common.event.message.PrivateMessageUpdateEvent;
 import io.discloader.discloader.common.event.voice.VoiceStateUpdateEvent;
-import io.discloader.discloader.entity.guild.IGuild;
 
 public class EventManager {
 
 	private final List<IEventListener> handlers = new ArrayList<>();
-	private final List<Consumer<DLEvent>> consumers = new ArrayList<>();
-	private final Map<Consumer<Object>, Function<IGuild, Boolean>> guildTest = new HashMap<>();
-	private final Map<String, List<Consumer<Object>>> _listeners = new HashMap<>();
-	private final Map<String, List<Consumer<Object>>> _onceListeners = new HashMap<>();
+	@SuppressWarnings("rawtypes")
+	private final Map<String, List<Consumer>> _listeners = new HashMap<>();
+	@SuppressWarnings("rawtypes")
+	private final Map<String, List<Consumer>> _onceListeners = new HashMap<>();
 
 	// private final DiscLoader loader;
 
@@ -77,32 +75,18 @@ public class EventManager {
 		handlers.remove(e);
 	}
 
+	@SuppressWarnings({ "rawtypes", "unchecked" })
 	public void emit(DLEvent event) {
 		if (_listeners.containsKey(event.getClass().getSimpleName())) {
-			List<Consumer<Object>> cons = _listeners.get(event.getClass().getSimpleName());
+			List<Consumer> cons = _listeners.get(event.getClass().getSimpleName());
 			for (int i = cons.size() - 1; i >= 0; i--) {
 				cons.get(i).accept(event);
 			}
 		}
 		if (_onceListeners.containsKey(event.getClass().getSimpleName())) {
-			List<Consumer<Object>> cons = _onceListeners.get(event.getClass().getSimpleName());
+			List<Consumer> cons = _onceListeners.get(event.getClass().getSimpleName());
 			for (int i = cons.size() - 1; i >= 0; i--) {
 				cons.remove(i).accept(event);
-			}
-		}
-		for (Consumer<DLEvent> consumer : consumers) {
-			try {
-				if (event instanceof GuildMembersChunkEvent && guildTest.get(consumer) != null) {
-					boolean b = guildTest.get(consumer).apply(((GuildMembersChunkEvent) event).guild);
-					if (b) {
-						consumer.accept(event);
-						guildTest.remove(consumer);
-					}
-				} else {
-					consumer.accept(event);
-				}
-			} catch (Exception e) {
-				e.printStackTrace();
 			}
 		}
 		for (int i = handlers.size() - 1; i >= 0; i--) {
@@ -227,34 +211,30 @@ public class EventManager {
 		}
 	}
 
-	public <T> void onEvent(Class<T> cls, Consumer<Object> consumer) {
+	public <T extends DLEvent> void onEvent(Class<T> cls, Consumer<T> consumer) {
 		if (_listeners.get(cls.getSimpleName()) == null) {
 			_listeners.put(cls.getSimpleName(), new ArrayList<>());
 		}
 		_listeners.get(cls.getSimpleName()).add(consumer);
 	}
 
-	public <T extends Object> void onceEvent(Class<T> cls, Consumer<Object> consumer) {
+	public <T extends DLEvent> void onceEvent(Class<T> cls, Consumer<T> consumer) {
 		if (_onceListeners.get(cls.getSimpleName()) == null) {
 			_onceListeners.put(cls.getSimpleName(), new ArrayList<>());
 		}
 		_onceListeners.get(cls.getSimpleName()).add(consumer);
 	}
 
-	public void onceEvent(Consumer<Object> consumer, Function<IGuild, Boolean> checker) {
-		onceEvent(IGuild.class, consumer);
-		guildTest.put(consumer, checker);
-	}
-
 	public List<IEventListener> getHandlers() {
 		return handlers;
 	}
 
-	public <T> List<Consumer<Object>> getConsumers(Class<T> cls) {
-		List<Consumer<Object>> listeners = new ArrayList<>();
-		for (Consumer<Object> consumer : _listeners.get(cls.getSimpleName()))
+	@SuppressWarnings("unchecked")
+	public <T> List<Consumer<DLEvent>> getConsumers(Class<T> cls) {
+		List<Consumer<DLEvent>> listeners = new ArrayList<>();
+		for (Consumer<DLEvent> consumer : _listeners.get(cls.getSimpleName()))
 			listeners.add(consumer);
-		for (Consumer<Object> consumer : _onceListeners.get(cls.getSimpleName()))
+		for (Consumer<DLEvent> consumer : _onceListeners.get(cls.getSimpleName()))
 			listeners.add(consumer);
 		return listeners;
 	}

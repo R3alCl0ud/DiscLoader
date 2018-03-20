@@ -25,7 +25,7 @@ import io.discloader.discloader.common.registry.EntityRegistry;
  */
 public final class ShardManager {
 
-	public static final Logger logger = new DLLogger(ShardManager.class).getLogger();
+	public static final Logger logger = DLLogger.getLogger(ShardManager.class);
 	public int shardCount = 1;
 
 	public int launchedShards = 0;

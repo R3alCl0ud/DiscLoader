@@ -54,7 +54,7 @@ public class VoiceGateway extends WebSocketAdapter {
 
 	public VoiceGateway(VoiceConnection connection) {
 		this.connection = connection;
-		logger = new DLLogger("VoiceGateway" + (connection.getGuild() == null ? " - Channel: " + connection.getChannel().getID() : " - Guild: " + connection.getGuild().getID())).getLogger();
+		logger = DLLogger.getLogger("VoiceGateway" + (connection.getGuild() == null ? " - Channel: " + connection.getChannel().getID() : " - Guild: " + connection.getGuild().getID()));
 		gson = new Gson();
 	}
 

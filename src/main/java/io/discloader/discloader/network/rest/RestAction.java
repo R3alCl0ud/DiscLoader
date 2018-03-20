@@ -16,12 +16,12 @@ import io.discloader.discloader.network.util.Methods;
  */
 public abstract class RestAction<T> {
 
-	public static final Logger LOG = new DLLogger(RestAction.class).getLogger();
+	public static final Logger LOG = DLLogger.getLogger(RestAction.class);
 
 	protected final DiscLoader loader;
 
 	private final String endpoint;
-	public static Consumer DEFAULT_SUCCESS = o -> {};
+	public static Consumer<?> DEFAULT_SUCCESS = o -> {};
 	public static Consumer<Throwable> DEFAULT_FAILURE = t -> {
 		LOG.throwing(t.getStackTrace()[0].getClassName(), t.getStackTrace()[0].getMethodName(), t);
 	};

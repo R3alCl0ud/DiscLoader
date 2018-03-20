@@ -19,5 +19,13 @@ public class GuildMembersChunkEvent extends DLEvent {
 
 		this.members = members;
 	}
+	
+	public IGuild getGuild() {
+		return guild;
+	}
 
+	public Map<Long,IGuildMember> getMembers() {
+		return members;
+	}
+	
 }

@@ -63,7 +63,7 @@ public class GatewayListener extends WebSocketAdapter {
 		this.handlers = new HashMap<String, AbstractHandler>();
 		this.queue = new ArrayList<SocketPacket>();
 		logName = loader.shards > 1 ? "Gateway Listener (Shard: #" + loader.shardid + ")" : "Gateway Listener";
-		logger = new DLLogger(logName).getLogger();
+		logger = DLLogger.getLogger(logName);
 		threadName = loader.shards > 1 ? "Gateway (Shard: #" + loader.shardid + ") - Reader" : "Gateway Reader";
 		this.register(WSEvents.HELLO, new Hello(this.socket));
 		this.register(WSEvents.READY, new Ready(this.socket));

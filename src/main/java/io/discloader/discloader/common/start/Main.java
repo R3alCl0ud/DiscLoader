@@ -47,7 +47,7 @@ public class Main {
 
 	// private static int shard = 0, shards = 1;
 
-	private static Logger LOGGER = new DLLogger(Main.class).getLogger();
+	private static Logger LOGGER = DLLogger.getLogger(Main.class);
 
 	private static final String tokenRegex = "-t=(.*+)", prefixRegex = "-p=(.*+)", shardRegex = "-s=(\\d+)\\:(\\d+)";
 	private static final Pattern tokenPat = Pattern.compile(tokenRegex), prefixPat = Pattern.compile(prefixRegex), shardPat = Pattern.compile(shardRegex);

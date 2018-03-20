@@ -6,7 +6,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 import java.util.function.Consumer;
-import java.util.function.Function;
 import java.util.logging.Logger;
 
 import com.neovisionaries.ws.client.WebSocketException;
@@ -63,7 +62,7 @@ import io.discloader.discloader.util.DLUtil.Status;
  */
 public class DiscLoader {
 
-	public static final Logger LOG = new DLLogger("DiscLoader").getLogger();
+	public static final Logger LOG = DLLogger.getLogger("DiscLoader");
 
 	public static DiscLoader getDiscLoader() {
 		return ModRegistry.loader;
@@ -306,6 +305,10 @@ public class DiscLoader {
 		emit(event);
 	}
 
+	public EventManager getEventManager() {
+		return eventManager;
+	}
+
 	/**
 	 * @param code
 	 * @return A CompletableFuture that completes with an IInvite object if
@@ -419,17 +422,12 @@ public class DiscLoader {
 		return disconnect(1000, reason);
 	}
 
-	public <T> DiscLoader onceEvent(Class<T> cls, Consumer<Object> consumer) {
+	public <T extends DLEvent> DiscLoader onceEvent(Class<T> cls, Consumer<T> consumer) {
 		eventManager.onceEvent(cls, consumer);
 		return this;
 	}
 
-	public DiscLoader onceEvent(Consumer<Object> consumer, Function<IGuild, Boolean> checker) {
-		eventManager.onceEvent(consumer, checker);
-		return this;
-	}
-
-	public <T> DiscLoader onEvent(Class<T> cls, Consumer<Object> consumer) {
+	public <T extends DLEvent> DiscLoader onEvent(Class<T> cls, Consumer<T> consumer) {
 		eventManager.onEvent(cls, consumer);
 		return this;
 	}

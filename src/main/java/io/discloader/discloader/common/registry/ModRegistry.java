@@ -55,7 +55,7 @@ public class ModRegistry {
 	 */
 	private static final Map<String, String> loadMod = new HashMap<String, String>();
 
-	private static final Logger logger = new DLLogger(ModRegistry.class).getLogger();
+	private static final Logger logger = DLLogger.getLogger(ModRegistry.class);
 
 	public static final CompletableFuture<Void> loaded = new CompletableFuture<>();
 

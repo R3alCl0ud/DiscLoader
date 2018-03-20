@@ -60,12 +60,12 @@ public class Gateway {
 
 	private final Logger logger;
 
-	private final String logname;
+	private final String logName;
 
 	public Gateway(DiscLoader loader) {
 		this.loader = loader;
-		logname = loader.shards > 1 ? "Gateway (Shard: #" + loader.shardid + ")" : "Gateway";
-		logger = new DLLogger(logname).getLogger();
+		logName = loader.shards > 1 ? "Gateway (Shard: #" + loader.shardid + ")" : "Gateway";
+		logger = DLLogger.getLogger(logName);
 		socketListener = new GatewayListener(this);
 
 		status = Status.IDLE;
@@ -109,7 +109,7 @@ public class Gateway {
 
 	public void keepAlive(final int interval) {
 		this.interval = interval;
-		heartbeatThread = new Thread(logname + " - Heartbeat") {
+		heartbeatThread = new Thread(logName + " - Heartbeat") {
 
 			@Override
 			public void run() {
@@ -117,7 +117,7 @@ public class Gateway {
 				try {
 					Thread.sleep(interval);
 				} catch (InterruptedException e) {
-					logger.warning(String.format("The thread: %s - Heartbeat, has been interrupted", logname));
+					logger.warning(String.format("The thread: %s - Heartbeat, has been interrupted", logName));
 				}
 
 				while (ws.isOpen() && !this.isInterrupted()) {
@@ -125,13 +125,13 @@ public class Gateway {
 					try {
 						Thread.sleep(interval);
 					} catch (InterruptedException e) {
-						logger.warning(String.format("The thread: %s - Heartbeat, has been interrupted", logname));
+						logger.warning(String.format("The thread: %s - Heartbeat, has been interrupted", logName));
 					}
 				}
 
 			}
 		};
-		resetRemaining = new Thread(logname + " - Rate Limiter") {
+		resetRemaining = new Thread(logName + " - Rate Limiter") {
 			public void run() {
 				while (ws.isOpen() && !this.isInterrupted()) {
 					remaining = 115;
@@ -139,7 +139,7 @@ public class Gateway {
 					try {
 						Thread.sleep(60000);
 					} catch (InterruptedException e) {
-						logger.warning(String.format("The thread: %s - Rate Limiter, has been interrupted", logname));
+						logger.warning(String.format("The thread: %s - Rate Limiter, has been interrupted", logName));
 					}
 
 				}
