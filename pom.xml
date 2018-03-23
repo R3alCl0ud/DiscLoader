@@ -246,7 +246,7 @@
 					<encoding>${project.build.sourceEncoding}</encoding>
 					<javadocVersion>1.8</javadocVersion>
 					<failOnError>false</failOnError>
-					<excludePackageNames>com.iwebpp.crypto:io.discloader.discloader.core.entity.m*:io.discloader.discloader.core.entity.a*:io.discloader.discloader.core.entity.c*:io.discloader.discloader.core.entity.i*:io.discloader.discloader.core.entity.g*:io.discloader.discloader.core.entity.p*:io.discloader.discloader.core.entity.u*</excludePackageNames>
+					<excludePackageNames>com.iwebpp.crypto:io.discloader.discloader.core.entity.m*:io.discloader.discloader.core.entity.a*:io.discloader.discloader.core.entity.c*:io.discloader.discloader.core.entity.i*:io.discloader.discloader.core.entity.g*:io.discloader.discloader.core.entity.u*</excludePackageNames>
 				</configuration>
 				<executions>
 					<execution>
