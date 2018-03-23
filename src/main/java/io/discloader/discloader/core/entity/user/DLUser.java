@@ -60,6 +60,17 @@ public class DLUser extends User {
 
 	}
 
+	@Override
+	public boolean equals(Object object) {
+
+		return this == object;
+	}
+
+	@Override
+	public int hashCode() {
+		return Long.hashCode(getID());
+	}
+
 	/**
 	 * Gets the OAuth2 application of the logged in user, if {@link User#isBot()}
 	 * returns true
@@ -110,7 +121,7 @@ public class DLUser extends User {
 	 */
 	public CompletableFuture<DLUser> setAvatar(String avatarLocation) throws IOException {
 		CompletableFuture<DLUser> future = new CompletableFuture<>();
-		String base64 = new String("data:image/jpg;base64," + Base64.encodeBase64String(Files.readAllBytes(Paths.get(avatarLocation))));
+		String base64 = "data:image/jpg;base64," + Base64.encodeBase64String(Files.readAllBytes(Paths.get(avatarLocation)));
 		CompletableFuture<UserJSON> cf = loader.rest.request(Methods.PATCH, Endpoints.currentUser, new RESTOptions(new JSONObject().put("avatar", base64)), UserJSON.class);
 		cf.thenAcceptAsync(data -> {
 			setup(data);
@@ -124,19 +135,6 @@ public class DLUser extends User {
 	}
 
 	/**
-	 * Sets the currently logged in user's game.
-	 * 
-	 * @param game
-	 *            The name of the game you are playing.
-	 * @return {@code this} object.
-	 * @deprecated Use {@link #setActivity(String)} instead.
-	 */
-	@Deprecated
-	public DLUser setGame(String game) {
-		return setPresence(presence.status, game != null ? new Activity(game) : null, this.afk);
-	}
-
-	/**
 	 * Sets the currently logged in user's activity
 	 * 
 	 * @param activity
@@ -144,7 +142,7 @@ public class DLUser extends User {
 	 * @return {@code this} object.
 	 */
 	public DLUser setActivity(String activity) {
-		return setPresence(presence.status, activity != null ? new Activity(activity) : null, this.afk);
+		return setPresence(presence.getStatus(), activity != null ? new Activity(activity) : null, this.afk);
 	}
 
 	/**
@@ -155,7 +153,7 @@ public class DLUser extends User {
 	 * @return {@code this} object.
 	 */
 	public DLUser setActivity(Activity activity) {
-		return setPresence(presence.status, activity, this.afk);
+		return setPresence(presence.getStatus(), activity, this.afk);
 	}
 
 	/**

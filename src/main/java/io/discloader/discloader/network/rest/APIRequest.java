@@ -49,7 +49,7 @@ public class APIRequest {
 		this.method = method;
 		this.auth = auth;
 		this.data = data;
-		this.route = this.getRoute(this.url);
+		setRoute(this.url);
 		if (data != null && data instanceof SendableMessage && (((SendableMessage) data).file != null || ((SendableMessage) data).resource != null)) {
 			this.multi = true;
 		} else {
@@ -65,13 +65,16 @@ public class APIRequest {
 	 * @return API Endpoint
 	 */
 	public String getRoute(String url) {
-		String route = url.split("[?]")[0];
+		return route;
+	}
+
+	private void setRoute(String url) {
+		route = url.split("[?]")[0];
 		if (route.contains("/channels/") || route.contains("/guilds/")) {
 			int startInd = route.contains("/channels/") ? route.indexOf("/channels/") : route.indexOf("/guilds/");
 			String majorID = route.substring(startInd).split("/")[2];
 			route = route.replaceAll("(\\d{8,})/g", ":id").replaceAll(":id", majorID);
 		}
-		return route;
 	}
 
 	public CompletableFuture<?> setFuture(CompletableFuture<String> future) {
@@ -79,7 +82,7 @@ public class APIRequest {
 		return future;
 	}
 
-	public BaseRequest createRequest() {
+	public BaseRequest createRequest() throws IOException {
 		BaseRequest request = null;
 		switch (this.method) {
 		case Methods.GET:
@@ -88,7 +91,7 @@ public class APIRequest {
 		case Methods.POST:
 			request = Unirest.post(this.route);
 			if (multi) {
-				try {
+//				try {
 					SendableMessage sdata = (SendableMessage) this.data;
 					File file = sdata.file;
 					Resource resource = sdata.resource;
@@ -104,9 +107,9 @@ public class APIRequest {
 					if (resource != null)
 						loc = resource.getFileName();
 					body.field("Content-type", "multipart/form-data").field("file", bytes, loc).field("payload_json", gson.toJson(sdata));
-				} catch (IOException ex) {
-					ex.printStackTrace();
-				}
+//				} catch (IOException ex) {
+//					ex.printStackTrace();
+//				}
 			} else {
 				((HttpRequestWithBody) request).body(gson.toJson(data));
 			}

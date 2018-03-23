@@ -15,22 +15,22 @@ import io.discloader.discloader.network.json.PresenceJSON;
 public class Presence implements IPresence {
 
 	/**
-	 * The {@link Activity} the user is currently playing, or null if user isn't playing
-	 * a game
+	 * The {@link Activity} the user is currently playing, or null if user isn't
+	 * playing a game
 	 * 
 	 * 
 	 * @see IActivity
 	 * @see IUser
 	 * @see IGuildMember
 	 */
-	public Activity activity;
+	private Activity activity;
 	/**
 	 * The status of the current user. can be {@literal online}, {@literal offline},
 	 * {@literal idle}, or {@literal invisible}
 	 * 
 	 * 
 	 */
-	public String status;
+	private String status;
 
 	public Presence(PresenceJSON presence) {
 		this.activity = presence.game != null ? new Activity(presence.game) : null;
@@ -75,18 +75,8 @@ public class Presence implements IPresence {
 	}
 
 	@Override
-	public Presence clone() {
-		return new Presence(status, activity);
-	}
-
-	@Override
 	public String getStatus() {
 		return status;
-	}
-
-	@Override
-	public IActivity getGame() {
-		return activity;
 	}
 
 	public boolean equals(Object obj) {

@@ -187,13 +187,14 @@ public class Gateway {
 	public void send(Object payload, boolean force) {
 		if (force && remaining != 0) {
 			remaining--;
+			String payloadText = "";
 			if (payload instanceof Packet && ((Packet) payload).d instanceof VoiceStateUpdate) {
-				logger.info("Sending: " + gson.toJson(payload));
-				ws.sendText(gson.toJson(payload));
+				payloadText = gson.toJson(payload);
 			} else {
-				logger.info("Sending: " + DLUtil.gson.toJson(payload));
-				ws.sendText(DLUtil.gson.toJson(payload));
+				payloadText = DLUtil.gson.toJson(payload);
 			}
+			logger.info((String.format("Sending: %s", payloadText)));
+			ws.sendText(payloadText);
 			return;
 		}
 		queue.add(payload);

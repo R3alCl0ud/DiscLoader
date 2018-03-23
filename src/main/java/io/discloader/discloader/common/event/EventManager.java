@@ -60,13 +60,6 @@ public class EventManager {
 	@SuppressWarnings("rawtypes")
 	private final Map<String, List<Consumer>> _onceListeners = new HashMap<>();
 
-	// private final DiscLoader loader;
-
-	//
-	// public EventManager(DiscLoader loader) {
-	// this.loader = loader;
-	// }
-	//
 	public void addEventHandler(IEventListener e) {
 		handlers.add(e);
 	}

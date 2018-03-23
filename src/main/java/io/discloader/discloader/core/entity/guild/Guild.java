@@ -81,9 +81,9 @@ public class Guild implements IGuild {
 
 	public class MemberQuery {
 
-		public String guild_id = Long.toUnsignedString(getID(), 10);
-		public int limit;
-		public String query;
+		public final String guild_id = Long.toUnsignedString(getID(), 10);
+		public final int limit;
+		public final String query;
 
 		public MemberQuery(int limit, String query) {
 			this.limit = limit;
