@@ -108,4 +108,14 @@ public class InviteGuild implements IInviteGuild {
 	public int hashCode() {
 		return Long.hashCode(getID());
 	}
+
+	@Override
+	public String getIconHash() {
+		return iconHash;
+	}
+
+	@Override
+	public String getSplashHash() {
+		return splashHash;
+	}
 }

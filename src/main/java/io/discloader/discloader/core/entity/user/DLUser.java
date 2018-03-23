@@ -46,24 +46,32 @@ public class DLUser extends User {
 	private final Presence presence;
 
 	/**
-	 * Creates a new DLUser object
+	 * Creates a new DLUser object.<br>
+	 * <br>
+	 * This is only to be used internally when receiving the Ready packet from the
+	 * gateway.
 	 * 
-	 * @param iUser
+	 * @param user
 	 *            The user we are currently logged in as
 	 */
-	public DLUser(IUser iUser) {
-		super(iUser);
+	public DLUser(IUser user) {
+		super(user);
 
 		this.presence = new Presence();
-
+		this.presence.update("online");
 		this.afk = false;
 
 	}
 
 	@Override
 	public boolean equals(Object object) {
-
-		return this == object;
+		if (!(object instanceof DLUser)) {
+			if (object instanceof IUser) {
+				return super.equals(object); // check
+			}
+			return false; // if the object isn't and instanceof IUser or DLUser return false.
+		}
+		return this == (DLUser) object || getID() == ((IUser) object).getID();
 	}
 
 	@Override

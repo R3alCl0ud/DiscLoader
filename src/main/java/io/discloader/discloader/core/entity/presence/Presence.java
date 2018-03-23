@@ -23,7 +23,7 @@ public class Presence implements IPresence {
 	 * @see IUser
 	 * @see IGuildMember
 	 */
-	private Activity activity;
+	private Activity game;
 	/**
 	 * The status of the current user. can be {@literal online}, {@literal offline},
 	 * {@literal idle}, or {@literal invisible}
@@ -33,27 +33,27 @@ public class Presence implements IPresence {
 	private String status;
 
 	public Presence(PresenceJSON presence) {
-		this.activity = presence.game != null ? new Activity(presence.game) : null;
+		this.game = presence.game != null ? new Activity(presence.game) : null;
 		this.status = presence.status;
 	}
 
 	public Presence(String status, ActivityJSON game) {
-		this.activity = new Activity(game);
+		this.game = new Activity(game);
 		this.status = status;
 	}
 
 	protected Presence(String status, Activity activity) {
-		this.activity = activity;
+		this.game = activity;
 		this.status = status;
 	}
 
 	public Presence() {
-		this.activity = null;
+		this.game = null;
 		this.status = "offline";
 	}
 
 	public Presence(Presence data) {
-		this.activity = data.activity != null ? new Activity(data.activity) : null;
+		this.game = data.game != null ? new Activity(data.game) : null;
 		this.status = data.status;
 	}
 
@@ -63,11 +63,11 @@ public class Presence implements IPresence {
 
 	public void update(String status, Activity activity) {
 		this.status = status != null ? status : this.status;
-		this.activity = activity;
+		this.game = activity;
 	}
 
 	public void update(String status) {
-		this.update(status, this.activity);
+		this.update(status, this.game);
 	}
 
 	public void update(Activity activity) {
@@ -79,22 +79,24 @@ public class Presence implements IPresence {
 		return status;
 	}
 
+	@Override
 	public boolean equals(Object obj) {
 		if (!(obj instanceof IPresence))
 			return false;
 		IPresence p = (IPresence) obj;
-		return status.equals(p.getStatus()) && activity.equals(p.getActivity());
+		return status.equals(p.getStatus()) && game.equals(p.getActivity());
 	}
 
+	@Override
 	public int hashCode() {
-		if (activity != null)
-			return (status + activity.hashCode()).hashCode();
+		if (game != null)
+			return (status + game.hashCode()).hashCode();
 		return status.hashCode();
 	}
 
 	@Override
 	public IActivity getActivity() {
-		return activity;
+		return game;
 	}
 
 }

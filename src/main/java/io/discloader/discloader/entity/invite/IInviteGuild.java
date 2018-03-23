@@ -8,7 +8,11 @@ public interface IInviteGuild extends ISnowflake, ICreationTime {
 
 	IIcon getIcon();
 
+	String getIconHash();
+
 	IIcon getSplash();
+
+	String getSplashHash();
 
 	String getName();
 

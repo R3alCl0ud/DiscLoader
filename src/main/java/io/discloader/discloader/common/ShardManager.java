@@ -5,10 +5,12 @@ package io.discloader.discloader.common;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Function;
 import java.util.logging.Logger;
 
 import io.discloader.discloader.client.logger.DLLogger;
 import io.discloader.discloader.common.event.sharding.IShardingListener;
+import io.discloader.discloader.common.event.sharding.ShardEvent;
 import io.discloader.discloader.common.registry.EntityRegistry;
 
 /**
@@ -59,9 +61,10 @@ public final class ShardManager {
 		}
 	}
 
-	public void fireEvent(Shard shard) {
-		for (IShardingListener listener : listeners)
-			listener.ShardLaunched(shard);
+	public void fireEvent(ShardEvent shardEvent) {
+		for (int i = listeners.size() - 1; i >= 0; i--) {
+			listeners.get(i).onShardEvent(shardEvent);
+		}
 	}
 
 	public Shard getShard(int shard) {
@@ -83,12 +86,25 @@ public final class ShardManager {
 
 			public void run() {
 				while (shards.size() < shardCount) {
-					DLOptions options = new DLOptions().setToken(token).setSharding(shards.size(), shardCount).setPrefix(ShardManager.this.options.prefix);
-					options.defaultCommands = ShardManager.this.options.defaultCommands;
+					DLOptions options = new DLOptions().setToken(token).setSharding(shards.size(), shardCount).setPrefix(ShardManager.this.options.prefix).useDefaultCommands(ShardManager.this.options.defaultCommands);
 					Shard shard = new Shard(options, ShardManager.this);
 					shards.add(shard);
 					EntityRegistry.addShard(shard);
-					shard.launch();
+					final Function<Throwable, Shard> failedHandle = new Function<Throwable, Shard>() {
+
+						@Override
+						public Shard apply(Throwable t) {
+							try {
+								sleep(5500L);
+							} catch (InterruptedException e) {
+								e.printStackTrace();
+							}
+							shard.launch().exceptionally(this);
+							return shard;
+						}
+
+					};
+					shard.launch().exceptionally(failedHandle);
 					try {
 						sleep(5500L);
 					} catch (InterruptedException e) {

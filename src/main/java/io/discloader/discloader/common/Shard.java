@@ -5,6 +5,8 @@ package io.discloader.discloader.common;
 
 import java.util.concurrent.CompletableFuture;
 
+import io.discloader.discloader.common.event.sharding.ShardLaunchedEvent;
+
 /**
  * 
  * 
@@ -35,11 +37,19 @@ public final class Shard {
 	}
 
 	public CompletableFuture<Shard> launch() {
+		CompletableFuture<Shard> future = new CompletableFuture<>();
 		loader = new DiscLoader(this);
 		loader.setOptions(options);
-		loader.login();
-		manager.fireEvent(this);
-		return CompletableFuture.completedFuture(this);
+		CompletableFuture<DiscLoader> cf = loader.login();
+		cf.thenAcceptAsync(ignored -> {
+			future.complete(Shard.this);
+		});
+		cf.exceptionally(ex -> {
+			future.completeExceptionally(ex);
+			return null;
+		});
+		manager.fireEvent(new ShardLaunchedEvent(this));
+		return future;
 	}
 
 	/**

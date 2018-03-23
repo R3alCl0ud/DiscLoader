@@ -1,14 +1,11 @@
 package io.discloader.discloader.common;
 
-import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 import java.util.function.Consumer;
 import java.util.logging.Logger;
-
-import com.neovisionaries.ws.client.WebSocketException;
 
 import io.discloader.discloader.client.command.Command;
 import io.discloader.discloader.client.command.CommandHandler;
@@ -393,9 +390,8 @@ public class DiscLoader {
 		cf.thenAcceptAsync(gateway -> {
 			try {
 				socket.connectSocket(gateway.url + DLUtil.GatewaySuffix);
-			} catch (WebSocketException | IOException e1) {
-				e1.printStackTrace();
-				rf.completeExceptionally(e1);
+			} catch (Exception e) {
+				rf.completeExceptionally(e);
 			}
 		});
 		cf.exceptionally(e -> {

@@ -1,4 +1,5 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 
@@ -23,7 +24,7 @@
 		<maven.compiler.source>1.8</maven.compiler.source>
 		<maven.compiler.target>1.8</maven.compiler.target>
 		<maven.build.timestamp.format>MMM.dd.yyyy</maven.build.timestamp.format>
-	<!-- 	<project.build. -->
+		<!-- <project.build. -->
 	</properties>
 
 	<dependencies>
@@ -245,7 +246,7 @@
 					<encoding>${project.build.sourceEncoding}</encoding>
 					<javadocVersion>1.8</javadocVersion>
 					<failOnError>false</failOnError>
-					<excludePackageNames>com.iwebpp.crypto:io.discloader.discloader.core.entity.*</excludePackageNames>
+					<excludePackageNames>com.iwebpp.crypto:io.discloader.discloader.core.entity.m*:io.discloader.discloader.core.entity.a*:io.discloader.discloader.core.entity.c*:io.discloader.discloader.core.entity.i*:io.discloader.discloader.core.entity.g*:io.discloader.discloader.core.entity.p*:io.discloader.discloader.core.entity.u*</excludePackageNames>
 				</configuration>
 				<executions>
 					<execution>
@@ -287,7 +288,7 @@
 					</execution>
 				</executions>
 			</plugin>
-			
+
 		</plugins>
 	</build>
 </project>

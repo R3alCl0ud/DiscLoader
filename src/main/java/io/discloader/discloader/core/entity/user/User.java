@@ -44,7 +44,7 @@ public class User implements IUser {
 	/**
 	 * The hash of the user's avatar
 	 */
-	protected String avatar;
+	protected String avatarHash;
 
 	/**
 	 * The user's four digit discriminator
@@ -85,7 +85,7 @@ public class User implements IUser {
 
 		this.discriminator = user.getDiscriminator();
 
-		this.avatar = user.getAvatar().getHash();
+		this.avatarHash = user.getAvatar().getHash();
 
 		this.bot = user.isBot();
 	}
@@ -130,12 +130,12 @@ public class User implements IUser {
 		if (this == user) {
 			return true;
 		}
-		return id == user.id && username.equals(user.username) && discriminator == user.discriminator && mfa == user.mfa && verified == user.verified && isBot() && user.isBot();
+		return id == user.id && username.equals(user.username) && discriminator == user.discriminator && mfa == user.mfa && verified == user.verified && isBot() == user.isBot();
 	}
 
 	@Override
 	public IIcon getAvatar() {
-		return new UserAvatar(avatar, id, discriminator);
+		return new UserAvatar(avatarHash, id, discriminator);
 	}
 
 	@Override
@@ -267,7 +267,7 @@ public class User implements IUser {
 		if (data.discriminator != null)
 			discriminator = Short.parseShort(data.discriminator, 10);
 
-		avatar = data.avatar;
+		avatarHash = data.avatar;
 
 		bot = data.bot;
 	}

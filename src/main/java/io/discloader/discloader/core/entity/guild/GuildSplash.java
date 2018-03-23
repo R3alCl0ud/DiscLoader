@@ -24,19 +24,28 @@ public class GuildSplash implements IIcon {
 		this.partGuild = guild;
 	}
 
+	@Override
 	public String toString() {
-		if ((guild != null && guild.getSplashHash() == null) || (partGuild != null && partGuild.splashHash == null)) {
-			return null;
-		} else if (guild != null) {
-			return Endpoints.guildSplash(guild.getID(), guild.getSplashHash());
+		if (guild != null) {
+			if (guild.getSplashHash() == null) {
+				return Endpoints.guildSplash(guild.getID(), null);
+			} else {
+				return Endpoints.guildSplash(guild.getID(), guild.getSplashHash());
+			}
+		} else if (partGuild != null) {
+			if (partGuild.getSplashHash() == null) {
+				return Endpoints.guildSplash(partGuild.getID(), null);
+			} else {
+				return Endpoints.guildSplash(partGuild.getID(), partGuild.getSplashHash());
+			}
 		} else {
-			return Endpoints.guildSplash(partGuild.getID(), partGuild.splashHash);
+			return Endpoints.guildSplash(0l, null);
 		}
 	}
 
 	@Override
 	public String getHash() {
-		return guild == null ? partGuild != null ? partGuild.splashHash : null : guild.getSplashHash();
+		return guild == null ? partGuild != null ? partGuild.getSplashHash() : null : guild.getSplashHash();
 	}
 
 	@Override

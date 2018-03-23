@@ -43,8 +43,12 @@ public class Activity implements IActivity {
 		if (data.party != null) {
 			this.party = new ActivityParty(data.party);
 		}
+		if (data.application_id != null) {
+			this.appID = SnowflakeUtil.parse(data.application_id);
+		}
+
 		if (data.assets != null) {
-			this.assets = new ActivityAssets(data.assets, SnowflakeUtil.parse(data.application_id));
+			this.assets = new ActivityAssets(data.assets, this.appID);
 		}
 		if (data.timestamps != null) {
 			this.timestamps = new ActivityTimestamps(data.timestamps);
@@ -56,12 +60,12 @@ public class Activity implements IActivity {
 	}
 
 	public Activity(IActivity activity) {
-		this.name = activity.getName();
+		this.name = "" + activity.getName();
 		this.type = activity.getActivityType().toInt();
-		this.url = activity.getURL();
+		this.url = "" + activity.getURL();
 		this.party = activity.getParty();
-		this.state = activity.getState();
-		this.details = activity.getDetails();
+		this.state = "" + activity.getState();
+		this.details = "" + activity.getDetails();
 		this.timestamps = activity.getTimestamps();
 		this.assets = activity.getAssets();
 		this.appID = activity.getApplicationID();

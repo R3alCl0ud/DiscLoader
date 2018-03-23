@@ -4,7 +4,6 @@ import java.time.OffsetDateTime;
 import java.util.concurrent.CompletableFuture;
 
 import io.discloader.discloader.common.DiscLoader;
-import io.discloader.discloader.common.exceptions.AccountTypeException;
 import io.discloader.discloader.entity.invite.IInvite;
 import io.discloader.discloader.entity.invite.IInviteChannel;
 import io.discloader.discloader.entity.invite.IInviteGuild;
@@ -81,24 +80,6 @@ public class Invite implements IInvite {
 		guild = new InviteGuild(data.guild);
 		// code.ha
 		this.loader = loader;
-	}
-
-	@Override
-	public CompletableFuture<IInvite> accept() {
-		if (getLoader().user.isBot())
-			throw new AccountTypeException("Bot's cannot accept invites");
-		DiscLoader.LOG.warning("Accepting invites can deverify and/or get your account banned from Discord.");
-		CompletableFuture<IInvite> future = new CompletableFuture<>();
-		CompletableFuture<InviteJSON> cf = loader.rest.request(Methods.POST, Endpoints.invite(code), new RESTOptions(), InviteJSON.class);
-		cf.thenAcceptAsync(inviteJSON -> {
-			future.complete(new Invite(inviteJSON, loader));
-		});
-		cf.exceptionally(ex -> {
-			future.completeExceptionally(ex);
-			return null;
-		});
-		return future;
-//		return new InviteAction(this, Methods.POST).execute();
 	}
 
 	@Override
