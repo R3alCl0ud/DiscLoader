@@ -77,6 +77,12 @@ public class Activity implements IActivity {
 		this.url = null;
 	}
 
+	public Activity(String name, ActivityType type, String url) {
+		this.name = name;
+		this.type = type.toInt();
+		this.url = url;
+	}
+
 	@Override
 	public boolean equals(Object obj) {
 		if (!(obj instanceof IActivity))
