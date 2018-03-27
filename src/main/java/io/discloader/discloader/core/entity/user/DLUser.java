@@ -12,6 +12,7 @@ import io.discloader.discloader.common.exceptions.AccountTypeException;
 import io.discloader.discloader.common.registry.EntityRegistry;
 import io.discloader.discloader.core.entity.presence.Activity;
 import io.discloader.discloader.core.entity.presence.Presence;
+import io.discloader.discloader.entity.presence.ActivityType;
 import io.discloader.discloader.entity.presence.IPresence;
 import io.discloader.discloader.entity.sendable.Packet;
 import io.discloader.discloader.entity.user.IUser;
@@ -74,9 +75,11 @@ public class DLUser extends User {
 		return this == (DLUser) object || getID() == ((IUser) object).getID();
 	}
 
-	@Override
-	public int hashCode() {
-		return Long.hashCode(getID());
+	/**
+	 * @return the email
+	 */
+	public String getEmail() {
+		return email;
 	}
 
 	/**
@@ -105,6 +108,36 @@ public class DLUser extends User {
 			return null;
 		});
 		return future;
+	}
+
+	/**
+	 * @return the password
+	 */
+	public String getPassword() {
+		return password;
+	}
+
+	/**
+	 * @return the presence
+	 */
+	public Presence getPresence() {
+		return this.presence;
+	}
+
+	@Override
+	public int hashCode() {
+		return Long.hashCode(getID());
+	}
+
+	/**
+	 * Sets the currently logged in user's activity
+	 * 
+	 * @param activity
+	 *            Your new activity.
+	 * @return {@code this} object.
+	 */
+	public DLUser setActivity(Activity activity) {
+		return setPresence(presence.getStatus(), activity, this.afk);
 	}
 
 	/**
@@ -143,25 +176,29 @@ public class DLUser extends User {
 	}
 
 	/**
-	 * Sets the currently logged in user's activity
+	 * Sets the currently logged in user's activity as a game
 	 * 
-	 * @param activity
-	 *            The name of the activity
+	 * @param game
+	 *            The name of the game
 	 * @return {@code this} object.
 	 */
-	public DLUser setActivity(String activity) {
-		return setPresence(presence.getStatus(), activity != null ? new Activity(activity) : null, this.afk);
+	public DLUser setGame(String game) {
+		return setPresence(presence.getStatus(), game != null ? new Activity(game) : null, this.afk);
 	}
 
 	/**
-	 * Sets the currently logged in user's activity
+	 * Sets the currently logged in user's activity as listening to music.
 	 * 
-	 * @param activity
-	 *            Your new activity.
+	 * @param song
+	 *            The name of the song you are listening to
 	 * @return {@code this} object.
 	 */
-	public DLUser setActivity(Activity activity) {
-		return setPresence(presence.getStatus(), activity, this.afk);
+	public DLUser setListening(String song) {
+		return setPresence(presence.getStatus(), song != null ? new Activity(song, ActivityType.LISTENING, null) : null, this.afk);
+	}
+
+	public void setPresence(IPresence presence) {
+		this.presence.update(presence.getStatus(), (Activity) presence.getActivity());
 	}
 
 	/**
@@ -183,10 +220,6 @@ public class DLUser extends User {
 		return this;
 	}
 
-	public void setPresence(IPresence presence) {
-		this.presence.update(presence.getStatus(), (Activity) presence.getActivity());
-	}
-
 	/**
 	 * Sets the user's status.
 	 * 
@@ -197,6 +230,33 @@ public class DLUser extends User {
 	 */
 	public DLUser setStatus(String status) {
 		return this.setPresence(status, null, this.afk);
+	}
+
+	/**
+	 * Sets the currently logged in user's activity as a live stream.
+	 * 
+	 * @param name
+	 *            The name of the live stream.
+	 * @return {@code this} object.
+	 */
+	public DLUser setStream(String name) {
+		Activity activity = new Activity(name, ActivityType.STREAMING, null);
+		return setPresence(presence.getStatus(), activity, this.afk);
+	}
+
+	/**
+	 * Sets the currently logged in user's activity as a live stream
+	 * 
+	 * @param name
+	 *            The name of the live stream.
+	 * @param url
+	 *            The url of the live stream. Must be a valid twitch.tv live stream
+	 *            URL
+	 * @return {@code this} object.
+	 */
+	public DLUser setStream(String name, String url) {
+		Activity activity = new Activity(name, ActivityType.STREAMING, url);
+		return setPresence(presence.getStatus(), activity, this.afk);
 	}
 
 	/**
@@ -218,27 +278,6 @@ public class DLUser extends User {
 			return null;
 		});
 		return future;
-	}
-
-	/**
-	 * @return the password
-	 */
-	public String getPassword() {
-		return password;
-	}
-
-	/**
-	 * @return the email
-	 */
-	public String getEmail() {
-		return email;
-	}
-
-	/**
-	 * @return the presence
-	 */
-	public Presence getPresence() {
-		return this.presence;
 	}
 
 }
