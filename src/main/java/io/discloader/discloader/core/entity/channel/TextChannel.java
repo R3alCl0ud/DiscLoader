@@ -357,7 +357,8 @@ public class TextChannel extends GuildChannel implements IGuildTextChannel {
 
 	@Override
 	public CompletableFuture<IMessage> sendMessage(String content, RichEmbed embed, Attachment attachment) {
-		SendableMessage sendable = new SendableMessage(content, false, embed, attachment, new File(attachment.filename));
+		File file = attachment == null ? null : new File(attachment.filename);
+		SendableMessage sendable = new SendableMessage(content, false, embed, attachment, file);
 		CompletableFuture<IMessage> future = new CompletableFuture<>();
 		CompletableFuture<MessageJSON> mcf = loader.rest.request(Methods.POST, Endpoints.messages(getID()), new RESTOptions(sendable), MessageJSON.class);
 		mcf.thenAcceptAsync(e -> {
