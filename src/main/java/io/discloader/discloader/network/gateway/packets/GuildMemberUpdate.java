@@ -1,9 +1,11 @@
 package io.discloader.discloader.network.gateway.packets;
 
 import io.discloader.discloader.common.event.guild.member.GuildMemberNicknameUpdateEvent;
+import io.discloader.discloader.common.event.guild.member.GuildMemberRoleAddEvent;
+import io.discloader.discloader.common.event.guild.member.GuildMemberRoleRemoveEvent;
 import io.discloader.discloader.common.event.guild.member.GuildMemberUpdateEvent;
-import io.discloader.discloader.common.registry.EntityRegistry;
 import io.discloader.discloader.common.registry.EntityBuilder;
+import io.discloader.discloader.common.registry.EntityRegistry;
 import io.discloader.discloader.common.registry.factory.GuildFactory;
 import io.discloader.discloader.entity.guild.IGuild;
 import io.discloader.discloader.entity.guild.IGuildMember;
@@ -30,10 +32,23 @@ public class GuildMemberUpdate extends AbstractHandler {
 		IGuildMember oldMember = guild.getMember(data.user.id), member = gfac.buildMember(guild, data);
 		guild.addMember(member);
 		if (shouldEmit() && oldMember != null) {
-			GuildMemberUpdateEvent event = new GuildMemberUpdateEvent(member, oldMember, guild);
+			GuildMemberUpdateEvent event = new GuildMemberUpdateEvent(member, oldMember);
 			loader.emit(Events.GUILD_MEMBER_UPDATE, event);
 			loader.emit(event);
-			if (!member.getNickname().equals(oldMember.getNickname())) loader.emit(new GuildMemberNicknameUpdateEvent(member, oldMember.getNickname()));
+			if (!member.getNickname().equals(oldMember.getNickname())) {
+				loader.emit(new GuildMemberNicknameUpdateEvent(member, oldMember.getNickname()));
+			}
+			member.getRoles().forEach(role -> {
+				if (!oldMember.hasRole(role)) {
+					loader.emit(new GuildMemberRoleAddEvent(oldMember, member, role));
+				}
+			});
+			oldMember.getRoles().forEach(role -> {
+				if (!member.hasRole(role)) {
+					loader.emit(new GuildMemberRoleRemoveEvent(oldMember, member, role));
+				}
+			});
+			// for (member)
 		}
 	}
 }

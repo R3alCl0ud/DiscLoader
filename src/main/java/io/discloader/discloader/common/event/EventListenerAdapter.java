@@ -13,6 +13,7 @@ import io.discloader.discloader.common.event.guild.GuildBanAddEvent;
 import io.discloader.discloader.common.event.guild.GuildBanRemoveEvent;
 import io.discloader.discloader.common.event.guild.GuildCreateEvent;
 import io.discloader.discloader.common.event.guild.GuildDeleteEvent;
+import io.discloader.discloader.common.event.guild.GuildEvent;
 import io.discloader.discloader.common.event.guild.GuildSyncEvent;
 import io.discloader.discloader.common.event.guild.GuildUpdateEvent;
 import io.discloader.discloader.common.event.guild.emoji.GuildEmojiCreateEvent;
@@ -24,6 +25,8 @@ import io.discloader.discloader.common.event.guild.member.GuildMemberEvent.Voice
 import io.discloader.discloader.common.event.guild.member.GuildMemberEvent.VoiceLeaveEvent;
 import io.discloader.discloader.common.event.guild.member.GuildMemberEvent.VoiceSwitchEvent;
 import io.discloader.discloader.common.event.guild.member.GuildMemberRemoveEvent;
+import io.discloader.discloader.common.event.guild.member.GuildMemberRoleAddEvent;
+import io.discloader.discloader.common.event.guild.member.GuildMemberRoleRemoveEvent;
 import io.discloader.discloader.common.event.guild.member.GuildMemberUpdateEvent;
 import io.discloader.discloader.common.event.guild.member.GuildMembersChunkEvent;
 import io.discloader.discloader.common.event.guild.role.GuildRoleCreateEvent;
@@ -113,7 +116,7 @@ public abstract class EventListenerAdapter implements IEventListener {
 	public void GuildEmojiUpdate(GuildEmojiUpdateEvent event) {}
 
 	@Override
-	public void GuildEvent(io.discloader.discloader.common.event.guild.GuildEvent e) {}
+	public void GuildEvent(GuildEvent e) {}
 
 	@Override
 	public void GuildMemberAdd(GuildMemberAddEvent e) {}
@@ -131,10 +134,10 @@ public abstract class EventListenerAdapter implements IEventListener {
 	public void GuildMemberRemove(GuildMemberRemoveEvent e) {}
 
 	@Override
-	public void GuildMemberRoleAdd() {}
+	public void GuildMemberRoleAdd(GuildMemberRoleAddEvent e) {}
 
 	@Override
-	public void GuildMemberRoleRemove() {}
+	public void GuildMemberRoleRemove(GuildMemberRoleRemoveEvent e) {}
 
 	@Override
 	public void GuildMembersChunk(GuildMembersChunkEvent event) {}

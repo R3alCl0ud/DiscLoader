@@ -27,6 +27,8 @@ import io.discloader.discloader.common.event.guild.member.GuildMemberEvent.Voice
 import io.discloader.discloader.common.event.guild.member.GuildMemberEvent.VoiceLeaveEvent;
 import io.discloader.discloader.common.event.guild.member.GuildMemberEvent.VoiceSwitchEvent;
 import io.discloader.discloader.common.event.guild.member.GuildMemberRemoveEvent;
+import io.discloader.discloader.common.event.guild.member.GuildMemberRoleAddEvent;
+import io.discloader.discloader.common.event.guild.member.GuildMemberRoleRemoveEvent;
 import io.discloader.discloader.common.event.guild.member.GuildMemberUpdateEvent;
 import io.discloader.discloader.common.event.guild.member.GuildMembersChunkEvent;
 import io.discloader.discloader.common.event.guild.role.GuildRoleCreateEvent;
@@ -53,8 +55,11 @@ import io.discloader.discloader.core.entity.guild.Guild;
 import io.discloader.discloader.core.entity.guild.GuildMember;
 import io.discloader.discloader.core.entity.guild.Role;
 import io.discloader.discloader.core.entity.user.User;
+import io.discloader.discloader.entity.channel.IGuildVoiceChannel;
 import io.discloader.discloader.entity.channel.ITextChannel;
+import io.discloader.discloader.entity.guild.IGuild;
 import io.discloader.discloader.entity.guild.IGuildEmoji;
+import io.discloader.discloader.entity.guild.IGuildMember;
 import io.discloader.discloader.entity.voice.VoiceConnection;
 
 /**
@@ -178,9 +183,9 @@ public interface IEventListener {
 	 */
 	void GuildMemberRemove(GuildMemberRemoveEvent e);
 
-	void GuildMemberRoleAdd();
+	void GuildMemberRoleAdd(GuildMemberRoleAddEvent e);
 
-	void GuildMemberRoleRemove();
+	void GuildMemberRoleRemove(GuildMemberRoleRemoveEvent e);
 
 	/**
 	 * Executed when a GuildMembersChunk event is sent to the client
@@ -198,10 +203,29 @@ public interface IEventListener {
 	 */
 	void GuildMemberUpdate(GuildMemberUpdateEvent e);
 
+	/**
+	 * Fired when an {@link IGuildMember} joins an {@link IGuildVoiceChannel}.
+	 * 
+	 * @param event
+	 *            A {@link VoiceJoinEvent} object.
+	 */
 	void GuildMemberVoiceJoin(VoiceJoinEvent event);
 
+	/**
+	 * Fired when an {@link IGuildMember} leaves an {@link IGuildVoiceChannel}.
+	 * 
+	 * @param event
+	 *            A {@link VoiceLeaveEvent} object.
+	 */
 	void GuildMemberVoiceLeave(VoiceLeaveEvent event);
 
+	/**
+	 * Fired when an {@link IGuildMember} switches to a different
+	 * {@link IGuildVoiceChannel}.
+	 * 
+	 * @param event
+	 *            A {@link VoiceSwitchEvent} object.
+	 */
 	void GuildMemberVoiceSwitch(VoiceSwitchEvent event);
 
 	void GuildMessageCreate(GuildMessageCreateEvent event);
@@ -226,6 +250,12 @@ public interface IEventListener {
 	 */
 	void GuildRoleDelete(GuildRoleDeleteEvent e);
 
+	/**
+	 * Fired when a change is made to an {@link IGuild}'s roles.
+	 * 
+	 * @param e
+	 *            A {@link GuildRoleEvent} object.
+	 */
 	void GuildRoleEvent(GuildRoleEvent e);
 
 	/**

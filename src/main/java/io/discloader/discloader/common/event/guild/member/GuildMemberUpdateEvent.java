@@ -21,26 +21,47 @@ import io.discloader.discloader.entity.guild.IGuildMember;
  */
 public class GuildMemberUpdateEvent extends DLEvent {
 
-    /**
-     * The guild the member belongs to.
-     */
-	public final IGuild guild;
+	/**
+	 * The guild the member belongs to.
+	 */
+	private final IGuild guild;
 
-    /**
-     * The updated member object
-     */
-	public final IGuildMember member;
+	/**
+	 * The updated member object
+	 */
+	private final IGuildMember member;
 
-    /**
-     * A copy of the member object from before the member updated
-     */
-	public final IGuildMember oldMember;
+	/**
+	 * A copy of the member object from before the member updated
+	 */
+	private final IGuildMember oldMember;
 
-	public GuildMemberUpdateEvent(IGuildMember member, IGuildMember oldMember, IGuild guild) {
-		super(guild.getLoader());
-		this.guild = guild;
-        this.member = member;
-        this.oldMember = oldMember;
-    }
+	public GuildMemberUpdateEvent(IGuildMember member, IGuildMember oldMember) {
+		super(member.getLoader());
+		this.guild = member.getGuild();
+		this.member = member;
+		this.oldMember = oldMember;
+	}
+
+	/**
+	 * @return the guild
+	 */
+	public IGuild getGuild() {
+		return guild;
+	}
+
+	/**
+	 * @return the member
+	 */
+	public IGuildMember getMember() {
+		return member;
+	}
+
+	/**
+	 * @return the oldMember
+	 */
+	public IGuildMember getOldMember() {
+		return oldMember;
+	}
 
 }

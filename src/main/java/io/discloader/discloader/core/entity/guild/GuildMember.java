@@ -324,7 +324,7 @@ public class GuildMember implements IGuildMember {
 		vcf.thenAcceptAsync(v -> {
 			getLoader().addEventListener(new EventListenerAdapter() {
 				public void GuildMemberUpdate(GuildMemberUpdateEvent e) {
-					future.complete(e.member);
+					future.complete(e.getMember());
 					getLoader().removeEventListener(this);
 				}
 			});
@@ -533,8 +533,8 @@ public class GuildMember implements IGuildMember {
 		CompletableFuture<Void> tcf = getLoader().rest.request(Methods.PATCH, Endpoints.guildMember(getGuild().getID(), getID()), new RESTOptions(payload), Void.class);
 		IEventListener iel = new EventListenerAdapter() {
 			public void GuildMemberUpdate(GuildMemberUpdateEvent e) {
-				if (e.member.getID() == getID()) {
-					future.complete(e.member);
+				if (e.getMember().getID() == getID()) {
+					future.complete(e.getMember());
 					getLoader().removeEventListener(this);
 				}
 			}

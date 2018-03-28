@@ -30,6 +30,8 @@ import io.discloader.discloader.common.event.guild.member.GuildMemberEvent.Voice
 import io.discloader.discloader.common.event.guild.member.GuildMemberEvent.VoiceLeaveEvent;
 import io.discloader.discloader.common.event.guild.member.GuildMemberEvent.VoiceSwitchEvent;
 import io.discloader.discloader.common.event.guild.member.GuildMemberRemoveEvent;
+import io.discloader.discloader.common.event.guild.member.GuildMemberRoleAddEvent;
+import io.discloader.discloader.common.event.guild.member.GuildMemberRoleRemoveEvent;
 import io.discloader.discloader.common.event.guild.member.GuildMemberUpdateEvent;
 import io.discloader.discloader.common.event.guild.member.GuildMembersChunkEvent;
 import io.discloader.discloader.common.event.guild.role.GuildRoleCreateEvent;
@@ -186,7 +188,14 @@ public class EventManager {
 				} else if (event instanceof GuildMemberRemoveEvent) {
 					handler.GuildMemberRemove((GuildMemberRemoveEvent) event);
 				} else if (event instanceof GuildMemberUpdateEvent) {
-					handler.GuildMemberUpdate((GuildMemberUpdateEvent) event);
+					GuildMemberUpdateEvent gmue = (GuildMemberUpdateEvent) event;
+					if (gmue instanceof GuildMemberRoleAddEvent) {
+						handler.GuildMemberRoleAdd((GuildMemberRoleAddEvent) gmue);
+					} else if (gmue instanceof GuildMemberRoleRemoveEvent) {
+						handler.GuildMemberRoleRemove((GuildMemberRoleRemoveEvent) gmue);
+					} else {
+						handler.GuildMemberUpdate(gmue);
+					}
 				} else if (event instanceof GuildMembersChunkEvent) {
 					handler.GuildMembersChunk((GuildMembersChunkEvent) event);
 				} else if (event instanceof GuildSyncEvent) {
