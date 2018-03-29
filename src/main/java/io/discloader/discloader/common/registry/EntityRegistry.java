@@ -152,8 +152,12 @@ public class EntityRegistry {
 	public static IUser addUser(UserJSON data) {
 		if (data == null)
 			return null;
-		if (userExists(data.id == null ? "0" : data.id))
-			return getUserByID(data.id == null ? "0" : data.id);
+		if (userExists(data.id == null ? "0" : data.id)) {
+			IUser user = getUserByID(data.id == null ? "0" : data.id);
+			if (user.getUsername() == null && data.username != null)
+				user.setup(data);
+			return user;
+		}
 		IUser user = EntityBuilder.getUserFactory().buildUser(data);
 		users.put(user.getID(), user);
 		return user;

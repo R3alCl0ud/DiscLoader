@@ -99,10 +99,6 @@ public final class DLUtil {
 			return String.format("%s/avatars/%d/%s%s", CDN, id, avatar, avatar.startsWith("a_") ? ".gif" : ".jpg");
 		}
 
-		public static final String defaultAvatar(int num) {
-			return String.format("%s/embed/avatar/%d.png", CDN, num);
-		}
-
 		public static final String bulkDelete(long channelID) {
 			return String.format("%s/bulk-delete", messages(channelID));
 		}
@@ -145,6 +141,10 @@ public final class DLUtil {
 
 		public static final String customEmoji(long emojiID) {
 			return String.format("%s/emojis/%d.png", CDN, emojiID);
+		}
+
+		public static final String defaultAvatar(int num) {
+			return String.format("%s/embed/avatar/%d.png", CDN, num);
 		}
 
 		public static final String guild(long guildID) {
@@ -296,9 +296,13 @@ public final class DLUtil {
 
 		public static final String READY = "ready";
 
+		public static final String GUILD_AVAILABLE = "GuildAvailable";
+
 		public static final String GUILD_CREATE = "GuildCreate";
 
 		public static final String GUILD_DELETE = "GuildDelete";
+
+		public static final String GUILD_UNAVAILABLE = "GuildUnavailable";
 
 		public static final String GUILD_UPDATE = "GuildUpdate";
 

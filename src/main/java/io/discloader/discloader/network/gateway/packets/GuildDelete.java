@@ -3,8 +3,8 @@
  */
 package io.discloader.discloader.network.gateway.packets;
 
-import io.discloader.discloader.common.event.IEventListener;
 import io.discloader.discloader.common.event.guild.GuildDeleteEvent;
+import io.discloader.discloader.common.event.guild.GuildUnavailableEvent;
 import io.discloader.discloader.common.registry.EntityRegistry;
 import io.discloader.discloader.entity.guild.IGuild;
 import io.discloader.discloader.network.gateway.Gateway;
@@ -32,15 +32,17 @@ public class GuildDelete extends AbstractHandler {
 		} else {
 			guild = EntityRegistry.addGuild(data);
 		}
-		if (!guild.isAvailable()) {
+		if (guild.isAvailable()) {
 			EntityRegistry.removeGuild(guild);
 			if (socket.status == Status.READY && loader.ready) {
 				GuildDeleteEvent event = new GuildDeleteEvent(guild);
 				loader.emit(Events.GUILD_DELETE, event);
-				for (IEventListener e : loader.handlers) {
-					e.GuildDelete(event);
-				}
+				loader.emit(event);
 			}
+		} else if (!guild.isAvailable() && shouldEmit()) {
+			GuildUnavailableEvent event = new GuildUnavailableEvent(guild);
+			loader.emit(Events.GUILD_UNAVAILABLE, event);
+			loader.emit(event);
 		}
 	}
 

@@ -10,12 +10,14 @@ import io.discloader.discloader.common.event.channel.GuildChannelCreateEvent;
 import io.discloader.discloader.common.event.channel.GuildChannelDeleteEvent;
 import io.discloader.discloader.common.event.channel.GuildChannelUpdateEvent;
 import io.discloader.discloader.common.event.channel.TypingStartEvent;
+import io.discloader.discloader.common.event.guild.GuildAvailableEvent;
 import io.discloader.discloader.common.event.guild.GuildBanAddEvent;
 import io.discloader.discloader.common.event.guild.GuildBanRemoveEvent;
 import io.discloader.discloader.common.event.guild.GuildCreateEvent;
 import io.discloader.discloader.common.event.guild.GuildDeleteEvent;
 import io.discloader.discloader.common.event.guild.GuildEvent;
 import io.discloader.discloader.common.event.guild.GuildSyncEvent;
+import io.discloader.discloader.common.event.guild.GuildUnavailableEvent;
 import io.discloader.discloader.common.event.guild.GuildUpdateEvent;
 import io.discloader.discloader.common.event.guild.emoji.GuildEmojiCreateEvent;
 import io.discloader.discloader.common.event.guild.emoji.GuildEmojiDeleteEvent;
@@ -84,8 +86,20 @@ import io.discloader.discloader.entity.voice.VoiceConnection;
  */
 public interface IEventListener {
 
+	/**
+	 * Fired when any type of channel is created.
+	 * 
+	 * @param e
+	 *            A ChannelCreateEvent object.
+	 */
 	void ChannelCreate(ChannelCreateEvent e);
 
+	/**
+	 * Fired when any type of channel is deleted.
+	 * 
+	 * @param e
+	 *            A ChannelDeleteEvent object.
+	 */
 	void ChannelDelete(ChannelDeleteEvent e);
 
 	void ChannelPinsUpdate();
@@ -106,6 +120,8 @@ public interface IEventListener {
 	void GroupMessageDelete(GroupMessageDeleteEvent e);
 
 	void GroupMessageUpdate(GroupMessageUpdateEvent e);
+
+	void GuildAvailable(GuildAvailableEvent e);
 
 	/**
 	 * Executed when a {@link User} is banned from a guild
@@ -267,6 +283,8 @@ public interface IEventListener {
 	void GuildRoleUpdate(GuildRoleUpdateEvent e);
 
 	void GuildSync(GuildSyncEvent event);
+
+	void GuildUnavailable(GuildUnavailableEvent e);
 
 	/**
 	 * Executed when a {@link Guild} is updated

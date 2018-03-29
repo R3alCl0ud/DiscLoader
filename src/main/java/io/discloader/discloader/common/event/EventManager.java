@@ -13,12 +13,14 @@ import io.discloader.discloader.common.event.channel.GuildChannelCreateEvent;
 import io.discloader.discloader.common.event.channel.GuildChannelDeleteEvent;
 import io.discloader.discloader.common.event.channel.GuildChannelUpdateEvent;
 import io.discloader.discloader.common.event.channel.TypingStartEvent;
+import io.discloader.discloader.common.event.guild.GuildAvailableEvent;
 import io.discloader.discloader.common.event.guild.GuildBanAddEvent;
 import io.discloader.discloader.common.event.guild.GuildBanRemoveEvent;
 import io.discloader.discloader.common.event.guild.GuildCreateEvent;
 import io.discloader.discloader.common.event.guild.GuildDeleteEvent;
 import io.discloader.discloader.common.event.guild.GuildEvent;
 import io.discloader.discloader.common.event.guild.GuildSyncEvent;
+import io.discloader.discloader.common.event.guild.GuildUnavailableEvent;
 import io.discloader.discloader.common.event.guild.GuildUpdateEvent;
 import io.discloader.discloader.common.event.guild.emoji.GuildEmojiCreateEvent;
 import io.discloader.discloader.common.event.guild.emoji.GuildEmojiDeleteEvent;
@@ -125,6 +127,10 @@ public class EventManager {
 						handler.GuildDelete((GuildDeleteEvent) event);
 					} else if (event instanceof GuildUpdateEvent) {
 						handler.GuildUpdate((GuildUpdateEvent) event);
+					} else if (event instanceof GuildAvailableEvent) {
+						handler.GuildAvailable((GuildAvailableEvent) event);
+					} else if (event instanceof GuildUnavailableEvent) {
+						handler.GuildUnavailable((GuildUnavailableEvent) event);
 					} else if (event instanceof GuildRoleEvent) {
 						handler.GuildRoleEvent((GuildRoleEvent) event);
 						if (event instanceof GuildRoleCreateEvent) {

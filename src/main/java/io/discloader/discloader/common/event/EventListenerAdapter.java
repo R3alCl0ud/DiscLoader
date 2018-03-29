@@ -9,12 +9,14 @@ import io.discloader.discloader.common.event.channel.GuildChannelCreateEvent;
 import io.discloader.discloader.common.event.channel.GuildChannelDeleteEvent;
 import io.discloader.discloader.common.event.channel.GuildChannelUpdateEvent;
 import io.discloader.discloader.common.event.channel.TypingStartEvent;
+import io.discloader.discloader.common.event.guild.GuildAvailableEvent;
 import io.discloader.discloader.common.event.guild.GuildBanAddEvent;
 import io.discloader.discloader.common.event.guild.GuildBanRemoveEvent;
 import io.discloader.discloader.common.event.guild.GuildCreateEvent;
 import io.discloader.discloader.common.event.guild.GuildDeleteEvent;
 import io.discloader.discloader.common.event.guild.GuildEvent;
 import io.discloader.discloader.common.event.guild.GuildSyncEvent;
+import io.discloader.discloader.common.event.guild.GuildUnavailableEvent;
 import io.discloader.discloader.common.event.guild.GuildUpdateEvent;
 import io.discloader.discloader.common.event.guild.emoji.GuildEmojiCreateEvent;
 import io.discloader.discloader.common.event.guild.emoji.GuildEmojiDeleteEvent;
@@ -81,6 +83,9 @@ public abstract class EventListenerAdapter implements IEventListener {
 
 	@Override
 	public void GroupMessageUpdate(GroupMessageUpdateEvent e) {}
+
+	@Override
+	public void GuildAvailable(GuildAvailableEvent e) {}
 
 	@Override
 	public void GuildBanAdd(GuildBanAddEvent e) {}
@@ -177,6 +182,9 @@ public abstract class EventListenerAdapter implements IEventListener {
 
 	@Override
 	public void GuildSync(GuildSyncEvent event) {}
+
+	@Override
+	public void GuildUnavailable(GuildUnavailableEvent e) {}
 
 	@Override
 	public void GuildUpdate(GuildUpdateEvent e) {}
