@@ -1,7 +1,7 @@
 package io.discloader.discloader.entity.auditlog;
 
-import java.util.Collection;
 import java.util.List;
+import java.util.Map;
 
 import io.discloader.discloader.common.DiscLoader;
 import io.discloader.discloader.entity.IWebhook;
@@ -18,8 +18,10 @@ public interface IAuditLog {
 
 	DiscLoader getLoader();
 
-	Collection<IUser> getUsers();
+	// Collection<IUser> getUsers();
 
-	Collection<IWebhook> getWebhooks();
+	Map<Long, IUser> getUsers();
+
+	Map<Long, IWebhook> getWebhooks();
 
 }

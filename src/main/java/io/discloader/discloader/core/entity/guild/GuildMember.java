@@ -23,6 +23,7 @@ import io.discloader.discloader.core.entity.user.User;
 import io.discloader.discloader.entity.IPermission;
 import io.discloader.discloader.entity.channel.IGuildVoiceChannel;
 import io.discloader.discloader.entity.guild.IGuild;
+import io.discloader.discloader.entity.guild.IGuildBan;
 import io.discloader.discloader.entity.guild.IGuildMember;
 import io.discloader.discloader.entity.guild.IRole;
 import io.discloader.discloader.entity.presence.IPresence;
@@ -99,11 +100,12 @@ public class GuildMember implements IGuildMember {
 
 	public GuildMember(IGuild guild, MemberJSON data) {
 		user = EntityRegistry.addUser(data.user);
+		user.setup(data.user);
 		this.guild = guild;
 		nick = data.nick != null ? data.nick : user.getUsername();
 		joinedAt = data.joined_at == null ? user.createdAt() : OffsetDateTime.parse(data.joined_at);
 		roleIDs = data.roles != null ? data.roles : new String[] {};
-
+		// data
 		deaf = data.deaf;
 		mute = deaf || data.mute;
 
@@ -113,9 +115,9 @@ public class GuildMember implements IGuildMember {
 		user = member.getUser();
 		guild = member.getGuild();
 		nick = member.getNickname();
-		if (member instanceof GuildMember)
+		if (member instanceof GuildMember) {
 			roleIDs = Arrays.copyOf(((GuildMember) member).roleIDs, ((GuildMember) member).roleIDs.length);
-		else {
+		} else {
 			roleIDs = new String[member.getRoles().size()];
 			for (int i = 0; i < member.getRoles().size(); i++) {
 				roleIDs[i] = SnowflakeUtil.asString(member.getRoles().get(i));
@@ -212,6 +214,7 @@ public class GuildMember implements IGuildMember {
 	 * @return the member's nickname if they have one, {@link #user}
 	 *         {@link User#username .username} otherwise.
 	 */
+	@Override
 	public String getName() {
 		return nick != null ? nick : user.getUsername();
 	}
@@ -561,6 +564,26 @@ public class GuildMember implements IGuildMember {
 	@Override
 	public CompletableFuture<IGuildMember> unMute() {
 		return new ModifyMember(this, nick, getRoles(), false, deaf, getVoiceChannel()).execute();
+	}
+
+	@Override
+	public CompletableFuture<Boolean> isBanned() {
+		CompletableFuture<Boolean> future = new CompletableFuture<>();
+		CompletableFuture<List<IGuildBan>> cf = getGuild().fetchBans();
+		cf.thenAcceptAsync(bans -> {
+			for (IGuildBan ban : bans) {
+				if (ban.getUser().getID() == getUser().getID()) {
+					future.complete(true);
+					return;
+				}
+			}
+			future.complete(false);
+		});
+		cf.exceptionally(ex -> {
+			future.completeExceptionally(ex);
+			return new ArrayList<>();
+		});
+		return future;
 	}
 
 }

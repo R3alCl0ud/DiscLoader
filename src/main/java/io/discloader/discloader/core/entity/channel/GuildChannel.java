@@ -390,7 +390,7 @@ public class GuildChannel extends Channel implements IGuildChannel {
 				}
 			}
 		});
-		getLoader().rest.request(Methods.PATCH, Endpoints.guildChannels(getGuild().getID()), new RESTOptions(true, null, positions.toString()), Void.class).exceptionally(ex -> {
+		getLoader().rest.request(Methods.PATCH, Endpoints.guildChannels(getGuild().getID()), new RESTOptions(true, positions.toString()), Void.class).exceptionally(ex -> {
 			future.completeExceptionally(ex);
 			return null;
 		});

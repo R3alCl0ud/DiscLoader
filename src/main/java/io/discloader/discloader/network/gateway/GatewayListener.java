@@ -204,8 +204,14 @@ public class GatewayListener extends WebSocketAdapter {
 	@Override
 	public void onTextMessage(WebSocket ws, String text) throws Exception {
 		try {
-			SocketPacket packet = gson.fromJson(text, SocketPacket.class);
-			this.handle(packet);
+			(new Thread(logName + " - Message Handler") {
+				@Override
+				public void run() {
+					SocketPacket packet = gson.fromJson(text, SocketPacket.class);
+					handle(packet);
+				}
+			}).start();
+
 		} catch (Exception e) {
 			e.printStackTrace();
 			throw e;

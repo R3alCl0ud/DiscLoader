@@ -1,7 +1,6 @@
 package io.discloader.discloader.core.entity.auditlog;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -67,13 +66,13 @@ public class AuditLog implements IAuditLog {
 	}
 
 	@Override
-	public Collection<IUser> getUsers() {
-		return users.values();
+	public Map<Long, IUser> getUsers() {
+		return users;
 	}
 
 	@Override
-	public Collection<IWebhook> getWebhooks() {
-		return webhooks.values();
+	public Map<Long, IWebhook> getWebhooks() {
+		return webhooks;
 	}
 
 }

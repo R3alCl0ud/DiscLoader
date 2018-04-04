@@ -2,7 +2,10 @@ package io.discloader.discloader.core.entity.presence;
 
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.List;
 
+import io.discloader.discloader.entity.presence.ActivityFlag;
 import io.discloader.discloader.entity.presence.ActivityType;
 import io.discloader.discloader.entity.presence.IActivity;
 import io.discloader.discloader.entity.presence.IActivityAssets;
@@ -35,6 +38,8 @@ public class Activity implements IActivity {
 	private transient IActivityAssets assets;
 	private transient IActivityTimestamps timestamps;
 	private transient long appID;
+	private transient int flags = 0;
+	private transient boolean instance;
 
 	public Activity(ActivityJSON data) {
 		this.name = data.name;
@@ -57,6 +62,8 @@ public class Activity implements IActivity {
 			this.details = data.details;
 		if (data.state != null)
 			this.state = data.state;
+		this.flags = data.flags;
+		this.instance = data.instance;
 	}
 
 	public Activity(IActivity activity) {
@@ -69,6 +76,10 @@ public class Activity implements IActivity {
 		this.timestamps = activity.getTimestamps();
 		this.assets = activity.getAssets();
 		this.appID = activity.getApplicationID();
+		for (ActivityFlag flag : activity.getActivityFlags()) {
+			this.flags |= flag.toInt();
+		}
+		this.instance = activity.isInstance();
 	}
 
 	public Activity(String name) {
@@ -90,6 +101,20 @@ public class Activity implements IActivity {
 		IActivity game = (IActivity) obj;
 
 		return name.equals(game.getName()) && isStreaming() == game.isStreaming() && url.equals(game.getURL());
+	}
+
+	@Override
+	public List<ActivityFlag> getActivityFlags() {
+		List<ActivityFlag> flagList = new ArrayList<>();
+		for (int i = 0; i < ActivityFlag.values().length; i++) {
+			ActivityFlag flag = ActivityFlag.getFlagFromInteger(flags >> i);
+			if (flag == ActivityFlag.NONE && flagList.size() == 0) {
+				flagList.add(flag);
+				break;
+			}
+			flagList.add(flag);
+		}
+		return flagList;
 	}
 
 	@Override
@@ -147,6 +172,11 @@ public class Activity implements IActivity {
 	}
 
 	@Override
+	public boolean isInstance() {
+		return instance;
+	}
+
+	@Override
 	public boolean isListening() {
 		return getActivityType() == ActivityType.LISTENING;
 	}
@@ -162,7 +192,7 @@ public class Activity implements IActivity {
 
 	@Override
 	public boolean isStreaming() {
-		return false;
+		return getActivityType() == ActivityType.STREAMING;
 	}
 
 	@Override

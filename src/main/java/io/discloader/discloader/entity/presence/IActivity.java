@@ -2,6 +2,7 @@ package io.discloader.discloader.entity.presence;
 
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.List;
 
 public interface IActivity {
 
@@ -58,6 +59,15 @@ public interface IActivity {
 	 *         {@link ActivityType#STREAMING}, {@code false} otherwise.
 	 */
 	boolean isStreaming();
+
+	/**
+	 * Returns whether or not the activity is an instanced game session
+	 * 
+	 * @return Whether or not the activity is an instanced game session
+	 */
+	boolean isInstance();
+
+	List<ActivityFlag> getActivityFlags();
 
 	URL toURL() throws MalformedURLException;
 

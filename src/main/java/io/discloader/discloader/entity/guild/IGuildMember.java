@@ -42,6 +42,12 @@ public interface IGuildMember extends ISnowflake, IMentionable {
 
 	String getNickname();
 
+	/**
+	 * @return the member's nickname if they have one,
+	 *         {@link IUser}{@link IUser#getUsername() .getUsername()} otherwise.
+	 */
+	String getName();
+
 	IPermission getPermissions();
 
 	IPresence getPresence();
@@ -63,6 +69,8 @@ public interface IGuildMember extends ISnowflake, IMentionable {
 	CompletableFuture<IGuildMember> giveRole(IRole... roles);
 
 	boolean hasRole(IRole role);
+
+	CompletableFuture<Boolean> isBanned();
 
 	boolean isDeafened();
 

@@ -209,13 +209,6 @@ public class DiscLoader {
 	}
 
 	/**
-	 * @deprecated Use {@link #addEventListener(IEventListener)} instead
-	 */
-	public DiscLoader addEventHandler(IEventListener e) {
-		return addEventListener(e);
-	}
-
-	/**
 	 * Adds an event listener to the client.
 	 * 
 	 * @param e
@@ -426,13 +419,6 @@ public class DiscLoader {
 	public <T extends DLEvent> DiscLoader onEvent(Class<T> cls, Consumer<T> consumer) {
 		eventManager.onEvent(cls, consumer);
 		return this;
-	}
-
-	/**
-	 * @deprecated Use {@link #removeEventListener(IEventListener)} instead
-	 */
-	public DiscLoader removeEventHandler(IEventListener e) {
-		return removeEventListener(e);
 	}
 
 	public DiscLoader removeEventListener(IEventListener eventListener) {

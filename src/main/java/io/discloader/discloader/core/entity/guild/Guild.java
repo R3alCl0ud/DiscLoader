@@ -10,6 +10,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutionException;
 import java.util.function.Consumer;
 
 import org.apache.commons.codec.binary.Base64;
@@ -43,6 +44,7 @@ import io.discloader.discloader.entity.channel.IGuildChannel;
 import io.discloader.discloader.entity.channel.IGuildTextChannel;
 import io.discloader.discloader.entity.channel.IGuildVoiceChannel;
 import io.discloader.discloader.entity.guild.IGuild;
+import io.discloader.discloader.entity.guild.IGuildBan;
 import io.discloader.discloader.entity.guild.IGuildEmoji;
 import io.discloader.discloader.entity.guild.IGuildMember;
 import io.discloader.discloader.entity.guild.IIntegration;
@@ -59,6 +61,7 @@ import io.discloader.discloader.entity.util.SnowflakeUtil;
 import io.discloader.discloader.entity.voice.VoiceConnection;
 import io.discloader.discloader.entity.voice.VoiceState;
 import io.discloader.discloader.network.json.AuditLogJSON;
+import io.discloader.discloader.network.json.BanJSON;
 import io.discloader.discloader.network.json.ChannelJSON;
 import io.discloader.discloader.network.json.EmojiJSON;
 import io.discloader.discloader.network.json.GuildJSON;
@@ -76,6 +79,7 @@ import io.discloader.discloader.network.rest.payloads.ChannelPayload;
 import io.discloader.discloader.network.util.Endpoints;
 import io.discloader.discloader.network.util.Methods;
 import io.discloader.discloader.util.DLUtil;
+import io.discloader.discloader.util.DLUtil.Events;
 
 public class Guild implements IGuild {
 
@@ -112,6 +116,7 @@ public class Guild implements IGuild {
 	private Map<Long, IGuildEmoji> guildEmojis;
 	private Map<Long, VoiceState> rawStates;
 	private Map<String, IInvite> invites;
+	private List<IGuildBan> bans;
 
 	/**
 	 * The guild's current voice region
@@ -141,6 +146,7 @@ public class Guild implements IGuild {
 		rawStates = new HashMap<>();
 		invites = new HashMap<>();
 		voiceRegion = new VoiceRegion("us-central");
+		bans = new ArrayList<>();
 
 		if (data != null && data.unavailable == true) {
 			available = false;
@@ -233,7 +239,7 @@ public class Guild implements IGuild {
 		if (!exists && shouldEmit) {
 			memberCount++;
 			GuildMemberAddEvent event = new GuildMemberAddEvent(member);
-			// loader.emit(DLUtil.Events.GUILD_MEMBER_ADD, event);
+			loader.emit(Events.GUILD_MEMBER_ADD, event);
 			loader.emit(event);
 		}
 		return member;
@@ -539,6 +545,24 @@ public class Guild implements IGuild {
 	}
 
 	@Override
+	public CompletableFuture<List<IGuildBan>> fetchBans() {
+		CompletableFuture<List<IGuildBan>> future = new CompletableFuture<List<IGuildBan>>();
+		CompletableFuture<BanJSON[]> cf = loader.rest.request(Methods.GET, Endpoints.guildBans(getID()), new RESTOptions(), BanJSON[].class);
+		cf.thenAcceptAsync(data -> {
+			bans.clear();
+			for (int i = 0; i < data.length; i++) {
+				bans.add(new GuildBan(data[i]));
+			}
+			future.complete(bans);
+		});
+		cf.exceptionally(ex -> {
+			future.completeExceptionally(ex);
+			return new BanJSON[0];
+		});
+		return future;
+	}
+
+	@Override
 	public CompletableFuture<List<IInvite>> fetchInvites() {
 		CompletableFuture<List<IInvite>> future = new CompletableFuture<List<IInvite>>();
 		CompletableFuture<InviteJSON[]> cf = getLoader().rest.request(Methods.GET, Endpoints.guildInvites(getID()), new RESTOptions(), InviteJSON[].class);
@@ -719,6 +743,14 @@ public class Guild implements IGuild {
 			return null;
 		});
 		return future;
+	}
+
+	@Override
+	public List<IGuildBan> getBans() throws InterruptedException, ExecutionException {
+		if (bans.isEmpty()) {
+			fetchBans().get();
+		}
+		return bans;
 	}
 
 	@Override

@@ -112,6 +112,12 @@ public class Route<T> {
 
 	public BaseRequest createRequest(Request<T> request) {
 		BaseRequest base = null;
+		String endpoint = this.endpoint;
+		if (request.getOptions() != null && request.getOptions().getParameters() != null) {
+			for (int i = 0; i < request.getOptions().getParameters().length; i++) {
+				endpoint += String.format(i == 0 ? "?%s=%s" : "&%s=%s", request.getOptions().getParameters()[i].getName(), request.getOptions().getParameters()[i].getValue());
+			}
+		}
 		switch (method) {
 		case GET:
 			base = Unirest.get(endpoint);

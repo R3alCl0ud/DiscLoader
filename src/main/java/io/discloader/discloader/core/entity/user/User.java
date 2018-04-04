@@ -77,17 +77,14 @@ public class User implements IUser {
 	}
 
 	public User(IUser user) {
-		this.loader = user.getLoader();
-
 		this.id = user.getID();
-
+		this.loader = user.getLoader();
 		this.username = user.getUsername();
-
 		this.discriminator = user.getDiscriminator();
-
 		this.avatarHash = user.getAvatar().getHash();
-
 		this.bot = user.isBot();
+		this.verified = user.isVerified();
+		this.mfa = user.MFAEnabled();
 	}
 
 	/**
@@ -260,16 +257,18 @@ public class User implements IUser {
 
 	@Override
 	public void setup(UserJSON data) {
-		if (data.username != null)
-			username = data.username;
-
-		// Short.p
-		if (data.discriminator != null)
-			discriminator = Short.parseShort(data.discriminator, 10);
-
-		avatarHash = data.avatar;
-
-		bot = data.bot;
+		try {
+			if (data.username != null)
+				username = data.username;
+			if (data.discriminator != null)
+				discriminator = Short.parseShort(data.discriminator, 10);
+			avatarHash = data.avatar;
+			bot = data.bot;
+			verified = data.verified;
+			mfa = data.mfa_enabled;
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 	}
 
 	@Override
