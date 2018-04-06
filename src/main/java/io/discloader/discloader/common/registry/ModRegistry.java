@@ -7,15 +7,16 @@ import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 import java.util.logging.Logger;
 
-import io.discloader.discloader.client.logger.DLLogger;
-import io.discloader.discloader.client.logger.ProgressLogger;
 import io.discloader.discloader.common.DiscLoader;
 import io.discloader.discloader.common.discovery.Mod;
 import io.discloader.discloader.common.discovery.ModCandidate;
 import io.discloader.discloader.common.discovery.ModContainer;
 import io.discloader.discloader.common.discovery.ModDiscoverer;
+import io.discloader.discloader.common.event.DLEvent;
 import io.discloader.discloader.common.event.DLPreInitEvent;
 import io.discloader.discloader.common.language.LanguageRegistry;
+import io.discloader.discloader.common.logger.DLLogger;
+import io.discloader.discloader.common.logger.ProgressLogger;
 import io.discloader.discloader.common.start.Main;
 import io.discloader.discloader.util.DLUtil;
 
@@ -89,8 +90,8 @@ public class ModRegistry {
 					ProgressLogger.progress(i + 1, containers.size(), mc.modInfo.modid());
 					logger.info(mc.modInfo.modid());
 					if (preInitMods.containsKey(mc.modInfo.modid())) {
-						logger.severe(String.format("Mod with duplicate id found. \nHALTING STARTUP\nDuplicate ID: %s\n", mc.modInfo.modid()));
-						System.exit(1);
+						logger.severe(String.format("Mod with duplicate id found. \nIGNORING DUPLICATE\nDuplicate ID: %s\n", mc.modInfo.modid()));
+						continue;
 					}
 					preInitMods.put(mc.modInfo.modid(), mc);
 				}
@@ -114,8 +115,8 @@ public class ModRegistry {
 				ProgressLogger.stage(2, 3, "Registering Default Language");
 				logger.info("Registering Default Language");
 				LanguageRegistry.registerLanguage(DLUtil.enUS);
-				ProgressLogger.stage(3, 3, "Execute PreINIT");
-				logger.info("Execute PreINIT");
+				ProgressLogger.stage(3, 3, "Executing PreINIT Handlers");
+				logger.info("Execute PreINIT Handlers");
 				preInit();
 			}
 		};
@@ -132,16 +133,7 @@ public class ModRegistry {
 				continue;
 			}
 			loadMod(mod.modInfo.modid());
-			// activeMod = null;
 		}
-		// DLPreInitEvent event = new DLPreInitEvent(loader);
-		logger.info("" + (loader != null));
-		// loader.emit(event);
-		ProgressLogger.phase(3, 3, "Init");
-		logger.info("Now swiching to the Init phase");
-		ProgressLogger.stage(1, 3, "Waiting to Login");
-		logger.info("Waiting to Login");
-		// loader.doneLoading();
 		resetStep();
 		loaded.complete((Void) null);
 	}
@@ -171,7 +163,7 @@ public class ModRegistry {
 		logger.info("Executing PreInit handler in: " + mod.modInfo.modid());
 		mods.put(mod.modInfo.modid(), mod);
 		DLPreInitEvent event = new DLPreInitEvent(loader);
-		mod.emit("preInit", event);
+		mod.emit(event);
 		if (loadMod.containsKey(mod.modInfo.modid())) {
 			activeMod = preInitMods.get(loadMod.get(mod.modInfo.modid()));
 		} else {
@@ -185,5 +177,13 @@ public class ModRegistry {
 			return;
 		// LoadingPanel.setProgress(0, 0, "");
 		// LoadingPanel.setStep(0, 0, "");
+	}
+
+	public static void emit(DLEvent event) {
+		// mods.valuespreInit();
+		List<ModContainer> mds = new ArrayList<>(mods.values());
+		for (int i = mds.size() - 1; i >= 0; i--) {
+			mds.get(i).emit(event);
+		}
 	}
 }

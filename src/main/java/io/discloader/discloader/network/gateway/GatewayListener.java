@@ -15,14 +15,43 @@ import com.neovisionaries.ws.client.WebSocketAdapter;
 import com.neovisionaries.ws.client.WebSocketException;
 import com.neovisionaries.ws.client.WebSocketFrame;
 
-import io.discloader.discloader.client.logger.DLLogger;
-import io.discloader.discloader.client.logger.ProgressLogger;
 import io.discloader.discloader.common.DiscLoader;
 import io.discloader.discloader.common.event.DisconnectEvent;
 import io.discloader.discloader.common.event.RawEvent;
 import io.discloader.discloader.common.event.ReconnectEvent;
+import io.discloader.discloader.common.logger.DLLogger;
+import io.discloader.discloader.common.logger.ProgressLogger;
 import io.discloader.discloader.entity.sendable.Packet;
-import io.discloader.discloader.network.gateway.packets.*;
+import io.discloader.discloader.network.gateway.packets.AbstractHandler;
+import io.discloader.discloader.network.gateway.packets.ChannelCreate;
+import io.discloader.discloader.network.gateway.packets.ChannelDelete;
+import io.discloader.discloader.network.gateway.packets.ChannelUpdate;
+import io.discloader.discloader.network.gateway.packets.EmojiUpdate;
+import io.discloader.discloader.network.gateway.packets.GuildBanAdd;
+import io.discloader.discloader.network.gateway.packets.GuildBanRemove;
+import io.discloader.discloader.network.gateway.packets.GuildCreate;
+import io.discloader.discloader.network.gateway.packets.GuildDelete;
+import io.discloader.discloader.network.gateway.packets.GuildMemberAdd;
+import io.discloader.discloader.network.gateway.packets.GuildMemberRemove;
+import io.discloader.discloader.network.gateway.packets.GuildMemberUpdate;
+import io.discloader.discloader.network.gateway.packets.GuildMembersChunk;
+import io.discloader.discloader.network.gateway.packets.GuildUpdate;
+import io.discloader.discloader.network.gateway.packets.Hello;
+import io.discloader.discloader.network.gateway.packets.MessageCreate;
+import io.discloader.discloader.network.gateway.packets.MessageDelete;
+import io.discloader.discloader.network.gateway.packets.MessageUpdate;
+import io.discloader.discloader.network.gateway.packets.PresenceUpdate;
+import io.discloader.discloader.network.gateway.packets.ReactionAdd;
+import io.discloader.discloader.network.gateway.packets.ReactionRemove;
+import io.discloader.discloader.network.gateway.packets.Ready;
+import io.discloader.discloader.network.gateway.packets.Resumed;
+import io.discloader.discloader.network.gateway.packets.RoleCreate;
+import io.discloader.discloader.network.gateway.packets.RoleDelete;
+import io.discloader.discloader.network.gateway.packets.RoleUpdate;
+import io.discloader.discloader.network.gateway.packets.SocketPacket;
+import io.discloader.discloader.network.gateway.packets.TypingStart;
+import io.discloader.discloader.network.gateway.packets.VoiceServerUpdate;
+import io.discloader.discloader.network.gateway.packets.VoiceStateUpdate;
 import io.discloader.discloader.network.gateway.packets.request.GatewayIdentify;
 import io.discloader.discloader.network.gateway.packets.request.GatewayResume;
 import io.discloader.discloader.network.gateway.packets.request.Properties;
@@ -110,11 +139,11 @@ public class GatewayListener extends WebSocketAdapter {
 
 		if (packet.op == OPCodes.HELLO) {
 			this.handlers.get(WSEvents.HELLO).handle(packet);
+
 		}
 
 		if (packet.op == DLUtil.OPCodes.HEARTBEAT_ACK) {
 			socket.lastHeartbeatAck = true;
-			// loader.emit("debug", "Heartbeat Acknowledged");
 			logger.info("Heartbeat Acknowledged");
 		} else if (packet.op == OPCodes.HEARTBEAT) {
 			logger.info("Recieved Heartbeat request from Gateway.");
@@ -160,12 +189,14 @@ public class GatewayListener extends WebSocketAdapter {
 			reconnection.interrupt();
 			reconnection = null;
 		}
+
 		if (socket.status != Status.RECONNECTING) {
 			this.socket.lastHeartbeatAck = true;
 			this.sendNewIdentify();
 		} else {
 			sendResume();
 		}
+
 	}
 
 	public void onDisconnected(WebSocket ws, WebSocketFrame serverFrame, WebSocketFrame clientFrame, boolean isServer) throws Exception {
@@ -198,23 +229,15 @@ public class GatewayListener extends WebSocketAdapter {
 	public void onFrame(WebSocket ws, WebSocketFrame frame) {
 		RawEvent event = new RawEvent(loader, frame);
 		loader.emit(event);
-		loader.emit("RawPacket", event);
 	}
 
 	@Override
 	public void onTextMessage(WebSocket ws, String text) throws Exception {
 		try {
-			(new Thread(logName + " - Message Handler") {
-				@Override
-				public void run() {
-					SocketPacket packet = gson.fromJson(text, SocketPacket.class);
-					handle(packet);
-				}
-			}).start();
-
+			SocketPacket packet = gson.fromJson(text, SocketPacket.class);
+			handle(packet);
 		} catch (Exception e) {
 			e.printStackTrace();
-			throw e;
 		}
 	}
 

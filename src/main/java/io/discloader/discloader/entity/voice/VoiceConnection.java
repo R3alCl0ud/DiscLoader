@@ -20,11 +20,11 @@ import com.sedmelluq.discord.lavaplayer.track.AudioPlaylist;
 import com.sedmelluq.discord.lavaplayer.track.AudioTrack;
 import com.sedmelluq.discord.lavaplayer.track.AudioTrackEndReason;
 
-import io.discloader.discloader.client.logger.DLLogger;
 import io.discloader.discloader.common.DiscLoader;
 import io.discloader.discloader.common.event.voice.VoiceConnectionDisconnectEvent;
 import io.discloader.discloader.common.event.voice.VoiceConnectionEvent;
 import io.discloader.discloader.common.event.voice.VoiceConnectionReadyEvent;
+import io.discloader.discloader.common.logger.DLLogger;
 import io.discloader.discloader.entity.channel.IGuildVoiceChannel;
 import io.discloader.discloader.entity.channel.IVoiceChannel;
 import io.discloader.discloader.entity.guild.IGuild;
@@ -276,6 +276,12 @@ public class VoiceConnection {
 		player.playTrack(track);
 	}
 
+	/**
+	 * Plays audio.
+	 * 
+	 * @param track
+	 *            A URL or a path to an audio file.
+	 */
 	public void play(String track) {
 		findTrackOrTracks(track, new AudioLoadResultHandler() {
 
@@ -296,21 +302,19 @@ public class VoiceConnection {
 				for (IVoiceEventListener listener : listeners) {
 					listener.playlistLoaded(playlist);
 				}
-				// player.addListener(new AudioEventAdapter() {
-				//
-				// private int index = 0;
-				//
-				// public void onTrackEnd(AudioPlayer player, AudioTrack track,
-				// AudioTrackEndReason endReason) {
-				// if (endReason.mayStartNext &&
-				// !endReason.equals(AudioTrackEndReason.REPLACED)) {
-				// index++;
-				// if (index < playlist.getTracks().size())
-				// play(playlist.getTracks().get(index));
-				// }
-				// }
-				// });
-				// play(playlist.getTracks().get(0));
+				player.addListener(new AudioEventAdapter() {
+					private int index = 0;
+
+					@Override
+					public void onTrackEnd(AudioPlayer player, AudioTrack track, AudioTrackEndReason endReason) {
+						if (endReason.mayStartNext && !endReason.equals(AudioTrackEndReason.REPLACED)) {
+							index++;
+							if (index < playlist.getTracks().size())
+								play(playlist.getTracks().get(index));
+						}
+					}
+				});
+				play(playlist.getTracks().get(0));
 			}
 
 			@Override
@@ -318,9 +322,8 @@ public class VoiceConnection {
 				for (IVoiceEventListener listener : listeners) {
 					listener.trackLoaded(track);
 				}
-				// logger.info(String.format("Starting track: %s",
-				// track.getInfo().title));
-				// play(track);
+				logger.info(String.format("Starting track: %s", track.getInfo().title));
+				play(track);
 			}
 
 		});

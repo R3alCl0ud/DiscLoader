@@ -8,9 +8,9 @@ import java.util.List;
 import java.util.function.Function;
 import java.util.logging.Logger;
 
-import io.discloader.discloader.client.logger.DLLogger;
 import io.discloader.discloader.common.event.sharding.IShardingListener;
 import io.discloader.discloader.common.event.sharding.ShardEvent;
+import io.discloader.discloader.common.logger.DLLogger;
 import io.discloader.discloader.common.registry.EntityRegistry;
 
 /**

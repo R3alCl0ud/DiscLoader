@@ -1,5 +1,9 @@
 package io.discloader.discloader.common;
 
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -7,10 +11,11 @@ import java.util.concurrent.CompletableFuture;
 import java.util.function.Consumer;
 import java.util.logging.Logger;
 
+import org.apache.commons.codec.binary.Base64;
+import org.json.JSONObject;
+
 import io.discloader.discloader.client.command.Command;
 import io.discloader.discloader.client.command.CommandHandler;
-import io.discloader.discloader.client.logger.DLLogger;
-import io.discloader.discloader.common.discovery.ModContainer;
 import io.discloader.discloader.common.event.DLEvent;
 import io.discloader.discloader.common.event.DisconnectEvent;
 import io.discloader.discloader.common.event.EventManager;
@@ -20,23 +25,31 @@ import io.discloader.discloader.common.exceptions.AccountTypeException;
 import io.discloader.discloader.common.exceptions.GuildSyncException;
 import io.discloader.discloader.common.exceptions.UnauthorizedException;
 import io.discloader.discloader.common.logger.DLErrorStream;
+import io.discloader.discloader.common.logger.DLLogger;
 import io.discloader.discloader.common.logger.DLPrintStream;
+import io.discloader.discloader.common.registry.EntityBuilder;
 import io.discloader.discloader.common.registry.EntityRegistry;
 import io.discloader.discloader.common.registry.ModRegistry;
 import io.discloader.discloader.core.entity.invite.Invite;
 import io.discloader.discloader.core.entity.user.DLUser;
+import io.discloader.discloader.entity.guild.DefaultNotifications;
+import io.discloader.discloader.entity.guild.ExplicitContentFilter;
 import io.discloader.discloader.entity.guild.IGuild;
+import io.discloader.discloader.entity.guild.VerificationLevel;
+import io.discloader.discloader.entity.guild.VoiceRegion;
 import io.discloader.discloader.entity.invite.IInvite;
 import io.discloader.discloader.entity.sendable.Packet;
 import io.discloader.discloader.entity.util.SnowflakeUtil;
 import io.discloader.discloader.network.gateway.Gateway;
 import io.discloader.discloader.network.json.GatewayJSON;
+import io.discloader.discloader.network.json.GuildJSON;
 import io.discloader.discloader.network.json.InviteJSON;
+import io.discloader.discloader.network.json.VoiceRegionJSON;
 import io.discloader.discloader.network.rest.RESTManager;
 import io.discloader.discloader.network.rest.RESTOptions;
+import io.discloader.discloader.network.util.Endpoints;
 import io.discloader.discloader.network.util.Methods;
 import io.discloader.discloader.util.DLUtil;
-import io.discloader.discloader.util.DLUtil.Endpoints;
 import io.discloader.discloader.util.DLUtil.Status;
 
 /**
@@ -225,7 +238,7 @@ public class DiscLoader {
 			if (socket.status != Status.READY && socket.status != Status.NEARLY) {
 				int unavailable = 0;
 				if (shard == null) {
-					for (IGuild guild : EntityRegistry.getGuilds()) {
+					for (IGuild guild : EntityRegistry.getGuildsCollection()) {
 						unavailable += guild.isAvailable() ? 0 : 1;
 					}
 				} else {
@@ -247,6 +260,108 @@ public class DiscLoader {
 		}
 	}
 
+	/**
+	 * Creates a new {@link IGuild} with the specified name.
+	 * <h2>For Bot Accounts</h2><br>
+	 * This endpoint can be used only by bots in less than 10 guilds.
+	 * 
+	 * @param name
+	 *            The new {@link IGuild}'s name. Must be {@code 2-100} characters.
+	 * @return A {@link CompletableFuture} that completes with an {@link IGuild}
+	 *         object of the newly created guild if successful.
+	 * @throws UnauthorizedException
+	 *             Thrown if the {@link #getSelfUser() user} you are logged in as is
+	 *             a bot that is in more than 10 guilds.
+	 */
+	public CompletableFuture<IGuild> createGuild(String name) throws UnauthorizedException {
+		return createGuild(name, null, null, VerificationLevel.NONE, DefaultNotifications.ALL_MESSAGES, ExplicitContentFilter.DISABLED);
+	}
+
+	/**
+	 * Creates a new {@link IGuild} with the specified name.
+	 * <h2>For Bot Accounts</h2><br>
+	 * This endpoint can be used only by bots in less than 10 guilds.
+	 * 
+	 * @param name
+	 *            The new {@link IGuild}'s name. Must be {@code 2-100} characters.
+	 * @param region
+	 *            The new {@link IGuild}'s voice server region.
+	 * @return A {@link CompletableFuture} that completes with an {@link IGuild}
+	 *         object of the newly created guild if successful.
+	 * @throws UnauthorizedException
+	 *             Thrown if the {@link #getSelfUser() user} you are logged in as is
+	 *             a bot that is in more than 10 guilds.
+	 */
+	public CompletableFuture<IGuild> createGuild(String name, VoiceRegion region) throws UnauthorizedException {
+		return createGuild(name, region, null, VerificationLevel.NONE, DefaultNotifications.ALL_MESSAGES, ExplicitContentFilter.DISABLED);
+	}
+
+	/**
+	 * Creates a new {@link IGuild} with the specified name.
+	 * <h2>For Bot Accounts</h2><br>
+	 * This endpoint can be used only by bots in less than 10 guilds.
+	 * 
+	 * @param name
+	 *            The new {@link IGuild}'s name. Must be {@code 2-100} characters in
+	 *            length.
+	 * @param region
+	 *            The new {@link IGuild}'s voice server region.
+	 * @param icon
+	 *            A {@link File} pointing to the new {@link IGuild}'s icon.
+	 * @param verificationLevel
+	 *            Members of the server must meet the following criteria before they
+	 *            can send messages in text channels or initiate a direct message
+	 *            conversation. If a member has an assigned role this does not
+	 *            apply.
+	 * @param notificationLevel
+	 *            This will determine whether members who have not explicitly set
+	 *            their notification settings receive a notification for every
+	 *            message sent in this server or not.
+	 * @param filterLevel
+	 *            Automatically scan and delete messages sent in this server that
+	 *            contain explicit content. Please choose how broadly the filter
+	 *            will apply to members in your server.
+	 * @return A {@link CompletableFuture} that completes with an {@link IGuild}
+	 *         object of the newly created guild if successful.
+	 * @throws UnauthorizedException
+	 *             Thrown if the {@link #getSelfUser() user} you are logged in as is
+	 *             a bot that is in more than 10 guilds.
+	 */
+	public CompletableFuture<IGuild> createGuild(String name, VoiceRegion region, File icon, VerificationLevel verificationLevel, DefaultNotifications notificationLevel, ExplicitContentFilter filterLevel) throws UnauthorizedException {
+		CompletableFuture<IGuild> future = new CompletableFuture<>();
+		if (getSelfUser().isBot() && EntityRegistry.getGuilds().size() >= 10) {
+			UnauthorizedException aex = new UnauthorizedException("This endpoint can be used only by bots in less than 10 guilds.");
+			future.completeExceptionally(aex);
+			throw aex;
+		}
+		JSONObject payload = new JSONObject().put("name", name);
+		if (region != null) {
+			payload.put("region", region.getID());
+		}
+		if (icon != null && icon.exists() && icon.isFile() && icon.canRead()) {
+			String base64;
+			try {
+				base64 = "data:image/png;base64," + Base64.encodeBase64String(Files.readAllBytes(icon.toPath()));
+				payload.put("icon", base64);
+			} catch (IOException e) {
+				future.completeExceptionally(e);
+				return future;
+			}
+		}
+		payload.put("verification_level", verificationLevel.ordinal());
+		payload.put("default_message_notifications", notificationLevel.ordinal());
+		payload.put("explicit_content_filter", filterLevel.ordinal());
+		CompletableFuture<GuildJSON> cf = rest.request(Methods.POST, Endpoints.guilds, new RESTOptions(payload), GuildJSON.class);
+		cf.thenAcceptAsync(data -> {
+			future.complete(EntityBuilder.getGuildFactory().buildGuild(data));
+		});
+		cf.exceptionally(ex -> {
+			future.completeExceptionally(ex);
+			return null;
+		});
+		return future;
+	}
+
 	public CompletableFuture<Void> disconnect() {
 		return disconnect(1000, null);
 	}
@@ -266,6 +381,7 @@ public class DiscLoader {
 
 	public void emit(DLEvent event) {
 		eventManager.emit(event);
+		ModRegistry.emit(event);
 		if (event instanceof DisconnectEvent) {
 			DisconnectEvent devent = (DisconnectEvent) event;
 			if ((devent.getClientFrame().getCloseCode() == 4004 || devent.getServerFrame().getCloseCode() == 4004) && !rf.isDone()) {
@@ -274,14 +390,8 @@ public class DiscLoader {
 		}
 	}
 
-	public void emit(String event) {
-		this.emit(event, null);
-	}
-
 	public void emit(String event, Object data) {
-		for (ModContainer mod : ModRegistry.mods.values()) {
-			mod.emit(event, data);
-		}
+		return;
 	}
 
 	public void emitReady() {
@@ -291,7 +401,6 @@ public class DiscLoader {
 		rf.complete(this);
 		CommandHandler.handleCommands = true;
 		ReadyEvent event = new ReadyEvent(this);
-		emit(DLUtil.Events.READY, event);
 		emit(event);
 	}
 
@@ -335,6 +444,34 @@ public class DiscLoader {
 		return this.shard;
 	}
 
+	public CompletableFuture<List<VoiceRegion>> getVoiceRegions() {
+		CompletableFuture<List<VoiceRegion>> future = new CompletableFuture<>();
+		CompletableFuture<VoiceRegionJSON[]> cf = rest.request(Methods.GET, Endpoints.voiceRegions, new RESTOptions(), VoiceRegionJSON[].class);
+		cf.thenAcceptAsync(regionJSONs -> {
+			List<VoiceRegion> regions = new ArrayList<>();
+			for (VoiceRegionJSON region : regionJSONs) {
+				regions.add(new VoiceRegion(region));
+			}
+			future.complete(regions);
+		});
+		cf.exceptionally(ex -> {
+			future.completeExceptionally(ex);
+			return null;
+		});
+		return future;
+	}
+
+	public Map<Long, IGuild> getGuilds() {
+		if (shards != 1) {
+			Map<Long, IGuild> guilds = new HashMap<>();
+			for (IGuild guild : EntityRegistry.getGuildsOnShard(shardid, shards)) {
+				guilds.put(guild.getID(), guild);
+			}
+			return guilds;
+		}
+		return EntityRegistry.getGuilds();
+	}
+
 	/**
 	 * Returns a DLUser object representing the user you are logged in as.
 	 * 
@@ -374,8 +511,18 @@ public class DiscLoader {
 	public CompletableFuture<DiscLoader> login(String token) {
 		if (rf != null && rf.isCompletedExceptionally())
 			return rf;
-		LOG.info("Attempting to login");
 		rf = new CompletableFuture<>();
+		if (options.shouldLoadMods()) {
+			LOG.info("Attempting to load mods");
+			try {
+				ModRegistry.startMods().get();
+			} catch (Exception ex) {
+				LOG.severe("Error ocurred while attempting to load mods");
+				LOG.throwing(ex.getStackTrace()[0].getClassName(), ex.getStackTrace()[0].getMethodName(), ex);
+			}
+		}
+
+		LOG.info("Attempting to login");
 
 		Command.registerCommands();
 		this.token = token;

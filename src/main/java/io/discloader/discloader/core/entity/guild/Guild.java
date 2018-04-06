@@ -79,7 +79,6 @@ import io.discloader.discloader.network.rest.payloads.ChannelPayload;
 import io.discloader.discloader.network.util.Endpoints;
 import io.discloader.discloader.network.util.Methods;
 import io.discloader.discloader.util.DLUtil;
-import io.discloader.discloader.util.DLUtil.Events;
 
 public class Guild implements IGuild {
 
@@ -239,7 +238,6 @@ public class Guild implements IGuild {
 		if (!exists && shouldEmit) {
 			memberCount++;
 			GuildMemberAddEvent event = new GuildMemberAddEvent(member);
-			loader.emit(Events.GUILD_MEMBER_ADD, event);
 			loader.emit(event);
 		}
 		return member;

@@ -12,7 +12,6 @@ import io.discloader.discloader.entity.guild.IGuildEmoji;
 import io.discloader.discloader.network.gateway.Gateway;
 import io.discloader.discloader.network.json.EmojiJSON;
 import io.discloader.discloader.network.json.EmojiUpdateJSON;
-import io.discloader.discloader.util.DLUtil.Events;
 
 public class EmojiUpdate extends AbstractHandler {
 
@@ -39,7 +38,6 @@ public class EmojiUpdate extends AbstractHandler {
 					oldEmoji = guild.getEmojis().get(emoji.getID());
 					if (emoji.getID() == oldEmoji.getID() && !emoji.equals(oldEmoji)) {
 						GuildEmojiUpdateEvent event = new GuildEmojiUpdateEvent(emoji, oldEmoji);
-						loader.emit(Events.GUILD_EMOJI_UPDATE, event);
 						loader.emit(event);
 					}
 				}
@@ -47,7 +45,6 @@ public class EmojiUpdate extends AbstractHandler {
 				for (IGuildEmoji emoji : guild.getEmojis().values()) {
 					if (!emojis.containsKey(emoji.getID())) {
 						GuildEmojiDeleteEvent event = new GuildEmojiDeleteEvent(emoji);
-						loader.emit("GuildEmojiDelete", event);
 						loader.emit(event);
 					}
 				}
@@ -55,7 +52,6 @@ public class EmojiUpdate extends AbstractHandler {
 				for (IGuildEmoji emoji : emojis.values()) {
 					if (!guild.getEmojis().containsKey(emoji.getID())) {
 						GuildEmojiCreateEvent event = new GuildEmojiCreateEvent(emoji);
-						loader.emit("GuildEmojiCreate", event);
 						loader.emit(event);
 					}
 				}

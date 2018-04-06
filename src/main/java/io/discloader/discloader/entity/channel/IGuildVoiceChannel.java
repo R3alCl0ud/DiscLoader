@@ -15,12 +15,12 @@ public interface IGuildVoiceChannel extends IGuildChannel, IVoiceChannel {
 		if (EntityRegistry.getVoiceConnectionByID(getGuild().getID()) != null) {
 			EntityRegistry.getVoiceConnectionByID(getGuild().getID()).disconnect().thenAcceptAsync(action -> {
 				VoiceConnection connection = new VoiceConnection(this, future);
-				EntityRegistry.putVoiceConnection(connection);
+				EntityRegistry.addVoiceConnection(connection);
 			});
 			return future;
 		}
 		VoiceConnection connection = new VoiceConnection(this, future);
-		EntityRegistry.putVoiceConnection(connection);
+		EntityRegistry.addVoiceConnection(connection);
 		return future;
 	}
 

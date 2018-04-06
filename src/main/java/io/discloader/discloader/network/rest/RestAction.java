@@ -4,8 +4,8 @@ import java.util.concurrent.CompletableFuture;
 import java.util.function.Consumer;
 import java.util.logging.Logger;
 
-import io.discloader.discloader.client.logger.DLLogger;
 import io.discloader.discloader.common.DiscLoader;
+import io.discloader.discloader.common.logger.DLLogger;
 import io.discloader.discloader.network.util.Methods;
 
 /**

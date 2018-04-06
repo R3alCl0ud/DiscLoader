@@ -11,8 +11,8 @@ import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import io.discloader.discloader.client.logger.DLLogger;
-import io.discloader.discloader.client.logger.ProgressLogger;
+import io.discloader.discloader.common.logger.DLLogger;
+import io.discloader.discloader.common.logger.ProgressLogger;
 
 /**
  * @author Perry Berman

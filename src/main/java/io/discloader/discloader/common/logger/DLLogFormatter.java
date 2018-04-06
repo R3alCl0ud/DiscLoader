@@ -1,4 +1,4 @@
-package io.discloader.discloader.client.logger;
+package io.discloader.discloader.common.logger;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;

@@ -13,7 +13,6 @@ import io.discloader.discloader.entity.guild.IGuild;
 import io.discloader.discloader.entity.message.IMessage;
 import io.discloader.discloader.network.gateway.Gateway;
 import io.discloader.discloader.network.json.ChannelJSON;
-import io.discloader.discloader.util.DLUtil.Events;
 
 /**
  * @author Perry Berman
@@ -45,7 +44,6 @@ public class ChannelUpdate extends AbstractHandler {
 		if (channel instanceof IGuildChannel && oldChannel instanceof IGuildChannel) {
 			loader.emit(new GuildChannelUpdateEvent((IGuildChannel) channel, (IGuildChannel) oldChannel));
 		}
-		loader.emit(Events.CHANNEL_UPDATE, event);
 		loader.emit(event);
 	}
 

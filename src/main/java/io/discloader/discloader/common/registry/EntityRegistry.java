@@ -163,6 +163,10 @@ public class EntityRegistry {
 		return user;
 	}
 
+	public static void addVoiceConnection(VoiceConnection connection) {
+		voiceConnections.put(connection.getGuild().getID(), connection);
+	}
+
 	public static IWebhook addWebhook(WebhookJSON data) {
 		if (webhookExists(data.id == null ? "0" : data.id)) {
 			return getWebhookByID(data.id == null ? "0" : data.id);
@@ -187,6 +191,13 @@ public class EntityRegistry {
 		return categories;
 	}
 
+	/**
+	 * @return {@code categories}
+	 */
+	public static Collection<IChannelCategory> getChannelCategoriesCollection() {
+		return categories.values();
+	}
+
 	public static IChannelCategory getChannelCategoryByID(long channelID) {
 		return categories.get(channelID);
 	}
@@ -195,11 +206,19 @@ public class EntityRegistry {
 		return categories.get(SnowflakeUtil.parse(channelID));
 	}
 
-	public static Collection<IChannel> getChannels() {
+	public static Map<Long, IChannel> getChannels() {
+		return channels;
+	}
+
+	public static Collection<IChannel> getChannelsCollection() {
 		return channels.values();
 	}
 
-	public static Collection<IGroupChannel> getGroupChannels() {
+	public static Map<Long, IGroupChannel> getGroupChannels() {
+		return groupChannels;
+	}
+
+	public static Collection<IGroupChannel> getGroupChannelsCollection() {
 		return groupChannels.values();
 	}
 
@@ -212,31 +231,54 @@ public class EntityRegistry {
 		return guildID == null ? null : guilds.get(SnowflakeUtil.parse(guildID));
 	}
 
-	public static Collection<IGuildChannel> getGuildChannels() {
+	public static Map<Long, IGuildChannel> getGuildChannels() {
+		return guildChannels;
+	}
+
+	public static Collection<IGuildChannel> getGuildChannelsCollection() {
 		return guildChannels.values();
 	}
 
 	/**
-	 * Returns a Collection of all of the client's (or shards') guilds
+	 * Returns a {@link Map}{@literal <}{@link Long}, {@link IGuild}{@literal >} of
+	 * all of the client's guilds. The {@link Map} is indexed by
+	 * {@link IGuild#getID()}
+	 * 
+	 * @return A {@link Map} of {@link IGuild} objects indexed by
+	 *         {@link IGuild#getID()}
+	 * @see IGuild
+	 * @see #getGuildByID(long) getGuildByID(guildID)
+	 *
+	 */
+	public static Map<Long, IGuild> getGuilds() {
+		return guilds;
+	}
+
+	/**
+	 * Returns a Collection of all of the client's guilds
 	 * 
 	 * @return A Collection of {@link IGuild} objects
 	 * @see IGuild
 	 * @see #getGuildByID(long) getGuildByID(guildID)
 	 *
 	 */
-	public static Collection<IGuild> getGuilds() {
+	public static Collection<IGuild> getGuildsCollection() {
 		return guilds.values();
+	}
+
+	public static List<IGuild> getGuildsOnShard(int shardid, int shards) {
+		List<IGuild> sgs = new ArrayList<>();
+		for (IGuild guild : getGuildsCollection()) {
+			if ((guild.getID() >> 22) % shards == shardid)
+				sgs.add(guild);
+		}
+		return sgs;
 	}
 
 	public static List<IGuild> getGuildsOnShard(Shard shard) {
 		if (shard == null)
-			return new ArrayList<>();
-		List<IGuild> sgs = new ArrayList<>();
-		for (IGuild guild : getGuilds()) {
-			if ((guild.getID() >> 22) % shard.getShardCount() == shard.getShardID())
-				sgs.add(guild);
-		}
-		return sgs;
+			return getGuildsOnShard(0, 1);
+		return getGuildsOnShard(shard.getShardID(), shard.getShardCount());
 	}
 
 	public static IPrivateChannel getPrivateChannelByID(long channelID) {
@@ -254,7 +296,7 @@ public class EntityRegistry {
 	}
 
 	public static IPrivateChannel getPrivateChannelByUserID(long userID) {
-		for (IPrivateChannel channel : getPrivateChannels())
+		for (IPrivateChannel channel : getPrivateChannelsCollection())
 			if (channel.getRecipient().getID() == userID)
 				return channel;
 		return null;
@@ -264,8 +306,24 @@ public class EntityRegistry {
 		return getPrivateChannelByUserID(SnowflakeUtil.parse(userID));
 	}
 
-	public static Collection<IPrivateChannel> getPrivateChannels() {
+	public static Map<Long, IPrivateChannel> getPrivateChannels() {
+		return privateChannels;
+	}
+
+	public static Collection<IPrivateChannel> getPrivateChannelsCollection() {
 		return privateChannels.values();
+	}
+
+	public static Shard getShardByID(int shardID) {
+		return shards.get(shardID);
+	}
+
+	public static Map<Integer, Shard> getShards() {
+		return shards;
+	}
+
+	public static Collection<Shard> getShardsCollection() {
+		return shards.values();
 	}
 
 	public static ITextChannel getTextChannelByID(long channelID) {
@@ -276,7 +334,11 @@ public class EntityRegistry {
 		return getTextChannelByID(SnowflakeUtil.parse(channelID));
 	}
 
-	public static Collection<ITextChannel> getTextChannels() {
+	public static Map<Long, ITextChannel> getTextChannels() {
+		return textChannels;
+	}
+
+	public static Collection<ITextChannel> getTextChannelsCollection() {
 		return textChannels.values();
 	}
 
@@ -288,7 +350,11 @@ public class EntityRegistry {
 		return getUserByID(SnowflakeUtil.parse(userID));
 	}
 
-	public static Collection<IUser> getUsers() {
+	public static Map<Long, IUser> getUsers() {
+		return users;
+	}
+
+	public static Collection<IUser> getUsersCollection() {
 		return users.values();
 	}
 
@@ -300,7 +366,11 @@ public class EntityRegistry {
 		return getVoiceChannelByID(SnowflakeUtil.parse(channelID));
 	}
 
-	public static Collection<IVoiceChannel> getVoiceChannels() {
+	public static Map<Long, IVoiceChannel> getVoiceChannels() {
+		return voiceChannels;
+	}
+
+	public static Collection<IVoiceChannel> getVoiceChannelsCollection() {
 		return voiceChannels.values();
 	}
 
@@ -314,7 +384,11 @@ public class EntityRegistry {
 		return voiceConnections.get(guildID);
 	}
 
-	public static Collection<VoiceConnection> getVoiceConnections() {
+	public static Map<Long, VoiceConnection> getVoiceConnections() {
+		return voiceConnections;
+	}
+
+	public static Collection<VoiceConnection> getVoiceConnectionsCollection() {
 		return voiceConnections.values();
 	}
 
@@ -331,6 +405,10 @@ public class EntityRegistry {
 	 */
 	public static Map<Long, IWebhook> getWebhooks() {
 		return webhooks;
+	}
+
+	public static Collection<IWebhook> getWebhooksCollection() {
+		return webhooks.values();
 	}
 
 	public static boolean guildExists(IGuild guild) {
@@ -357,8 +435,11 @@ public class EntityRegistry {
 		return voiceConnections.containsKey(guildID);
 	}
 
+	/**
+	 * @deprecated Use {@link #addVoiceConnection(VoiceConnection)} instead
+	 */
 	public static void putVoiceConnection(VoiceConnection connection) {
-		voiceConnections.put(connection.getGuild().getID(), connection);
+		addVoiceConnection(connection);
 	}
 
 	public static void removeChannel(IChannel channel) {
@@ -400,13 +481,5 @@ public class EntityRegistry {
 
 	public static boolean webhookExists(String webhookID) {
 		return webhookExists(SnowflakeUtil.parse(webhookID));
-	}
-
-	public static Collection<Shard> getShards() {
-		return shards.values();
-	}
-
-	public static Shard getShardByID(int shardID) {
-		return shards.get(shardID);
 	}
 }

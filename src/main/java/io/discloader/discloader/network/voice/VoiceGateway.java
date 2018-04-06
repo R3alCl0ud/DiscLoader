@@ -13,8 +13,8 @@ import com.neovisionaries.ws.client.WebSocketException;
 import com.neovisionaries.ws.client.WebSocketFactory;
 import com.neovisionaries.ws.client.WebSocketFrame;
 
-import io.discloader.discloader.client.logger.DLLogger;
 import io.discloader.discloader.common.event.voice.VoiceConnectionReadyEvent;
+import io.discloader.discloader.common.logger.DLLogger;
 import io.discloader.discloader.common.registry.EntityRegistry;
 import io.discloader.discloader.entity.util.SnowflakeUtil;
 import io.discloader.discloader.entity.voice.VoiceConnection;
@@ -85,12 +85,14 @@ public class VoiceGateway extends WebSocketAdapter {
 	}
 
 	public void onDisconnected(WebSocket ws, WebSocketFrame frame, WebSocketFrame frame2, boolean isServer) throws Exception {
-		if (frame.getCloseCode() == 1000) {
-			EntityRegistry.removeVoiceConnection(connection.getGuild().getID());
+		EntityRegistry.removeVoiceConnection(connection.getGuild().getID());
+		if (frame.getCloseCode() == 1000 && dc != null) {
 			dc.complete(connection);
-			// return;
+			return;
+		} else {
+			dc.completeExceptionally(new RuntimeException(frame.getCloseReason()));
+			logger.severe(String.format("Reason: %s, Code: %d, isServer: %b", frame.getCloseReason(), frame.getCloseCode(), isServer));
 		}
-		logger.severe(String.format("Reason: %s, Code: %d, isServer: %b", frame.getCloseReason(), frame.getCloseCode(), isServer));
 	}
 
 	public void onTextMessage(WebSocket ws, String text) throws Exception {

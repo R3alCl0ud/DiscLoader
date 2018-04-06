@@ -9,7 +9,6 @@ import io.discloader.discloader.entity.channel.IChannel;
 import io.discloader.discloader.entity.guild.IGuild;
 import io.discloader.discloader.network.gateway.Gateway;
 import io.discloader.discloader.network.json.ChannelJSON;
-import io.discloader.discloader.util.DLUtil.Events;
 
 /**
  * @author Perry Berman
@@ -24,11 +23,10 @@ public class ChannelCreate extends AbstractHandler {
 	public void handle(SocketPacket packet) {
 		String d = gson.toJson(packet.d);
 		ChannelJSON data = gson.fromJson(d, ChannelJSON.class);
-		
+
 		IGuild guild = EntityRegistry.getGuildByID(data.guild_id);
-		IChannel channel = EntityRegistry.addChannel(data,loader, guild);
+		IChannel channel = EntityRegistry.addChannel(data, loader, guild);
 		ChannelCreateEvent event = new ChannelCreateEvent(channel);
-		loader.emit(Events.CHANNEL_CREATE, event);
 		loader.emit(event);
 	}
 }

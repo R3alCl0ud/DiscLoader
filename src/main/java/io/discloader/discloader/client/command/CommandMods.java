@@ -15,15 +15,15 @@ import io.discloader.discloader.util.DLUtil;
  *
  */
 public class CommandMods extends Command {
-	
+
 	private final String regex = "(.*)";
-	
+
 	public CommandMods() {
 		super();
 		setUnlocalizedName("mods").setTextureName("discloader:mods").setDescription("mods");
 		setUsage("mods [<mod>]").setArgsRegex(regex);
 	}
-	
+
 	@Override
 	public void execute(MessageCreateEvent e, String[] args) {
 		IMessage message = e.getMessage();
@@ -37,8 +37,12 @@ public class CommandMods extends Command {
 				}
 			} else {
 				ArrayList<String> modList = new ArrayList<String>();
-				for (ModContainer mcs : ModRegistry.mods.values()) {
-					modList.add(String.format("%s", mcs.modInfo.name()));
+				if (!ModRegistry.mods.isEmpty()) {
+					for (ModContainer mcs : ModRegistry.mods.values()) {
+						modList.add(String.format("%s", mcs.modInfo.name()));
+					}
+				} else {
+					modList.add("No Mods");
 				}
 				embed.setThumbnail(getResourceLocation());
 				String mods = Arrays.toString(modList.toArray());

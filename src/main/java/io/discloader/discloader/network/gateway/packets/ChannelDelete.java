@@ -6,7 +6,6 @@ import io.discloader.discloader.entity.channel.IChannel;
 import io.discloader.discloader.entity.guild.IGuild;
 import io.discloader.discloader.network.gateway.Gateway;
 import io.discloader.discloader.network.json.ChannelJSON;
-import io.discloader.discloader.util.DLUtil.Events;
 
 /**
  * @author Perry Berman
@@ -25,9 +24,9 @@ public class ChannelDelete extends AbstractHandler {
 		IChannel channel = null;
 		if (data.guild_id != null) {
 			guild = EntityRegistry.getGuildByID(data.guild_id);
-			channel = EntityRegistry.addChannel(data,loader, guild);
+			channel = EntityRegistry.addChannel(data, loader, guild);
 		} else {
-			channel = EntityRegistry.addChannel(data,loader);
+			channel = EntityRegistry.addChannel(data, loader);
 		}
 		switch (channel.getType()) {
 		case TEXT:
@@ -41,7 +40,6 @@ public class ChannelDelete extends AbstractHandler {
 			break;
 		}
 		ChannelDeleteEvent event = new ChannelDeleteEvent(channel);
-		loader.emit(Events.CHANNEL_DELETE, event);
 		loader.emit(event);
 	}
 }

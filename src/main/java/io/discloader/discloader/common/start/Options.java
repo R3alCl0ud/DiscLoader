@@ -7,7 +7,7 @@ package io.discloader.discloader.common.start;
  * @author Perry Berman
  *
  */
-public class options {
+public class Options {
 
 	public boolean loadMods, defaultCommands;
 	public auth auth;

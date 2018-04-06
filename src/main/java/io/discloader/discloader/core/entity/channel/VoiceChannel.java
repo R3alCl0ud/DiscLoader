@@ -107,7 +107,7 @@ public class VoiceChannel extends GuildChannel implements IGuildVoiceChannel {
 		}
 		CompletableFuture<VoiceConnection> future = new CompletableFuture<VoiceConnection>();
 		VoiceConnection connection = new VoiceConnection(this, future);
-		EntityRegistry.putVoiceConnection(connection);
+		EntityRegistry.addVoiceConnection(connection);
 		return future;
 	}
 

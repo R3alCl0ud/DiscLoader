@@ -28,7 +28,8 @@ public class Endpoints {
 
 	public static final String guilds = String.format("%s/guilds", API);
 	public static final String webhooks = String.format("%s/webhooks", API);
-
+	public static final String voiceRegions = String.format("%s/voice/regions", API);
+	
 	public static final String appAssets(long appID, String asset) {
 		return String.format("%s/app-assets/%d/%s", CDN, appID, asset);
 	}

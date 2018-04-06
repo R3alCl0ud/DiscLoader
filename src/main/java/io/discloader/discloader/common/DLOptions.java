@@ -117,8 +117,16 @@ public class DLOptions {
 
 	/**
 	 * @return {@code useModloader}
+	 * @deprecated Use {@link #shouldLoadMods()} instead
 	 */
 	public boolean isUsingModloader() {
+		return shouldLoadMods();
+	}
+
+	/**
+	 * @return {@code useModloader}
+	 */
+	public boolean shouldLoadMods() {
 		return useModloader;
 	}
 

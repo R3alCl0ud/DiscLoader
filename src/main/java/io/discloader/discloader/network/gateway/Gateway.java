@@ -12,8 +12,8 @@ import com.neovisionaries.ws.client.WebSocket;
 import com.neovisionaries.ws.client.WebSocketException;
 import com.neovisionaries.ws.client.WebSocketFactory;
 
-import io.discloader.discloader.client.logger.DLLogger;
 import io.discloader.discloader.common.DiscLoader;
+import io.discloader.discloader.common.logger.DLLogger;
 import io.discloader.discloader.entity.sendable.Packet;
 import io.discloader.discloader.entity.sendable.VoiceStateUpdate;
 import io.discloader.discloader.util.DLUtil;
@@ -207,7 +207,6 @@ public class Gateway {
 			ws.disconnect(1007, "Heartbeat Not Acknowledged");
 			return;
 		}
-		loader.emit("debug", "Attempting to Heartbeat");
 		logger.info("Attempting to Heartbeat");
 		JSONObject payload = new JSONObject();
 		payload.put("op", OPCodes.HEARTBEAT).put("d", s);

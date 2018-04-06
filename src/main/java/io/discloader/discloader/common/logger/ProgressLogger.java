@@ -1,4 +1,4 @@
-package io.discloader.discloader.client.logger;
+package io.discloader.discloader.common.logger;
 
 import io.discloader.discloader.common.start.Main;
 

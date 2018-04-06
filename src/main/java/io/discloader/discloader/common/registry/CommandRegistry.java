@@ -1,8 +1,8 @@
 package io.discloader.discloader.common.registry;
 
 import io.discloader.discloader.client.command.Command;
-import io.discloader.discloader.client.logger.ProgressLogger;
 import io.discloader.discloader.common.discovery.ModContainer;
+import io.discloader.discloader.common.logger.ProgressLogger;
 import io.discloader.discloader.util.DLNameSpacedMap;
 
 /**

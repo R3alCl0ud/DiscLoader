@@ -38,11 +38,7 @@ public class CommandHandler {
 			if (label.length() < prefix.length() || !label.substring(0, prefix.length()).equals(prefix)) {
 				return;
 			}
-			try {
-				label = label.substring(prefix.length());
-			} catch (Exception ex) {
-				ex.printStackTrace();
-			}
+			label = label.substring(prefix.length());
 			Command command = getCommand(label, message);
 			if (command != null) {
 				if (message.getChannel() instanceof IGuildTextChannel && !command.shouldExecute(message.getMember(), (IGuildTextChannel) message.getChannel()))
@@ -60,11 +56,24 @@ public class CommandHandler {
 					}
 					n++;
 				}
-				command.execute(e, args);
+				Thread handler = new Thread(command.getUnlocalizedName() + " - Message Handler") {
+					@Override
+					public void run() {
+						try {
+							command.execute(e, args);
+						} catch (Exception e) {
+							System.err.println("Error Occurred While attempting to execute the command \"" + command.getUnlocalizedName() + "\".");
+							e.printStackTrace();
+						}
+					}
+				};
+				handler.setPriority(Thread.MAX_PRIORITY - 2);
+				handler.start();
 				return;
 			}
-		} catch (Exception e1) {
-			e1.printStackTrace();
+		} catch (Exception ex) {
+			System.err.println("Error occurred whilst attempting to handle commands.");
+			ex.printStackTrace();
 		}
 	}
 

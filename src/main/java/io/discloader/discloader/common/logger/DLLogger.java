@@ -1,7 +1,7 @@
 /**
  * 
  */
-package io.discloader.discloader.client.logger;
+package io.discloader.discloader.common.logger;
 
 import java.io.File;
 import java.io.IOException;

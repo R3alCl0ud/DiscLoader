@@ -23,6 +23,7 @@ public class Command {
 
 	public static void registerCommands() {
 		if (defaultCommands) {
+			System.out.println("Registering Default Commands");
 			commands.addObject(0, "help", new CommandHelp().setUnlocalizedName("help").setId(0));
 			commands.addObject(1, "mods", new CommandMods().setId(1));
 			commands.addObject(2, "invite", new CommandInvite().setId(2));
@@ -110,7 +111,7 @@ public class Command {
 	}
 
 	public Resource getResourceLocation() {
-		return new Resource("DiscLoader", "texture/commands/missing-texture.png");
+		return new Resource(textureName.split(":")[0], String.format("texture/commands/%s.png", textureName.split(":")[1]));
 	}
 
 	/**
@@ -178,11 +179,13 @@ public class Command {
 	 * Sets the name of the texture for this command
 	 * 
 	 * @param textureName
-	 *            MODID:icons.commands.unlocalizedName
-	 * @return this.
+	 *            Should be in the following format: {@code MODID:unlocalizedName}
+	 * @return {@code this} object.
 	 */
 	public Command setTextureName(String textureName) {
-		this.textureName = textureName;
+		if (textureName.contains(":")) { // make sure textureName is following the format
+			this.textureName = textureName;
+		}
 		return this;
 	}
 

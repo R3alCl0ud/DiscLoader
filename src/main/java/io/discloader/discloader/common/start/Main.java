@@ -4,7 +4,6 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.util.concurrent.ExecutionException;
 // import java.util.concurrent.ExecutionException;
 import java.util.logging.Logger;
 import java.util.regex.Matcher;
@@ -14,20 +13,19 @@ import com.google.gson.Gson;
 import com.neovisionaries.ws.client.WebSocketFrame;
 
 import io.discloader.discloader.client.command.Command;
-import io.discloader.discloader.client.logger.DLLogger;
 import io.discloader.discloader.common.DLOptions;
 import io.discloader.discloader.common.DiscLoader;
-import io.discloader.discloader.common.Shard;
 import io.discloader.discloader.common.ShardManager;
 import io.discloader.discloader.common.event.EventListenerAdapter;
 import io.discloader.discloader.common.event.RawEvent;
 import io.discloader.discloader.common.event.ReadyEvent;
 import io.discloader.discloader.common.event.message.GuildMessageCreateEvent;
 import io.discloader.discloader.common.event.message.MessageCreateEvent;
+import io.discloader.discloader.common.event.sharding.ShardLaunchedEvent;
 import io.discloader.discloader.common.event.sharding.ShardingListenerAdapter;
+import io.discloader.discloader.common.logger.DLLogger;
 import io.discloader.discloader.common.registry.CommandRegistry;
 import io.discloader.discloader.common.registry.EntityRegistry;
-import io.discloader.discloader.common.registry.ModRegistry;
 
 /**
  * DiscLoader client entry point
@@ -70,22 +68,19 @@ public class Main {
 			Object[] lines = Files.readAllLines(Paths.get("./options.json")).toArray();
 			for (Object line : lines)
 				content += line;
-			options options = gson.fromJson(content, options.class);
+			Options options = gson.fromJson(content, Options.class);
 			token = options.auth.token;
 		}
 		DLOptions options = parseArgs(args);
-		try {
-			ModRegistry.startMods().get();
-		} catch (InterruptedException | ExecutionException e1) {
-			e1.printStackTrace();
-		}
+
 		if (options.shards > 1) {
 			ShardManager manager = new ShardManager(options);
 			manager.addShardingListener(new ShardingListenerAdapter() {
 
-				public void ShardLaunched(Shard shard) {
-					LOGGER.info(String.format("Shard #%d: Launched", shard.getShardID()));
-					shard.getLoader().addEventListener(new EventListenerAdapter() {
+				@Override
+				public void onShardLaunched(ShardLaunchedEvent e) {
+					LOGGER.info(String.format("Shard #%d: Launched", e.getShard().getShardID()));
+					e.getShard().getLoader().addEventListener(new EventListenerAdapter() {
 
 						public void Ready(ReadyEvent e) {
 
@@ -162,7 +157,7 @@ public class Main {
 		for (String arg : args) {
 			if (arg.startsWith("-") && !arg.startsWith("--") && !arg.contains("=")) {
 				if (arg.contains("d")) {
-					options = new DLOptions(options.token, options.prefix, true, options.isUsingModloader(), options.isDebug(), options.shard, options.shards);
+					options = new DLOptions(options.token, options.prefix, true, options.shouldLoadMods(), options.isDebug(), options.shard, options.shards);
 				}
 				if (arg.contains("g")) {
 					options = new DLOptions(options.token, options.prefix, options.defaultCommands, true, options.isDebug(), options.shard, options.shards);
