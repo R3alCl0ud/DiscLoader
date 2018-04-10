@@ -19,12 +19,29 @@ import io.discloader.discloader.entity.voice.VoiceState;
  * @author Perry Berman
  */
 public interface IGuildMember extends ISnowflake, IMentionable {
-
+	/**
+	 * @return A CompletableFuture that completes with the new {@link IGuildMember}
+	 *         object if successful.
+	 */
 	CompletableFuture<IGuildMember> ban();
 
+	/**
+	 * @return A CompletableFuture that completes with the new {@link IGuildMember}
+	 *         object if successful.
+	 */
 	CompletableFuture<IGuildMember> ban(String reason);
 
+	/**
+	 * @return A CompletableFuture that completes with the new {@link IGuildMember}
+	 *         object if successful.
+	 */
 	CompletableFuture<IGuildMember> deafen();
+
+	/**
+	 * @return A CompletableFuture that completes with the new {@link IGuildMember}
+	 *         object if successful.
+	 */
+	CompletableFuture<IGuildMember> deafen(String reason);
 
 	IGuild getGuild();
 
@@ -66,7 +83,13 @@ public interface IGuildMember extends ISnowflake, IMentionable {
 
 	VoiceState getVoiceState();
 
+	/**
+	 * @return A CompletableFuture that completes with the new {@link IGuildMember}
+	 *         object if successful.
+	 */
 	CompletableFuture<IGuildMember> giveRole(IRole... roles);
+
+	CompletableFuture<IGuildMember> giveRole(String reason, IRole... roles);
 
 	boolean hasRole(IRole role);
 
@@ -78,8 +101,16 @@ public interface IGuildMember extends ISnowflake, IMentionable {
 
 	boolean isOwner();
 
+	/**
+	 * @return A CompletableFuture that completes with the new {@link IGuildMember}
+	 *         object if successful.
+	 */
 	CompletableFuture<IGuildMember> kick();
 
+	/**
+	 * @return A CompletableFuture that completes with the new {@link IGuildMember}
+	 *         object if successful.
+	 */
 	CompletableFuture<IGuildMember> kick(String reason);
 
 	/**
@@ -96,9 +127,54 @@ public interface IGuildMember extends ISnowflake, IMentionable {
 	 */
 	CompletableFuture<IGuildMember> move(IGuildVoiceChannel channel);
 
+	/**
+	 * Moves the guild member into a different voice channel. <br>
+	 * The {@link Permissions#MOVE_MEMBERS MOVE_MEMBERS} is required to move
+	 * members.
+	 * 
+	 * @param channel
+	 *            The {@link IGuildVoiceChannel} to move the member into.
+	 * @param reason
+	 *            The reason for moving the member.
+	 * @return A CompletableFuture that completes with the new {@link IGuildMember}
+	 *         object if successful.
+	 * @throws PermissionsExecption
+	 *             Thrown if the client doesn't have permission to move this member
+	 */
+	CompletableFuture<IGuildMember> move(IGuildVoiceChannel channel, String reason);
+
+	/**
+	 * 
+	 * Mutes the guild member<br>
+	 * Requires the {@link Permissions#MUTE_MEMBERS} permission
+	 * 
+	 * @return A CompletableFuture that completes with the new {@link IGuildMember}
+	 *         object if successful.
+	 */
 	CompletableFuture<IGuildMember> mute();
 
+	/**
+	 * Mutes the guild member<br>
+	 * Requires the {@link Permissions#MUTE_MEMBERS} permission
+	 * 
+	 * @param reason
+	 *            The reason for muting the member
+	 * @return A CompletableFuture that completes with the new {@link IGuildMember}
+	 *         object if successful.
+	 */
+	CompletableFuture<IGuildMember> mute(String reason);
+
+	/**
+	 * @return A CompletableFuture that completes with the new {@link IGuildMember}
+	 *         object if successful.
+	 */
 	CompletableFuture<IGuildMember> setNick(String nick);
+
+	/**
+	 * @return A CompletableFuture that completes with the new {@link IGuildMember}
+	 *         object if successful.
+	 */
+	CompletableFuture<IGuildMember> setNick(String nick, String reason);
 
 	/**
 	 * Takes a role away from a member
@@ -113,11 +189,40 @@ public interface IGuildMember extends ISnowflake, IMentionable {
 	 */
 	CompletableFuture<IGuildMember> takeRole(IRole... roles);
 
+	/**
+	 * Takes a role away from a member
+	 * 
+	 * @param roles
+	 *            The role(s) to take away from the member
+	 * @return A Future that completes with the member if successful.
+	 * @throws PermissionsException
+	 *             thrown if a role with a higher position than the current user's
+	 *             highest role is attempted to be given to the member. Also thrown
+	 *             if the current user doesn't have the MANAGE_ROLE permission.
+	 */
+	CompletableFuture<IGuildMember> takeRole(String reason, IRole... roles);
+
+	/**
+	 * @return A CompletableFuture that completes with the new {@link IGuildMember}
+	 *         object if successful.
+	 */
 	CompletableFuture<IGuildMember> unDeafen();
 
 	/**
 	 * @return A CompletableFuture that completes with the new {@link IGuildMember}
 	 *         object if successful.
 	 */
+	CompletableFuture<IGuildMember> unDeafen(String reason);
+
+	/**
+	 * @return A CompletableFuture that completes with the new {@link IGuildMember}
+	 *         object if successful.
+	 */
 	CompletableFuture<IGuildMember> unMute();
+
+	/**
+	 * @return A CompletableFuture that completes with the new {@link IGuildMember}
+	 *         object if successful.
+	 */
+	CompletableFuture<IGuildMember> unMute(String reason);
 }

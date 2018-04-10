@@ -166,6 +166,21 @@ public class GuildMember implements IGuildMember {
 	}
 
 	@Override
+	public CompletableFuture<IGuildMember> deafen(String reason) {
+		CompletableFuture<IGuildMember> future = new CompletableFuture<IGuildMember>();
+		JSONObject payload = new JSONObject().put("deaf", true);
+		CompletableFuture<Void> cf = getLoader().rest.request(Methods.PATCH, Endpoints.guildMember(getGuild().getID(), getID()), new RESTOptions(true, payload, reason), Void.class);
+		cf.thenAcceptAsync(v -> {
+			future.complete(this);
+		});
+		cf.exceptionally(ex -> {
+			future.completeExceptionally(ex);
+			return null;
+		});
+		return future;
+	}
+
+	@Override
 	public boolean equals(Object obj) {
 		if (!(obj instanceof GuildMember))
 			return false;
@@ -311,7 +326,6 @@ public class GuildMember implements IGuildMember {
 			if (!guild.isOwner() && role.getPosition() >= guild.getCurrentMember().getHighestRole().getPosition()) {
 				future.completeExceptionally(new PermissionsException("Can not assign higher role"));
 				return future;
-				// throw ;
 			}
 		}
 
@@ -337,21 +351,48 @@ public class GuildMember implements IGuildMember {
 			return null;
 		});
 
-		// if (roles.length > 1) {
-		// ArrayList<CompletableFuture<IGuildMember>> futures = new ArrayList<>();
-		// for (IRole role : roles) {
-		// futures.add(getLoader().rest.giveRole(this, role));
-		// }
-		// // futures.to
-		// CompletableFuture.allOf((CompletableFuture<IGuildMember>[])
-		// futures.toArray()).thenAcceptAsync(action -> {
-		// future.complete(this);
-		// });
-		// } else {
-		// getLoader().rest.giveRole(this, roles[0]).thenAccept(a -> {
-		// future.complete(this);
-		// });
-		// }
+		return future;
+	}
+
+	@Override
+	public CompletableFuture<IGuildMember> giveRole(String reason, IRole... roles) {
+		CompletableFuture<IGuildMember> future = new CompletableFuture<>();
+		if (!guild.hasPermission(Permissions.MANAGE_ROLES)) {
+			future.completeExceptionally(new PermissionsException("Insufficient Permissions"));
+			return future;
+		}
+
+		for (IRole role : roles) {
+			if (role == null)
+				continue;
+			if (!guild.isOwner() && role.getPosition() >= guild.getCurrentMember().getHighestRole().getPosition()) {
+				future.completeExceptionally(new PermissionsException("Can not assign higher role"));
+				return future;
+			}
+		}
+
+		List<IRole> rls = mergeRoles(roles);
+		String[] ids = new String[rls.size()];
+		for (int i = 0; i < ids.length; i++) {
+			ids[i] = SnowflakeUtil.asString(rls.get(i));
+		}
+
+		JSONObject payload = new JSONObject().put("roles", ids);
+		System.out.println(payload);
+		CompletableFuture<Void> vcf = getLoader().rest.request(Methods.PATCH, Endpoints.guildMember(getGuild().getID(), getID()), new RESTOptions(true, payload, reason), Void.class);
+		vcf.thenAcceptAsync(v -> {
+			getLoader().addEventListener(new EventListenerAdapter() {
+				public void GuildMemberUpdate(GuildMemberUpdateEvent e) {
+					future.complete(e.getMember());
+					getLoader().removeEventListener(this);
+				}
+			});
+		});
+		vcf.exceptionally(ex -> {
+			future.completeExceptionally(ex);
+			return null;
+		});
+
 		return future;
 	}
 
@@ -381,6 +422,26 @@ public class GuildMember implements IGuildMember {
 	 */
 	public boolean hasVoiceConnection() {
 		return getVoiceState() != null;
+	}
+
+	@Override
+	public CompletableFuture<Boolean> isBanned() {
+		CompletableFuture<Boolean> future = new CompletableFuture<>();
+		CompletableFuture<List<IGuildBan>> cf = getGuild().fetchBans();
+		cf.thenAcceptAsync(bans -> {
+			for (IGuildBan ban : bans) {
+				if (ban.getUser().getID() == getUser().getID()) {
+					future.complete(true);
+					return;
+				}
+			}
+			future.complete(false);
+		});
+		cf.exceptionally(ex -> {
+			future.completeExceptionally(ex);
+			return new ArrayList<>();
+		});
+		return future;
 	}
 
 	@Override
@@ -451,6 +512,24 @@ public class GuildMember implements IGuildMember {
 		return new ModifyMember(this, channel).execute();
 	}
 
+	@Override
+	public CompletableFuture<IGuildMember> move(IGuildVoiceChannel channel, String reason) {
+		CompletableFuture<IGuildMember> future = new CompletableFuture<IGuildMember>();
+		JSONObject payload = new JSONObject();
+		if (channel != null) {
+			payload.put("channel_id", SnowflakeUtil.asString(channel));
+		}
+		CompletableFuture<Void> cf = getLoader().rest.request(Methods.PATCH, Endpoints.guildMember(getGuild().getID(), getID()), new RESTOptions(true, payload, reason), Void.class);
+		cf.thenAcceptAsync(v -> {
+			future.complete(this);
+		});
+		cf.exceptionally(ex -> {
+			future.completeExceptionally(ex);
+			return null;
+		});
+		return future;
+	}
+
 	/**
 	 * Server deafens a {@link GuildMember} if they are not already server deafened
 	 * 
@@ -466,6 +545,21 @@ public class GuildMember implements IGuildMember {
 		}
 
 		return new ModifyMember(this, nick, getRoles(), true, deaf, getVoiceChannel()).execute();
+	}
+
+	@Override
+	public CompletableFuture<IGuildMember> mute(String reason) {
+		CompletableFuture<IGuildMember> future = new CompletableFuture<IGuildMember>();
+		JSONObject payload = new JSONObject().put("mute", true);
+		CompletableFuture<Void> cf = getLoader().rest.request(Methods.PATCH, Endpoints.guildMember(getGuild().getID(), getID()), new RESTOptions(true, payload, reason), Void.class);
+		cf.thenAcceptAsync(v -> {
+			future.complete(this);
+		});
+		cf.exceptionally(ex -> {
+			future.completeExceptionally(ex);
+			return null;
+		});
+		return future;
 	}
 
 	/**
@@ -504,6 +598,12 @@ public class GuildMember implements IGuildMember {
 			future.completeExceptionally(ex);
 			return null;
 		});
+		return future;
+	}
+
+	@Override
+	public CompletableFuture<IGuildMember> setNick(String nick, String reason) {
+		CompletableFuture<IGuildMember> future = new CompletableFuture<IGuildMember>();
 		return future;
 	}
 
@@ -552,6 +652,50 @@ public class GuildMember implements IGuildMember {
 	}
 
 	@Override
+	public CompletableFuture<IGuildMember> takeRole(String reason, IRole... roles) {
+		if (!guild.hasPermission(Permissions.MANAGE_ROLES)) {
+			throw new PermissionsException("Insuccficient Permissions");
+		}
+
+		List<IRole> rls = getRoles();
+
+		for (IRole role : roles) {
+			if (!guild.isOwner() && role.getPosition() >= guild.getCurrentMember().getHighestRole().getPosition()) {
+				throw new PermissionsException("Cannot take away roles higher than your's");
+			}
+
+			if (hasRole(role)) {
+				rls.remove(role);
+			}
+		}
+
+		CompletableFuture<IGuildMember> future = new CompletableFuture<>();
+
+		String[] ids = new String[rls.size()];
+		for (int i = 0; i < ids.length; i++) {
+			ids[i] = SnowflakeUtil.asString(rls.get(i));
+		}
+
+		JSONObject payload = new JSONObject().put("roles", ids);
+		CompletableFuture<Void> tcf = getLoader().rest.request(Methods.PATCH, Endpoints.guildMember(getGuild().getID(), getID()), new RESTOptions(true, payload, reason), Void.class);
+		IEventListener iel = new EventListenerAdapter() {
+			public void GuildMemberUpdate(GuildMemberUpdateEvent e) {
+				if (e.getMember().getID() == getID()) {
+					future.complete(e.getMember());
+					getLoader().removeEventListener(this);
+				}
+			}
+		};
+		getLoader().addEventListener(iel);
+		tcf.exceptionally(ex -> {
+			getLoader().removeEventListener(iel);
+			future.completeExceptionally(ex);
+			return null;
+		});
+		return future;
+	}
+
+	@Override
 	public String toString() {
 		return user.toString();
 	}
@@ -562,26 +706,36 @@ public class GuildMember implements IGuildMember {
 	}
 
 	@Override
+	public CompletableFuture<IGuildMember> unDeafen(String reason) {
+		CompletableFuture<IGuildMember> future = new CompletableFuture<IGuildMember>();
+		JSONObject payload = new JSONObject().put("deaf", false);
+		CompletableFuture<Void> cf = getLoader().rest.request(Methods.PATCH, Endpoints.guildMember(getGuild().getID(), getID()), new RESTOptions(true, payload, reason), Void.class);
+		cf.thenAcceptAsync(v -> {
+			future.complete(this);
+		});
+		cf.exceptionally(ex -> {
+			future.completeExceptionally(ex);
+			return null;
+		});
+		return future;
+	}
+
+	@Override
 	public CompletableFuture<IGuildMember> unMute() {
 		return new ModifyMember(this, nick, getRoles(), false, deaf, getVoiceChannel()).execute();
 	}
 
 	@Override
-	public CompletableFuture<Boolean> isBanned() {
-		CompletableFuture<Boolean> future = new CompletableFuture<>();
-		CompletableFuture<List<IGuildBan>> cf = getGuild().fetchBans();
-		cf.thenAcceptAsync(bans -> {
-			for (IGuildBan ban : bans) {
-				if (ban.getUser().getID() == getUser().getID()) {
-					future.complete(true);
-					return;
-				}
-			}
-			future.complete(false);
+	public CompletableFuture<IGuildMember> unMute(String reason) {
+		CompletableFuture<IGuildMember> future = new CompletableFuture<IGuildMember>();
+		JSONObject payload = new JSONObject().put("mute", false);
+		CompletableFuture<Void> cf = getLoader().rest.request(Methods.PATCH, Endpoints.guildMember(getGuild().getID(), getID()), new RESTOptions(true, payload, reason), Void.class);
+		cf.thenAcceptAsync(v -> {
+			future.complete(this);
 		});
 		cf.exceptionally(ex -> {
 			future.completeExceptionally(ex);
-			return new ArrayList<>();
+			return null;
 		});
 		return future;
 	}
