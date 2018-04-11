@@ -200,7 +200,6 @@ public class Guild implements IGuild {
 		if (loader.ready == true && emitEvent && !exists) {
 			memberCount++;
 			GuildMemberAddEvent event = new GuildMemberAddEvent(member);
-			// loader.emit(DLUtil.Events.GUILD_MEMBER_ADD, event);
 			loader.emit(event);
 		}
 

@@ -47,7 +47,7 @@ public class Endpoints {
 	}
 
 	public static final String avatar(long id, String avatar) {
-		return String.format("%s/avatars/%d/%s%s", CDN, id, avatar, avatar.startsWith("a_") ? ".gif" : ".jpg");
+		return String.format("%s/avatars/%d/%s%s", CDN, id, avatar, avatar.startsWith("a_") ? ".gif" : ".png");
 	}
 
 	public static final String bulkDelete(long channelID) {

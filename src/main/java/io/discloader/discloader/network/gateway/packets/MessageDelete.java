@@ -10,7 +10,6 @@ import io.discloader.discloader.entity.message.IMessage;
 import io.discloader.discloader.entity.util.SnowflakeUtil;
 import io.discloader.discloader.network.gateway.Gateway;
 import io.discloader.discloader.network.json.MessageJSON;
-import io.discloader.discloader.util.DLUtil.Events;
 
 /**
  * @author Perry Berman
@@ -35,7 +34,6 @@ public class MessageDelete extends AbstractHandler {
 			return;
 		channel.getMessages().remove(message.getID());
 		MessageDeleteEvent event = new MessageDeleteEvent(message);
-		loader.emit(Events.MESSAGE_DELETE, event);
 		loader.emit(event);
 		if (channel.getType() == ChannelTypes.DM) {
 			loader.emit(new PrivateMessageDeleteEvent(message));

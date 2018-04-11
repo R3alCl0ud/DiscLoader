@@ -48,18 +48,94 @@ import io.discloader.discloader.network.json.RoleJSON;
  */
 public interface IGuild extends ISnowflake, ICreationTime {
 
+	/**
+	 * Shorthand method for {@link #addMember(IGuildMember, boolean)} where
+	 * {@code emit = false}. Should not increment {@link #getMemberCount()}.
+	 * 
+	 * @param member
+	 *            The member to add to an internal cache of {@link IGuildMember}
+	 *            objects.
+	 * @return The member object that was added to the internal cache.
+	 */
 	IGuildMember addMember(IGuildMember member);
 
+	/**
+	 * Internal method for adding {@link IGuildMember} objects to an internal cache.
+	 * If {@code emit} is true the internally stored {@link #getMemberCount()}
+	 * integer should be incremented by {@literal 1}
+	 * 
+	 * @param member
+	 *            The member to add to an internal cache of {@link IGuildMember}
+	 *            objects.
+	 * @param emit
+	 *            Whether or not a {@link GuildMemberAddEvent} should be fired.
+	 * @return The member object that was added to the internal cache.
+	 */
 	IGuildMember addMember(IGuildMember member, boolean emit);
 
-	IGuildMember addMember(IUser user, String[] roles, boolean b, boolean c, String nick, boolean d);
+	/**
+	 * Method used internally by DiscLoader to make a new {@link GuildMember} object
+	 * when a member's data is recieved
+	 * 
+	 * @param user
+	 *            The member's {@link IUser} object.
+	 * @param roles
+	 *            An array of {@link String}s that contains the IDs of the member's
+	 *            roles.
+	 * @param deaf
+	 *            Is the member deafened?
+	 * @param mute
+	 *            Is the member muted?
+	 * @param nick
+	 *            The member's nickname.
+	 * @param emit
+	 *            Whether or not a {@link GuildMemberAddEvent} should be fired.
+	 * @return The {@link IGuildMember} that was instantiated.
+	 */
+	IGuildMember addMember(IUser user, String[] roles, boolean deaf, boolean mute, String nick, boolean emit);
 
+	/**
+	 * Shorthand method for {@link #addMember(MemberJSON, boolean)} where
+	 * {@code emit = false}. Should not increment {@link #getMemberCount()}.
+	 * 
+	 * @param data
+	 *            The data of the member to add to an internal cache of
+	 *            {@link IGuildMember} objects.
+	 * @return The member object that was added to the internal cache.
+	 */
 	IGuildMember addMember(MemberJSON data);
 
+	/**
+	 * Internal method for adding {@link IGuildMember} objects to an internal cache.
+	 * If {@code emit} is true the internally stored {@link #getMemberCount()}
+	 * integer should be incremented by {@literal 1} if the member didn't already
+	 * exist in the cache.
+	 * 
+	 * @param data
+	 *            The data of the member to add to an internal cache of
+	 *            {@link IGuildMember} objects.
+	 * @param emit
+	 *            Whether or not a {@link GuildMemberAddEvent} should be fired.
+	 * @return The member object that was added to the internal cache.
+	 */
 	IGuildMember addMember(MemberJSON data, boolean emit);
 
+	/**
+	 * Add a role to the guild's internal role cache.
+	 * 
+	 * @param role
+	 *            The role to add to the cache.
+	 * @return The role that was added to the cache.
+	 */
 	IRole addRole(IRole role);
 
+	/**
+	 * Add a role to the guild's internal role cache.
+	 * 
+	 * @param role
+	 *            The role's data.
+	 * @return The role that was added to the cache.
+	 */
 	IRole addRole(RoleJSON role);
 
 	/**

@@ -1,6 +1,6 @@
 package io.discloader.discloader.network.gateway.packets;
 
-import io.discloader.discloader.common.event.guild.member.GuildMemberNicknameUpdateEvent;
+import io.discloader.discloader.common.event.guild.member.GuildMemberEvent;
 import io.discloader.discloader.common.event.guild.member.GuildMemberRoleAddEvent;
 import io.discloader.discloader.common.event.guild.member.GuildMemberRoleRemoveEvent;
 import io.discloader.discloader.common.event.guild.member.GuildMemberUpdateEvent;
@@ -36,7 +36,7 @@ public class GuildMemberUpdate extends AbstractHandler {
 			loader.emit(Events.GUILD_MEMBER_UPDATE, event);
 			loader.emit(event);
 			if (!member.getNickname().equals(oldMember.getNickname())) {
-				loader.emit(new GuildMemberNicknameUpdateEvent(member, oldMember.getNickname()));
+				loader.emit(new GuildMemberEvent.NicknameUpdateEvent(member, oldMember.getNickname()));
 			}
 			member.getRoles().forEach(role -> {
 				if (!oldMember.hasRole(role)) {
@@ -48,7 +48,6 @@ public class GuildMemberUpdate extends AbstractHandler {
 					loader.emit(new GuildMemberRoleRemoveEvent(oldMember, member, role));
 				}
 			});
-			// for (member)
 		}
 	}
 }

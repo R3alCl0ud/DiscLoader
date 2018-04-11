@@ -4,11 +4,11 @@ import io.discloader.discloader.common.event.DLEvent;
 import io.discloader.discloader.entity.guild.IGuild;
 import io.discloader.discloader.entity.guild.IGuildMember;
 
-public class GuildMemberAddEvent extends DLEvent {
+public class GuildMemberAvailableEvent extends DLEvent {
 
 	private IGuildMember member;
 
-	public GuildMemberAddEvent(IGuildMember member) {
+	public GuildMemberAvailableEvent(IGuildMember member) {
 		super(member.getLoader());
 		this.member = member;
 	}

@@ -31,6 +31,7 @@ public class AuditLog implements IAuditLog {
 		entries = new HashMap<>();
 		for (UserJSON ud : data.users) {
 			IUser user = EntityRegistry.addUser(ud);
+			user.setup(ud);
 			users.put(user.getID(), user);
 		}
 

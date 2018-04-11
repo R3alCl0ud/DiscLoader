@@ -23,6 +23,7 @@ public class GuildBanAdd extends AbstractHandler {
 		GuildMemberRemoveJSON data = this.gson.fromJson(d, GuildMemberRemoveJSON.class);
 		IGuild guild = EntityRegistry.getGuildByID(data.guild_id);
 		IUser user = EntityRegistry.addUser(data.user);
+		user.setup(data.user);
 		guild.removeMember(user);
 		GuildBanAddEvent event = new GuildBanAddEvent(guild, user);
 		loader.emit(DLUtil.Events.GUILD_BAN_ADD, event);

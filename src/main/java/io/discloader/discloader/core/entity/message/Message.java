@@ -146,6 +146,7 @@ public class Message<T extends ITextChannel> implements IMessage {
 
 		if (data.author != null) {
 			author = EntityRegistry.addUser(data.author);
+			author.setup(data.author);
 		} else {
 			UserJSON wh = new UserJSON();
 			wh.id = data.webhook_id == null ? "0" : data.webhook_id;

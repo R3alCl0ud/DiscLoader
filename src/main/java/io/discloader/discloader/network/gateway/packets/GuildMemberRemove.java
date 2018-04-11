@@ -4,13 +4,12 @@
 package io.discloader.discloader.network.gateway.packets;
 
 import io.discloader.discloader.common.event.guild.member.GuildMemberRemoveEvent;
-import io.discloader.discloader.common.registry.EntityRegistry;
 import io.discloader.discloader.common.registry.EntityBuilder;
+import io.discloader.discloader.common.registry.EntityRegistry;
 import io.discloader.discloader.entity.guild.IGuild;
 import io.discloader.discloader.entity.guild.IGuildMember;
 import io.discloader.discloader.network.gateway.Gateway;
 import io.discloader.discloader.network.json.GuildMemberRemoveJSON;
-import io.discloader.discloader.util.DLUtil.Events;
 
 /**
  * @author Perry Berman
@@ -34,7 +33,6 @@ public class GuildMemberRemove extends AbstractHandler {
 		if (shouldEmit()) {
 			GuildMemberRemoveEvent event = new GuildMemberRemoveEvent(member);
 			loader.emit(event);
-			loader.emit(Events.GUILD_MEMBER_REMOVE, event);
 		}
 
 	}

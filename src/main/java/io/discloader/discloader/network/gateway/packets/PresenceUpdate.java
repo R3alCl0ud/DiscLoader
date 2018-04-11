@@ -1,6 +1,7 @@
 package io.discloader.discloader.network.gateway.packets;
 
 import io.discloader.discloader.common.event.UserUpdateEvent;
+import io.discloader.discloader.common.event.guild.member.GuildMemberAvailableEvent;
 import io.discloader.discloader.common.event.guild.member.GuildMemberUpdateEvent;
 import io.discloader.discloader.common.registry.EntityRegistry;
 import io.discloader.discloader.core.entity.user.User;
@@ -9,7 +10,6 @@ import io.discloader.discloader.entity.guild.IGuildMember;
 import io.discloader.discloader.entity.user.IUser;
 import io.discloader.discloader.network.gateway.Gateway;
 import io.discloader.discloader.network.json.PresenceJSON;
-import io.discloader.discloader.util.DLUtil;
 
 /**
  * @author Perry Berman
@@ -36,7 +36,6 @@ public class PresenceUpdate extends AbstractHandler {
 		user.setup(data.user);
 		if (!user.equals(oldUser)) {
 			UserUpdateEvent event = new UserUpdateEvent(user, oldUser);
-			loader.emit(DLUtil.Events.USER_UPDATE, event);
 			loader.emit(event);
 		}
 
@@ -45,7 +44,7 @@ public class PresenceUpdate extends AbstractHandler {
 			IGuildMember oldMember = guild.getMember(user.getID()), member;
 			if (oldMember == null && !data.status.equalsIgnoreCase("offline")) {
 				member = guild.addMember(user, data.roles, false, false, data.nick, false);
-				loader.emit(DLUtil.Events.GUILD_MEMBER_AVAILABLE, member);
+				loader.emit(new GuildMemberAvailableEvent(member));
 			} else if (oldMember != null) {
 				member = guild.addMember(user, data.roles, oldMember.isDeafened(), oldMember.isMuted(), data.nick, false);
 				guild.setPresence(data);

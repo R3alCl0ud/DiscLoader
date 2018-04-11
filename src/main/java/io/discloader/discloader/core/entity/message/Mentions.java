@@ -70,9 +70,8 @@ public class Mentions implements IMentions {
 		roles = new HashMap<>();
 		if (mentions != null) {
 			for (UserJSON data : mentions) {
-				IUser user = EntityRegistry.getUserByID(data.id);
-				if (user == null)
-					user = EntityRegistry.addUser(data);
+				IUser user = EntityRegistry.addUser(data);
+				user.setup(data);
 				users.put(user.getID(), user);
 			}
 		}

@@ -105,7 +105,6 @@ public class GuildMember implements IGuildMember {
 		nick = data.nick != null ? data.nick : user.getUsername();
 		joinedAt = data.joined_at == null ? user.createdAt() : OffsetDateTime.parse(data.joined_at);
 		roleIDs = data.roles != null ? data.roles : new String[] {};
-		// data
 		deaf = data.deaf;
 		mute = deaf || data.mute;
 
