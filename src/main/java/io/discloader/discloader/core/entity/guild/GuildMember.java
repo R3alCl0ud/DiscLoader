@@ -201,6 +201,8 @@ public class GuildMember implements IGuildMember {
 
 	@Override
 	public IRole getHighestRole() {
+		if (getRoles().isEmpty())
+			return null;
 		return getRoles().get(getRoles().size() - 1);
 	}
 
@@ -267,9 +269,9 @@ public class GuildMember implements IGuildMember {
 			roles.add(guild.getRoleByID(id));
 		}
 		roles.sort((a, b) -> {
-			if (a.getPosition() > b.getPosition())
-				return -1;
 			if (a.getPosition() < b.getPosition())
+				return -1;
+			if (a.getPosition() > b.getPosition())
 				return 1;
 			return 0;
 		});

@@ -10,6 +10,7 @@ import io.discloader.discloader.entity.voice.VoiceConnection;
  */
 public interface IGuildVoiceChannel extends IGuildChannel, IVoiceChannel {
 
+	@Override
 	public default CompletableFuture<VoiceConnection> join() {
 		CompletableFuture<VoiceConnection> future = new CompletableFuture<>();
 		if (EntityRegistry.getVoiceConnectionByID(getGuild().getID()) != null) {

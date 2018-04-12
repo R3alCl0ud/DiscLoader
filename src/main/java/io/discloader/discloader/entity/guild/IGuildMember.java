@@ -43,25 +43,47 @@ public interface IGuildMember extends ISnowflake, IMentionable {
 	 */
 	CompletableFuture<IGuildMember> deafen(String reason);
 
+	/**
+	 * Returns the {@link IGuild} the {@link IGuildMember} object belongs to.
+	 * 
+	 * @return The {@link IGuild} the {@link IGuildMember} object belongs to.
+	 */
 	IGuild getGuild();
 
 	/**
 	 * Determines the member's highest role in the {@link #getGuild guild}'s role
-	 * hiarchy
+	 * hiarchy and then returns it. If the member doesn't have any roles, then
+	 * {@code null} is returned
 	 * 
-	 * @return A Role object
+	 * @return The member's highest role if they have any roles, {@code null}
+	 *         otherwise.
 	 */
 	IRole getHighestRole();
 
+	/**
+	 * Returns an {@link OffsetDateTime} of the moment the member joined the
+	 * {@link #getGuild() guild}.
+	 * 
+	 * @return An {@link OffsetDateTime} of the moment the member joined the
+	 *         {@link #getGuild() guild}.
+	 */
 	OffsetDateTime getJoinTime();
 
 	DiscLoader getLoader();
 
+	/**
+	 * Returns the member's nickname if they have one, {@code null} otherwise.
+	 * 
+	 * @return The member's nickname if they have one, {@code null} otherwise.
+	 */
 	String getNickname();
 
 	/**
-	 * @return the member's nickname if they have one,
-	 *         {@link IUser}{@link IUser#getUsername() .getUsername()} otherwise.
+	 * Returns the member's nickname if they have one, {@link IUser#getUsername()}
+	 * otherwise.
+	 * 
+	 * @return The member's nickname if they have one, {@link IUser#getUsername()}
+	 *         otherwise.
 	 */
 	String getName();
 
@@ -70,10 +92,10 @@ public interface IGuildMember extends ISnowflake, IMentionable {
 	IPresence getPresence();
 
 	/**
-	 * returns a HashMap of roles that the member belongs to.
+	 * Returns a HashMap of roles that the member belongs to.
 	 * 
 	 * @return A List of the {@link IGuildMember member's} {@link IRole roles}
-	 *         sorted by {@link IRole#getPosition()}.
+	 *         sorted by {@link IRole#getPosition()} in order of lowest to highest.
 	 */
 	List<IRole> getRoles();
 

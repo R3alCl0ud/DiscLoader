@@ -46,7 +46,7 @@ public class CommandHandler {
 				String[] args = new String[argc];
 				Matcher argM = command.getArgsPattern().matcher(rest);
 				int n = 0;
-				while (argM.find()) {
+				while (argM.find() && n < args.length) {
 					for (int i = 0; i < argM.groupCount() && i < args.length; i++) {
 						try {
 							args[n] = argM.group(i);

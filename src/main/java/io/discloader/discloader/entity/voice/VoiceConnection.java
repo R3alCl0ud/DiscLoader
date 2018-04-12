@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Future;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.logging.Logger;
 
 import com.neovisionaries.ws.client.WebSocketException;
@@ -121,7 +122,7 @@ public class VoiceConnection {
 	private String token;
 
 	private int SSRC;
-	private boolean speaking;
+	private final AtomicBoolean speaking;
 
 	// Startup things
 	private CompletableFuture<VoiceConnection> future;
@@ -143,6 +144,7 @@ public class VoiceConnection {
 		sendHandler = new AudioSendHandler(player, this);
 		sendStateUpdate(channel);
 		listeners = new ArrayList<>();
+		speaking = new AtomicBoolean();
 	}
 
 	public void connectUDP(VoiceReady data) {
@@ -258,7 +260,7 @@ public class VoiceConnection {
 	 * @return the speaking
 	 */
 	public boolean isSpeaking() {
-		return speaking;
+		return speaking.get();
 	}
 
 	/**
@@ -356,7 +358,7 @@ public class VoiceConnection {
 	 *            the speaking to set
 	 */
 	public void setSpeaking(boolean speaking) {
-		this.speaking = speaking;
+		this.speaking.set(speaking);
 		ws.setSpeaking(speaking);
 	}
 
