@@ -156,9 +156,14 @@ public interface IMessage extends ISnowflake, Comparable<IMessage>, ICreationTim
 	ITextChannel getChannel();
 
 	/**
-	 * @return The message's content
+	 * @return The message's raw content.
 	 */
 	String getContent();
+
+	/**
+	 * @return The message's content as it would be seen on discord.
+	 */
+	String getDisplayedContent();
 
 	OffsetDateTime getEditedAt();
 

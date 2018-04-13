@@ -1,8 +1,7 @@
 package io.discloader.discloader.entity.channel;
 
 import io.discloader.discloader.common.DiscLoader;
-import io.discloader.discloader.core.entity.channel.Channel;
-import io.discloader.discloader.core.entity.message.Message;
+import io.discloader.discloader.entity.IMentionable;
 import io.discloader.discloader.entity.util.ICreationTime;
 import io.discloader.discloader.entity.util.ISnowflake;
 import io.discloader.discloader.network.json.ChannelJSON;
@@ -14,7 +13,7 @@ import io.discloader.discloader.network.json.ChannelJSON;
  * @see ISnowflake
  */
 // @FunctionalInterface
-public interface IChannel extends ISnowflake, ICreationTime {
+public interface IChannel extends ISnowflake, ICreationTime, IMentionable {
 
 	/**
 	 * @return The type of the channel
@@ -22,15 +21,14 @@ public interface IChannel extends ISnowflake, ICreationTime {
 	ChannelTypes getType();
 
 	/**
-	 * Whether or not the channel is a dm channel. Is always {@literal true} if
-	 * {@link Channel#type type} is {@literal "groupDM"} or {@literal "dm"}
+	 * Whether or not the channel is a {@link ChannelTypes#DM DM} or
+	 * {@link ChannelTypes#GROUP Group DM} channel.
 	 * 
-	 * @return true if the channel is a dm/groupDM channel, false otherwise
+	 * @return {@code true} if the channel is a {@link ChannelTypes#DM DM} or
+	 *         {@link ChannelTypes#GROUP Group DM} channel, {@code false} otherwise
 	 * 
 	 */
 	boolean isPrivate();
-
-	// boolean isNSFW();
 
 	/**
 	 * Sets up the channel for use.
@@ -41,11 +39,9 @@ public interface IChannel extends ISnowflake, ICreationTime {
 	void setup(ChannelJSON data);
 
 	/**
-	 * @return A string that is in the correct format for mentioning this channel in
-	 *         a {@link Message}
+	 * @return The instance of {@link DiscLoader} that was used to create the
+	 *         {@link IChannel} object.
 	 */
-	String toMention();
-
 	DiscLoader getLoader();
 
 }

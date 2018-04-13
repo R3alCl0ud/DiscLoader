@@ -92,7 +92,7 @@ public class Role implements IRole {
 	}
 
 	@Override
-	public String asMention() {
+	public String toMention() {
 		return String.format("<@&%s>", id);
 	}
 

@@ -7,21 +7,20 @@ import io.discloader.discloader.entity.voice.VoiceConnection;
 public interface IVoiceChannel extends IChannel {
 
 	/**
-	 * Joins a voice channel.
+	 * Joins the voice channel.
 	 * 
 	 * @return A future that completes with the voice connection, if successful.
 	 */
 	public default CompletableFuture<VoiceConnection> join() {
-		return null;
+		return new CompletableFuture<>();
 	}
 
 	/**
-	 * Leaves a voice channel
+	 * Leaves the voice channel.
 	 * 
-	 * @return A future completes with the leave voice connection, if
-	 *         successful.
+	 * @return A future completes with the leave voice connection, if successful.
 	 */
 	public default CompletableFuture<VoiceConnection> leave() {
-		return null;
+		return new CompletableFuture<>();
 	}
 }

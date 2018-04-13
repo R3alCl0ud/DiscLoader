@@ -23,7 +23,7 @@ public interface IUser extends ISnowflake, ICreationTime, IMentionable {
 	/**
 	 * @return A String in discord's mention format
 	 */
-	String asMention();
+	String toMention();
 
 	/**
 	 * Returns an IIcon representation of the user's Avatar.

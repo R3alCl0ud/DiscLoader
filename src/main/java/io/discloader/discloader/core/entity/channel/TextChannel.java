@@ -79,7 +79,7 @@ public class TextChannel extends GuildChannel implements IGuildTextChannel {
 	 * @see io.discloader.discloader.entity.IMentionable#asMention()
 	 */
 	@Override
-	public String asMention() {
+	public String toMention() {
 		return String.format("<#%d>", getID());
 	}
 

@@ -5,5 +5,5 @@ package io.discloader.discloader.entity;
  *
  */
 public interface IMentionable {
-	String asMention();
+	String toMention();
 }

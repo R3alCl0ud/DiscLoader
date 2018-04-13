@@ -98,7 +98,7 @@ public class User implements IUser {
 	 * @return {@literal <@}{@link #id this.id}{@literal>}
 	 */
 	@Override
-	public String asMention() {
+	public String toMention() {
 		return String.format("<@%s>", id);
 	}
 

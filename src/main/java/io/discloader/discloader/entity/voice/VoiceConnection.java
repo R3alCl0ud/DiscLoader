@@ -168,6 +168,9 @@ public class VoiceConnection {
 		ws.startHeartbeat(data.heartbeat_interval);
 	}
 
+	/**
+	 * @return
+	 */
 	public CompletableFuture<VoiceConnection> disconnect() {
 		logger.info("Attempting to disconnect the VoiceConnection");
 		player.destroy();
@@ -202,10 +205,16 @@ public class VoiceConnection {
 		}
 	}
 
+	/**
+	 * @return The {@link IVoiceChannel} you are connected to.
+	 */
 	public IVoiceChannel getChannel() {
 		return channel;
 	}
 
+	/**
+	 * @return If the @{@link IVoiceChannel} returned from {@link #getChannel()} {@link IChannel#getType()} 
+	 */
 	public IGuild getGuild() {
 		if (channel instanceof IGuildVoiceChannel)
 			return ((IGuildVoiceChannel) channel).getGuild();

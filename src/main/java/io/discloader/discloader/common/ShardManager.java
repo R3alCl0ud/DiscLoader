@@ -81,12 +81,12 @@ public final class ShardManager {
 
 	public void lanchShards(int totalShards) {
 		setTotalShards(totalShards);
-		logger.info(String.format("Shards: %d\n", shards.size()));
+		logger.info(String.format("Shards: %d\n", shardCount));
 		launcher = new Thread("Sharding Manager") {
 
 			public void run() {
 				while (shards.size() < shardCount) {
-					DLOptions options = new DLOptions().setToken(token).setSharding(shards.size(), shardCount).setPrefix(ShardManager.this.options.prefix).useDefaultCommands(ShardManager.this.options.defaultCommands);
+					DLOptions options = new DLOptions().setToken(token).setSharding(shards.size(), shardCount).setPrefix(ShardManager.this.options.prefix).useDefaultCommands(ShardManager.this.options.defaultCommands).setDebug(ShardManager.this.options.isDebugging());
 					Shard shard = new Shard(options, ShardManager.this);
 					shards.add(shard);
 					EntityRegistry.addShard(shard);

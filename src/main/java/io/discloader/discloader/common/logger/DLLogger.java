@@ -16,63 +16,14 @@ import java.util.logging.Logger;
 /**
  * @author Perry Berman
  */
-public class DLLogger {
+public class DLLogger extends Logger {
 
-	public final Logger LOGGER;
+	protected DLLogger(String name, String resourceBundleName) {
+		super(name, resourceBundleName);
+	}
+
 	private static FileHandler fileHandler = null;
 	private static File logFolder = new File("logs");
-
-	@Deprecated
-	public DLLogger(Class<?> cls) {
-		this(cls.getSimpleName());
-	}
-
-	@Deprecated
-	public DLLogger(String name) {
-
-		if (!logFolder.exists()) {
-			logFolder.mkdirs();
-		}
-
-		this.LOGGER = Logger.getLogger(name);
-		if (LOGGER.getHandlers().length < 2) {
-			Handler consoleHandler = new Handler() {
-
-				@Override
-				public void publish(LogRecord record) {
-					if (getFormatter() == null) {
-						setFormatter(new DLLogFormatter());
-					}
-
-					try {
-						String message = getFormatter().format(record);
-						if (record.getLevel().intValue() >= Level.WARNING.intValue()) {
-							System.err.write(message.getBytes());
-						} else {
-							System.out.write(message.getBytes());
-						}
-					} catch (Exception exception) {
-						reportError(null, exception, ErrorManager.FORMAT_FAILURE);
-					}
-
-				}
-
-				@Override
-				public void close() throws SecurityException {}
-
-				@Override
-				public void flush() {}
-			};
-			this.LOGGER.setLevel(Level.ALL);
-			this.LOGGER.addHandler(consoleHandler);
-			this.LOGGER.addHandler(getFileHandler());
-			this.LOGGER.setUseParentHandlers(false);
-		}
-	}
-
-	public Logger getLogger() {
-		return this.LOGGER;
-	}
 
 	public static Logger getLogger(Object obj) {
 		return getLogger(obj.toString());
@@ -96,7 +47,6 @@ public class DLLogger {
 					if (getFormatter() == null) {
 						setFormatter(new DLLogFormatter());
 					}
-
 					try {
 						String message = getFormatter().format(record);
 						if (record.getLevel().intValue() >= Level.WARNING.intValue()) {

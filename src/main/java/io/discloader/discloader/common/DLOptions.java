@@ -103,7 +103,7 @@ public class DLOptions {
 	 * 
 	 * @return debug
 	 */
-	public boolean isDebug() {
+	public boolean isDebugging() {
 		return debug;
 	}
 
@@ -145,8 +145,9 @@ public class DLOptions {
 	 * @param debug
 	 *            whether or not the client should run in debug mode
 	 */
-	public void setDebug(boolean debug) {
+	public DLOptions setDebug(boolean debug) {
 		this.debug = debug;
+		return this;
 	}
 
 	public DLOptions setPrefix(String prefix) {

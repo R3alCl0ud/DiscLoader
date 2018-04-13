@@ -441,7 +441,15 @@ public class DiscLoader {
 	 * @return the shard
 	 */
 	public Shard getShard() {
-		return this.shard;
+		return shard;
+	}
+
+	public int getShardCount() {
+		return shards;
+	}
+
+	public int getShardID() {
+		return shardid;
 	}
 
 	public CompletableFuture<List<VoiceRegion>> getVoiceRegions() {

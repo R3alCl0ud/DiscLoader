@@ -5,6 +5,7 @@ import java.time.OffsetDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
+import java.util.regex.Matcher;
 
 import io.discloader.discloader.common.DiscLoader;
 import io.discloader.discloader.common.exceptions.PermissionsException;
@@ -19,6 +20,7 @@ import io.discloader.discloader.entity.channel.IGuildTextChannel;
 import io.discloader.discloader.entity.channel.ITextChannel;
 import io.discloader.discloader.entity.guild.IGuild;
 import io.discloader.discloader.entity.guild.IGuildMember;
+import io.discloader.discloader.entity.guild.IRole;
 import io.discloader.discloader.entity.message.IMentions;
 import io.discloader.discloader.entity.message.IMessage;
 import io.discloader.discloader.entity.message.IMessageActivity;
@@ -114,8 +116,6 @@ public class Message<T extends ITextChannel> implements IMessage {
 	 * is "dm" or "groupDM"
 	 */
 	public IGuild guild;
-
-	public IGuildMember member;
 
 	private int type;
 
@@ -340,6 +340,34 @@ public class Message<T extends ITextChannel> implements IMessage {
 	@Override
 	public String getContent() {
 		return content;
+	}
+
+	@Override
+	public String getDisplayedContent() {
+		String displayed = "" + content, toadd = "";
+		Matcher userMatch = IMentions.userPattern.matcher(displayed), roleMatch = IMentions.rolePattern.matcher(displayed), channelMatch = IMentions.channelPattern.matcher(displayed);
+		while (userMatch.find()) {
+			IUser user = mentions.users.get(SnowflakeUtil.parse(userMatch.group(2)));
+			if (user != null) {
+				if (guild != null && guild.getMember(user.getID()) != null) {
+					toadd = "@" + guild.getMember(user.getID()).getName();
+				} else {
+					toadd = "@" + user.getUsername();
+				}
+			} else {
+				toadd = "@invalid-user";
+			}
+			displayed.replace(userMatch.group(1), toadd);
+		}
+		while (roleMatch.find()) {
+			IRole role = mentions.roles.get(SnowflakeUtil.parse(roleMatch.group(2)));
+			displayed.replace(roleMatch.group(1), "@" + role == null ? "invalid-role" : role.getName());
+		}
+		while (channelMatch.find() && guild != null) {
+			IGuildChannel channel = guild.getChannels().get(SnowflakeUtil.parse(channelMatch.group(2)));
+			displayed.replace(channelMatch.group(1), "#" + channel != null ? channel.getName() : "deleted-channel");
+		}
+		return displayed;
 	}
 
 	@Override

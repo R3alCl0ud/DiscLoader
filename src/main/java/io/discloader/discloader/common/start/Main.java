@@ -157,13 +157,13 @@ public class Main {
 		for (String arg : args) {
 			if (arg.startsWith("-") && !arg.startsWith("--") && !arg.contains("=")) {
 				if (arg.contains("d")) {
-					options = new DLOptions(options.token, options.prefix, true, options.shouldLoadMods(), options.isDebug(), options.shard, options.shards);
+					options = new DLOptions(options.token, options.prefix, true, options.shouldLoadMods(), options.isDebugging(), options.shard, options.shards);
 				}
 				if (arg.contains("g")) {
-					options = new DLOptions(options.token, options.prefix, options.defaultCommands, true, options.isDebug(), options.shard, options.shards);
+					options = new DLOptions(options.token, options.prefix, options.defaultCommands, true, options.isDebugging(), options.shard, options.shards);
 				}
 			} else if (arg.equalsIgnoreCase("--defaultcmd")) {
-				options = new DLOptions(options.token, options.prefix, true, options.isDebug(), options.shard, options.shards);
+				options = new DLOptions(options.token, options.prefix, true, options.isDebugging(), options.shard, options.shards);
 			}
 			Matcher tokenMatcher = tokenPat.matcher(arg), prefixMatcher = prefixPat.matcher(arg), shardMatcher = shardPat.matcher(arg);
 			if (tokenMatcher.find()) {

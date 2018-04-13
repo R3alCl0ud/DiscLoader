@@ -133,7 +133,7 @@ public class MessageBuilder implements Appendable {
 	}
 	
 	public MessageBuilder mention(IMentionable mentionable) {
-		return append(mentionable.asMention());
+		return append(mentionable.toMention());
 	}
 	
 	public MessageBuilder newLine() {

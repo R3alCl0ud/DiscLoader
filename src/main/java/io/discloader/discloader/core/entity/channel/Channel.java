@@ -34,6 +34,20 @@ public class Channel implements IChannel {
 	}
 
 	@Override
+	public OffsetDateTime createdAt() {
+		return SnowflakeUtil.creationTime(this);
+	}
+
+	@Override
+	public boolean equals(Object o) {
+		if (!(o instanceof Channel))
+			return false;
+
+		Channel c = (Channel) o;
+		return this == c || getID() == c.getID();
+	}
+
+	@Override
 	public long getID() {
 		return id;
 	}
@@ -49,34 +63,22 @@ public class Channel implements IChannel {
 	}
 
 	@Override
+	public int hashCode() {
+		return Long.hashCode(getID());
+	}
+
+	@Override
 	public boolean isPrivate() {
 		return getType() == ChannelTypes.DM || getType() == ChannelTypes.GROUP;
 	}
 
+	@Override
 	public void setup(ChannelJSON data) {
 
 	}
 
+	@Override
 	public String toMention() {
 		return String.format("<#%s>", id);
-	}
-
-	@Override
-	public OffsetDateTime createdAt() {
-		return SnowflakeUtil.creationTime(this);
-	}
-
-	@Override
-	public boolean equals(Object o) {
-		if (!(o instanceof Channel))
-			return false;
-
-		Channel c = (Channel) o;
-		return this == c || getID() == c.getID();
-	}
-
-	@Override
-	public int hashCode() {
-		return Long.hashCode(getID());
 	}
 }

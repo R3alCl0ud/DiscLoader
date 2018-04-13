@@ -29,6 +29,7 @@ public class CommandHelp extends Command {
 	public void execute(MessageCreateEvent e, String[] args) {
 		IMessage message = e.getMessage();
 		RichEmbed embed = new RichEmbed().setFooter(String.format("type `%shelp <page>` to tab through the pages", CommandHandler.prefix), e.loader.user.getAvatar().toString()).setAuthor(e.loader.user.getUsername(), "http://discloader.io", e.loader.user.getAvatar().toString()).setColor(0x08a2ff);
+		embed.setDescription("Displaying command information");
 		Command command;
 		embed.setThumbnail(getResourceLocation());
 		if (args.length >= 1 && (command = CommandHandler.getCommand(args[0], message)) != null) {
@@ -44,7 +45,7 @@ public class CommandHelp extends Command {
 					}
 				}
 
-				embed.setTitle(command.getUnlocalizedName()).addField("Description", this.getCommandDesc(command), true).addField("Usage", command.getUsage(), true);
+				embed.setTitle(command.getUnlocalizedName()).setDescription(this.getCommandDesc(command)).addField("Usage", command.getUsage(), true);
 				if (command instanceof CommandTree) {
 					String commands = "";
 					for (Command sub : ((CommandTree) command).getSubCommands().values()) {

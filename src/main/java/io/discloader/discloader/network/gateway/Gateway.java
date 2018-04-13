@@ -74,7 +74,9 @@ public class Gateway {
 	}
 
 	public void connectSocket(String gateway) throws WebSocketException, IOException {
-		logger.info(String.format("Connecting to Gateway with Endpoint: %s", gateway));
+		if (loader.getOptions().isDebugging()) {
+			logger.config(String.format("Connecting to Gateway with Endpoint: %s", gateway));
+		}
 		ws = new WebSocketFactory().setConnectionTimeout(15000).createSocket(gateway).addHeader("Accept-Encoding", "gzip");
 		ws.addListener(socketListener);
 		ws.connect();
@@ -85,7 +87,6 @@ public class Gateway {
 			return;
 
 		Object raw_payload = queue.get(0);
-		// loader.em
 		remaining--;
 		String payload = "";
 		if (raw_payload instanceof JSONObject) {
@@ -97,7 +98,9 @@ public class Gateway {
 				payload = DLUtil.gson.toJson(raw_payload);
 			}
 		}
-		logger.info("Sending: " + payload);
+		if (loader.getOptions().isDebugging()) {
+			logger.config("Sending: " + payload);
+		}
 		ws.sendText(payload);
 		queue.remove(raw_payload);
 		handleQueue();
@@ -113,20 +116,14 @@ public class Gateway {
 
 			@Override
 			public void run() {
-
 				try {
 					Thread.sleep(interval);
+					while (ws.isOpen() && !this.isInterrupted()) {
+						sendHeartbeat(true);
+						Thread.sleep(interval);
+					}
 				} catch (InterruptedException e) {
 					logger.warning(String.format("The thread: %s - Heartbeat, has been interrupted", logName));
-				}
-
-				while (ws.isOpen() && !this.isInterrupted()) {
-					sendHeartbeat(true);
-					try {
-						Thread.sleep(interval);
-					} catch (InterruptedException e) {
-						logger.warning(String.format("The thread: %s - Heartbeat, has been interrupted", logName));
-					}
 				}
 
 			}
@@ -172,7 +169,9 @@ public class Gateway {
 	public void send(JSONObject payload, boolean force) {
 		if (force && remaining != 0) {
 			remaining--;
-			logger.info("Sending: " + payload.toString());
+			if (loader.getOptions().isDebugging()) {
+				logger.config("Sending: " + payload.toString());
+			}
 			ws.sendText(payload.toString());
 			return;
 		}
@@ -193,7 +192,9 @@ public class Gateway {
 			} else {
 				payloadText = DLUtil.gson.toJson(payload);
 			}
-			logger.info((String.format("Sending: %s", payloadText)));
+			if (loader.getOptions().isDebugging()) {
+				logger.config((String.format("Sending: %s", payloadText)));
+			}
 			ws.sendText(payloadText);
 			return;
 		}
@@ -207,7 +208,9 @@ public class Gateway {
 			ws.disconnect(1007, "Heartbeat Not Acknowledged");
 			return;
 		}
-		logger.info("Attempting to Heartbeat");
+		if (loader.getOptions().isDebugging()) {
+			logger.config("Attempting to Heartbeat");
+		}
 		JSONObject payload = new JSONObject();
 		payload.put("op", OPCodes.HEARTBEAT).put("d", s);
 		lastHeartbeatAck = false;
@@ -220,9 +223,5 @@ public class Gateway {
 
 	public void setRetries(int i) {
 		socketListener.setRetries(i);
-	}
-
-	public void startGuildSync() {
-
 	}
 }

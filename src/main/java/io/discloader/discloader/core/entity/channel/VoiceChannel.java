@@ -99,6 +99,21 @@ public class VoiceChannel extends GuildChannel implements IGuildVoiceChannel {
 	}
 
 	@Override
+	public int hashCode() {
+		return Long.hashCode(getID());
+	}
+
+	@Override
+	public int getBitrate() {
+		return bitrate;
+	}
+
+	@Override
+	public int getUserLimit() {
+		return userLimit;
+	}
+
+	@Override
 	public CompletableFuture<VoiceConnection> join() {
 		if (EntityRegistry.getVoiceConnectionByID(guild.getID()) != null) {
 			VoiceConnection connection = EntityRegistry.getVoiceConnectionByID(guild.getID());
@@ -139,15 +154,5 @@ public class VoiceChannel extends GuildChannel implements IGuildVoiceChannel {
 
 	public CompletableFuture<IGuildVoiceChannel> setUserLimit(int userLimit) {
 		return edit(name, position, bitrate, userLimit);
-	}
-
-	@Override
-	public int getBitrate() {
-		return bitrate;
-	}
-
-	@Override
-	public int getUserLimit() {
-		return userLimit;
 	}
 }

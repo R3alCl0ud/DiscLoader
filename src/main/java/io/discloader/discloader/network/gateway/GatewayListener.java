@@ -127,26 +127,34 @@ public class GatewayListener extends WebSocketAdapter {
 
 	public void handle(SocketPacket packet) {
 		if (packet.op == OPCodes.RECONNECT) {
+			if (loader.getOptions().isDebugging()) {
+				logger.config("Received an instruction to reconnect to the gateway");
+			}
 			this.setSequence(packet.s);
 			return;
 		}
 
 		if (packet.op == OPCodes.INVALID_SESSION) {
-
+			if (loader.getOptions().isDebugging()) {
+				logger.config("Session invalid. Sending an Identify.");
+			}
 			sendNewIdentify();
 			return;
 		}
 
 		if (packet.op == OPCodes.HELLO) {
 			this.handlers.get(WSEvents.HELLO).handle(packet);
-
 		}
 
 		if (packet.op == DLUtil.OPCodes.HEARTBEAT_ACK) {
 			socket.lastHeartbeatAck = true;
-			logger.info("Heartbeat Acknowledged");
+			if (loader.getOptions().isDebugging()) {
+				logger.config("Heartbeat Acknowledged");
+			}
 		} else if (packet.op == OPCodes.HEARTBEAT) {
-			logger.info("Recieved Heartbeat request from Gateway.");
+			if (loader.getOptions().isDebugging()) {
+				logger.config("Recieved Heartbeat request from Gateway.");
+			}
 			JSONObject payload = new JSONObject().put("op", OPCodes.HEARTBEAT).put("d", socket.s);
 			socket.send(payload, true);
 		}
@@ -180,7 +188,9 @@ public class GatewayListener extends WebSocketAdapter {
 
 	public void onConnected(WebSocket ws, Map<String, List<String>> arg1) throws Exception {
 		connected = true;
-		logger.info("Connected to the gateway");
+		if (loader.getOptions().isDebugging()) {
+			logger.info("Connected to the gateway");
+		}
 		ProgressLogger.stage(2, 3, "Caching API Objects");
 		if (Thread.currentThread().getName().equals("ReadingThread")) {
 			Thread.currentThread().setName(threadName);
@@ -257,11 +267,13 @@ public class GatewayListener extends WebSocketAdapter {
 		if (!loader.token.startsWith("Bot ")) {
 			token = loader.token;
 		}
-		System.out.println(token);
+		if (loader.getOptions().isDebugging()) {
+			logger.config(token);
+		}
 		GatewayIdentify payload = new GatewayIdentify(token, 250, new Properties("DiscLoader", "DiscLoader", "DiscLoader"));
 
 		try {
-			if (this.loader.shards > 1) {
+			if (loader.shards > 1) {
 				payload.setShard(loader.shardid, loader.shards);
 			}
 		} catch (NullPointerException e) {
@@ -289,7 +301,9 @@ public class GatewayListener extends WebSocketAdapter {
 
 	public void tryReconnecting() {
 		this.socket.status = Status.RECONNECTING;
-		logger.info("Waiting to reconnect to the gateway");
+		if (loader.getOptions().isDebugging()) {
+			logger.config("Waiting to reconnect to the gateway");
+		}
 		if (reconnection == null) {
 			reconnection = new Thread(logName + " Reconnector") {
 
@@ -299,7 +313,9 @@ public class GatewayListener extends WebSocketAdapter {
 							while (socket.status == Status.RECONNECTING && !socket.ws.isOpen() && !this.isInterrupted() && tries < 3) {
 								tries++;
 								Thread.sleep(timeout * (tries));
-								logger.info("Attempting to reconnect to the gateway");
+								if (loader.getOptions().isDebugging()) {
+									logger.config("Attempting to reconnect to the gateway");
+								}
 								loader.emit(new ReconnectEvent(loader, tries));
 								socket.ws = socket.ws.recreate().connect();
 								Thread.sleep(41250);
@@ -308,10 +324,19 @@ public class GatewayListener extends WebSocketAdapter {
 								}
 							}
 						} catch (InterruptedException | WebSocketException | IOException e) {
-							// e.printStackTrace();
+							logger.throwing(e.getStackTrace()[0].getClassName(), e.getStackTrace()[0].getMethodName(), e);
 							if (socket.status == Status.RECONNECTING) {
-								// tryReconnecting();
+								if (tries <= 3) {
+									tryReconnecting();
+									this.interrupt();
+									return;
+								}
 							}
+							if (tries > 3) {
+								loader.login();
+							}
+							this.interrupt();
+							return;
 						}
 					}
 				}

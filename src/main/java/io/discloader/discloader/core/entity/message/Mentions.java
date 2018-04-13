@@ -9,6 +9,8 @@ import io.discloader.discloader.common.DiscLoader;
 import io.discloader.discloader.common.registry.EntityRegistry;
 import io.discloader.discloader.core.entity.guild.Role;
 import io.discloader.discloader.core.entity.user.User;
+import io.discloader.discloader.entity.IMentionable;
+import io.discloader.discloader.entity.channel.IChannel;
 import io.discloader.discloader.entity.channel.ITextChannel;
 import io.discloader.discloader.entity.guild.IGuild;
 import io.discloader.discloader.entity.guild.IGuildMember;
@@ -89,7 +91,7 @@ public class Mentions implements IMentions {
 	}
 
 	public boolean isMentioned() {
-		return isMentioned(loader.user);
+		return isMentioned(loader.getSelfUser());
 	}
 
 	@Override
@@ -98,12 +100,11 @@ public class Mentions implements IMentions {
 	}
 
 	public boolean isMentioned(IRole role) {
-		return roles.containsKey(role.getID());
+		return roles.containsKey(role.getID()) || everyone;
 	}
 
 	public boolean isMentioned(IUser user) {
-		boolean mentioned = everyone ? true : users.containsKey(user.getID());
-		return mentioned;
+		return users.containsKey(user.getID()) || everyone;
 	}
 
 	public boolean mentionedEveryone() {
@@ -165,6 +166,35 @@ public class Mentions implements IMentions {
 	@Override
 	public int hashCode() {
 		return getMessage().hashCode();
+	}
+
+	@Override
+	public boolean isMentioned(IMentionable mentionable) {
+		if (mentionable instanceof IUser) {
+			return isMentioned((IUser) mentionable);
+		} else if (mentionable instanceof IRole) {
+			return isMentioned((IRole) mentionable);
+		} else if (mentionable instanceof IChannel) {
+			return isMentioned((IChannel) mentionable);
+		}
+		return everyone;
+	}
+
+	@Override
+	public List<IMentionable> toList() {
+		List<IMentionable> mentioned = new ArrayList<>();
+		users.forEach((id, user) -> {
+			mentioned.add(user);
+		});
+		roles.forEach((id, role) -> {
+			mentioned.add(role);
+		});
+		return mentioned;
+	}
+
+	@Override
+	public boolean isMentioned(IChannel channel) {
+		return message.getContent().toLowerCase().contains("<#" + channel.getID() + ">");
 	}
 
 }

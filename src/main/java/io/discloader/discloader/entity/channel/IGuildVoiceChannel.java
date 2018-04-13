@@ -26,6 +26,10 @@ public interface IGuildVoiceChannel extends IGuildChannel, IVoiceChannel {
 	}
 
 	int getBitrate();
+
 	int getUserLimit();
-	
+
+	CompletableFuture<IGuildVoiceChannel> setBitrate(int bitrate);
+
+	CompletableFuture<IGuildVoiceChannel> setUserLimit(int userLimit);
 }

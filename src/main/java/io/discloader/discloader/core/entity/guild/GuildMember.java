@@ -133,7 +133,7 @@ public class GuildMember implements IGuildMember {
 	 * @return a string in mention format
 	 */
 	@Override
-	public String asMention() {
+	public String toMention() {
 		return String.format("<@!%s>", getID());
 	}
 
@@ -698,7 +698,7 @@ public class GuildMember implements IGuildMember {
 
 	@Override
 	public String toString() {
-		return user.toString();
+		return String.format("%s#%04d", getName(), user.getDiscriminator());
 	}
 
 	@Override
