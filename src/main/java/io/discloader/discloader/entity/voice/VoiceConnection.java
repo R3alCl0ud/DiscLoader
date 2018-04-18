@@ -213,7 +213,8 @@ public class VoiceConnection {
 	}
 
 	/**
-	 * @return If the @{@link IVoiceChannel} returned from {@link #getChannel()} {@link IChannel#getType()} 
+	 * @return If the @{@link IVoiceChannel} returned from {@link #getChannel()}
+	 *         {@link IChannel#getType()}
 	 */
 	public IGuild getGuild() {
 		if (channel instanceof IGuildVoiceChannel)
@@ -390,7 +391,6 @@ public class VoiceConnection {
 	public void setVoiceChannel(IGuildVoiceChannel channel) {
 		if (channel != null && this.channel.getID() != channel.getID()) {
 			this.channel = channel;
-
 		}
 	}
 
@@ -430,7 +430,9 @@ public class VoiceConnection {
 	}
 
 	public void updateChannel(IGuildVoiceChannel channel) {
-		setVoiceChannel(channel);
-		sendStateUpdate(channel);
+		if (channel != null && (this.channel == null || this.channel.getID() != channel.getID())) {
+			setVoiceChannel(channel);
+			sendStateUpdate(channel);
+		}
 	}
 }

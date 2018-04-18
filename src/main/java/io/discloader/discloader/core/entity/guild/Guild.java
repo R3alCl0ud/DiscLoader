@@ -78,7 +78,6 @@ import io.discloader.discloader.network.rest.actions.guild.ModifyGuild;
 import io.discloader.discloader.network.rest.payloads.ChannelPayload;
 import io.discloader.discloader.network.util.Endpoints;
 import io.discloader.discloader.network.util.Methods;
-import io.discloader.discloader.util.DLUtil;
 
 public class Guild implements IGuild {
 
@@ -368,7 +367,7 @@ public class Guild implements IGuild {
 		CompletableFuture<IGuildEmoji> future = new CompletableFuture<>();
 		String base64 = null;
 		try {
-			base64 = new String("data:image/jpg;base64," + Base64.encodeBase64String(Files.readAllBytes(Paths.get(image))));
+			base64 = new String("data:image/png;base64," + Base64.encodeBase64String(Files.readAllBytes(Paths.get(image))));
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -503,8 +502,13 @@ public class Guild implements IGuild {
 		if (!isOwner())
 			throw new UnauthorizedException("Only the guild's owner can delete a guild");
 		CompletableFuture<IGuild> future = new CompletableFuture<>();
-		loader.rest.makeRequest(Endpoints.guild(getID()), DLUtil.Methods.DELETE, true).thenAcceptAsync(data -> {
+		CompletableFuture<Void> cf = loader.rest.request(Methods.DELETE, Endpoints.guild(getID()), new RESTOptions(), Void.class);
+		cf.thenAcceptAsync(data -> {
 			future.complete(this);
+		});
+		cf.exceptionally(ex -> {
+			future.completeExceptionally(ex);
+			return null;
 		});
 		return future;
 	}
@@ -591,10 +595,17 @@ public class Guild implements IGuild {
 	@Override
 	public CompletableFuture<Map<Long, IGuildMember>> fetchMembers(int limit) {
 		CompletableFuture<Map<Long, IGuildMember>> future = new CompletableFuture<>();
+
 		final Consumer<GuildMembersChunkEvent> consumer = new Consumer<GuildMembersChunkEvent>() {
+			public int fetchedMembers = 0;
+
 			@Override
 			public void accept(GuildMembersChunkEvent e) {
-				if (e.getGuild().getID() != getID()) {
+				fetchedMembers += e.getMembers().size();
+				if (fetchedMembers < memberCount) {
+					if (e.getGuild().getID() != getID()) {
+						fetchedMembers -= e.getMembers().size();
+					}
 					loader.onceEvent(GuildMembersChunkEvent.class, this);
 					return;
 				}
@@ -1261,6 +1272,24 @@ public class Guild implements IGuild {
 	@Override
 	public void updateVoiceState(VoiceState state) {
 		rawStates.put(state.member.getID(), state);
+	}
+
+	@Override
+	public CompletableFuture<Map<Long, IRole>> fetchRoles() {
+		CompletableFuture<Map<Long, IRole>> future = new CompletableFuture<>();
+		CompletableFuture<RoleJSON[]> cf = loader.rest.request(Methods.GET, Endpoints.guildRoles(getID()), new RESTOptions(), RoleJSON[].class);
+		cf.thenAcceptAsync(rolesdata -> {
+			System.out.println("This completes");
+			for (RoleJSON data : rolesdata) {
+				addRole(data);
+			}
+			future.complete(roles);
+		});
+		cf.exceptionally(ex -> {
+			future.completeExceptionally(ex);
+			return null;
+		});
+		return future;
 	}
 
 }

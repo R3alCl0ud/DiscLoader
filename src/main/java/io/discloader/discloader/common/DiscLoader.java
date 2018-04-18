@@ -39,11 +39,13 @@ import io.discloader.discloader.entity.guild.VerificationLevel;
 import io.discloader.discloader.entity.guild.VoiceRegion;
 import io.discloader.discloader.entity.invite.IInvite;
 import io.discloader.discloader.entity.sendable.Packet;
+import io.discloader.discloader.entity.user.IUser;
 import io.discloader.discloader.entity.util.SnowflakeUtil;
 import io.discloader.discloader.network.gateway.Gateway;
 import io.discloader.discloader.network.json.GatewayJSON;
 import io.discloader.discloader.network.json.GuildJSON;
 import io.discloader.discloader.network.json.InviteJSON;
+import io.discloader.discloader.network.json.UserJSON;
 import io.discloader.discloader.network.json.VoiceRegionJSON;
 import io.discloader.discloader.network.rest.RESTManager;
 import io.discloader.discloader.network.rest.RESTOptions;
@@ -72,25 +74,31 @@ import io.discloader.discloader.util.DLUtil.Status;
  */
 public class DiscLoader {
 
-	public static final Logger LOG = DLLogger.getLogger("DiscLoader");
+	public static final Logger LOG = DLLogger.getLogger(DiscLoader.class);
 
 	public static DiscLoader getDiscLoader() {
 		return ModRegistry.loader;
 	}
 
 	private Shard shard = null;
-
 	public final List<IEventListener> handlers;
-
 	public final Gateway socket;
+	private EventManager eventManager;
+	public RESTManager rest;
+	private CompletableFuture<DiscLoader> rf;
+	private Map<Long, IGuild> syncingGuilds;
+
+	/**
+	 * The User we are currently logged in as.
+	 * 
+	 */
+	public DLUser user;
+
+	private DLOptions options;
 
 	public String token;
 
 	public boolean ready;
-
-	private EventManager eventManager;
-
-	public RESTManager rest;
 
 	public int shards, shardid;
 
@@ -102,17 +110,6 @@ public class DiscLoader {
 	// public Map<Long, ITextChannel> textChannels;
 	// public Map<Long, IVoiceChannel> voiceChannels;
 	// public Map<Long, VoiceConnection> voiceConnections;
-
-	private CompletableFuture<DiscLoader> rf;
-	private Map<Long, IGuild> syncingGuilds;
-
-	/**
-	 * The User we are currently logged in as.
-	 * 
-	 */
-	public DLUser user;
-
-	private DLOptions options;
 
 	/**
 	 * The DiscLoader client object <br>
@@ -402,6 +399,23 @@ public class DiscLoader {
 		CommandHandler.handleCommands = true;
 		ReadyEvent event = new ReadyEvent(this);
 		emit(event);
+	}
+
+	public CompletableFuture<IUser> fetchUser(long id) {
+		CompletableFuture<IUser> future = new CompletableFuture<>();
+		CompletableFuture<UserJSON> cf = rest.request(Methods.GET, Endpoints.user(id), new RESTOptions(), UserJSON.class);
+		cf.thenAcceptAsync(data -> {
+			future.complete(EntityRegistry.addUser(data));
+		});
+		cf.exceptionally(ex -> {
+			future.completeExceptionally(ex);
+			return null;
+		});
+		return future;
+	}
+
+	public CompletableFuture<IUser> fetchUser(String id) {
+		return fetchUser(SnowflakeUtil.parse(id));
 	}
 
 	public EventManager getEventManager() {

@@ -386,9 +386,18 @@ public interface IGuild extends ISnowflake, ICreationTime {
 	 * @param limit
 	 *            The maximum number of members to fetch.
 	 * @return A Map of {@link IGuildMember} objects indexed by
-	 *         {@link IGuildMember#getID()}
+	 *         {@link IGuildMember#getID()} if successful.
 	 */
 	CompletableFuture<Map<Long, IGuildMember>> fetchMembers(int limit);
+
+	/**
+	 * Fetches the {@link IGuild}'s {@link IRole} objects.
+	 * 
+	 * @return A {@link CompeletableFuture} that completes with a {@link Map} of the
+	 *         {@link IGuild}'s {@link IRole}s indexed by {@link IRole#getID()} if
+	 *         successful.
+	 */
+	CompletableFuture<Map<Long, IRole>> fetchRoles();
 
 	CompletableFuture<IAuditLog> getAuditLog();
 

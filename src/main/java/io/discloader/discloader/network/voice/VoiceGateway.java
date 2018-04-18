@@ -60,7 +60,7 @@ public class VoiceGateway extends WebSocketAdapter {
 
 	public void connect(String gateway, String token) throws IOException, WebSocketException {
 		gateway = String.format("wss://%s?v=3", gateway);
-		logger.info(String.format("Connecting to the gateway at: %s, Using the token: %s", gateway, token));
+		logger.config(String.format("Connecting to the gateway at: %s, Using the token: %s", gateway, token));
 		WebSocketFactory factory = new WebSocketFactory().setConnectionTimeout(15000);
 		ws = factory.createSocket(gateway).addListener(this);
 		ws.connect();
@@ -80,18 +80,18 @@ public class VoiceGateway extends WebSocketAdapter {
 	}
 
 	public void onConnected(WebSocket ws, Map<String, List<String>> arg1) throws Exception {
-		logger.info("Successfully connected to the gateway");
+		logger.config("Successfully connected to the gateway");
 		this.sendIdentify();
 	}
 
-	public void onDisconnected(WebSocket ws, WebSocketFrame frame, WebSocketFrame frame2, boolean isServer) throws Exception {
+	public void onDisconnected(WebSocket ws, WebSocketFrame serverFrame, WebSocketFrame clientFrame, boolean isServer) throws Exception {
 		EntityRegistry.removeVoiceConnection(connection.getGuild().getID());
-		if (frame.getCloseCode() == 1000 && dc != null) {
+		if (isServer && serverFrame.getCloseCode() == 1000 && dc != null) {
 			dc.complete(connection);
 			return;
 		} else {
-			dc.completeExceptionally(new RuntimeException(frame.getCloseReason()));
-			logger.severe(String.format("Reason: %s, Code: %d, isServer: %b", frame.getCloseReason(), frame.getCloseCode(), isServer));
+			dc.completeExceptionally(new RuntimeException(serverFrame.getCloseReason()));
+			logger.severe(String.format("Reason: %s, Code: %d, isServer: %b", serverFrame.getCloseReason(), serverFrame.getCloseCode(), isServer));
 		}
 	}
 
@@ -110,7 +110,7 @@ public class VoiceGateway extends WebSocketAdapter {
 			connection.fireEvent(new VoiceConnectionReadyEvent(connection));
 			break;
 		case SPEAKING:
-			// logger.info(gson.toJson(packet.d));
+			logger.info(gson.toJson(packet.d));
 			break;
 		}
 
@@ -158,7 +158,7 @@ public class VoiceGateway extends WebSocketAdapter {
 						Thread.sleep(interval);
 					} catch (InterruptedException e) {}
 				}
-				logger.info("Ended: ws.isOpen(): " + ws.isOpen() + ", udp.isClosed(): " + connection.getUDPClient().udpSocket.isClosed());
+				logger.config("Ended: ws.isOpen(): " + ws.isOpen() + ", udp.isClosed(): " + connection.getUDPClient().udpSocket.isClosed());
 			}
 		};
 		heartbeatThread.setPriority((Thread.NORM_PRIORITY + Thread.MAX_PRIORITY) / 2);

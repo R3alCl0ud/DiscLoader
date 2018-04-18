@@ -57,6 +57,7 @@ public class Main {
 		opt.setToken(token);
 		opt.setPrefix("mc!");
 		opt.useDefaultCommands(true);
+		opt.setDebug(true);
 		loader = new DiscLoader(opt);
 		loader.addEventListener(new EventListenerAdapter() {
 			@Override
@@ -85,8 +86,18 @@ public class Main {
 									return null;
 								});
 								f4.thenAcceptAsync(category -> {
-									CompletableFuture<Void> future = CompletableFuture.allOf(testTextChannelThings(guild, category), testVoiceThings(guild, category));
+									// CompletableFuture.
+									CompletableFuture<Void> tfuture = testTextChannelThings(guild, category);
+									tfuture.thenAcceptAsync(n -> {
+										logger.config("Text Future Completed");
+									});
+									CompletableFuture<Void> vfuture = testVoiceThings(guild, category);
+									vfuture.thenAcceptAsync(n -> {
+										logger.config("Voice Future Completed");
+									});
+									CompletableFuture<Void> future = CompletableFuture.allOf(tfuture, vfuture);
 									future.thenAcceptAsync(v -> {
+										logger.config("Going to attempt to delete the guild");
 										AvoidRateLimits();
 										CompletableFuture<IGuild> f17 = guild.delete();
 										f17.exceptionally(ex -> {
@@ -142,6 +153,7 @@ public class Main {
 			return null;
 		});
 		f5.thenAcceptAsync(textchannel -> {
+			logger.config("Text Channel Created");
 			AvoidRateLimits();
 			CompletableFuture<IMessage> f6 = textchannel.sendMessage("content", new RichEmbed("embed").addField().setTimestamp(), new File("README.md"));
 			f6.exceptionally(ex -> {
@@ -151,6 +163,7 @@ public class Main {
 				return null;
 			});
 			f6.thenAcceptAsync(m1 -> {
+				logger.config("Message Created");
 				AvoidRateLimits();
 				CompletableFuture<IMessage> f7 = m1.edit("editted content");
 				f7.exceptionally(ex -> {
@@ -160,6 +173,7 @@ public class Main {
 					return null;
 				});
 				f7.thenAcceptAsync(m2 -> {
+					logger.config("Message Edited");
 					AvoidRateLimits();
 					CompletableFuture<IMessage> f8 = m2.pin();
 					f8.exceptionally(ex -> {
@@ -169,6 +183,7 @@ public class Main {
 						return null;
 					});
 					f8.thenAcceptAsync(m3 -> {
+						logger.config("Message Pinned");
 						AvoidRateLimits();
 						CompletableFuture<IMessage> f9 = m3.unpin();
 						f9.exceptionally(ex -> {
@@ -178,6 +193,7 @@ public class Main {
 							return null;
 						});
 						f9.thenAcceptAsync(m4 -> {
+							logger.config("Message Unpinned");
 							AvoidRateLimits();
 							CompletableFuture<Void> f10 = m4.addReaction("🍠");
 							f10.exceptionally(ex -> {
@@ -187,6 +203,7 @@ public class Main {
 								return null;
 							});
 							f10.thenAcceptAsync(n -> {
+								logger.config("Reaction added");
 								AvoidRateLimits();
 								CompletableFuture<IMessage> f11 = m4.deleteAllReactions();
 								f11.exceptionally(ex -> {
@@ -196,17 +213,19 @@ public class Main {
 									return null;
 								});
 								f11.thenAcceptAsync(m5 -> {
+									logger.config("Reaction removed");
 									AvoidRateLimits();
-									CompletableFuture<IMessage> f12 = m5.delete();
-									f12.exceptionally(ex -> {
-										logger.severe("Test Failed");
-										ex.printStackTrace();
-										System.exit(12);
-										return null;
-									});
-									f12.thenAcceptAsync(m6 -> {
-										future.complete(null);
-									});
+									// CompletableFuture<IMessage> f12 = m5.delete();
+									// f12.exceptionally(ex -> {
+									// logger.severe("Test Failed");
+									// ex.printStackTrace();
+									// System.exit(12);
+									// return null;
+									// });
+									// f12.thenAcceptAsync(m6 -> {
+									// logger.config("Message Deleted");
+									future.complete(null);
+									// });
 								});
 							});
 						});
@@ -227,6 +246,7 @@ public class Main {
 			return null;
 		});
 		f13.thenAcceptAsync(voicechannel -> {
+			AvoidRateLimits();
 			CompletableFuture<VoiceConnection> f14 = voicechannel.join();
 			f14.exceptionally(ex -> {
 				logger.severe("Test Failed");
@@ -251,7 +271,10 @@ public class Main {
 							System.exit(16);
 							return null;
 						});
-						future.complete(null);
+						f16.thenAcceptAsync(vc -> {
+							logger.config("Disconnected From VC");
+							future.complete(null);
+						});
 					}
 				});
 				voiceconnection.play("./audio_test.wav");
