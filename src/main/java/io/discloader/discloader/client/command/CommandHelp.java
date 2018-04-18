@@ -45,7 +45,7 @@ public class CommandHelp extends Command {
 					}
 				}
 
-				embed.setTitle(command.getUnlocalizedName()).setDescription(this.getCommandDesc(command)).addField("Usage", command.getUsage(), true);
+				embed.setTitle(getCommandName(command)).setDescription(getCommandDesc(command)).addField("Usage", command.getUsage(), true);
 				if (command instanceof CommandTree) {
 					String commands = "";
 					for (Command sub : ((CommandTree) command).getSubCommands().values()) {
@@ -102,6 +102,14 @@ public class CommandHelp extends Command {
 			return command.getFullDescription() == null ? command.getDescription() : command.getFullDescription();
 		}
 		return desc;
+	}
+
+	private String getCommandName(Command command) {
+		String name = LanguageRegistry.getLocalized(Locale.US, "command." + command.getUnlocalizedName() + ".name");
+		if (name == null || name.length() < 1) {
+			return command.getUnlocalizedName();
+		}
+		return name;
 	}
 
 	public Resource getResourceLocation() {

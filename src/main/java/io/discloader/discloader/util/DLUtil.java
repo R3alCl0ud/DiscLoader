@@ -630,7 +630,7 @@ public final class DLUtil {
 
 	public static final String GatewaySuffix = String.format("?v=%d&encoding=json", APIVersion);
 
-	public static final String LoaderVersion = "0.2.5";
+	public static final String LoaderVersion = "0.2.7";
 
 	public static final File MissingTexture = new Resource("discloader", "texture/commands/missing-texture.png").getPath() == null ? null : new File(new Resource("discloader", "texture/gui/icons/missing-icon.png").getPath());
 
