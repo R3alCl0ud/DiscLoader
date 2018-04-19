@@ -99,13 +99,17 @@ public class Route<T> {
 			}
 
 			@Override
-			public void failed(UnirestException e) {
+			public void failed(UnirestException ex) {
+				ex.printStackTrace();
 				queue.add(0, apiRequest);
 				handle();
 			}
 
 			@Override
-			public void cancelled() {}
+			public void cancelled() {
+				queue.add(0, apiRequest);
+				handle();
+			}
 
 		});
 	}

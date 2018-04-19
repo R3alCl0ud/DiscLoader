@@ -79,6 +79,7 @@ public class Gateway {
 		}
 		ws = new WebSocketFactory().setConnectionTimeout(15000).createSocket(gateway).addHeader("Accept-Encoding", "gzip");
 		ws.addListener(socketListener);
+		ws.setMissingCloseFrameAllowed(false);
 		ws.connect();
 	}
 

@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.logging.Logger;
 
 import org.json.JSONObject;
@@ -84,7 +85,7 @@ public class GatewayListener extends WebSocketAdapter {
 
 	private Thread reconnection = null;
 
-	private boolean connected = false;
+	private AtomicBoolean connected = new AtomicBoolean();
 
 	public GatewayListener(Gateway socket) {
 		this.socket = socket;
@@ -144,6 +145,12 @@ public class GatewayListener extends WebSocketAdapter {
 
 		if (packet.op == OPCodes.HELLO) {
 			this.handlers.get(WSEvents.HELLO).handle(packet);
+			if (socket.status != Status.RECONNECTING) {
+				socket.lastHeartbeatAck = true;
+				sendNewIdentify();
+			} else {
+				sendResume();
+			}
 		}
 
 		if (packet.op == DLUtil.OPCodes.HEARTBEAT_ACK) {
@@ -187,7 +194,7 @@ public class GatewayListener extends WebSocketAdapter {
 	}
 
 	public void onConnected(WebSocket ws, Map<String, List<String>> arg1) throws Exception {
-		connected = true;
+		connected.set(true);
 		if (loader.getOptions().isDebugging()) {
 			logger.info("Connected to the gateway");
 		}
@@ -199,20 +206,12 @@ public class GatewayListener extends WebSocketAdapter {
 			reconnection.interrupt();
 			reconnection = null;
 		}
-
-		if (socket.status != Status.RECONNECTING) {
-			this.socket.lastHeartbeatAck = true;
-			this.sendNewIdentify();
-		} else {
-			sendResume();
-		}
-
 	}
 
 	public void onDisconnected(WebSocket ws, WebSocketFrame serverFrame, WebSocketFrame clientFrame, boolean isServer) throws Exception {
 		socket.killHeartbeat();
 		loader.emit(new DisconnectEvent(loader, serverFrame, clientFrame, isServer));
-		connected = false;
+		connected.set(false);
 		if (isServer) {
 			logger.severe(String.format("Gateway connection was closed by the server. Close Code: %d, Reason: %s", serverFrame.getCloseCode(), serverFrame.getCloseReason()));
 			if (shouldResume(serverFrame)) {
@@ -233,6 +232,11 @@ public class GatewayListener extends WebSocketAdapter {
 			}
 		}
 
+	}
+
+	@Override
+	public void onError(WebSocket websocket, WebSocketException ex) {
+		ex.printStackTrace();
 	}
 
 	@Override
@@ -304,44 +308,40 @@ public class GatewayListener extends WebSocketAdapter {
 		if (loader.getOptions().isDebugging()) {
 			logger.config("Waiting to reconnect to the gateway");
 		}
-		if (reconnection == null) {
-			reconnection = new Thread(logName + " Reconnector") {
-
-				public void run() {
-					if (socket.status == Status.RECONNECTING && !this.isInterrupted()) {
-						try {
-							while (socket.status == Status.RECONNECTING && !socket.ws.isOpen() && !this.isInterrupted() && tries < 3) {
-								tries++;
-								Thread.sleep(timeout * (tries));
-								if (loader.getOptions().isDebugging()) {
-									logger.config("Attempting to reconnect to the gateway");
-								}
-								loader.emit(new ReconnectEvent(loader, tries));
-								socket.ws = socket.ws.recreate().connect();
-								Thread.sleep(41250);
-								if (socket.status == Status.RECONNECTING && !connected) {
-									logger.severe("Failed to connect to the Gateway");
-								}
+		reconnection = new Thread(logName + " Reconnector") {
+			public void run() {
+				if (socket.status == Status.RECONNECTING && !this.isInterrupted()) {
+					try {
+						while (socket.status == Status.RECONNECTING && !socket.ws.isOpen() && !this.isInterrupted() && tries < 3) {
+							tries++;
+							System.out.println(timeout * (tries));
+							Thread.sleep(timeout * (tries));
+							if (loader.getOptions().isDebugging()) {
+								logger.config("Attempting to reconnect to the gateway");
 							}
-						} catch (InterruptedException | WebSocketException | IOException e) {
-							logger.throwing(e.getStackTrace()[0].getClassName(), e.getStackTrace()[0].getMethodName(), e);
-							if (socket.status == Status.RECONNECTING) {
-								if (tries <= 3) {
-									tryReconnecting();
-									this.interrupt();
-									return;
-								}
+							loader.emit(new ReconnectEvent(loader, tries));
+							socket.ws = socket.ws.recreate().setMissingCloseFrameAllowed(false).connect();
+							Thread.sleep(41250);
+							if (socket.status == Status.RECONNECTING && !connected.get()) {
+								logger.severe("Failed to connect to the Gateway");
 							}
-							if (tries > 3) {
-								loader.login();
-							}
-							this.interrupt();
-							return;
 						}
+					} catch (InterruptedException | WebSocketException | IOException e) {
+						if (socket.status == Status.RECONNECTING) {
+							if (tries < 3) {
+								tryReconnecting();
+								return;
+							}
+						}
+						if (tries >= 3) {
+							loader.login();
+						}
+						this.interrupt();
+						return;
 					}
 				}
-			};
-		}
+			}
+		};
 		reconnection.setPriority((Thread.NORM_PRIORITY + Thread.MAX_PRIORITY) / 2);
 		reconnection.setDaemon(true);
 		reconnection.start();

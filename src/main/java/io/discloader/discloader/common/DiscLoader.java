@@ -532,7 +532,7 @@ public class DiscLoader {
 	 * @return A CompletableFuture that completes with {@code this} if successful.
 	 */
 	public CompletableFuture<DiscLoader> login(String token) {
-		if (rf != null && rf.isCompletedExceptionally())
+		if (rf != null && !rf.isDone())
 			return rf;
 		rf = new CompletableFuture<>();
 		if (options.shouldLoadMods()) {
@@ -546,19 +546,20 @@ public class DiscLoader {
 		}
 
 		LOG.info("Attempting to login");
-
 		Command.registerCommands();
 		this.token = token;
 		CompletableFuture<GatewayJSON> cf = rest.request(Methods.GET, Endpoints.gateway, new RESTOptions(), GatewayJSON.class);
 		cf.thenAcceptAsync(gateway -> {
 			try {
 				socket.connectSocket(gateway.url + DLUtil.GatewaySuffix);
-			} catch (Exception e) {
-				rf.completeExceptionally(e);
+			} catch (Exception ex) {
+				ex.printStackTrace();
+				rf.completeExceptionally(ex);
 			}
 		});
-		cf.exceptionally(e -> {
-			rf.completeExceptionally(e);
+		cf.exceptionally(ex -> {
+			ex.printStackTrace();
+			rf.completeExceptionally(ex);
 			return null;
 		});
 
