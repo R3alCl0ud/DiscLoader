@@ -81,12 +81,17 @@ public class DiscLoader {
 	}
 
 	private Shard shard = null;
-	public final List<IEventListener> handlers;
-	public final Gateway socket;
-	private EventManager eventManager;
-	public RESTManager rest;
+	private final EventManager eventManager;
 	private CompletableFuture<DiscLoader> rf;
 	private Map<Long, IGuild> syncingGuilds;
+	private long readyAt = 0l;
+
+	public final List<IEventListener> handlers;
+	public final Gateway socket;
+	public final RESTManager rest;
+	public String token;
+	public boolean ready;
+	public int shards, shardid;
 
 	/**
 	 * The User we are currently logged in as.
@@ -95,21 +100,6 @@ public class DiscLoader {
 	public DLUser user;
 
 	private DLOptions options;
-
-	public String token;
-
-	public boolean ready;
-
-	public int shards, shardid;
-
-	// public Map<Long, IUser> users;
-	// public Map<Long, IChannel> channels;
-	// public Map<Long, IGroupChannel> groupChannels;
-	// public Map<Long, IGuildChannel> guildChannels;
-	// public Map<Long, IPrivateChannel> privateChannels;
-	// public Map<Long, ITextChannel> textChannels;
-	// public Map<Long, IVoiceChannel> voiceChannels;
-	// public Map<Long, VoiceConnection> voiceConnections;
 
 	/**
 	 * The DiscLoader client object <br>
@@ -394,7 +384,7 @@ public class DiscLoader {
 	public void emitReady() {
 		socket.setReady();
 		ready = true;
-		// rf.is
+		readyAt = System.currentTimeMillis();
 		rf.complete(this);
 		CommandHandler.handleCommands = true;
 		ReadyEvent event = new ReadyEvent(this);
@@ -420,6 +410,17 @@ public class DiscLoader {
 
 	public EventManager getEventManager() {
 		return eventManager;
+	}
+
+	public Map<Long, IGuild> getGuilds() {
+		if (shards != 1) {
+			Map<Long, IGuild> guilds = new HashMap<>();
+			for (IGuild guild : EntityRegistry.getGuildsOnShard(shardid, shards)) {
+				guilds.put(guild.getID(), guild);
+			}
+			return guilds;
+		}
+		return EntityRegistry.getGuilds();
 	}
 
 	/**
@@ -450,6 +451,22 @@ public class DiscLoader {
 	}
 
 	/**
+	 * @return the readyAt
+	 */
+	public long getReadyAt() {
+		return readyAt;
+	}
+
+	/**
+	 * Returns a DLUser object representing the user you are logged in as.
+	 * 
+	 * @return a DLUser object representing the user you are logged in as.
+	 */
+	public DLUser getSelfUser() {
+		return user;
+	}
+
+	/**
 	 * Returns a shard object if the connection is sharded.
 	 * 
 	 * @return the shard
@@ -464,6 +481,10 @@ public class DiscLoader {
 
 	public int getShardID() {
 		return shardid;
+	}
+
+	public long getUptime() {
+		return System.currentTimeMillis() - readyAt;
 	}
 
 	public CompletableFuture<List<VoiceRegion>> getVoiceRegions() {
@@ -481,26 +502,6 @@ public class DiscLoader {
 			return null;
 		});
 		return future;
-	}
-
-	public Map<Long, IGuild> getGuilds() {
-		if (shards != 1) {
-			Map<Long, IGuild> guilds = new HashMap<>();
-			for (IGuild guild : EntityRegistry.getGuildsOnShard(shardid, shards)) {
-				guilds.put(guild.getID(), guild);
-			}
-			return guilds;
-		}
-		return EntityRegistry.getGuilds();
-	}
-
-	/**
-	 * Returns a DLUser object representing the user you are logged in as.
-	 * 
-	 * @return a DLUser object representing the user you are logged in as.
-	 */
-	public DLUser getSelfUser() {
-		return user;
 	}
 
 	public boolean isGuildSyncing(IGuild guild) {
@@ -585,16 +586,6 @@ public class DiscLoader {
 		return this;
 	}
 
-	public <T extends DLEvent> DiscLoader onEvent(Class<T> cls, Consumer<T> consumer) {
-		eventManager.onEvent(cls, consumer);
-		return this;
-	}
-
-	public DiscLoader removeEventListener(IEventListener eventListener) {
-		eventManager.removeEventHandler(eventListener);
-		return this;
-	}
-
 	/**
 	 * This method gets called in {@link #login(String)} before attempting to login
 	 * now.<br>
@@ -633,6 +624,16 @@ public class DiscLoader {
 	// return ModRegistry.checkCandidates(candidates);
 	// }
 	// }
+
+	public <T extends DLEvent> DiscLoader onEvent(Class<T> cls, Consumer<T> consumer) {
+		eventManager.onEvent(cls, consumer);
+		return this;
+	}
+
+	public DiscLoader removeEventListener(IEventListener eventListener) {
+		eventManager.removeEventHandler(eventListener);
+		return this;
+	}
 
 	/**
 	 * Sets the clients options;

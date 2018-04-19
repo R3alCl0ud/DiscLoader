@@ -86,7 +86,6 @@ public class Main {
 									return null;
 								});
 								f4.thenAcceptAsync(category -> {
-									// CompletableFuture.
 									CompletableFuture<Void> tfuture = testTextChannelThings(guild, category);
 									tfuture.thenAcceptAsync(n -> {
 										logger.config("Text Future Completed");
@@ -97,8 +96,8 @@ public class Main {
 									});
 									CompletableFuture<Void> future = CompletableFuture.allOf(tfuture, vfuture);
 									future.thenAcceptAsync(v -> {
-										logger.config("Going to attempt to delete the guild");
-										AvoidRateLimits();
+										logger.config("Going to attempt to delete the guild in 5 seconds");
+										AvoidRateLimits(5000l);
 										CompletableFuture<IGuild> f17 = guild.delete();
 										f17.exceptionally(ex -> {
 											logger.severe("Test Failed");
@@ -215,17 +214,7 @@ public class Main {
 								f11.thenAcceptAsync(m5 -> {
 									logger.config("Reaction removed");
 									AvoidRateLimits();
-									// CompletableFuture<IMessage> f12 = m5.delete();
-									// f12.exceptionally(ex -> {
-									// logger.severe("Test Failed");
-									// ex.printStackTrace();
-									// System.exit(12);
-									// return null;
-									// });
-									// f12.thenAcceptAsync(m6 -> {
-									// logger.config("Message Deleted");
 									future.complete(null);
-									// });
 								});
 							});
 						});
@@ -284,8 +273,12 @@ public class Main {
 	}
 
 	public static void AvoidRateLimits() {
+		AvoidRateLimits(250l);
+	}
+
+	public static void AvoidRateLimits(long ms) {
 		try {
-			Thread.sleep(250l);
+			Thread.sleep(ms);
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 		}

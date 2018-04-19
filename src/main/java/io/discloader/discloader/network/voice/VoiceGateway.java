@@ -86,12 +86,22 @@ public class VoiceGateway extends WebSocketAdapter {
 
 	public void onDisconnected(WebSocket ws, WebSocketFrame serverFrame, WebSocketFrame clientFrame, boolean isServer) throws Exception {
 		EntityRegistry.removeVoiceConnection(connection.getGuild().getID());
-		if (isServer && serverFrame.getCloseCode() == 1000 && dc != null) {
-			dc.complete(connection);
-			return;
+		if (isServer) {
+			if (serverFrame.getCloseCode() == 1000 && dc != null) {
+				dc.complete(connection);
+				return;
+			} else {
+				dc.completeExceptionally(new RuntimeException(serverFrame.getCloseReason()));
+				logger.severe(String.format("Reason: %s, Code: %d, isServer: %b", serverFrame.getCloseReason(), serverFrame.getCloseCode(), isServer));
+			}
 		} else {
-			dc.completeExceptionally(new RuntimeException(serverFrame.getCloseReason()));
-			logger.severe(String.format("Reason: %s, Code: %d, isServer: %b", serverFrame.getCloseReason(), serverFrame.getCloseCode(), isServer));
+			if (clientFrame.getCloseCode() == 1000 && dc != null) {
+				dc.complete(connection);
+				return;
+			} else {
+				dc.completeExceptionally(new RuntimeException(clientFrame.getCloseReason()));
+				logger.severe(String.format("Reason: %s, Code: %d, isServer: %b", clientFrame.getCloseReason(), clientFrame.getCloseCode(), isServer));
+			}
 		}
 	}
 

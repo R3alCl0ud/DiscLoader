@@ -499,17 +499,23 @@ public class Guild implements IGuild {
 	}
 
 	public CompletableFuture<IGuild> delete() {
-		if (!isOwner())
-			throw new UnauthorizedException("Only the guild's owner can delete a guild");
 		CompletableFuture<IGuild> future = new CompletableFuture<>();
-		CompletableFuture<Void> cf = loader.rest.request(Methods.DELETE, Endpoints.guild(getID()), new RESTOptions(), Void.class);
-		cf.thenAcceptAsync(data -> {
-			future.complete(this);
-		});
-		cf.exceptionally(ex -> {
+		try {
+			if (!isOwner()) {
+				future.completeExceptionally(new UnauthorizedException("Only the guild's owner can delete a guild"));
+				return future;
+			}
+			CompletableFuture<Void> cf = getLoader().rest.request(Methods.DELETE, Endpoints.guild(getID()), new RESTOptions(), Void.class);
+			cf.thenAcceptAsync(Void -> {
+				future.complete(this);
+			});
+			cf.exceptionally(ex -> {
+				future.completeExceptionally(ex);
+				return null;
+			});
+		} catch (Exception ex) {
 			future.completeExceptionally(ex);
-			return null;
-		});
+		}
 		return future;
 	}
 
@@ -518,7 +524,7 @@ public class Guild implements IGuild {
 			throw new PermissionsException();
 		}
 		CompletableFuture<IGuild> future = new CompletableFuture<>();
-		String base64 = new String("data:image/jpg;base64," + Base64.encodeBase64String(Files.readAllBytes(Paths.get(icon))));
+		String base64 = new String("data:image/png;base64," + Base64.encodeBase64String(Files.readAllBytes(Paths.get(icon))));
 		JSONObject payload = new JSONObject().put("name", name).put("icon", base64);
 		CompletableFuture<GuildJSON> cf = getLoader().rest.request(Methods.PATCH, Endpoints.guild(getID()), new RESTOptions(payload), GuildJSON.class);
 		cf.thenAcceptAsync(guildJSON -> {
@@ -1074,12 +1080,12 @@ public class Guild implements IGuild {
 
 	@Override
 	public boolean isOwner() {
-		return isOwner(getCurrentMember());
+		return getOwnerID() == getLoader().getSelfUser().getID();
 	}
 
 	@Override
 	public boolean isOwner(IGuildMember iGuildMember) {
-		return getOwner().getID() == iGuildMember.getID();
+		return getOwnerID() == iGuildMember.getID();
 	}
 
 	@Override
