@@ -2,7 +2,7 @@
 A High Level Java wrapper for the Discord API written in 
 Created to replace the method daisy chaining confusion of other Java libraries for the Discord API.
 
-[Documentation](http://docs.discloader.io/0.2.8)
+[Documentation](http://docs.discloader.io/0.2.9)
 
 [Discord Guild](https://discord.gg/7zfDPhE)
 
@@ -17,7 +17,7 @@ Created to replace the method daisy chaining confusion of other Java libraries f
     <dependency>
         <groupId>io.discloader</groupId>
         <artifactId>discloader</artifactId>
-        <version>0.2.8</version>
+        <version>0.2.9</version>
     </dependency>
 </dependencies>
 <repositories>
