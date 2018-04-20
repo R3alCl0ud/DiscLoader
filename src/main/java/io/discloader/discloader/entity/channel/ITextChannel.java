@@ -6,6 +6,7 @@ import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 
 import io.discloader.discloader.client.render.util.Resource;
+import io.discloader.discloader.common.exceptions.IllegalContentException;
 import io.discloader.discloader.core.entity.RichEmbed;
 import io.discloader.discloader.core.entity.message.Message;
 import io.discloader.discloader.core.entity.user.User;
@@ -20,11 +21,11 @@ import io.discloader.discloader.entity.user.IUser;
  */
 public interface ITextChannel extends IChannel {
 
-	
 	/**
 	 * Deletes multiple messages from the channel.
 	 * 
-	 * @param messages The messages to delete
+	 * @param messages
+	 *            The messages to delete
 	 * @return A HashMap of the deleted messages if successful.
 	 */
 	CompletableFuture<Map<Long, IMessage>> deleteMessages(IMessage... messages);
@@ -35,13 +36,15 @@ public interface ITextChannel extends IChannel {
 	/**
 	 * Deletes multiple messages from the channel.
 	 * 
-	 * @param messages A HashMap of messages to delete
+	 * @param messages
+	 *            A HashMap of messages to delete
 	 * @return A HashMap of the deleted messages if successful.
 	 */
 	CompletableFuture<Map<Long, IMessage>> deleteMessages(Map<Long, IMessage> messages);
 
 	/**
-	 * @param id The id of the message to fetch
+	 * @param id
+	 *            The id of the message to fetch
 	 * @return a new message object
 	 */
 	CompletableFuture<IMessage> fetchMessage(long id);
@@ -52,7 +55,8 @@ public interface ITextChannel extends IChannel {
 	CompletableFuture<Map<Long, IMessage>> fetchMessages();
 
 	/**
-	 * @param options The fetch options to use
+	 * @param options
+	 *            The fetch options to use
 	 * @return A HashMap of fetched messages
 	 */
 	<T extends ITextChannel> CompletableFuture<Map<Long, IMessage>> fetchMessages(MessageFetchOptions options);
@@ -72,7 +76,8 @@ public interface ITextChannel extends IChannel {
 	IMessage getMessage(long messageID);
 
 	/**
-	 * @param id The Snowflake ID of the message
+	 * @param id
+	 *            The Snowflake ID of the message
 	 * @return The cached message, or null if no message was found
 	 */
 	<T extends ITextChannel> IMessage getMessage(String id);
@@ -87,8 +92,8 @@ public interface ITextChannel extends IChannel {
 	<T extends ITextChannel> Map<Long, IMessage> getMessages();
 
 	/**
-	 * Checks if any of the channel's cached messages are pinned to the channel,
-	 * and returns all cached messages that are pinned.
+	 * Checks if any of the channel's cached messages are pinned to the channel, and
+	 * returns all cached messages that are pinned.
 	 * 
 	 * @return A HashMap of pinned messages. Indexed by {@link Message#id
 	 *         message.id}.
@@ -103,7 +108,8 @@ public interface ITextChannel extends IChannel {
 	/**
 	 * Checks if a certain user is typing in this channel
 	 * 
-	 * @param author The user to check.
+	 * @param author
+	 *            The user to check.
 	 * @return {@code true} if the user is typing, false otherwise.
 	 */
 	boolean isTyping(IUser author);
@@ -112,7 +118,8 @@ public interface ITextChannel extends IChannel {
 	 * Pins a message to the channel if not already pinned, and the client has
 	 * sufficient permissions
 	 * 
-	 * @param message The message to pin
+	 * @param message
+	 *            The message to pin
 	 * @return A Future that completes with the pinned message if successful.
 	 */
 	<T extends ITextChannel> CompletableFuture<IMessage> pinMessage(IMessage message);
@@ -120,46 +127,94 @@ public interface ITextChannel extends IChannel {
 	/**
 	 * Sends a {@link Message} to the channel.
 	 * 
-	 * @param embed The embed to send
-	 * @return A Future that completes with a {@link Message} if successful,
+	 * @param embed
+	 *            The embed to send
+	 * @return A {@link CompletableFuture} that completes with an {@link IMessage}
+	 *         if successful.
 	 */
 	CompletableFuture<IMessage> sendEmbed(RichEmbed embed);
 
 	CompletableFuture<IMessage> sendFile(File file);
 
 	CompletableFuture<IMessage> sendFile(Resource resource);
-	
+
 	CompletableFuture<IMessage> sendFile(Attachment attachment);
-	
+
 	CompletableFuture<IMessage> sendFile(File file, String content);
 
 	CompletableFuture<IMessage> sendFile(Resource resource, String content);
-	
+
 	CompletableFuture<IMessage> sendFile(Attachment attachment, String content);
 
 	/**
-	 * Sends a {@link Message} to the channel.
+	 * Sends an {@link IMessage} to the channel.
 	 * 
-	 * @param content The message's content
-	 * @return A Future that completes with a {@link Message} if successful,
+	 * @param content
+	 *            The message's content
+	 * @return A {@link CompletableFuture} that completes with an {@link IMessage}
+	 *         if successful.
 	 */
 	CompletableFuture<IMessage> sendMessage(String content);
 
 	/**
-	 * Sends a {@link Message} to the channel.
+	 * Sends an {@link IMessage} to the channel.
 	 * 
-	 * @param content The message's content
-	 * @param embed The RichEmbed to send with the message
-	 * @return A Future that completes with the pinned {@link Message} if
-	 *         successful.
+	 * @param content
+	 *            The message's content
+	 * @param tts
+	 *            Whether or not the message should be a Text-To-Speech message.
+	 * @return A {@link CompletableFuture} that completes with an {@link IMessage}
+	 *         if successful.
+	 */
+	CompletableFuture<IMessage> sendMessage(String content, boolean tts);
+
+	/**
+	 * Sends a {@link IMessage} to the channel.
+	 * 
+	 * @param content
+	 *            The message's content
+	 * @param embed
+	 *            The RichEmbed to send with the message
+	 * @return A {@link CompletableFuture} that completes with an {@link IMessage}
+	 *         if successful.
 	 */
 	CompletableFuture<IMessage> sendMessage(String content, RichEmbed embed);
-	
+
+	/**
+	 * Sends a {@link IMessage} to the channel.
+	 * 
+	 * @param content
+	 *            The message's content
+	 * @param embed
+	 *            The RichEmbed to send with the message
+	 * @param tts
+	 *            Whether or not the message should be a Text-To-Speech message.
+	 * @return A {@link CompletableFuture} that completes with an {@link IMessage}
+	 *         if successful.
+	 */
+	CompletableFuture<IMessage> sendMessage(String content, RichEmbed embed, boolean tts);
+
 	CompletableFuture<IMessage> sendMessage(String content, RichEmbed embed, Attachment attachment);
 
 	CompletableFuture<IMessage> sendMessage(String content, RichEmbed embed, File file);
 
 	CompletableFuture<IMessage> sendMessage(String content, RichEmbed embed, Resource resource);
+
+	CompletableFuture<IMessage> sendMessage(String content, RichEmbed embed, Attachment attachment, boolean tts);
+
+	CompletableFuture<IMessage> sendMessage(String content, RichEmbed embed, File file, boolean tts);
+
+	CompletableFuture<IMessage> sendMessage(String content, RichEmbed embed, Resource resource, boolean tts);
+
+	/**
+	 * Sends a text-to-speech {@link IMessage} to the channel.
+	 * 
+	 * @param content
+	 *            The message's content
+	 * @return A {@link CompletableFuture} that completes with an {@link IMessage}
+	 *         if successful.
+	 */
+	CompletableFuture<IMessage> sendTTSMessage(String content);
 
 	/**
 	 * Sets the client as typing in the channel
@@ -171,10 +226,17 @@ public interface ITextChannel extends IChannel {
 	/**
 	 * Unpins a message if it is pinned in the channel.
 	 * 
-	 * @param message The message to unpin.
+	 * @param message
+	 *            The message to unpin.
 	 * @return A Future that completes with the unpinned {@link Message} if
 	 *         successful.
 	 */
 	<T extends ITextChannel> CompletableFuture<IMessage> unpinMessage(IMessage message);
+
+	default void checkContentValid(String content, CompletableFuture<IMessage> future) {
+		if (content != null && content.trim().length() > 2000) {
+			future.completeExceptionally(new IllegalContentException("Message Contents must be 2000 characters or less"));
+		}
+	}
 
 }

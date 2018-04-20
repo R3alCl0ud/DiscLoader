@@ -672,7 +672,6 @@ public final class DLUtil {
 	 * @throws IOException
 	 *             thrown if there is an error reading the file
 	 */
-	// @SuppressWarnings("resource")
 	public static final byte[] readAllBytes(File file) throws IOException {
 		try (InputStream is = new FileInputStream(file)) {
 

@@ -27,7 +27,6 @@ import io.discloader.discloader.network.rest.RESTOptions;
 import io.discloader.discloader.network.rest.actions.channel.BulkDelete;
 import io.discloader.discloader.network.rest.actions.channel.FetchMessage;
 import io.discloader.discloader.network.rest.actions.channel.FetchMessages;
-import io.discloader.discloader.network.rest.actions.channel.SendMessage;
 import io.discloader.discloader.network.rest.actions.channel.StartTyping;
 import io.discloader.discloader.network.rest.actions.channel.pin.PinMessage;
 import io.discloader.discloader.network.rest.actions.channel.pin.PinnedMessages;
@@ -191,6 +190,15 @@ public class GroupChannel extends Channel implements IGroupChannel, IVoiceChanne
 
 	@Override
 	public CompletableFuture<IMessage> sendEmbed(RichEmbed embed) {
+		// System.out.println(DLUtil.gson.toJson(embed));
+		if (embed.getThumbnail() != null && embed.getThumbnail().resource != null)
+			return sendMessage(null, embed, embed.getThumbnail().resource);
+		if (embed.getThumbnail() != null && embed.getThumbnail().file != null)
+			return sendMessage(null, embed, embed.getThumbnail().file);
+		if (embed.getImage() != null && embed.getImage().resource != null)
+			return sendMessage(null, embed, embed.getImage().resource);
+		if (embed.getImage() != null && embed.getImage().file != null)
+			return sendMessage(null, embed, embed.getImage().file);
 		return sendMessage(null, embed, (File) null);
 	}
 
@@ -226,24 +234,65 @@ public class GroupChannel extends Channel implements IGroupChannel, IVoiceChanne
 
 	@Override
 	public CompletableFuture<IMessage> sendMessage(String content) {
-		return sendMessage(content, null, (File) null);
+		return sendMessage(content, null, (File) null, false);
+	}
+
+	@Override
+	public CompletableFuture<IMessage> sendMessage(String content, boolean tts) {
+		return sendMessage(content, null, (File) null, tts);
 	}
 
 	@Override
 	public CompletableFuture<IMessage> sendMessage(String content, RichEmbed embed) {
-		return sendMessage(content, embed, (File) null);
+		return sendMessage(content, embed, false);
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see io.discloader.discloader.entity.channel.ITextChannel#sendMessage(java.
-	 * lang.String, io.discloader.discloader.core.entity.RichEmbed,
-	 * io.discloader.discloader.entity.sendable.Attachment)
-	 */
 	@Override
 	public CompletableFuture<IMessage> sendMessage(String content, RichEmbed embed, Attachment attachment) {
-		SendableMessage sendable = new SendableMessage(content, false, embed, attachment, new File(attachment.filename));
+		return sendMessage(content, embed, attachment, false);
+	}
+
+	@Override
+	public CompletableFuture<IMessage> sendMessage(String content, RichEmbed embed, Attachment attachment, boolean tts) {
+		CompletableFuture<IMessage> future = new CompletableFuture<>();
+		File file = attachment == null ? null : new File(attachment.filename);
+		SendableMessage sendable = new SendableMessage(content, tts, embed, attachment, file);
+		CompletableFuture<MessageJSON> mcf = loader.rest.request(Methods.POST, Endpoints.messages(getID()), new RESTOptions(sendable), MessageJSON.class);
+		mcf.thenAcceptAsync(e -> {
+			future.complete(new Message<>(this, e));
+		});
+		mcf.exceptionally(ex -> {
+			future.completeExceptionally(ex);
+			return null;
+		});
+		return future;
+	}
+
+	@Override
+	public CompletableFuture<IMessage> sendMessage(String content, RichEmbed embed, boolean tts) {
+		if (embed != null) {
+			if ((embed.getThumbnail() != null && embed.getThumbnail().resource != null))
+				return sendMessage(content, embed, embed.getThumbnail().resource, tts);
+			if (embed.getThumbnail() != null && embed.getThumbnail().file != null)
+				return sendMessage(content, embed, embed.getThumbnail().file, tts);
+			if ((embed.getImage() != null && embed.getImage().resource != null))
+				return sendMessage(content, embed, embed.getImage().resource, tts);
+			if (embed.getImage() != null && embed.getImage().file != null)
+				return sendMessage(content, embed, embed.getImage().file, tts);
+		}
+		return sendMessage(content, embed, (File) null, tts);
+	}
+
+	@Override
+	public CompletableFuture<IMessage> sendMessage(String content, RichEmbed embed, File file) {
+		return sendMessage(content, embed, file, false);
+
+	}
+
+	@Override
+	public CompletableFuture<IMessage> sendMessage(String content, RichEmbed embed, File file, boolean tts) {
+		Attachment attachment = file == null ? null : new Attachment(file.getName());
+		SendableMessage sendable = new SendableMessage(content, tts, embed, attachment, file);
 		CompletableFuture<IMessage> future = new CompletableFuture<>();
 		CompletableFuture<MessageJSON> mcf = loader.rest.request(Methods.POST, Endpoints.messages(getID()), new RESTOptions(sendable), MessageJSON.class);
 		mcf.thenAcceptAsync(e -> {
@@ -257,25 +306,29 @@ public class GroupChannel extends Channel implements IGroupChannel, IVoiceChanne
 	}
 
 	@Override
-	public CompletableFuture<IMessage> sendMessage(String content, RichEmbed embed, File file) {
-		Attachment attachment = null;
-		if (embed != null && embed.getThumbnail() != null && embed.getThumbnail().file != null) {
-			file = embed.getThumbnail().file;
-			embed.getThumbnail().file = null;
-			attachment = new Attachment(file.getName());
-		}
-		return new SendMessage<IGroupChannel>(this, content, embed, attachment, file).execute();
+	public CompletableFuture<IMessage> sendMessage(String content, RichEmbed embed, Resource resource) {
+		return sendMessage(content, embed, resource, false);
 	}
 
 	@Override
-	public CompletableFuture<IMessage> sendMessage(String content, RichEmbed embed, Resource resource) {
-		Attachment attachment = null;
-		if (embed.getThumbnail() != null && embed.getThumbnail().resource != null) {
-			attachment = new Attachment(embed.getThumbnail().resource.getFileName());
-		} else if (embed.getImage() != null && embed.getImage().resource != null) {
-			attachment = new Attachment(embed.getImage().resource.getFileName());
-		}
-		return new SendMessage<IGroupChannel>(this, content, embed, attachment, resource).execute();
+	public CompletableFuture<IMessage> sendMessage(String content, RichEmbed embed, Resource resource, boolean tts) {
+		Attachment attachment = resource == null ? null : new Attachment(resource.getFileName());
+		SendableMessage sendable = new SendableMessage(content, tts, embed, attachment, resource);
+		CompletableFuture<IMessage> future = new CompletableFuture<>();
+		CompletableFuture<MessageJSON> mcf = loader.rest.request(Methods.POST, Endpoints.messages(getID()), new RESTOptions(sendable), MessageJSON.class);
+		mcf.thenAcceptAsync(e -> {
+			future.complete(new Message<>(this, e));
+		});
+		mcf.exceptionally(ex -> {
+			future.completeExceptionally(ex);
+			return null;
+		});
+		return future;
+	}
+
+	@Override
+	public CompletableFuture<IMessage> sendTTSMessage(String content) {
+		return sendMessage(content, null, (File) null, true);
 	}
 
 	@Override

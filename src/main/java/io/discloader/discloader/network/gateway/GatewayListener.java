@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.logging.Logger;
 
@@ -56,6 +57,7 @@ import io.discloader.discloader.network.gateway.packets.VoiceStateUpdate;
 import io.discloader.discloader.network.gateway.packets.request.GatewayIdentify;
 import io.discloader.discloader.network.gateway.packets.request.GatewayResume;
 import io.discloader.discloader.network.gateway.packets.request.Properties;
+import io.discloader.discloader.network.json.GatewayJSON;
 import io.discloader.discloader.util.DLUtil;
 import io.discloader.discloader.util.DLUtil.OPCodes;
 import io.discloader.discloader.util.DLUtil.Status;
@@ -146,7 +148,6 @@ public class GatewayListener extends WebSocketAdapter {
 		if (packet.op == OPCodes.HELLO) {
 			this.handlers.get(WSEvents.HELLO).handle(packet);
 			if (socket.status != Status.RECONNECTING) {
-				socket.lastHeartbeatAck = true;
 				sendNewIdentify();
 			} else {
 				sendResume();
@@ -154,7 +155,7 @@ public class GatewayListener extends WebSocketAdapter {
 		}
 
 		if (packet.op == DLUtil.OPCodes.HEARTBEAT_ACK) {
-			socket.lastHeartbeatAck = true;
+			socket.lastHeartbeatAck.set(true);
 			if (loader.getOptions().isDebugging()) {
 				logger.config("Heartbeat Acknowledged");
 			}
@@ -195,6 +196,11 @@ public class GatewayListener extends WebSocketAdapter {
 
 	public void onConnected(WebSocket ws, Map<String, List<String>> arg1) throws Exception {
 		connected.set(true);
+		/*
+		 * Hoping this will fix that goddamn heartbeat not acknowledged when a heartbeat
+		 * had never been sent in the first place bug.
+		 */
+		socket.lastHeartbeatAck.set(true);
 		if (loader.getOptions().isDebugging()) {
 			logger.info("Connected to the gateway");
 		}
@@ -218,17 +224,15 @@ public class GatewayListener extends WebSocketAdapter {
 				// if connection wasn't closed properly try to reconnect
 				tryReconnecting();
 			} else {
-				loader.login();
+				connectToNewEndpoint();
 			}
 		} else {
 			logger.severe(String.format("Client disconnected from the gateway, Close Code: %d, Reason: %s", clientFrame.getCloseCode(), clientFrame.getCloseReason()));
-			if (clientFrame.getCloseCode() != 1000) {
-				if (shouldResume(clientFrame)) {
-					// if connection wasn't closed properly try to reconnect
-					tryReconnecting();
-				} else {
-					loader.login();
-				}
+			if (shouldResume(clientFrame) && clientFrame.getCloseCode() != 1000) {
+				// if connection wasn't closed properly try to reconnect
+				tryReconnecting();
+			} else {
+				connectToNewEndpoint();
 			}
 		}
 
@@ -334,7 +338,7 @@ public class GatewayListener extends WebSocketAdapter {
 							}
 						}
 						if (tries >= 3) {
-							loader.login();
+							connectToNewEndpoint();
 						}
 						this.interrupt();
 						return;
@@ -345,5 +349,20 @@ public class GatewayListener extends WebSocketAdapter {
 		reconnection.setPriority((Thread.NORM_PRIORITY + Thread.MAX_PRIORITY) / 2);
 		reconnection.setDaemon(true);
 		reconnection.start();
+	}
+
+	public void connectToNewEndpoint() {
+		CompletableFuture<GatewayJSON> future = loader.fetchGateway();
+		future.thenAcceptAsync(data -> {
+			try {
+				socket.connectSocket(data.url);
+			} catch (WebSocketException | IOException e) {
+				connectToNewEndpoint();
+			}
+		});
+		future.exceptionally(ex -> {
+			connectToNewEndpoint();
+			return null;
+		});
 	}
 }

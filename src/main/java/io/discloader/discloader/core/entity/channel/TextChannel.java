@@ -73,16 +73,6 @@ public class TextChannel extends GuildChannel implements IGuildTextChannel {
 		nsfw = data.nsfw;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see io.discloader.discloader.entity.IMentionable#asMention()
-	 */
-	@Override
-	public String toMention() {
-		return String.format("<#%d>", getID());
-	}
-
 	@Override
 	public CompletableFuture<Map<Long, IMessage>> deleteMessages(IMessage... messages) {
 		HashMap<Long, IMessage> msgs = new HashMap<>();
@@ -293,7 +283,6 @@ public class TextChannel extends GuildChannel implements IGuildTextChannel {
 
 	@Override
 	public CompletableFuture<IMessage> sendEmbed(RichEmbed embed) {
-		// System.out.println(DLUtil.gson.toJson(embed));
 		if (embed.getThumbnail() != null && embed.getThumbnail().resource != null)
 			return sendMessage(null, embed, embed.getThumbnail().resource);
 		if (embed.getThumbnail() != null && embed.getThumbnail().file != null)
@@ -337,29 +326,29 @@ public class TextChannel extends GuildChannel implements IGuildTextChannel {
 
 	@Override
 	public CompletableFuture<IMessage> sendMessage(String content) {
-		return sendMessage(content, null, (File) null);
+		return sendMessage(content, null, (File) null, false);
+	}
+
+	@Override
+	public CompletableFuture<IMessage> sendMessage(String content, boolean tts) {
+		return sendMessage(content, null, (File) null, tts);
 	}
 
 	@Override
 	public CompletableFuture<IMessage> sendMessage(String content, RichEmbed embed) {
-		if (embed != null) {
-			if ((embed.getThumbnail() != null && embed.getThumbnail().resource != null))
-				return sendMessage(content, embed, embed.getThumbnail().resource);
-			if (embed.getThumbnail() != null && embed.getThumbnail().file != null)
-				return sendMessage(content, embed, embed.getThumbnail().file);
-			if ((embed.getImage() != null && embed.getImage().resource != null))
-				return sendMessage(content, embed, embed.getImage().resource);
-			if (embed.getImage() != null && embed.getImage().file != null)
-				return sendMessage(content, embed, embed.getImage().file);
-		}
-		return sendMessage(content, embed, (File) null);
+		return sendMessage(content, embed, false);
 	}
 
 	@Override
 	public CompletableFuture<IMessage> sendMessage(String content, RichEmbed embed, Attachment attachment) {
-		File file = attachment == null ? null : new File(attachment.filename);
-		SendableMessage sendable = new SendableMessage(content, false, embed, attachment, file);
+		return sendMessage(content, embed, attachment, false);
+	}
+
+	@Override
+	public CompletableFuture<IMessage> sendMessage(String content, RichEmbed embed, Attachment attachment, boolean tts) {
 		CompletableFuture<IMessage> future = new CompletableFuture<>();
+		File file = attachment == null ? null : new File(attachment.filename);
+		SendableMessage sendable = new SendableMessage(content, tts, embed, attachment, file);
 		CompletableFuture<MessageJSON> mcf = loader.rest.request(Methods.POST, Endpoints.messages(getID()), new RESTOptions(sendable), MessageJSON.class);
 		mcf.thenAcceptAsync(e -> {
 			future.complete(new Message<>(this, e));
@@ -369,12 +358,32 @@ public class TextChannel extends GuildChannel implements IGuildTextChannel {
 			return null;
 		});
 		return future;
+	}
+
+	@Override
+	public CompletableFuture<IMessage> sendMessage(String content, RichEmbed embed, boolean tts) {
+		if (embed != null) {
+			if ((embed.getThumbnail() != null && embed.getThumbnail().resource != null))
+				return sendMessage(content, embed, embed.getThumbnail().resource, tts);
+			if (embed.getThumbnail() != null && embed.getThumbnail().file != null)
+				return sendMessage(content, embed, embed.getThumbnail().file, tts);
+			if ((embed.getImage() != null && embed.getImage().resource != null))
+				return sendMessage(content, embed, embed.getImage().resource, tts);
+			if (embed.getImage() != null && embed.getImage().file != null)
+				return sendMessage(content, embed, embed.getImage().file, tts);
+		}
+		return sendMessage(content, embed, (File) null, tts);
 	}
 
 	@Override
 	public CompletableFuture<IMessage> sendMessage(String content, RichEmbed embed, File file) {
+		return sendMessage(content, embed, file, false);
+	}
+
+	@Override
+	public CompletableFuture<IMessage> sendMessage(String content, RichEmbed embed, File file, boolean tts) {
 		Attachment attachment = file == null ? null : new Attachment(file.getName());
-		SendableMessage sendable = new SendableMessage(content, false, embed, attachment, file);
+		SendableMessage sendable = new SendableMessage(content, tts, embed, attachment, file);
 		CompletableFuture<IMessage> future = new CompletableFuture<>();
 		CompletableFuture<MessageJSON> mcf = loader.rest.request(Methods.POST, Endpoints.messages(getID()), new RESTOptions(sendable), MessageJSON.class);
 		mcf.thenAcceptAsync(e -> {
@@ -385,13 +394,17 @@ public class TextChannel extends GuildChannel implements IGuildTextChannel {
 			return null;
 		});
 		return future;
-
 	}
 
 	@Override
 	public CompletableFuture<IMessage> sendMessage(String content, RichEmbed embed, Resource resource) {
+		return sendMessage(content, embed, resource, false);
+	}
+
+	@Override
+	public CompletableFuture<IMessage> sendMessage(String content, RichEmbed embed, Resource resource, boolean tts) {
 		Attachment attachment = resource == null ? null : new Attachment(resource.getFileName());
-		SendableMessage sendable = new SendableMessage(content, false, embed, attachment, resource);
+		SendableMessage sendable = new SendableMessage(content, tts, embed, attachment, resource);
 		CompletableFuture<IMessage> future = new CompletableFuture<>();
 		CompletableFuture<MessageJSON> mcf = loader.rest.request(Methods.POST, Endpoints.messages(getID()), new RESTOptions(sendable), MessageJSON.class);
 		mcf.thenAcceptAsync(e -> {
@@ -402,6 +415,11 @@ public class TextChannel extends GuildChannel implements IGuildTextChannel {
 			return null;
 		});
 		return future;
+	}
+
+	@Override
+	public CompletableFuture<IMessage> sendTTSMessage(String content) {
+		return sendMessage(content, null, (File) null, true);
 	}
 
 	@Override
@@ -459,16 +477,26 @@ public class TextChannel extends GuildChannel implements IGuildTextChannel {
 	@Override
 	public CompletableFuture<Map<Long, IUser>> startTyping() {
 		CompletableFuture<Map<Long, IUser>> future = new CompletableFuture<>();
-		CompletableFuture<Void> cf = loader.rest.request(Methods.POST, Endpoints.channelTyping(getID()), new RESTOptions(),Void.class);
+		CompletableFuture<Void> cf = loader.rest.request(Methods.POST, Endpoints.channelTyping(getID()), new RESTOptions(), Void.class);
 		cf.thenAcceptAsync(n -> {
 			typing.put(loader.user.getID(), loader.user);
 			future.complete(typing);
 		});
-		cf.exceptionally(ex->{
+		cf.exceptionally(ex -> {
 			future.completeExceptionally(ex);
 			return null;
 		});
 		return future;
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see io.discloader.discloader.entity.IMentionable#asMention()
+	 */
+	@Override
+	public String toMention() {
+		return String.format("<#%d>", getID());
 	}
 
 	@Override

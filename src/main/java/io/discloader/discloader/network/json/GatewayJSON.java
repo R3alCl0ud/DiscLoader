@@ -5,6 +5,7 @@ package io.discloader.discloader.network.json;
  *
  */
 public class GatewayJSON {
-	
+
 	public String url;
+	public int shards;
 }

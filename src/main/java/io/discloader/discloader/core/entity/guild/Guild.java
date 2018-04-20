@@ -586,8 +586,8 @@ public class Guild implements IGuild {
 	}
 
 	public CompletableFuture<IGuildMember> fetchMember(long memberID) {
-		CompletableFuture<IGuildMember> future = new CompletableFuture<IGuildMember>();
-		CompletableFuture<MemberJSON> cf = loader.rest.request(Methods.GET, Endpoints.guildMember(getID(), memberID), new RESTOptions(), MemberJSON.class);
+		CompletableFuture<IGuildMember> future = new CompletableFuture<>();
+		CompletableFuture<MemberJSON> cf = getLoader().rest.request(Methods.GET, Endpoints.guildMember(getID(), memberID), new RESTOptions(), MemberJSON.class);
 		cf.thenAcceptAsync(data -> {
 			future.complete(addMember(data, true));
 		});
@@ -621,6 +621,24 @@ public class Guild implements IGuild {
 		loader.onceEvent(GuildMembersChunkEvent.class, consumer);
 		Packet payload = new Packet(8, new MemberQuery(limit, ""));
 		loader.socket.send(payload);
+		return future;
+	}
+
+	@Override
+	public CompletableFuture<Map<Long, IRole>> fetchRoles() {
+		CompletableFuture<Map<Long, IRole>> future = new CompletableFuture<>();
+		CompletableFuture<RoleJSON[]> cf = loader.rest.request(Methods.GET, Endpoints.guildRoles(getID()), new RESTOptions(), RoleJSON[].class);
+		cf.thenAcceptAsync(rolesdata -> {
+			System.out.println("This completes");
+			for (RoleJSON data : rolesdata) {
+				addRole(data);
+			}
+			future.complete(roles);
+		});
+		cf.exceptionally(ex -> {
+			future.completeExceptionally(ex);
+			return null;
+		});
 		return future;
 	}
 
@@ -1278,24 +1296,6 @@ public class Guild implements IGuild {
 	@Override
 	public void updateVoiceState(VoiceState state) {
 		rawStates.put(state.member.getID(), state);
-	}
-
-	@Override
-	public CompletableFuture<Map<Long, IRole>> fetchRoles() {
-		CompletableFuture<Map<Long, IRole>> future = new CompletableFuture<>();
-		CompletableFuture<RoleJSON[]> cf = loader.rest.request(Methods.GET, Endpoints.guildRoles(getID()), new RESTOptions(), RoleJSON[].class);
-		cf.thenAcceptAsync(rolesdata -> {
-			System.out.println("This completes");
-			for (RoleJSON data : rolesdata) {
-				addRole(data);
-			}
-			future.complete(roles);
-		});
-		cf.exceptionally(ex -> {
-			future.completeExceptionally(ex);
-			return null;
-		});
-		return future;
 	}
 
 }

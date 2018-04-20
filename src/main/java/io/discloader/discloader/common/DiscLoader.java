@@ -89,7 +89,7 @@ public class DiscLoader {
 	public final List<IEventListener> handlers;
 	public final Gateway socket;
 	public final RESTManager rest;
-	public String token;
+	public String token = null;
 	public boolean ready;
 	public int shards, shardid;
 
@@ -408,6 +408,10 @@ public class DiscLoader {
 		return fetchUser(SnowflakeUtil.parse(id));
 	}
 
+	public CompletableFuture<GatewayJSON> fetchGateway() {
+		return rest.request(Methods.GET, (token == null || !token.startsWith("Bot ")) ? Endpoints.gateway : Endpoints.botGateway, new RESTOptions(), GatewayJSON.class);
+	}
+
 	public EventManager getEventManager() {
 		return eventManager;
 	}
@@ -548,7 +552,8 @@ public class DiscLoader {
 		LOG.info("Attempting to login");
 		Command.registerCommands();
 		this.token = token;
-		CompletableFuture<GatewayJSON> cf = rest.request(Methods.GET, Endpoints.gateway, new RESTOptions(), GatewayJSON.class);
+		// Endpoints.botGateway;
+		CompletableFuture<GatewayJSON> cf = fetchGateway();
 		cf.thenAcceptAsync(gateway -> {
 			try {
 				socket.connectSocket(gateway.url + DLUtil.GatewaySuffix);

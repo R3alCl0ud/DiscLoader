@@ -12,10 +12,9 @@ public class Resumed extends AbstractHandler {
 	}
 
 	public void handle() {
+		loader.socket.lastHeartbeatAck.set(true); // this should fix the 1007 disconnection loop
 		loader.socket.setRetries(0);
 		loader.socket.keepAlive();
-		loader.socket.lastHeartbeatAck = true; // this should fix the 1007 disconnection loop
 		loader.checkReady();
 	}
-
 }

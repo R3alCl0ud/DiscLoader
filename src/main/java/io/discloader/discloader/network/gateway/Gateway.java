@@ -2,6 +2,7 @@ package io.discloader.discloader.network.gateway;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.logging.Logger;
 
 import org.json.JSONObject;
@@ -40,7 +41,7 @@ public class Gateway {
 
 	public int status;
 
-	public boolean lastHeartbeatAck;
+	public AtomicBoolean lastHeartbeatAck = new AtomicBoolean();
 
 	public boolean first = true;
 
@@ -204,7 +205,7 @@ public class Gateway {
 	}
 
 	public void sendHeartbeat(boolean normal) {
-		if (normal && !lastHeartbeatAck) {
+		if (normal && !lastHeartbeatAck.get()) {
 			logger.severe("Heartbeat Not Acknowledged");
 			ws.disconnect(1007, "Heartbeat Not Acknowledged");
 			return;
@@ -214,7 +215,7 @@ public class Gateway {
 		}
 		JSONObject payload = new JSONObject();
 		payload.put("op", OPCodes.HEARTBEAT).put("d", s);
-		lastHeartbeatAck = false;
+		lastHeartbeatAck.set(false);
 		send(payload, true);
 	}
 
