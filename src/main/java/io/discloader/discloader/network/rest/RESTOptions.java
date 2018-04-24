@@ -44,6 +44,10 @@ public class RESTOptions {
 		this(true, null, reason);
 	}
 
+	public RESTOptions(QueryParameter... parameters) {
+		this(true, null, null, parameters);
+	}
+
 	/**
 	 * @return the auth
 	 */

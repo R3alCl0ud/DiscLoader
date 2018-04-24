@@ -45,7 +45,7 @@ public class RESTManager {
 	public <T> CompletableFuture<T> request(Methods method, String url, RESTOptions options, Class<T> cls) {
 		if (options == null)
 			options = new RESTOptions();
-		Request<T> apiRequest = new Request<T>(options.getPayload());
+		Request<T> apiRequest = new Request<T>(options);
 		if (!routes.containsKey(url))
 			routes.put(url, new Route<T>(this, url, method, options.isAuth(), cls));
 		return ((Route<T>) routes.get(url)).push(apiRequest);

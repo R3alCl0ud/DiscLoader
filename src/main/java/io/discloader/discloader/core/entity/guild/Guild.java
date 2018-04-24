@@ -72,6 +72,7 @@ import io.discloader.discloader.network.json.PruneCountJSON;
 import io.discloader.discloader.network.json.RoleJSON;
 import io.discloader.discloader.network.json.VoiceRegionJSON;
 import io.discloader.discloader.network.json.VoiceStateJSON;
+import io.discloader.discloader.network.rest.QueryParameter;
 import io.discloader.discloader.network.rest.RESTOptions;
 import io.discloader.discloader.network.rest.actions.guild.CreateRole;
 import io.discloader.discloader.network.rest.actions.guild.ModifyGuild;
@@ -261,9 +262,11 @@ public class Guild implements IGuild {
 
 	@Override
 	public CompletableFuture<IGuildMember> ban(IGuildMember member) {
-		if (!hasPermission(Permissions.BAN_MEMBERS))
-			throw new PermissionsException("");
 		CompletableFuture<IGuildMember> future = new CompletableFuture<>();
+		if (!hasPermission(Permissions.BAN_MEMBERS)) {
+			future.completeExceptionally(new PermissionsException("Banning Members requires the 'BAN_MEMBERS' permission"));
+			return future;
+		}
 		loader.rest.request(Methods.PUT, Endpoints.guildBanMember(getID(), member.getID()), new RESTOptions(), Void.class).thenAcceptAsync(action -> {
 			future.complete(member);
 		});
@@ -272,10 +275,12 @@ public class Guild implements IGuild {
 
 	@Override
 	public CompletableFuture<IGuildMember> ban(IGuildMember member, String reason) throws PermissionsException {
-		if (!hasPermission(Permissions.BAN_MEMBERS))
-			throw new PermissionsException("");
 		CompletableFuture<IGuildMember> future = new CompletableFuture<>();
-		loader.rest.request(Methods.PUT, Endpoints.guildBanMember(getID(), member.getID()), new RESTOptions(reason), Void.class).thenAcceptAsync(action -> {
+		if (!hasPermission(Permissions.BAN_MEMBERS)) {
+			future.completeExceptionally(new PermissionsException("Banning Members requires the 'BAN_MEMBERS' permission"));
+			return future;
+		}
+		loader.rest.request(Methods.PUT, Endpoints.guildBanMember(getID(), member.getID()), new RESTOptions(new QueryParameter("reason", reason)), Void.class).thenAcceptAsync(action -> {
 			future.complete(member);
 		});
 		return future;
@@ -283,16 +288,16 @@ public class Guild implements IGuild {
 
 	@Override
 	public CompletableFuture<Integer> beginPrune() {
-		if (!getCurrentMember().getPermissions().hasPermission(Permissions.KICK_MEMBERS))
-			throw new PermissionsException("Pruning members requires the 'KICK_MEMBERS' permission");
 		return beginPrune(1);
 	}
 
 	@Override
 	public CompletableFuture<Integer> beginPrune(int days) {
-		if (!getCurrentMember().getPermissions().hasPermission(Permissions.KICK_MEMBERS))
-			throw new PermissionsException("Pruning members requires the 'KICK_MEMBERS' permission");
 		CompletableFuture<Integer> future = new CompletableFuture<>();
+		if (!hasPermission(Permissions.KICK_MEMBERS)) {
+			future.completeExceptionally(new PermissionsException("Pruning members requires the 'KICK_MEMBERS' permission"));
+			return future;
+		}
 		loader.rest.request(Methods.POST, Endpoints.guildPrune(getID()), new RESTOptions(), Integer.class).thenAcceptAsync(pruned -> {
 			future.complete(pruned);
 		});
@@ -1117,10 +1122,12 @@ public class Guild implements IGuild {
 
 	@Override
 	public CompletableFuture<IGuildMember> kick(IGuildMember member, String reason) {
-		if (!isOwner() && getCurrentMember().getPermissions().hasPermission(Permissions.KICK_MEMBERS))
-			throw new PermissionsException("Insufficient Permissions");
-
 		CompletableFuture<IGuildMember> future = new CompletableFuture<>();
+		if (!isOwner() && !hasPermission(Permissions.KICK_MEMBERS)) {
+			future.completeExceptionally(new PermissionsException("Insufficient Permissions"));
+			return future;
+		}
+
 		CompletableFuture<Void> kickFuture = loader.rest.request(Methods.DELETE, Endpoints.guildMember(getID(), member.getID()), new RESTOptions(reason), Void.class);
 
 		kickFuture.thenAcceptAsync(n -> {

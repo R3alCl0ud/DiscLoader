@@ -207,7 +207,11 @@ public class Gateway {
 	public void sendHeartbeat(boolean normal) {
 		if (normal && !lastHeartbeatAck.get()) {
 			logger.severe("Heartbeat Not Acknowledged");
-			ws.disconnect(1007, "Heartbeat Not Acknowledged");
+			if (ws.isOpen()) { // if the ws connection is still open close it.
+				ws.disconnect(1007, "Heartbeat Not Acknowledged");
+			} else { // if the connection is already closed try to reconnect.
+				socketListener.tryReconnecting();
+			}
 			return;
 		}
 		if (loader.getOptions().isDebugging()) {

@@ -9,6 +9,7 @@ public class MessageJSON {
 	public String edited_timestamp;
 	public String nonce;
 	public String webhook_id;
+	public String guild_id;
 
 	public int type;
 
