@@ -4,7 +4,7 @@ import java.util.concurrent.CompletableFuture;
 
 import io.discloader.discloader.entity.user.IUser;
 import io.discloader.discloader.entity.user.IUserProfile;
-import io.discloader.discloader.util.DLUtil.Endpoints;
+import io.discloader.discloader.network.util.Endpoints;
 import io.discloader.discloader.util.DLUtil.Methods;
 
 /**
@@ -21,7 +21,8 @@ public class FetchUserProfile {
 	public CompletableFuture<IUserProfile> execute() {
 		CompletableFuture<IUserProfile> future = new CompletableFuture<>();
 		user.getLoader().rest.makeRequest(Endpoints.userProfile(user.getID()), Methods.GET, true).whenCompleteAsync((s, ex) -> {
-			if (s != null) System.out.println(s);
+			if (s != null)
+				System.out.println(s);
 		});
 		return future;
 	}

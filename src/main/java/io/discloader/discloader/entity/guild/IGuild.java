@@ -383,12 +383,38 @@ public interface IGuild extends ISnowflake, ICreationTime {
 	 * Requests the Gateway to send a {@link GuildMembersChunkEvent} containing this
 	 * {@link IGuild guild's} members
 	 * 
+	 * @param query
+	 *            The String that username starts with, or an empty string to return
+	 *            all members.
+	 * @return A Map of {@link IGuildMember} objects indexed by
+	 *         {@link IGuildMember#getID()}
+	 */
+	CompletableFuture<Map<Long, IGuildMember>> fetchMembers(String query);
+
+	/**
+	 * Requests the Gateway to send a {@link GuildMembersChunkEvent} containing this
+	 * {@link IGuild guild's} members
+	 * 
 	 * @param limit
 	 *            The maximum number of members to fetch.
 	 * @return A Map of {@link IGuildMember} objects indexed by
 	 *         {@link IGuildMember#getID()} if successful.
 	 */
 	CompletableFuture<Map<Long, IGuildMember>> fetchMembers(int limit);
+
+	/**
+	 * Requests the Gateway to send a {@link GuildMembersChunkEvent} containing this
+	 * {@link IGuild guild's} members
+	 * 
+	 * @param limit
+	 *            The maximum number of members to fetch.
+	 * @param query
+	 *            The String that username starts with, or an empty string to return
+	 *            all members.
+	 * @return A Map of {@link IGuildMember} objects indexed by
+	 *         {@link IGuildMember#getID()} if successful.
+	 */
+	CompletableFuture<Map<Long, IGuildMember>> fetchMembers(int limit, String query);
 
 	/**
 	 * Fetches the {@link IGuild}'s {@link IRole} objects.

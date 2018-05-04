@@ -32,20 +32,7 @@ public class Presence implements IPresence {
 	 */
 	private String status;
 
-	public Presence(PresenceJSON presence) {
-		this.game = presence.game != null ? new Activity(presence.game) : null;
-		this.status = presence.status;
-	}
-
-	public Presence(String status, ActivityJSON game) {
-		this.game = new Activity(game);
-		this.status = status;
-	}
-
-	protected Presence(String status, Activity activity) {
-		this.game = activity;
-		this.status = status;
-	}
+	private String[] roles;
 
 	public Presence() {
 		this.game = null;
@@ -55,28 +42,23 @@ public class Presence implements IPresence {
 	public Presence(Presence data) {
 		this.game = data.game != null ? new Activity(data.game) : null;
 		this.status = data.status;
+		this.roles = data.getRoleIDs();
 	}
 
-	public void update(PresenceJSON presence) {
-		this.update(presence.status, presence.game != null ? new Activity(presence.game) : null);
+	public Presence(PresenceJSON data) {
+		this.game = data.game != null ? new Activity(data.game) : null;
+		this.status = data.status;
+		this.roles = data.roles;
 	}
 
-	public void update(String status, Activity activity) {
-		this.status = status != null ? status : this.status;
+	protected Presence(String status, Activity activity) {
 		this.game = activity;
+		this.status = status;
 	}
 
-	public void update(String status) {
-		this.update(status, this.game);
-	}
-
-	public void update(Activity activity) {
-		this.update(null, activity);
-	}
-
-	@Override
-	public String getStatus() {
-		return status;
+	public Presence(String status, ActivityJSON game) {
+		this.game = new Activity(game);
+		this.status = status;
 	}
 
 	@Override
@@ -88,15 +70,42 @@ public class Presence implements IPresence {
 	}
 
 	@Override
+	public IActivity getActivity() {
+		return game;
+	}
+
+	@Override
+	public String[] getRoleIDs() {
+		return roles;
+	}
+
+	@Override
+	public String getStatus() {
+		return status;
+	}
+
+	@Override
 	public int hashCode() {
 		if (game != null)
 			return (status + game.hashCode()).hashCode();
 		return status.hashCode();
 	}
 
-	@Override
-	public IActivity getActivity() {
-		return game;
+	public void update(Activity activity) {
+		this.update(null, activity);
+	}
+
+	public void update(PresenceJSON presence) {
+		this.update(presence.status, presence.game != null ? new Activity(presence.game) : null);
+	}
+
+	public void update(String status) {
+		this.update(status, this.game);
+	}
+
+	public void update(String status, Activity activity) {
+		this.status = status != null ? status : this.status;
+		this.game = activity;
 	}
 
 }

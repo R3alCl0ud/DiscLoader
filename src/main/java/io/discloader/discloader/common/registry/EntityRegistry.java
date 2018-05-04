@@ -154,7 +154,7 @@ public class EntityRegistry {
 			return null;
 		if (userExists(data.id == null ? "0" : data.id)) {
 			IUser user = getUserByID(data.id == null ? "0" : data.id);
-			if (user.getUsername() == null && data.username != null)
+			if (data.username != null)
 				user.setup(data);
 			return user;
 		}

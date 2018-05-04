@@ -16,10 +16,18 @@ public class DisconnectEvent extends DLEvent {
 		this.isServer = isServer;
 	}
 
+	/**
+	 * @return The client's closing {@link WebSocketFrame}, or {@code null} if there
+	 *         is no close frame from the client.
+	 */
 	public WebSocketFrame getClientFrame() {
 		return clientFrame;
 	}
 
+	/**
+	 * @return The gateway's closing {@link WebSocketFrame}, or {@code null} if
+	 *         there is no close frame from the gateway.
+	 */
 	public WebSocketFrame getServerFrame() {
 		return serverFrame;
 	}

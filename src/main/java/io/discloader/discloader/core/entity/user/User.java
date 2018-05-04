@@ -79,9 +79,9 @@ public class User implements IUser {
 	public User(IUser user) {
 		this.id = user.getID();
 		this.loader = user.getLoader();
-		this.username = user.getUsername();
+		username = user.getUsername() == null ? null : "" + user.getUsername();
 		this.discriminator = user.getDiscriminator();
-		this.avatarHash = user.getAvatar().getHash();
+		avatarHash = user.getAvatar().getHash();
 		this.bot = user.isBot();
 		this.verified = user.isVerified();
 		this.mfa = user.MFAEnabled();

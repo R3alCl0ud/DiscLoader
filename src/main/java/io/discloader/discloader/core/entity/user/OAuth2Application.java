@@ -3,7 +3,7 @@ package io.discloader.discloader.core.entity.user;
 import io.discloader.discloader.entity.user.IUser;
 import io.discloader.discloader.entity.util.SnowflakeUtil;
 import io.discloader.discloader.network.json.OAuthApplicationJSON;
-import io.discloader.discloader.util.DLUtil;
+import io.discloader.discloader.network.util.Endpoints;
 
 public class OAuth2Application {
 
@@ -50,8 +50,10 @@ public class OAuth2Application {
 	/**
 	 * Creates a new OAuth2Application
 	 * 
-	 * @param data The application's data
-	 * @param owner The owner of the application
+	 * @param data
+	 *            The application's data
+	 * @param owner
+	 *            The owner of the application
 	 */
 	public OAuth2Application(OAuthApplicationJSON data, IUser owner) {
 		this.clientID = data.id;
@@ -74,11 +76,12 @@ public class OAuth2Application {
 	/**
 	 * Generates a link to the applications authorization page
 	 * 
-	 * @param permissions The 53bit permissions integer
+	 * @param permissions
+	 *            The 53bit permissions integer
 	 * @return The Application's OAuth2 authorization link
 	 */
 	public String getOAuthURL(int permissions) {
-		return DLUtil.Endpoints.OAuth2Authorize(SnowflakeUtil.parse(clientID), "bot", permissions);
+		return Endpoints.OAuth2Authorize(SnowflakeUtil.parse(clientID), "bot", permissions);
 	}
 
 	/**

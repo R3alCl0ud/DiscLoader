@@ -362,6 +362,7 @@ public class DiscLoader {
 		onceEvent(DisconnectEvent.class, (e) -> {
 			future.complete(null);
 		});
+		socket.status = Status.DISCONNECTING;
 		socket.ws.disconnect(code, reason);
 		return future;
 	}

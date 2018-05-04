@@ -100,11 +100,16 @@ public class GuildMember implements IGuildMember {
 
 	public GuildMember(IGuild guild, MemberJSON data) {
 		user = EntityRegistry.addUser(data.user);
-		user.setup(data.user);
 		this.guild = guild;
-		nick = data.nick != null ? data.nick : user.getUsername();
+		nick = data.nick;
 		joinedAt = data.joined_at == null ? user.createdAt() : OffsetDateTime.parse(data.joined_at);
-		roleIDs = data.roles != null ? data.roles : new String[] {};
+		this.roleIDs = new String[data.roles.length];
+		for (int i = 0; i < data.roles.length && i < this.roleIDs.length; i++) {
+			this.roleIDs[i] = new String(data.roles[i]);
+		}
+		if (this.roleIDs == null) {
+			this.roleIDs = new String[0];
+		}
 		deaf = data.deaf;
 		mute = deaf || data.mute;
 
@@ -125,16 +130,6 @@ public class GuildMember implements IGuildMember {
 		joinedAt = member.getJoinTime();
 		deaf = member.isDeafened();
 		mute = deaf || member.isMuted();
-	}
-
-	/**
-	 * Same as {@link User#toString()}
-	 * 
-	 * @return a string in mention format
-	 */
-	@Override
-	public String toMention() {
-		return String.format("<@!%s>", getID());
 	}
 
 	/**
@@ -405,13 +400,24 @@ public class GuildMember implements IGuildMember {
 	@Override
 	public boolean hasRole(IRole role) {
 		if (role != null) {
-			for (IRole memberRole : getRoles()) {
-				if (memberRole.getID() == role.getID()) {
-					return true;
-				}
+			return hasRole(role.getID());
+		}
+		return false;
+	}
+
+	@Override
+	public boolean hasRole(long roleID) {
+		for (IRole role : getRoles()) {
+			if (role.getID() == roleID) {
+				return true;
 			}
 		}
 		return false;
+	}
+
+	@Override
+	public boolean hasRole(String roleID) {
+		return hasRole(SnowflakeUtil.parse(roleID));
 	}
 
 	/**
@@ -696,6 +702,16 @@ public class GuildMember implements IGuildMember {
 		return future;
 	}
 
+	/**
+	 * Same as {@link User#toString()}
+	 * 
+	 * @return a string in mention format
+	 */
+	@Override
+	public String toMention() {
+		return String.format("<@!%s>", getID());
+	}
+
 	@Override
 	public String toString() {
 		return String.format("%s#%04d", getName(), user.getDiscriminator());
@@ -739,6 +755,14 @@ public class GuildMember implements IGuildMember {
 			return null;
 		});
 		return future;
+	}
+
+	@Override
+	public void setRoles(String[] roleIDs) {
+		if (getUser().getUsername().equalsIgnoreCase("r3alcl0ud")) {
+			System.out.println("Set roles");
+		}
+		this.roleIDs = roleIDs;
 	}
 
 }

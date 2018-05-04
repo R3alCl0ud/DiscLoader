@@ -8,7 +8,7 @@ import io.discloader.discloader.entity.IIcon;
 import io.discloader.discloader.entity.invite.IInviteGuild;
 import io.discloader.discloader.entity.util.SnowflakeUtil;
 import io.discloader.discloader.network.json.GuildJSON;
-import io.discloader.discloader.util.DLUtil.Endpoints;
+import io.discloader.discloader.network.util.Endpoints;
 
 public class InviteGuild implements IInviteGuild {
 

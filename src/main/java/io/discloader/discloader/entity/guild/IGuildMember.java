@@ -115,6 +115,19 @@ public interface IGuildMember extends ISnowflake, IMentionable {
 
 	boolean hasRole(IRole role);
 
+	boolean hasRole(long roleID);
+
+	boolean hasRole(String roleID);
+
+	/**
+	 * Sets the member's role ID array to the array contained in a
+	 * PresenceUpdateEvent for the member.
+	 * 
+	 * @param roleIDs
+	 *            The member's roles' IDs.
+	 */
+	void setRoles(String[] roleIDs);
+
 	CompletableFuture<Boolean> isBanned();
 
 	boolean isDeafened();

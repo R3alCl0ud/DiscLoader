@@ -9,4 +9,6 @@ public interface IPresence {
 
 	IActivity getActivity();
 
+	String[] getRoleIDs();
+
 }

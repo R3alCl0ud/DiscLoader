@@ -550,6 +550,7 @@ public final class DLUtil {
 		public static final int NEARLY = 4;
 
 		public static final int DISCONNECTED = 5;
+		public static final int DISCONNECTING = 6;
 	}
 
 	public static final class WSEvents {
@@ -630,7 +631,7 @@ public final class DLUtil {
 
 	public static final String GatewaySuffix = String.format("?v=%d&encoding=json", APIVersion);
 
-	public static final String LoaderVersion = "0.2.8";
+	public static final String LoaderVersion = "0.2.13";
 
 	public static final File MissingTexture = new Resource("discloader", "texture/commands/missing-texture.png").getPath() == null ? null : new File(new Resource("discloader", "texture/gui/icons/missing-icon.png").getPath());
 

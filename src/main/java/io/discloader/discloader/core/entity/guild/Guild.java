@@ -231,9 +231,8 @@ public class Guild implements IGuild {
 	 */
 	public IGuildMember addMember(MemberJSON data, boolean shouldEmit) {
 		boolean exists = members.containsKey(SnowflakeUtil.parse(data.user.id));
-		IGuildMember member = new GuildMember(this, data);
+		IGuildMember member = gfac.buildMember(this, data);
 		members.put(member.getID(), member);
-
 		if (!exists && shouldEmit) {
 			memberCount++;
 			GuildMemberAddEvent event = new GuildMemberAddEvent(member);
@@ -249,9 +248,9 @@ public class Guild implements IGuild {
 	}
 
 	@Override
-	public IRole addRole(RoleJSON guildRole) {
-		boolean exists = roles.containsKey(SnowflakeUtil.parse(guildRole.id));
-		IRole role = new Role(this, guildRole);
+	public IRole addRole(RoleJSON data) {
+		boolean exists = roles.containsKey(SnowflakeUtil.parse(data.id));
+		IRole role = gfac.buildRole(this, data);
 		roles.put(role.getID(), role);
 		GuildRoleCreateEvent event = new GuildRoleCreateEvent(role);
 		if (!exists && this.loader.ready) {
@@ -599,12 +598,23 @@ public class Guild implements IGuild {
 		return future;
 	}
 
+	@Override
 	public CompletableFuture<Map<Long, IGuildMember>> fetchMembers() {
-		return fetchMembers((int) 0);
+		return fetchMembers(0, "");
 	}
 
 	@Override
 	public CompletableFuture<Map<Long, IGuildMember>> fetchMembers(int limit) {
+		return fetchMembers(limit, "");
+	}
+
+	@Override
+	public CompletableFuture<Map<Long, IGuildMember>> fetchMembers(String query) {
+		return fetchMembers(0, query);
+	}
+
+	@Override
+	public CompletableFuture<Map<Long, IGuildMember>> fetchMembers(int limit, String query) {
 		CompletableFuture<Map<Long, IGuildMember>> future = new CompletableFuture<>();
 
 		final Consumer<GuildMembersChunkEvent> consumer = new Consumer<GuildMembersChunkEvent>() {
@@ -624,7 +634,7 @@ public class Guild implements IGuild {
 			}
 		};
 		loader.onceEvent(GuildMembersChunkEvent.class, consumer);
-		Packet payload = new Packet(8, new MemberQuery(limit, ""));
+		Packet payload = new Packet(8, new MemberQuery(limit, query));
 		loader.socket.send(payload);
 		return future;
 	}
@@ -1195,7 +1205,7 @@ public class Guild implements IGuild {
 	public CompletableFuture<IGuild> setIcon(String icon) throws IOException {
 		if (!isOwner() && !getCurrentMember().getPermissions().hasPermission(Permissions.MANAGE_GUILD))
 			throw new PermissionsException("Insuficient Permissions");
-		String base64 = new String("data:image/jpg;base64," + Base64.encodeBase64String(Files.readAllBytes(Paths.get(icon))));
+		String base64 = new String("data:image/png;base64," + Base64.encodeBase64String(Files.readAllBytes(Paths.get(icon))));
 		return new ModifyGuild(this, new JSONObject().put("icon", base64)).execute();
 	}
 
@@ -1207,7 +1217,7 @@ public class Guild implements IGuild {
 
 	public CompletableFuture<IGuild> setOwner(IGuildMember member) {
 		if (!isOwner()) // check if we are the guild's owner
-			throw new UnauthorizedException("Only the guild's owner can delete a guild"); // throw an exception if we aren't
+			throw new UnauthorizedException("Only the guild's owner can give ownership of the guild to another user."); // throw an exception if we aren't
 		return new ModifyGuild(this, new JSONObject().put("owner_id", SnowflakeUtil.asString(member))).execute(); //
 	}
 
@@ -1224,6 +1234,9 @@ public class Guild implements IGuild {
 		if (SnowflakeUtil.parse(guildPresence.user.id) == (this.loader.user.getID())) { // checks if our presence updated
 			loader.user.getPresence().update(guildPresence); // update our presence if the updated presence is our own.
 		}
+		if (getMember(guildPresence.user.id) != null && guildPresence.roles != null) {
+			getMember(guildPresence.user.id).setRoles(guildPresence.roles); // update the member's roles.
+		}
 		presences.put(SnowflakeUtil.parse(guildPresence.user.id), presence); // add the presence object to the map of presences
 	}
 
@@ -1237,24 +1250,20 @@ public class Guild implements IGuild {
 	public void setup(GuildJSON data) {
 		try {
 			name = data.name;
-			icon = data.icon != null ? data.icon : null;
+			icon = data.icon;
 			iconURL = icon != null ? Endpoints.guildIcon(getID(), icon) : null;
 			ownerID = SnowflakeUtil.parse(data.owner_id);
 			memberCount = data.member_count;
 			voiceRegion = new VoiceRegion(data.region);
 			splashHash = data.splash;
-			if (data.roles.length > 0) {
-				roles.clear();
+			if (data.roles != null) {
 				for (RoleJSON role : data.roles) {
-					IRole r = gfac.buildRole(this, role);
-					roles.put(r.getID(), r);
+					addRole(role);
 				}
 			}
 			if (data.members != null && data.members.length > 0) {
-				members.clear();
 				for (MemberJSON member : data.members) {
-					IGuildMember m = gfac.buildMember(this, member);
-					members.put(m.getID(), m);
+					addMember(member);
 				}
 			}
 			if (data.channels != null && data.channels.length > 0) {
@@ -1267,19 +1276,16 @@ public class Guild implements IGuild {
 				}
 			}
 			if (data.presences != null && data.presences.length > 0) {
-				presences.clear();
 				for (PresenceJSON presence : data.presences) {
 					this.setPresence(presence);
 				}
 			}
 			if (data.emojis != null && data.emojis.length > 0) {
-				this.guildEmojis.clear();
 				for (EmojiJSON e : data.emojis) {
 					this.guildEmojis.put(SnowflakeUtil.parse(e.id), new GuildEmoji(e, this));
 				}
 			}
 			if (data.voice_states != null && data.voice_states.length > 0) {
-				this.rawStates.clear();
 				for (VoiceStateJSON v : data.voice_states) {
 					this.rawStates.put(SnowflakeUtil.parse(v.user_id), new VoiceState(v, this));
 				}

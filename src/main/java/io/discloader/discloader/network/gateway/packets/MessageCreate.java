@@ -4,6 +4,7 @@
 package io.discloader.discloader.network.gateway.packets;
 
 import io.discloader.discloader.client.command.CommandHandler;
+import io.discloader.discloader.common.event.message.GroupMessageCreateEvent;
 import io.discloader.discloader.common.event.message.GuildMessageCreateEvent;
 import io.discloader.discloader.common.event.message.MessageCreateEvent;
 import io.discloader.discloader.common.event.message.PrivateMessageCreateEvent;
@@ -15,7 +16,6 @@ import io.discloader.discloader.entity.message.IMessage;
 import io.discloader.discloader.entity.util.SnowflakeUtil;
 import io.discloader.discloader.network.gateway.Gateway;
 import io.discloader.discloader.network.json.MessageJSON;
-import io.discloader.discloader.util.DLUtil;
 
 /**
  * @author Perry Berman
@@ -35,6 +35,8 @@ public class MessageCreate extends AbstractHandler {
 			if (channel == null)
 				channel = EntityRegistry.getPrivateChannelByID(channelID);
 			if (channel == null)
+				channel = EntityRegistry.getGroupChannelByID(channelID);
+			if (channel == null)
 				return;
 			IMessage message = EntityBuilder.getChannelFactory().buildMessage(channel, data);
 			channel.getMessages().put(message.getID(), message);
@@ -44,13 +46,11 @@ public class MessageCreate extends AbstractHandler {
 			MessageCreateEvent event = new MessageCreateEvent(message);
 			loader.emit(event);
 			if (channel.getType() == ChannelTypes.TEXT) {
-				GuildMessageCreateEvent event2 = new GuildMessageCreateEvent(message);
-				loader.emit("GuildMessageCreate", event2);
-				loader.emit(event2);
+				loader.emit(new GuildMessageCreateEvent(message));
 			} else if (channel.getType() == ChannelTypes.DM) {
-				PrivateMessageCreateEvent event2 = new PrivateMessageCreateEvent(message);
-				loader.emit(DLUtil.Events.PRIVATE_MESSAGE_CREATE, event2);
-				loader.emit(event2);
+				loader.emit(new PrivateMessageCreateEvent(message));
+			} else if (channel.getType() == ChannelTypes.GROUP) {
+				loader.emit(new GroupMessageCreateEvent(message));
 			}
 			CommandHandler.handleMessageCreate(event);
 		} catch (Exception e) {

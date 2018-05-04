@@ -1,5 +1,6 @@
 package io.discloader.discloader.network.gateway.packets;
 
+import io.discloader.discloader.common.event.message.GroupMessageDeleteEvent;
 import io.discloader.discloader.common.event.message.GuildMessageDeleteEvent;
 import io.discloader.discloader.common.event.message.MessageDeleteEvent;
 import io.discloader.discloader.common.event.message.PrivateMessageDeleteEvent;
@@ -28,6 +29,8 @@ public class MessageDelete extends AbstractHandler {
 		if (channel == null)
 			channel = EntityRegistry.getPrivateChannelByID(channelID);
 		if (channel == null)
+			channel = EntityRegistry.getGroupChannelByID(data.channel_id);
+		if (channel == null)
 			return;
 		IMessage message = channel.getMessage(data.id);
 		if (message == null)
@@ -37,6 +40,8 @@ public class MessageDelete extends AbstractHandler {
 		loader.emit(event);
 		if (channel.getType() == ChannelTypes.DM) {
 			loader.emit(new PrivateMessageDeleteEvent(message));
+		} else if (channel.getType() == ChannelTypes.GROUP) {
+			loader.emit(new GroupMessageDeleteEvent(message));
 		}
 		if (message.getGuild() != null) {
 			loader.emit(new GuildMessageDeleteEvent(message));

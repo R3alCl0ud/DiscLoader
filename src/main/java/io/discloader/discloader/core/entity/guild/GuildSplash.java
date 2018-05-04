@@ -5,7 +5,7 @@ import java.net.URL;
 
 import io.discloader.discloader.core.entity.invite.InviteGuild;
 import io.discloader.discloader.entity.IIcon;
-import io.discloader.discloader.util.DLUtil.Endpoints;
+import io.discloader.discloader.network.util.Endpoints;
 
 /**
  * 
