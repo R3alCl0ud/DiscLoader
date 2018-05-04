@@ -247,9 +247,6 @@ public class GatewayListener extends WebSocketAdapter {
 		if (loader.getOptions().isDebugging()) {
 			ex.printStackTrace();
 		}
-		if (!websocket.isOpen()) {
-			tryReconnecting();
-		}
 	}
 
 	@Override
