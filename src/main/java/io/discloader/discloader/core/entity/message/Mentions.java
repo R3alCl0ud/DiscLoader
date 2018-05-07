@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.regex.Matcher;
 
 import io.discloader.discloader.common.DiscLoader;
 import io.discloader.discloader.common.registry.EntityRegistry;
@@ -11,6 +12,7 @@ import io.discloader.discloader.core.entity.guild.Role;
 import io.discloader.discloader.core.entity.user.User;
 import io.discloader.discloader.entity.IMentionable;
 import io.discloader.discloader.entity.channel.IChannel;
+import io.discloader.discloader.entity.channel.IGuildChannel;
 import io.discloader.discloader.entity.channel.ITextChannel;
 import io.discloader.discloader.entity.guild.IGuild;
 import io.discloader.discloader.entity.guild.IGuildMember;
@@ -66,7 +68,7 @@ public class Mentions implements IMentions {
 		this.message = message;
 		loader = message.loader;
 		everyone = mention_everyone;
-		guild = message.guild != null ? message.guild : null;
+		guild = message.guild;
 		channel = message.channel;
 		users = new HashMap<>();
 		roles = new HashMap<>();
@@ -195,6 +197,29 @@ public class Mentions implements IMentions {
 	@Override
 	public boolean isMentioned(IChannel channel) {
 		return message.getContent().toLowerCase().contains("<#" + channel.getID() + ">");
+	}
+
+	@Override
+	public List<IGuildChannel> getChannels() {
+		List<IGuildChannel> channels = new ArrayList<>();
+		if (guild != null) {
+			Matcher cmatch = IMentions.channelPattern.matcher(message.getContent());
+			while (cmatch.find()) {
+				channels.add(guild.getChannelByID(cmatch.group(2)));
+			}
+		}
+		return channels;
+	}
+
+	@Override
+	public List<IGuildMember> getMembers() {
+		List<IGuildMember> members = new ArrayList<>();
+		if (guild != null) {
+			for (IUser user : getUsers()) {
+				members.add(guild.getMember(user.getID()));
+			}
+		}
+		return members;
 	}
 
 }

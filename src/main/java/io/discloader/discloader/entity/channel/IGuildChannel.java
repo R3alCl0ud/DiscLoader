@@ -7,7 +7,6 @@ import java.util.concurrent.CompletableFuture;
 import io.discloader.discloader.common.exceptions.DiscordException;
 import io.discloader.discloader.common.exceptions.PermissionsException;
 import io.discloader.discloader.core.entity.guild.Guild;
-import io.discloader.discloader.core.entity.guild.Role;
 import io.discloader.discloader.entity.IOverwrite;
 import io.discloader.discloader.entity.IPermission;
 import io.discloader.discloader.entity.guild.IGuild;
@@ -134,6 +133,7 @@ public interface IGuildChannel extends IChannel {
 	CompletableFuture<? extends IGuildChannel> setNSFW(boolean nswf);
 
 	CompletableFuture<IOverwrite> setOverwrite(IOverwrite overwrite) throws PermissionsException;
+	CompletableFuture<IOverwrite> setOverwrite(IOverwrite overwrite, String reason) throws PermissionsException;
 
 	CompletableFuture<List<IOverwrite>> setOverwrite(IOverwrite... overwrites) throws PermissionsException;
 
@@ -153,7 +153,27 @@ public interface IGuildChannel extends IChannel {
 	 * @return A Future that completes with the member's new permission overwrite,
 	 *         if successful.
 	 */
-	CompletableFuture<IOverwrite> setPermissions(int allow, int deny, IGuildMember member);
+	CompletableFuture<IOverwrite> setPermissions(long allow, long deny, IGuildMember member);
+
+	/**
+	 * Permission setting for a member in the channel's {@link Guild}
+	 * 
+	 * <pre>
+	 * setPermissions(READ_MESSAGE &amp; SEND_MESSAGE, 0x00000000, role);
+	 * </pre>
+	 * 
+	 * @param allow
+	 *            Raw integer representations for allowed permissions.
+	 * @param deny
+	 *            Raw integer representations for denied permissions.
+	 * @param member
+	 *            The {@link IGuildMember} to set an overwrite for.
+	 * @param reason
+	 *            The reason for setting the permissions
+	 * @return A Future that completes with the member's new permission overwrite,
+	 *         if successful.
+	 */
+	CompletableFuture<IOverwrite> setPermissions(long allow, long deny, IGuildMember member, String reason);
 
 	/**
 	 * Permission setting for a member in the channel's {@link Guild}
@@ -171,7 +191,27 @@ public interface IGuildChannel extends IChannel {
 	 * @return A Future that completes with the role's new permission overwrite if
 	 *         successful.
 	 */
-	CompletableFuture<IOverwrite> setPermissions(int allow, int deny, Role role);
+	CompletableFuture<IOverwrite> setPermissions(long allow, long deny, IRole role);
+
+	/**
+	 * Permission setting for a member in the channel's {@link Guild}
+	 * 
+	 * <pre>
+	 * setPermissions(READ_MESSAGE &amp; SEND_MESSAGE, 0x00000000, role);
+	 * </pre>
+	 * 
+	 * @param allow
+	 *            Raw integer representations for allowed permissions.
+	 * @param deny
+	 *            Raw integer representations for denied permissions.
+	 * @param role
+	 *            The role to set an overwrite for.
+	 * @param reason
+	 *            The reason for setting the permissions
+	 * @return A Future that completes with the role's new permission overwrite if
+	 *         successful.
+	 */
+	CompletableFuture<IOverwrite> setPermissions(long allow, long deny, IRole role, String reason);
 
 	/**
 	 * Sets position in a channel's {@link Guild}

@@ -453,6 +453,12 @@ public interface IGuild extends ISnowflake, ICreationTime {
 
 	Map<Long, IGuildChannel> getChannels();
 
+	IGuildChannel getChannelByID(long id);
+
+	IGuildChannel getChannelByID(String id);
+
+	IGuildChannel getChannelByName(String name);
+
 	/**
 	 * Returns the {@link GuildMember} object for the {@link User} you are logged in
 	 * as.

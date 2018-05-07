@@ -609,11 +609,6 @@ public class Guild implements IGuild {
 	}
 
 	@Override
-	public CompletableFuture<Map<Long, IGuildMember>> fetchMembers(String query) {
-		return fetchMembers(0, query);
-	}
-
-	@Override
 	public CompletableFuture<Map<Long, IGuildMember>> fetchMembers(int limit, String query) {
 		CompletableFuture<Map<Long, IGuildMember>> future = new CompletableFuture<>();
 
@@ -637,6 +632,11 @@ public class Guild implements IGuild {
 		Packet payload = new Packet(8, new MemberQuery(limit, query));
 		loader.socket.send(payload);
 		return future;
+	}
+
+	@Override
+	public CompletableFuture<Map<Long, IGuildMember>> fetchMembers(String query) {
+		return fetchMembers(0, query);
 	}
 
 	@Override
@@ -798,6 +798,26 @@ public class Guild implements IGuild {
 			fetchBans().get();
 		}
 		return bans;
+	}
+
+	@Override
+	public IGuildChannel getChannelByID(long id) {
+		return getChannels().get(id);
+	}
+
+	@Override
+	public IGuildChannel getChannelByID(String id) {
+		return getChannelByID(SnowflakeUtil.parse(id));
+	}
+
+	@Override
+	public IGuildChannel getChannelByName(String name) {
+		for (IGuildChannel chan : getChannels().values()) {
+			if (chan.getName().equals(name)) {
+				return chan;
+			}
+		}
+		return null;
 	}
 
 	@Override

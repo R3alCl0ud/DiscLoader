@@ -16,7 +16,6 @@ import io.discloader.discloader.common.registry.EntityRegistry;
 import io.discloader.discloader.core.entity.Overwrite;
 import io.discloader.discloader.core.entity.Permission;
 import io.discloader.discloader.core.entity.guild.Guild;
-import io.discloader.discloader.core.entity.guild.Role;
 import io.discloader.discloader.entity.IOverwrite;
 import io.discloader.discloader.entity.IPermission;
 import io.discloader.discloader.entity.channel.IChannel;
@@ -31,7 +30,6 @@ import io.discloader.discloader.entity.util.SnowflakeUtil;
 import io.discloader.discloader.network.json.ChannelJSON;
 import io.discloader.discloader.network.rest.RESTOptions;
 import io.discloader.discloader.network.rest.actions.channel.FetchInvites;
-import io.discloader.discloader.network.rest.actions.channel.SetOverwrite;
 import io.discloader.discloader.network.rest.actions.channel.close.CloseGuildChannel;
 import io.discloader.discloader.network.util.Endpoints;
 import io.discloader.discloader.network.util.Methods;
@@ -188,6 +186,14 @@ public class GuildChannel extends Channel implements IGuildChannel {
 	}
 
 	@Override
+	public boolean equals(Object obj) {
+		if (!(obj instanceof GuildChannel))
+			return false;
+		GuildChannel chan = (GuildChannel) obj;
+		return (this == chan) || (getID() == chan.getID());
+	}
+
+	@Override
 	public IChannelCategory getCategory() {
 		return getGuild().getChannelCategoryByID(parentID);
 	}
@@ -224,6 +230,11 @@ public class GuildChannel extends Channel implements IGuildChannel {
 	@Override
 	public int getPosition() {
 		return position;
+	}
+
+	@Override
+	public int hashCode() {
+		return Long.hashCode(getID());
 	}
 
 	@Override
@@ -310,7 +321,20 @@ public class GuildChannel extends Channel implements IGuildChannel {
 
 	@Override
 	public CompletableFuture<IOverwrite> setOverwrite(IOverwrite overwrite) {
-		return new SetOverwrite(this, overwrite).execute();
+		if (overwrite.getType().equals("member")) {
+			return setPermissions(overwrite.getAllowed(), overwrite.getDenied(), overwrite.getMember());
+		}
+
+		return setPermissions(overwrite.getAllowed(), overwrite.getDenied(), overwrite.getRole());
+	}
+
+	@Override
+	public CompletableFuture<IOverwrite> setOverwrite(IOverwrite overwrite, String reason) {
+		if (overwrite.getType().equals("member")) {
+			return setPermissions(overwrite.getAllowed(), overwrite.getDenied(), overwrite.getMember(), reason);
+		}
+
+		return setPermissions(overwrite.getAllowed(), overwrite.getDenied(), overwrite.getRole(), reason);
 	}
 
 	@Override
@@ -328,13 +352,63 @@ public class GuildChannel extends Channel implements IGuildChannel {
 	}
 
 	@Override
-	public CompletableFuture<IOverwrite> setPermissions(int allow, int deny, IGuildMember member) {
-		return new SetOverwrite(this, new Overwrite(allow, deny, member)).execute();
+	public CompletableFuture<IOverwrite> setPermissions(long allow, long deny, IGuildMember member) {
+		CompletableFuture<IOverwrite> future = new CompletableFuture<>();
+		JSONObject payload = new JSONObject().put("allow", allow).put("deny", deny).put("type", "member");
+		CompletableFuture<Void> cf = loader.rest.request(Methods.PUT, Endpoints.channelOverwrite(getID(), member.getID()), new RESTOptions(payload), Void.class);
+		cf.thenAcceptAsync(V -> {
+			future.complete(new Overwrite(allow, deny, member));
+		});
+		cf.exceptionally((ex) -> {
+			future.completeExceptionally(ex);
+			return null;
+		});
+		return future;
 	}
 
 	@Override
-	public CompletableFuture<IOverwrite> setPermissions(int allow, int deny, Role role) {
-		return new SetOverwrite(this, new Overwrite(allow, deny, role)).execute();
+	public CompletableFuture<IOverwrite> setPermissions(long allow, long deny, IGuildMember member, String reason) {
+		CompletableFuture<IOverwrite> future = new CompletableFuture<>();
+		JSONObject payload = new JSONObject().put("allow", allow).put("deny", deny).put("type", "member");
+		CompletableFuture<Void> cf = loader.rest.request(Methods.PUT, Endpoints.channelOverwrite(getID(), member.getID()), new RESTOptions(true, payload, reason), Void.class);
+		cf.thenAcceptAsync(V -> {
+			future.complete(new Overwrite(allow, deny, member));
+		});
+		cf.exceptionally((ex) -> {
+			future.completeExceptionally(ex);
+			return null;
+		});
+		return future;
+	}
+
+	@Override
+	public CompletableFuture<IOverwrite> setPermissions(long allow, long deny, IRole role) {
+		CompletableFuture<IOverwrite> future = new CompletableFuture<>();
+		JSONObject payload = new JSONObject().put("allow", allow).put("deny", deny).put("type", "role");
+		CompletableFuture<Void> cf = loader.rest.request(Methods.PUT, Endpoints.channelOverwrite(getID(), role.getID()), new RESTOptions(payload), Void.class);
+		cf.thenAcceptAsync(V -> {
+			future.complete(new Overwrite(allow, deny, role));
+		});
+		cf.exceptionally((ex) -> {
+			future.completeExceptionally(ex);
+			return null;
+		});
+		return future;
+	}
+
+	@Override
+	public CompletableFuture<IOverwrite> setPermissions(long allow, long deny, IRole role, String reason) {
+		CompletableFuture<IOverwrite> future = new CompletableFuture<>();
+		JSONObject payload = new JSONObject().put("allow", allow).put("deny", deny).put("type", "role");
+		CompletableFuture<Void> cf = loader.rest.request(Methods.PUT, Endpoints.channelOverwrite(getID(), role.getID()), new RESTOptions(true, payload, reason), Void.class);
+		cf.thenAcceptAsync(V -> {
+			future.complete(new Overwrite(allow, deny, role));
+		});
+		cf.exceptionally((ex) -> {
+			future.completeExceptionally(ex);
+			return null;
+		});
+		return future;
 	}
 
 	@Override
@@ -409,19 +483,6 @@ public class GuildChannel extends Channel implements IGuildChannel {
 	@Override
 	public String toString() {
 		return getName();
-	}
-
-	@Override
-	public boolean equals(Object obj) {
-		if (!(obj instanceof GuildChannel))
-			return false;
-		GuildChannel chan = (GuildChannel) obj;
-		return (this == chan) || (getID() == chan.getID());
-	}
-
-	@Override
-	public int hashCode() {
-		return Long.hashCode(getID());
 	}
 
 }
