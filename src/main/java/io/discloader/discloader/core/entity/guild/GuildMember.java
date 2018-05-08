@@ -759,9 +759,6 @@ public class GuildMember implements IGuildMember {
 
 	@Override
 	public void setRoles(String[] roleIDs) {
-		if (getUser().getUsername().equalsIgnoreCase("r3alcl0ud")) {
-			System.out.println("Set roles");
-		}
 		this.roleIDs = roleIDs;
 	}
 

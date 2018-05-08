@@ -46,11 +46,11 @@ public class MessageCreate extends AbstractHandler {
 			MessageCreateEvent event = new MessageCreateEvent(message);
 			loader.emit(event);
 			if (channel.getType() == ChannelTypes.TEXT) {
-				loader.emit(new GuildMessageCreateEvent(message));
+				loader.emit(event = new GuildMessageCreateEvent(message));
 			} else if (channel.getType() == ChannelTypes.DM) {
-				loader.emit(new PrivateMessageCreateEvent(message));
+				loader.emit(event = new PrivateMessageCreateEvent(message));
 			} else if (channel.getType() == ChannelTypes.GROUP) {
-				loader.emit(new GroupMessageCreateEvent(message));
+				loader.emit(event = new GroupMessageCreateEvent(message));
 			}
 			CommandHandler.handleMessageCreate(event);
 		} catch (Exception e) {

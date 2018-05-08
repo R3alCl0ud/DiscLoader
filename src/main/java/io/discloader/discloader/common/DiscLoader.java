@@ -357,6 +357,10 @@ public class DiscLoader {
 		return disconnect(code, null);
 	}
 
+	public CompletableFuture<Void> disconnect(String reason) {
+		return disconnect(1000, reason);
+	}
+
 	public CompletableFuture<Void> disconnect(int code, String reason) {
 		CompletableFuture<Void> future = new CompletableFuture<>();
 		onceEvent(DisconnectEvent.class, (e) -> {
@@ -581,7 +585,9 @@ public class DiscLoader {
 	}
 
 	public CompletableFuture<Void> logout(int code, String reason) {
-		return disconnect(code, reason);
+		CompletableFuture<Void> future = disconnect(code, reason);
+		
+		return future;
 	}
 
 	public CompletableFuture<Void> logout(String reason) {

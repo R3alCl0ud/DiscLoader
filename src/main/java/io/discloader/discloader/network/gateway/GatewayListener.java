@@ -220,13 +220,11 @@ public class GatewayListener extends WebSocketAdapter {
 		connected.set(false);
 		if (isServer) {
 			logger.severe(String.format("Gateway connection was closed by the server. Close Code: %d, Reason: %s", serverFrame != null ? serverFrame.getCloseCode() : 0, serverFrame != null ? serverFrame.getCloseReason() : null));
-			if (socket.status != 6) {
-				if (serverFrame != null ? shouldResume(serverFrame) : true) {
-					// if connection wasn't closed properly try to reconnect
-					tryReconnecting();
-				} else {
-					connectToNewEndpoint();
-				}
+			if (serverFrame != null ? shouldResume(serverFrame) : true) {
+				// if connection wasn't closed properly try to reconnect
+				tryReconnecting();
+			} else {
+				connectToNewEndpoint();
 			}
 		} else {
 			logger.severe(String.format("Client disconnected from the gateway, Close Code: %d, Reason: %s", clientFrame != null ? clientFrame.getCloseCode() : 0, clientFrame != null ? clientFrame.getCloseReason() : null));
