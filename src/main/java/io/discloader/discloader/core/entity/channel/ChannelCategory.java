@@ -86,13 +86,13 @@ public class ChannelCategory extends GuildChannel implements IChannelCategory {
 	public CompletableFuture<IGuildTextChannel> createTextChannel(String name) {
 		CompletableFuture<IGuildTextChannel> future = new CompletableFuture<>();
 		JSONObject data = new JSONObject().put("parent_id", SnowflakeUtil.asString(this)).put("name", name).put("type", 0);
-		// System.out.println(data.toString());
 		CompletableFuture<ChannelJSON> cf = loader.rest.request(Methods.POST, Endpoints.guildChannels(getGuild().getID()), new RESTOptions(data), ChannelJSON.class);
 		cf.thenAcceptAsync(channelJSON -> {
 			if (channelJSON != null) {
 				IGuildTextChannel channel = (IGuildTextChannel) EntityBuilder.getChannelFactory().buildChannel(channelJSON, getLoader(), getGuild(), false);
-				if (channel != null)
+				if (channel != null) {
 					future.complete(channel);
+				}
 			}
 		});
 		cf.exceptionally(ex -> {

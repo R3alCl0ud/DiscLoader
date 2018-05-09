@@ -216,7 +216,7 @@ public class DLUser extends User {
 		StatusUpdate d = new StatusUpdate(activity, status, afk, 0);
 		Packet payload = new Packet(3, d);
 		presence.update(status, activity);
-		loader.socket.send(payload);
+		loader.gateway.send(payload);
 		return this;
 	}
 

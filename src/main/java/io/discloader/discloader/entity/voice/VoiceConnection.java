@@ -348,7 +348,7 @@ public class VoiceConnection {
 	private void sendStateUpdate(IVoiceChannel channel) {
 		this.stateUpdated = false;
 		VoiceStateUpdate d = new VoiceStateUpdate(getGuild(), channel, false, false);
-		getLoader().socket.send(new Packet(4, d));
+		getLoader().gateway.send(new Packet(4, d));
 	}
 
 	/**

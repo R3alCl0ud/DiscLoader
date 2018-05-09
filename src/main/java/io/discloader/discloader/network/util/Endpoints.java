@@ -11,6 +11,8 @@ public class Endpoints {
 	public static final String API = String.format("%s/api/v%d", Discord, DLUtil.APIVersion);
 	public static final String CDN = "https://cdn.discordapp.com";
 
+	public static final String GatewaySuffix = String.format("?v=%d&encoding=json", DLUtil.APIVersion);
+
 	public final static String EmojiJSON = "https://raw.githubusercontent.com/emojione/emojione/master/emoji.json";
 
 	public static final String OAuth2 = String.format("%s/oauth2", API);
@@ -29,7 +31,7 @@ public class Endpoints {
 	public static final String guilds = String.format("%s/guilds", API);
 	public static final String webhooks = String.format("%s/webhooks", API);
 	public static final String voiceRegions = String.format("%s/voice/regions", API);
-	
+
 	public static final String appAssets(long appID, String asset) {
 		return String.format("%s/app-assets/%d/%s", CDN, appID, asset);
 	}

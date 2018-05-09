@@ -12,7 +12,7 @@ public class Hello extends AbstractHandler {
 	@Override
 	public void handle(SocketPacket packet) {
 		HelloJSON helloJSON = gson.fromJson(gson.toJson(packet.d), HelloJSON.class);
-		loader.socket.keepAlive(helloJSON.heartbeat_interval);
+		loader.gateway.keepAlive(helloJSON.heartbeat_interval);
 	}
 
 }

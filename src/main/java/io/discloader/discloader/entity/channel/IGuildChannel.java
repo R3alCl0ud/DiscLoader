@@ -13,8 +13,37 @@ import io.discloader.discloader.entity.guild.IGuild;
 import io.discloader.discloader.entity.guild.IGuildMember;
 import io.discloader.discloader.entity.guild.IRole;
 import io.discloader.discloader.entity.invite.IInvite;
+import io.discloader.discloader.network.rest.RestAction;
 
 public interface IGuildChannel extends IChannel {
+
+	/**
+	 * @return
+	 */
+	RestAction<IInvite> createInvite();
+
+	/**
+	 * @param temporaryMembership
+	 * @param unique
+	 * @return
+	 */
+	RestAction<IInvite> createInvite(boolean temporaryMembership, boolean unique);
+
+	/**
+	 * @param expiresIn
+	 * @param maxUses
+	 * @return
+	 */
+	RestAction<IInvite> createInvite(int expiresIn, int maxUses);
+
+	/**
+	 * @param expiresIn
+	 * @param maxUses
+	 * @param temporaryMembership
+	 * @param unique
+	 * @return
+	 */
+	RestAction<IInvite> createInvite(int expiresIn, int maxUses, boolean temporaryMembership, boolean unique);
 
 	/**
 	 * Deletes the channel from the guild
@@ -133,9 +162,10 @@ public interface IGuildChannel extends IChannel {
 	CompletableFuture<? extends IGuildChannel> setNSFW(boolean nswf);
 
 	CompletableFuture<IOverwrite> setOverwrite(IOverwrite overwrite) throws PermissionsException;
-	CompletableFuture<IOverwrite> setOverwrite(IOverwrite overwrite, String reason) throws PermissionsException;
 
 	CompletableFuture<List<IOverwrite>> setOverwrite(IOverwrite... overwrites) throws PermissionsException;
+
+	CompletableFuture<IOverwrite> setOverwrite(IOverwrite overwrite, String reason) throws PermissionsException;
 
 	/**
 	 * Permission setting for a member in the channel's {@link Guild}

@@ -2,7 +2,9 @@ package io.discloader.discloader.network.gateway;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.logging.Logger;
 
 import org.json.JSONObject;
@@ -26,50 +28,30 @@ import io.discloader.discloader.util.DLUtil.Status;
  */
 public class Gateway {
 
+	private int remaining = 115, interval = 0;
+	public boolean first = true, normalReady = false, reconnecting = false;
+	public String sessionID, logName;
+
 	/**
 	 * The current instance of DiscLoader
 	 */
-	public DiscLoader loader;
-
-	private GatewayListener socketListener;
-
-	public WebSocket ws;
-
-	public String sessionID;
-
-	public int s;
-
-	public int status;
-
+	public final DiscLoader loader;
+	private GatewayListener gatewayListener;
+	public WebSocket websocket;
+	public AtomicInteger sequence = new AtomicInteger(), status = new AtomicInteger();
 	public AtomicBoolean lastHeartbeatAck = new AtomicBoolean();
-
-	public boolean first = true;
-
-	public boolean normalReady = false;
-
-	public boolean reconnecting = false;
-
-	private Thread heartbeatThread = null;
-
-	private Thread resetRemaining = null;
-
-	private int remaining = 115, interval = 0;
-
+	private Thread heartbeatThread = null, resetRemaining = null;
 	private Gson gson = new GsonBuilder().serializeNulls().create();
-
-	private ArrayList<Object> queue;
-
+	private List<Object> queue;
 	private final Logger logger;
-
-	private final String logName;
 
 	public Gateway(DiscLoader loader) {
 		this.loader = loader;
 		logName = loader.shards > 1 ? "Gateway (Shard: #" + loader.shardid + ")" : "Gateway";
 		logger = DLLogger.getLogger(logName);
-		socketListener = new GatewayListener(this);
+		gatewayListener = new GatewayListener(this);
 
-		status = Status.IDLE;
+		status.set(Status.IDLE);
 
 		queue = new ArrayList<>();
 	}
@@ -78,14 +60,11 @@ public class Gateway {
 		if (loader.getOptions().isDebugging()) {
 			logger.config(String.format("Connecting to Gateway with Endpoint: %s", gateway));
 		}
-		ws = new WebSocketFactory().setConnectionTimeout(15000).createSocket(gateway).addHeader("Accept-Encoding", "gzip");
-		ws.addListener(socketListener);
-		ws.setMissingCloseFrameAllowed(false);
-		ws.connect();
+		websocket = new WebSocketFactory().setConnectionTimeout(15000).createSocket(gateway).addHeader("Accept-Encoding", "gzip").addListener(gatewayListener).connect();
 	}
 
 	public void handleQueue() {
-		if (!ws.isOpen() || remaining == 0 || queue.isEmpty())
+		if (!websocket.isOpen() || remaining == 0 || queue.isEmpty())
 			return;
 
 		Object raw_payload = queue.get(0);
@@ -103,7 +82,7 @@ public class Gateway {
 		if (loader.getOptions().isDebugging()) {
 			logger.config("Sending: " + payload);
 		}
-		ws.sendText(payload);
+		websocket.sendText(payload);
 		queue.remove(raw_payload);
 		handleQueue();
 	}
@@ -120,7 +99,7 @@ public class Gateway {
 			public void run() {
 				try {
 					Thread.sleep(interval);
-					while (ws.isOpen() && !this.isInterrupted()) {
+					while (websocket.isOpen() && !this.isInterrupted()) {
 						sendHeartbeat(true);
 						Thread.sleep(interval);
 					}
@@ -132,7 +111,7 @@ public class Gateway {
 		};
 		resetRemaining = new Thread(logName + " - Rate Limiter") {
 			public void run() {
-				while (ws.isOpen() && !this.isInterrupted()) {
+				while (websocket.isOpen() && !this.isInterrupted()) {
 					remaining = 115;
 					handleQueue();
 					try {
@@ -174,7 +153,7 @@ public class Gateway {
 			if (loader.getOptions().isDebugging()) {
 				logger.config("Sending: " + payload.toString());
 			}
-			ws.sendText(payload.toString());
+			websocket.sendText(payload.toString());
 			return;
 		}
 		queue.add(payload);
@@ -197,7 +176,7 @@ public class Gateway {
 			if (loader.getOptions().isDebugging()) {
 				logger.config((String.format("Sending: %s", payloadText)));
 			}
-			ws.sendText(payloadText);
+			websocket.sendText(payloadText);
 			return;
 		}
 		queue.add(payload);
@@ -207,10 +186,10 @@ public class Gateway {
 	public void sendHeartbeat(boolean normal) {
 		if (normal && !lastHeartbeatAck.get()) {
 			logger.severe("Heartbeat Not Acknowledged");
-			if (ws.isOpen()) { // if the ws connection is still open close it.
-				ws.disconnect(1007, "Heartbeat Not Acknowledged");
+			if (websocket.isOpen()) { // if the ws connection is still open close it.
+				websocket.disconnect(1007, "Heartbeat Not Acknowledged");
 			} else { // if the connection is already closed try to reconnect.
-				socketListener.tryReconnecting();
+				gatewayListener.tryReconnecting();
 			}
 			return;
 		}
@@ -218,16 +197,20 @@ public class Gateway {
 			logger.config("Attempting to Heartbeat");
 		}
 		JSONObject payload = new JSONObject();
-		payload.put("op", OPCodes.HEARTBEAT).put("d", s);
+		payload.put("op", OPCodes.HEARTBEAT).put("d", sequence);
 		lastHeartbeatAck.set(false);
 		send(payload, true);
 	}
 
 	public void setReady() {
-		status = Status.READY;
+		setStatus(Status.READY);
+	}
+
+	public void setStatus(int status) {
+		this.status.set(status);
 	}
 
 	public void setRetries(int i) {
-		socketListener.setRetries(i);
+		gatewayListener.setRetries(i);
 	}
 }

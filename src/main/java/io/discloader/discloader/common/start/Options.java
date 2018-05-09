@@ -11,6 +11,6 @@ public class Options {
 
 	public boolean loadMods, defaultCommands;
 	public auth auth;
-	public int shard, shards;
-
+	public int shard, shards, testNumber;
+	public String prefix;
 }

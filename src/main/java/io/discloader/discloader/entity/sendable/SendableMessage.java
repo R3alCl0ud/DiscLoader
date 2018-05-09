@@ -27,7 +27,7 @@ public class SendableMessage {
 		this.embed = embed;
 		this.attachment = attachment;
 		this.file = file;
-		this.tts = false;
+		this.tts = tts;
 	}
 
 	public SendableMessage(String content, boolean tts, RichEmbed embed, Attachment attachment, Resource resource) {
@@ -35,7 +35,7 @@ public class SendableMessage {
 		this.embed = embed;
 		this.attachment = attachment;
 		this.resource = resource;
-		this.tts = false;
+		this.tts = tts;
 	}
 
 }

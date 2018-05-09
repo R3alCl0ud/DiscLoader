@@ -5,13 +5,16 @@ import io.discloader.discloader.entity.channel.IGuildChannel;
 import io.discloader.discloader.entity.guild.IGuild;
 
 public class GuildChannelCreateEvent extends ChannelCreateEvent {
-	
+
 	public GuildChannelCreateEvent(GuildChannel channel) {
 		super(channel);
 	}
-	
+
 	public IGuild getGuild() {
 		return ((IGuildChannel) getChannel()).getGuild();
 	}
-	
+
+	public IGuildChannel getChannel() {
+		return ((IGuildChannel) getChannel());
+	}
 }

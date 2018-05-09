@@ -87,7 +87,7 @@ public class DiscLoader {
 	private long readyAt = 0l;
 
 	public final List<IEventListener> handlers;
-	public final Gateway socket;
+	public final Gateway gateway;
 	public final RESTManager rest;
 	public String token = null;
 	public boolean ready;
@@ -193,7 +193,7 @@ public class DiscLoader {
 		if (!(System.err instanceof DLErrorStream))
 			System.setErr(new DLErrorStream(System.err, LOG));
 		System.setProperty("http.agent", "DiscLoader");
-		socket = new Gateway(this);
+		gateway = new Gateway(this);
 		rest = new RESTManager(this);
 		syncingGuilds = new HashMap<>();
 		ready = false;
@@ -222,7 +222,7 @@ public class DiscLoader {
 
 	public void checkReady() {
 		try {
-			if (socket.status != Status.READY && socket.status != Status.NEARLY) {
+			if (gateway.status.get() != Status.READY && gateway.status.get() != Status.NEARLY) {
 				int unavailable = 0;
 				if (shard == null) {
 					for (IGuild guild : EntityRegistry.getGuildsCollection()) {
@@ -234,7 +234,7 @@ public class DiscLoader {
 					}
 				}
 				if (unavailable == 0) {
-					socket.status = Status.NEARLY;
+					gateway.setStatus(Status.NEARLY);
 					try {
 						emitReady();
 					} catch (Exception e) {
@@ -366,28 +366,48 @@ public class DiscLoader {
 		onceEvent(DisconnectEvent.class, (e) -> {
 			future.complete(null);
 		});
-		socket.status = Status.DISCONNECTING;
-		socket.ws.disconnect(code, reason);
+		gateway.setStatus(Status.DISCONNECTING);
+		gateway.websocket.disconnect(code, reason);
 		return future;
 	}
 
 	public void emit(DLEvent event) {
 		eventManager.emit(event);
 		ModRegistry.emit(event);
-		if (event instanceof DisconnectEvent) {
-			DisconnectEvent devent = (DisconnectEvent) event;
-			if ((devent.getClientFrame().getCloseCode() == 4004 || devent.getServerFrame().getCloseCode() == 4004) && !rf.isDone()) {
-				rf.completeExceptionally(new UnauthorizedException("Authentication failed"));
+		if (event instanceof DisconnectEvent && !rf.isDone()) {
+			DisconnectEvent disconnect = (DisconnectEvent) event;
+			if (disconnect.getClientFrame() != null) {
+				if (disconnect.getClientFrame().getCloseCode() == 4004) {
+					rf.completeExceptionally(new UnauthorizedException("Authentication failed"));
+				}
+			}
+			if (disconnect.getServerFrame() != null) {
+				if (disconnect.getServerFrame().getCloseCode() == 4004) {
+					rf.completeExceptionally(new UnauthorizedException("Authentication failed"));
+				}
 			}
 		}
 	}
 
+	/**
+	 * Old method that was used to fire events. <br>
+	 * data Objects passed to this method that are of the type or a subtype of
+	 * {@link DLEvent} will be passed to the new {@link #emit(DLEvent)} method.
+	 * 
+	 * @param event
+	 * @param data
+	 * @deprecated {@link #emit(DLEvent)} Should be used instead.
+	 */
+	@Deprecated
 	public void emit(String event, Object data) {
+		if (data instanceof DLEvent) {
+			emit((DLEvent) data);
+		}
 		return;
 	}
 
 	public void emitReady() {
-		socket.setReady();
+		gateway.setReady();
 		ready = true;
 		readyAt = System.currentTimeMillis();
 		rf.complete(this);
@@ -559,15 +579,16 @@ public class DiscLoader {
 		this.token = token;
 		// Endpoints.botGateway;
 		CompletableFuture<GatewayJSON> cf = fetchGateway();
-		cf.thenAcceptAsync(gateway -> {
+		cf.thenAcceptAsync(data -> {
 			try {
-				socket.connectSocket(gateway.url + DLUtil.GatewaySuffix);
+				gateway.connectSocket(data.url + DLUtil.GatewaySuffix);
 			} catch (Exception ex) {
 				ex.printStackTrace();
 				rf.completeExceptionally(ex);
 			}
 		});
 		cf.exceptionally(ex -> {
+			System.out.println("It fricked up");
 			ex.printStackTrace();
 			rf.completeExceptionally(ex);
 			return null;
@@ -586,7 +607,7 @@ public class DiscLoader {
 
 	public CompletableFuture<Void> logout(int code, String reason) {
 		CompletableFuture<Void> future = disconnect(code, reason);
-		
+
 		return future;
 	}
 
@@ -685,7 +706,7 @@ public class DiscLoader {
 		}
 
 		Packet packet = new Packet(12, ids);
-		socket.send(packet, true);
+		gateway.send(packet, true);
 	}
 
 	/**
@@ -706,7 +727,7 @@ public class DiscLoader {
 		}
 
 		Packet packet = new Packet(12, ids);
-		socket.send(packet, true);
+		gateway.send(packet, true);
 	}
 
 	/**
@@ -727,7 +748,7 @@ public class DiscLoader {
 		}
 
 		Packet packet = new Packet(12, guildIDs);
-		socket.send(packet, true);
+		gateway.send(packet, true);
 	}
 
 }

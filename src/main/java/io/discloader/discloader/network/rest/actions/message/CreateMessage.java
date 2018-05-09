@@ -2,25 +2,36 @@ package io.discloader.discloader.network.rest.actions.message;
 
 import java.util.concurrent.CompletableFuture;
 
+import io.discloader.discloader.core.entity.message.Message;
 import io.discloader.discloader.entity.channel.ITextChannel;
 import io.discloader.discloader.entity.message.IMessage;
 import io.discloader.discloader.entity.sendable.SendableMessage;
-import io.discloader.discloader.network.rest.actions.RESTAction;
-import io.discloader.discloader.util.DLUtil.Endpoints;
-import io.discloader.discloader.util.DLUtil.Methods;
+import io.discloader.discloader.network.json.MessageJSON;
+import io.discloader.discloader.network.rest.RESTOptions;
+import io.discloader.discloader.network.rest.RestAction;
+import io.discloader.discloader.network.util.Endpoints;
+import io.discloader.discloader.network.util.Methods;
 
-public class CreateMessage<T extends ITextChannel> extends RESTAction<IMessage> {
+public class CreateMessage extends RestAction<IMessage> {
 
-	private T channel;
-	private SendableMessage message;
+	private final ITextChannel channel;
 
-	public CreateMessage(T channel, SendableMessage data) {
-		super(channel.getLoader());
+	public CreateMessage(ITextChannel channel, SendableMessage data) {
+		super(channel.getLoader(), Endpoints.messages(channel.getID()), Methods.POST, new RESTOptions(data));
 		this.channel = channel;
-		message = data;
+		autoExecute();
 	}
 
-	public CompletableFuture<IMessage> execute() {
-		return super.execute(loader.rest.makeRequest(Endpoints.messages(channel.getID()), Methods.POST, true, message));
+	@Override
+	public RestAction<IMessage> execute() {
+		CompletableFuture<MessageJSON> cf = loader.rest.request(method, endpoint, options, MessageJSON.class);
+		cf.thenAcceptAsync((data) -> {
+			future.complete(new Message<>(channel, data));
+		});
+		cf.exceptionally(ex -> {
+			future.completeExceptionally(ex);
+			return null;
+		});
+		return this;
 	}
 }

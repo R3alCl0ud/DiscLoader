@@ -13,7 +13,10 @@ import io.discloader.discloader.core.entity.user.User;
 import io.discloader.discloader.entity.message.IMessage;
 import io.discloader.discloader.entity.message.MessageFetchOptions;
 import io.discloader.discloader.entity.sendable.Attachment;
+import io.discloader.discloader.entity.sendable.SendableMessage;
 import io.discloader.discloader.entity.user.IUser;
+import io.discloader.discloader.network.rest.RestAction;
+import io.discloader.discloader.network.rest.actions.message.CreateMessage;
 
 /**
  * @author perryberman
@@ -222,6 +225,10 @@ public interface ITextChannel extends IChannel {
 	 * @return A Future that completes with null if successful.
 	 */
 	CompletableFuture<Map<Long, IUser>> startTyping();
+
+	public default RestAction<IMessage> testNewMessageAction(String content) {
+		return new CreateMessage(this, new SendableMessage(content, false, null, null, (File) null));
+	}
 
 	/**
 	 * Unpins a message if it is pinned in the channel.

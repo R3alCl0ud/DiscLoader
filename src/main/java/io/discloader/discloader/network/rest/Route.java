@@ -57,6 +57,9 @@ public class Route<T> {
 	}
 
 	public CompletableFuture<T> push(Request<T> apiRequest) {
+		if (rest.loader.getOptions().isDebugging()) {
+			System.out.println("Sending: " + gson.toJson(apiRequest.getData()));
+		}
 		queue.add(apiRequest);
 		handle();
 		return apiRequest.getFuture();
@@ -74,8 +77,7 @@ public class Route<T> {
 			public void completed(HttpResponse<String> response) {
 				try {
 					rateLimiter.readHeaders(response.getHeaders());
-					RawEvent event = new RawEvent(rest.loader, response);
-					rest.loader.emit(event);
+					rest.loader.emit(new RawEvent(rest.loader, response));
 					int code = response.getStatus();
 					waiting = false;
 					if (code == 429) {

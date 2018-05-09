@@ -12,13 +12,13 @@ import io.discloader.discloader.util.DLUtil.Status;
  */
 public abstract class AbstractHandler {
 
-	public Gateway socket;
+	public Gateway gateway;
 	public DiscLoader loader;
 	public Gson gson;
 
 	public AbstractHandler(Gateway socket) {
-		this.socket = socket;
-		this.loader = this.socket.loader;
+		this.gateway = socket;
+		this.loader = this.gateway.loader;
 		this.gson = new GsonBuilder().serializeNulls().create();
 	}
 
@@ -27,7 +27,7 @@ public abstract class AbstractHandler {
 	}
 
 	public boolean shouldEmit() {
-		return loader.ready && socket.status == Status.READY;
+		return loader.ready && gateway.status.get() == Status.READY;
 	}
 
 }

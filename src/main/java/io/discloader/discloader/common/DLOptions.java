@@ -32,43 +32,45 @@ public class DLOptions {
 
 	public boolean selfbot = false;
 
+	private boolean autoExecRestActions = true;
+
 	public int shard = 0;
 
 	public int shards = 1;
 
 	public DLOptions() {
-		this("TOKEN", "/", true, false, 0, 1);
+		this("TOKEN", "/", true, false, false, true, 0, 1);
 	}
 
 	public DLOptions(boolean defaultCommands) {
-		this("TOKEN", "/", defaultCommands, false, false, 0, 1);
+		this("TOKEN", "/", defaultCommands, false, false, true, 0, 1);
 	}
 
 	public DLOptions(boolean defaultCommands, boolean loadMods) {
-		this("TOKEN", "/", defaultCommands, loadMods, false, 0, 1);
+		this("TOKEN", "/", defaultCommands, loadMods, false, true, 0, 1);
 	}
 
 	public DLOptions(boolean defaultCommands, boolean loadMods, boolean debug) {
-		this("TOKEN", "/", defaultCommands, loadMods, debug, 0, 1);
+		this("TOKEN", "/", defaultCommands, loadMods, debug, true, 0, 1);
 	}
 
 	public DLOptions(int shard, int shards) {
-		this("TOKEN", "/", true, false, false, shard, shards);
+		this("TOKEN", "/", true, false, false, true, shard, shards);
 	}
 
 	public DLOptions(String token) {
-		this(token, "/", true, false, false, 0, 1);
+		this(token, "/", true, false, false, true, 0, 1);
 	}
 
 	public DLOptions(String token, String prefix) {
-		this(token, prefix, true, false, false, 0, 1);
+		this(token, prefix, true, false, false, true, 0, 1);
 	}
 
 	public DLOptions(String token, String prefix, boolean defaultCommands) {
-		this(token, prefix, defaultCommands, false, false, 0, 1);
+		this(token, prefix, defaultCommands, false, false, true, 0, 1);
 	}
 
-	public DLOptions(String token, String prefix, boolean defaultCommands, boolean loadMods, boolean debug, int shard, int shards) {
+	public DLOptions(String token, String prefix, boolean defaultCommands, boolean loadMods, boolean debug, boolean autoExecRestAction, int shard, int shards) {
 		this.token = token;
 		this.prefix = prefix;
 		this.defaultCommands = defaultCommands;
@@ -76,18 +78,19 @@ public class DLOptions {
 		this.debug = debug;
 		this.shard = shard;
 		this.shards = shards;
+		this.autoExecRestActions = autoExecRestAction;
 	}
 
 	public DLOptions(String token, String prefix, boolean defaultCommands, boolean loadMods, int shard, int shards) {
-		this(token, prefix, defaultCommands, loadMods, false, 0, 1);
+		this(token, prefix, defaultCommands, loadMods, false, true, 0, 1);
 	}
 
 	public DLOptions(String token, String prefix, boolean defaultCommands, int shard, int shards) {
-		this(token, prefix, defaultCommands, false, false, shard, shards);
+		this(token, prefix, defaultCommands, false, false, true, shard, shards);
 	}
 
 	public DLOptions(String token, String prefix, int shard, int shards) {
-		this(token, prefix, true, false, false, shard, shards);
+		this(token, prefix, true, false, false, true, shard, shards);
 	}
 
 	public int getShardCount() {
@@ -169,6 +172,21 @@ public class DLOptions {
 	public DLOptions useDefaultCommands(boolean b) {
 		defaultCommands = b;
 		return this;
+	}
+
+	/**
+	 * @return the autoExecuteRestActions
+	 */
+	public boolean autoExecRestActions() {
+		return autoExecRestActions;
+	}
+
+	/**
+	 * @param autoExecuteRestActions
+	 *            the autoExecuteRestActions to set
+	 */
+	public void setAutoExecuteRestActions(boolean autoExecRestActions) {
+		this.autoExecRestActions = autoExecRestActions;
 	}
 
 }

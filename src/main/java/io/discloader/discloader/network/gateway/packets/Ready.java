@@ -19,7 +19,7 @@ public class Ready extends AbstractHandler {
 		ReadyJSON readyJSON = gson.fromJson(d, ReadyJSON.class);
 
 		// set session id first just incase some screws up
-		socket.sessionID = readyJSON.session_id;
+		gateway.sessionID = readyJSON.session_id;
 
 		// setup the Loaders user object
 		try {
@@ -47,7 +47,7 @@ public class Ready extends AbstractHandler {
 		}
 
 		// check if the loader is ready to rock & roll
-		loader.socket.setRetries(0);
+		loader.gateway.setRetries(0);
 		loader.checkReady();
 	}
 }

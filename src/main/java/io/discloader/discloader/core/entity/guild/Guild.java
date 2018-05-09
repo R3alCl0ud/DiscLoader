@@ -37,7 +37,6 @@ import io.discloader.discloader.entity.IOverwrite;
 import io.discloader.discloader.entity.auditlog.ActionTypes;
 import io.discloader.discloader.entity.auditlog.IAuditLog;
 import io.discloader.discloader.entity.auditlog.IAuditLogEntry;
-import io.discloader.discloader.entity.channel.ChannelTypes;
 import io.discloader.discloader.entity.channel.IChannel;
 import io.discloader.discloader.entity.channel.IChannelCategory;
 import io.discloader.discloader.entity.channel.IGuildChannel;
@@ -429,17 +428,15 @@ public class Guild implements IGuild {
 	@Override
 	public CompletableFuture<IGuildTextChannel> createTextChannel(String name, IChannelCategory category, IOverwrite... overwrites) {
 		CompletableFuture<IGuildTextChannel> future = new CompletableFuture<>();
-		if (!hasPermission(Permissions.MANAGE_CHANNELS)) {
-			PermissionsException ex = new PermissionsException("Insufficient Permissions");
-			future.completeExceptionally(ex);
-			return future; // return early
-		}
-		ChannelPayload data = new ChannelPayload(name, ChannelTypes.TEXT, overwrites);
-		data.setParent(category);
-		CompletableFuture<ChannelJSON> cf = getLoader().rest.request(Methods.POST, Endpoints.guildChannels(getID()), new RESTOptions(data), ChannelJSON.class);
+		JSONObject data = new JSONObject().put("parent_id", SnowflakeUtil.asString(category)).put("name", name).put("type", 0);
+		CompletableFuture<ChannelJSON> cf = loader.rest.request(Methods.POST, Endpoints.guildChannels(getID()), new RESTOptions(data), ChannelJSON.class);
 		cf.thenAcceptAsync(channelJSON -> {
-			IGuildTextChannel channel = (IGuildTextChannel) EntityBuilder.getChannelFactory().buildChannel(channelJSON, getLoader(), this, false);
-			future.complete(channel);
+			if (channelJSON != null) {
+				IGuildTextChannel channel = (IGuildTextChannel) EntityBuilder.getChannelFactory().buildChannel(channelJSON, getLoader(), this, false);
+				if (channel != null) {
+					future.complete(channel);
+				}
+			}
 		});
 		cf.exceptionally(ex -> {
 			future.completeExceptionally(ex);
@@ -630,7 +627,7 @@ public class Guild implements IGuild {
 		};
 		loader.onceEvent(GuildMembersChunkEvent.class, consumer);
 		Packet payload = new Packet(8, new MemberQuery(limit, query));
-		loader.socket.send(payload);
+		loader.gateway.send(payload);
 		return future;
 	}
 

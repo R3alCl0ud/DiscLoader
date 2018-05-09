@@ -34,7 +34,7 @@ public class GuildDelete extends AbstractHandler {
 		}
 		if (guild.isAvailable()) {
 			EntityRegistry.removeGuild(guild);
-			if (socket.status == Status.READY && loader.ready) {
+			if (gateway.status.get() == Status.READY && loader.ready) {
 				GuildDeleteEvent event = new GuildDeleteEvent(guild);
 				loader.emit(Events.GUILD_DELETE, event);
 				loader.emit(event);

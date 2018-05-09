@@ -4,29 +4,31 @@ import java.util.concurrent.CompletableFuture;
 
 /**
  * @author Perry Berman
- * @param <T> the type the request completes with.
+ * @param <T>
+ *            the type the request completes with.
  */
 public class Request<T> {
 	public static final String DISCORD_API_PREFIX = "https://discordapp.com/api/v6";
-	
+
 	private CompletableFuture<T> future;
-	
+
 	private Object data;
 	private RESTOptions options;
+
 	public Request(RESTOptions options) {
-		this(options.getPayload());
+		future = new CompletableFuture<>();
 		this.options = options;
 	}
-	
+
 	public Request(Object data) {
 		future = new CompletableFuture<>();
 		this.data = data;
 	}
-	
+
 	public Object getData() {
-		return data;
+		return data != null ? data : options != null ? options.getPayload() : null;
 	}
-	
+
 	public String getRoute(String url) {
 		String route = url.split("[?]")[0];
 		if (route.contains("/channels/") || route.contains("/guilds/")) {
@@ -36,7 +38,7 @@ public class Request<T> {
 		}
 		return route;
 	}
-	
+
 	public CompletableFuture<T> getFuture() {
 		return future;
 	}
@@ -44,5 +46,5 @@ public class Request<T> {
 	public RESTOptions getOptions() {
 		return options;
 	}
-	
+
 }

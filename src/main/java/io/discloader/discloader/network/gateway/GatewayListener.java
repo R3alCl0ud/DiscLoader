@@ -69,7 +69,7 @@ public class GatewayListener extends WebSocketAdapter {
 
 	public DiscLoader loader;
 
-	public Gateway socket;
+	public Gateway gateway;
 
 	private int tries = 0;
 
@@ -77,7 +77,7 @@ public class GatewayListener extends WebSocketAdapter {
 
 	private final Logger logger;
 
-	public HashMap<String, AbstractHandler> handlers;
+	public Map<String, AbstractHandler> handlers;
 
 	public List<SocketPacket> queue;
 
@@ -89,42 +89,42 @@ public class GatewayListener extends WebSocketAdapter {
 
 	private AtomicBoolean connected = new AtomicBoolean();
 
-	public GatewayListener(Gateway socket) {
-		this.socket = socket;
-		this.loader = this.socket.loader;
+	public GatewayListener(Gateway gateway) {
+		this.gateway = gateway;
+		this.loader = this.gateway.loader;
 		this.handlers = new HashMap<String, AbstractHandler>();
 		this.queue = new ArrayList<SocketPacket>();
-		logName = loader.shards > 1 ? "Gateway Listener (Shard: #" + loader.shardid + ")" : "Gateway Listener";
-		logger = DLLogger.getLogger(logName);
-		threadName = loader.shards > 1 ? "Gateway (Shard: #" + loader.shardid + ") - Reader" : "Gateway Reader";
-		this.register(WSEvents.HELLO, new Hello(this.socket));
-		this.register(WSEvents.READY, new Ready(this.socket));
-		this.register(WSEvents.RESUMED, new Resumed(this.socket));
-		this.register(WSEvents.GUILD_CREATE, new GuildCreate(this.socket));
-		this.register(WSEvents.GUILD_BAN_ADD, new GuildBanAdd(this.socket));
-		this.register(WSEvents.GUILD_BAN_REMOVE, new GuildBanRemove(this.socket));
-		this.register(WSEvents.GUILD_DELETE, new GuildDelete(this.socket));
-		this.register(WSEvents.GUILD_UPDATE, new GuildUpdate(this.socket));
-		this.register(WSEvents.GUILD_ROLE_CREATE, new RoleCreate(this.socket));
-		this.register(WSEvents.GUILD_ROLE_DELETE, new RoleDelete(this.socket));
-		this.register(WSEvents.GUILD_ROLE_UPDATE, new RoleUpdate(this.socket));
-		this.register(WSEvents.GUILD_MEMBER_ADD, new GuildMemberAdd(this.socket));
-		this.register(WSEvents.GUILD_MEMBER_REMOVE, new GuildMemberRemove(this.socket));
-		this.register(WSEvents.GUILD_MEMBER_UPDATE, new GuildMemberUpdate(this.socket));
-		this.register(WSEvents.GUILD_MEMBERS_CHUNK, new GuildMembersChunk(this.socket));
-		this.register(WSEvents.GUILD_EMOJIS_UPDATE, new EmojiUpdate(this.socket));
-		this.register(WSEvents.CHANNEL_CREATE, new ChannelCreate(this.socket));
-		this.register(WSEvents.CHANNEL_DELETE, new ChannelDelete(this.socket));
-		this.register(WSEvents.CHANNEL_UPDATE, new ChannelUpdate(this.socket));
-		this.register(WSEvents.PRESENCE_UPDATE, new PresenceUpdate(this.socket));
-		this.register(WSEvents.MESSAGE_CREATE, new MessageCreate(this.socket));
-		this.register(WSEvents.MESSAGE_DELETE, new MessageDelete(this.socket));
-		this.register(WSEvents.MESSAGE_REACTION_ADD, new ReactionAdd(this.socket));
-		this.register(WSEvents.MESSAGE_REACTION_REMOVE, new ReactionRemove(this.socket));
-		this.register(WSEvents.MESSAGE_UPDATE, new MessageUpdate(this.socket));
-		this.register(WSEvents.TYPING_START, new TypingStart(this.socket));
-		this.register(WSEvents.VOICE_STATE_UPDATE, new VoiceStateUpdate(this.socket));
-		this.register(WSEvents.VOICE_SERVER_UPDATE, new VoiceServerUpdate(this.socket));
+		this.logName = loader.shards > 1 ? "Gateway Listener (Shard: #" + loader.shardid + ")" : "Gateway Listener";
+		this.logger = DLLogger.getLogger(logName);
+		this.threadName = loader.shards > 1 ? "Gateway (Shard: #" + loader.shardid + ") - Reader" : "Gateway Reader";
+		this.register(WSEvents.HELLO, new Hello(this.gateway));
+		this.register(WSEvents.READY, new Ready(this.gateway));
+		this.register(WSEvents.RESUMED, new Resumed(this.gateway));
+		this.register(WSEvents.GUILD_CREATE, new GuildCreate(this.gateway));
+		this.register(WSEvents.GUILD_BAN_ADD, new GuildBanAdd(this.gateway));
+		this.register(WSEvents.GUILD_BAN_REMOVE, new GuildBanRemove(this.gateway));
+		this.register(WSEvents.GUILD_DELETE, new GuildDelete(this.gateway));
+		this.register(WSEvents.GUILD_UPDATE, new GuildUpdate(this.gateway));
+		this.register(WSEvents.GUILD_ROLE_CREATE, new RoleCreate(this.gateway));
+		this.register(WSEvents.GUILD_ROLE_DELETE, new RoleDelete(this.gateway));
+		this.register(WSEvents.GUILD_ROLE_UPDATE, new RoleUpdate(this.gateway));
+		this.register(WSEvents.GUILD_MEMBER_ADD, new GuildMemberAdd(this.gateway));
+		this.register(WSEvents.GUILD_MEMBER_REMOVE, new GuildMemberRemove(this.gateway));
+		this.register(WSEvents.GUILD_MEMBER_UPDATE, new GuildMemberUpdate(this.gateway));
+		this.register(WSEvents.GUILD_MEMBERS_CHUNK, new GuildMembersChunk(this.gateway));
+		this.register(WSEvents.GUILD_EMOJIS_UPDATE, new EmojiUpdate(this.gateway));
+		this.register(WSEvents.CHANNEL_CREATE, new ChannelCreate(this.gateway));
+		this.register(WSEvents.CHANNEL_DELETE, new ChannelDelete(this.gateway));
+		this.register(WSEvents.CHANNEL_UPDATE, new ChannelUpdate(this.gateway));
+		this.register(WSEvents.PRESENCE_UPDATE, new PresenceUpdate(this.gateway));
+		this.register(WSEvents.MESSAGE_CREATE, new MessageCreate(this.gateway));
+		this.register(WSEvents.MESSAGE_DELETE, new MessageDelete(this.gateway));
+		this.register(WSEvents.MESSAGE_REACTION_ADD, new ReactionAdd(this.gateway));
+		this.register(WSEvents.MESSAGE_REACTION_REMOVE, new ReactionRemove(this.gateway));
+		this.register(WSEvents.MESSAGE_UPDATE, new MessageUpdate(this.gateway));
+		this.register(WSEvents.TYPING_START, new TypingStart(this.gateway));
+		this.register(WSEvents.VOICE_STATE_UPDATE, new VoiceStateUpdate(this.gateway));
+		this.register(WSEvents.VOICE_SERVER_UPDATE, new VoiceServerUpdate(this.gateway));
 
 	}
 
@@ -147,7 +147,7 @@ public class GatewayListener extends WebSocketAdapter {
 
 		if (packet.op == OPCodes.HELLO) {
 			this.handlers.get(WSEvents.HELLO).handle(packet);
-			if (socket.status != Status.RECONNECTING) {
+			if (gateway.status.get() != Status.RECONNECTING) {
 				sendNewIdentify();
 			} else {
 				sendResume();
@@ -155,7 +155,7 @@ public class GatewayListener extends WebSocketAdapter {
 		}
 
 		if (packet.op == DLUtil.OPCodes.HEARTBEAT_ACK) {
-			socket.lastHeartbeatAck.set(true);
+			gateway.lastHeartbeatAck.set(true);
 			if (loader.getOptions().isDebugging()) {
 				logger.config("Heartbeat Acknowledged");
 			}
@@ -163,13 +163,13 @@ public class GatewayListener extends WebSocketAdapter {
 			if (loader.getOptions().isDebugging()) {
 				logger.config("Recieved Heartbeat request from Gateway.");
 			}
-			JSONObject payload = new JSONObject().put("op", OPCodes.HEARTBEAT).put("d", socket.s);
-			socket.send(payload, true);
+			JSONObject payload = new JSONObject().put("op", OPCodes.HEARTBEAT).put("d", gateway.sequence);
+			gateway.send(payload, true);
 		}
 
 		setSequence(packet.s);
 
-		if (socket.status != Status.READY && socket.status != Status.RECONNECTING) {
+		if (gateway.status.get() != Status.READY && gateway.status.get() != Status.RECONNECTING) {
 			if (DLUtil.EventWhitelist.indexOf(packet.t) == -1) {
 				queue.add(packet);
 				return;
@@ -200,7 +200,7 @@ public class GatewayListener extends WebSocketAdapter {
 		 * Hoping this will fix that goddamn heartbeat not acknowledged when a heartbeat
 		 * had never been sent in the first place bug.
 		 */
-		socket.lastHeartbeatAck.set(true);
+		gateway.lastHeartbeatAck.set(true);
 		if (loader.getOptions().isDebugging()) {
 			logger.info("Connected to the gateway");
 		}
@@ -215,7 +215,7 @@ public class GatewayListener extends WebSocketAdapter {
 	}
 
 	public void onDisconnected(WebSocket ws, WebSocketFrame serverFrame, WebSocketFrame clientFrame, boolean isServer) throws Exception {
-		socket.killHeartbeat();
+		gateway.killHeartbeat();
 		loader.emit(new DisconnectEvent(loader, serverFrame, clientFrame, isServer));
 		connected.set(false);
 		if (isServer) {
@@ -228,7 +228,7 @@ public class GatewayListener extends WebSocketAdapter {
 			}
 		} else {
 			logger.severe(String.format("Client disconnected from the gateway, Close Code: %d, Reason: %s", clientFrame != null ? clientFrame.getCloseCode() : 0, clientFrame != null ? clientFrame.getCloseReason() : null));
-			if (socket.status != 6) {
+			if (gateway.status.get() != Status.DISCONNECTING) {
 				if (clientFrame != null ? shouldResume(clientFrame) : true) {
 					// if connection wasn't closed properly try to reconnect
 					tryReconnecting();
@@ -237,7 +237,7 @@ public class GatewayListener extends WebSocketAdapter {
 				}
 			}
 		}
-		socket.status = Status.DISCONNECTED;
+		gateway.setStatus(Status.DISCONNECTED);
 	}
 
 	@Override
@@ -292,14 +292,15 @@ public class GatewayListener extends WebSocketAdapter {
 			logger.throwing(e.getStackTrace()[0].getClassName(), e.getStackTrace()[0].getMethodName(), e);
 		}
 		Packet packet = new Packet(OPCodes.IDENTIFY, payload);
-		socket.send(packet, true);
-		socket.s = -1;
+		gateway.send(packet, true);
+		gateway.sequence.set(-1);
 		tries = 0;
 	}
 
 	public void setSequence(int s) {
-		if (s > this.socket.s)
-			this.socket.s = s;
+		if (gateway.sequence.get() < s) {
+			gateway.sequence.set(s);
+		}
 	}
 
 	public void sendResume() {
@@ -307,20 +308,20 @@ public class GatewayListener extends WebSocketAdapter {
 			sendNewIdentify();
 			return;
 		}
-		Packet d = new Packet(OPCodes.RESUME, new GatewayResume(socket.sessionID, token, socket.s));
-		socket.send(d, true);
+		Packet d = new Packet(OPCodes.RESUME, new GatewayResume(gateway.sessionID, token, gateway.sequence.get()));
+		gateway.send(d, true);
 	}
 
 	public void tryReconnecting() {
-		this.socket.status = Status.RECONNECTING;
+		gateway.setStatus(Status.RECONNECTING);
 		if (loader.getOptions().isDebugging()) {
 			logger.config("Waiting to reconnect to the gateway");
 		}
 		reconnection = new Thread(logName + " Reconnector") {
 			public void run() {
-				if (socket.status == Status.RECONNECTING && !this.isInterrupted()) {
+				if (gateway.status.get() == Status.RECONNECTING && !this.isInterrupted()) {
 					try {
-						while (socket.status == Status.RECONNECTING && !socket.ws.isOpen() && !this.isInterrupted() && tries < 3) {
+						while (gateway.status.get() == Status.RECONNECTING && !gateway.websocket.isOpen() && !this.isInterrupted() && tries < 3) {
 							tries++;
 							System.out.println(timeout * (tries));
 							Thread.sleep(timeout * (tries));
@@ -328,14 +329,14 @@ public class GatewayListener extends WebSocketAdapter {
 								logger.config("Attempting to reconnect to the gateway");
 							}
 							loader.emit(new ReconnectEvent(loader, tries));
-							socket.ws = socket.ws.recreate().setMissingCloseFrameAllowed(false).connect();
+							gateway.websocket = gateway.websocket.recreate().setMissingCloseFrameAllowed(false).connect();
 							Thread.sleep(41250);
-							if (socket.status == Status.RECONNECTING && !connected.get()) {
+							if (gateway.status.get() == Status.RECONNECTING && !connected.get()) {
 								logger.severe("Failed to connect to the Gateway");
 							}
 						}
 					} catch (InterruptedException | WebSocketException | IOException e) {
-						if (socket.status == Status.RECONNECTING) {
+						if (gateway.status.get() == Status.RECONNECTING) {
 							if (tries < 3) {
 								tryReconnecting();
 								return;
@@ -359,7 +360,7 @@ public class GatewayListener extends WebSocketAdapter {
 		CompletableFuture<GatewayJSON> future = loader.fetchGateway();
 		future.thenAcceptAsync(data -> {
 			try {
-				socket.connectSocket(data.url);
+				gateway.connectSocket(data.url);
 			} catch (WebSocketException | IOException e) {
 				connectToNewEndpoint();
 			}

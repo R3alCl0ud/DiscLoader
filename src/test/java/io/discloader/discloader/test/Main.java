@@ -19,6 +19,9 @@ import io.discloader.discloader.common.DiscLoader;
 import io.discloader.discloader.common.event.EventListenerAdapter;
 import io.discloader.discloader.common.event.RawEvent;
 import io.discloader.discloader.common.event.ReadyEvent;
+import io.discloader.discloader.common.event.channel.GuildChannelCreateEvent;
+import io.discloader.discloader.common.event.guild.GuildCreateEvent;
+import io.discloader.discloader.common.event.message.GuildMessageCreateEvent;
 import io.discloader.discloader.common.logger.DLLogger;
 import io.discloader.discloader.common.start.Options;
 import io.discloader.discloader.core.entity.RichEmbed;
@@ -28,6 +31,7 @@ import io.discloader.discloader.entity.channel.IGuildVoiceChannel;
 import io.discloader.discloader.entity.guild.IGuild;
 import io.discloader.discloader.entity.guild.VoiceRegion;
 import io.discloader.discloader.entity.message.IMessage;
+import io.discloader.discloader.entity.user.IUser;
 import io.discloader.discloader.entity.voice.VoiceConnection;
 import io.discloader.discloader.entity.voice.VoiceEventAdapter;
 
@@ -36,12 +40,12 @@ public class Main {
 	public static final Gson gson = new Gson();
 
 	public static DiscLoader loader;
-	public static Options options;
+	public static Options options = new Options();
 	public static String token;
 
 	public static final Logger logger = DLLogger.getLogger("Test - Main");
 
-	public static void main(String[] args) throws IOException, InterruptedException, ExecutionException {
+	public static void main(String... args) throws IOException, InterruptedException, ExecutionException {
 		System.setProperty("http.agent", "DiscLoader");
 		logger.info("Attempting to read config");
 		String content = "";
@@ -49,90 +53,19 @@ public class Main {
 			Object[] lines = Files.readAllLines(Paths.get("./options.json")).toArray();
 			for (Object line : lines)
 				content += line;
-			Options options = gson.fromJson(content, Options.class);
+			options = gson.fromJson(content, Options.class);
 			token = options.auth.token;
+			logger.info("Finished reading config");
 		}
 		DLOptions opt = new DLOptions();
-		opt.loadMods(true);
+		opt.loadMods(options.loadMods);
 		opt.setToken(token);
-		opt.setPrefix("mc!");
-		opt.useDefaultCommands(true);
+		opt.setPrefix(options.prefix);
+		opt.useDefaultCommands(options.defaultCommands);
 		opt.setDebug(true);
 		loader = new DiscLoader(opt);
-		loader.addEventListener(new EventListenerAdapter() {
-			@Override
-			public void Ready(ReadyEvent e) {
-				logger.info("Ready");
-				logger.info("In " + e.getLoader().getGuilds().size() + " Guild(s).");
-				CompletableFuture<List<VoiceRegion>> f2 = loader.getVoiceRegions();
-				f2.thenAcceptAsync(regions -> {
-					for (VoiceRegion region : regions) {
-						if (region.isOptimal()) {
-							AvoidRateLimits();
-							CompletableFuture<IGuild> f3 = loader.createGuild("Test Guild", region);
-							f3.exceptionally(ex -> {
-								logger.severe("Test Failed");
-								ex.printStackTrace();
-								System.exit(3);
-								return null;
-							});
-							f3.thenAcceptAsync(guild -> {
-								AvoidRateLimits();
-								CompletableFuture<IChannelCategory> f4 = guild.createCategory("category");
-								f4.exceptionally(ex -> {
-									logger.severe("Test Failed");
-									ex.printStackTrace();
-									System.exit(4);
-									return null;
-								});
-								f4.thenAcceptAsync(category -> {
-									CompletableFuture<Void> tfuture = testTextChannelThings(guild, category);
-									tfuture.thenAcceptAsync(n -> {
-										logger.config("Text Future Completed");
-									});
-									CompletableFuture<Void> vfuture = testVoiceThings(guild, category);
-									vfuture.thenAcceptAsync(n -> {
-										logger.config("Voice Future Completed");
-									});
-									CompletableFuture<Void> future = CompletableFuture.allOf(tfuture, vfuture);
-									future.thenAcceptAsync(v -> {
-										logger.config("Going to attempt to delete the guild in 5 seconds");
-										AvoidRateLimits(5000l);
-										CompletableFuture<IGuild> f17 = guild.delete();
-										f17.exceptionally(ex -> {
-											logger.severe("Test Failed");
-											ex.printStackTrace();
-											System.exit(17);
-											return null;
-										});
-										f17.thenAcceptAsync(g2 -> {
-											logger.info("Testing Completed Successfully!");
-										});
-									});
-								});
-							});
-							break;
-						}
-					}
-				});
-				f2.exceptionally(ex -> {
-					logger.severe("Test Failed");
-					ex.printStackTrace();
-					System.exit(2);
-					return null;
-				});
-			}
-
-			@Override
-			public void RawPacket(RawEvent data) {
-				WebSocketFrame frame = data.getFrame();
-				if (data.isGateway() && frame.isTextFrame() && !frame.getPayloadText().contains("PRESENCE_UPDATE") && !frame.getPayloadText().contains("GUILD_CREATE") && !frame.getPayloadText().contains("READY")) {
-					logger.info("[Gateway Frame] " + frame.getPayloadText());
-				} else if (data.isREST() && data.getHttpResponse() != null && data.getHttpResponse().getBody() != null) {
-					logger.info("[REST Response] " + data.getHttpResponse().getBody());
-				}
-			}
-		});
+		// runNormalTest();
+		runRestActionTest();
 		loader.login().exceptionally(ex -> {
 			logger.severe("Test Failed");
 			ex.printStackTrace();
@@ -282,6 +215,159 @@ public class Main {
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 		}
+	}
+
+	public static void runNormalTest() {
+		loader.addEventListener(new EventListenerAdapter() {
+			@Override
+			public void Ready(ReadyEvent e) {
+				logger.info("Ready");
+				logger.info("In " + e.getLoader().getGuilds().size() + " Guild(s).");
+				CompletableFuture<List<VoiceRegion>> f2 = loader.getVoiceRegions();
+				f2.thenAcceptAsync(regions -> {
+					for (VoiceRegion region : regions) {
+						if (region.isOptimal()) {
+							AvoidRateLimits();
+							CompletableFuture<IGuild> f3 = loader.createGuild("Test Guild", region);
+							f3.exceptionally(ex -> {
+								logger.severe("Test Failed");
+								ex.printStackTrace();
+								System.exit(3);
+								return null;
+							});
+							f3.thenAcceptAsync(guild -> {
+								AvoidRateLimits();
+								CompletableFuture<IChannelCategory> f4 = guild.createCategory("category");
+								f4.exceptionally(ex -> {
+									logger.severe("Test Failed");
+									ex.printStackTrace();
+									System.exit(4);
+									return null;
+								});
+								f4.thenAcceptAsync(category -> {
+									CompletableFuture<Void> tfuture = testTextChannelThings(guild, category);
+									tfuture.thenAcceptAsync(n -> {
+										logger.config("Text Future Completed");
+									});
+									CompletableFuture<Void> vfuture = testVoiceThings(guild, category);
+									vfuture.thenAcceptAsync(n -> {
+										logger.config("Voice Future Completed");
+									});
+									CompletableFuture<Void> future = CompletableFuture.allOf(tfuture, vfuture);
+									future.thenAcceptAsync(v -> {
+										logger.config("Going to attempt to delete the guild in 5 seconds");
+										AvoidRateLimits(5000l);
+										CompletableFuture<IGuild> f17 = guild.delete();
+										f17.exceptionally(ex -> {
+											logger.severe("Test Failed");
+											ex.printStackTrace();
+											System.exit(17);
+											return null;
+										});
+										f17.thenAcceptAsync(g2 -> {
+											logger.info("Testing Completed Successfully!");
+										});
+									});
+								});
+							});
+							break;
+						}
+					}
+				});
+				f2.exceptionally(ex -> {
+					logger.severe("Test Failed");
+					ex.printStackTrace();
+					System.exit(2);
+					return null;
+				});
+			}
+
+			@Override
+			public void RawPacket(RawEvent data) {
+				WebSocketFrame frame = data.getFrame();
+				if (data.isGateway() && frame.isTextFrame() && !frame.getPayloadText().contains("PRESENCE_UPDATE") && !frame.getPayloadText().contains("GUILD_CREATE") && !frame.getPayloadText().contains("READY")) {
+					logger.info("[Gateway Frame] " + frame.getPayloadText());
+				} else if (data.isREST() && data.getHttpResponse() != null && data.getHttpResponse().getBody() != null) {
+					logger.info("[REST Response] " + data.getHttpResponse().getBody());
+				}
+			}
+		});
+	}
+
+	public static void runRestActionTest() {
+		String guildName = "" + System.currentTimeMillis();
+		loader.addEventListener(new EventListenerAdapter() {
+			public IGuild guild = null;
+
+			@Override
+			public void Ready(ReadyEvent e) {
+				loader.createGuild(guildName);
+			}
+
+			@Override
+			public void GuildCreate(GuildCreateEvent e) {
+				if (e.getGuild().getName().equals(guildName)) {
+					guild = e.getGuild();
+					IGuildTextChannel channel = guild.getTextChannelByName("general");
+					if (channel != null) {
+						channel.createInvite().onSuccess(invite -> {
+							logger.warning("Invite code for the test guild: " + invite.getCode());
+						}).onFailure(ex -> {
+							ex.printStackTrace();
+						}).execute();
+						channel.testNewMessageAction("this is some test content").onSuccess(message -> {
+							logger.info(message.getDisplayedContent());
+						}).onFailure(ex -> {
+							ex.printStackTrace();
+						}).execute();
+					}
+				}
+			}
+
+			@Override
+			public void GuildMessageCreate(GuildMessageCreateEvent e) {
+				if (e.getGuild().getID() == guild.getID()) {
+					if (e.getMessage().getContent().toLowerCase().startsWith(options.prefix + "finishtest")) {
+						try {
+							IUser author = e.getMessage().getAuthor();
+							guild = guild.delete().get();
+							author.sendMessage("Testing complete! Guild successfully deleted.");
+						} catch (InterruptedException | ExecutionException e1) {
+							e.getMessage().getAuthor().sendMessage("Testing failed. :(");
+							e1.printStackTrace();
+						}
+					}
+				}
+			}
+
+			@Override
+			public void GuildChannelCreate(GuildChannelCreateEvent e) {
+				if (e.getGuild().getID() == guild.getID()) {
+					if (e.getChannel() instanceof IGuildTextChannel) {
+						IGuildTextChannel channel = (IGuildTextChannel) e.getChannel();
+						channel.createInvite().onSuccess(invite -> {
+							logger.warning("Invite code for the test guild: " + invite.getCode());
+						}).onFailure(ex -> {
+							ex.printStackTrace();
+						}).execute();
+//						channel.sendMessage("Hmm");
+						channel.testNewMessageAction("this is some test content").onSuccess(message -> {
+							logger.info(message.getDisplayedContent());
+						}).onFailure(ex -> {
+							ex.printStackTrace();
+						}).execute();
+					}
+				}
+			}
+			public void RawPacket(RawEvent data) {
+				WebSocketFrame frame = data.getFrame();
+				if (data.isGateway() && frame.isTextFrame() && !frame.getPayloadText().contains("PRESENCE_UPDATE") && !frame.getPayloadText().contains("GUILD_CREATE") && !frame.getPayloadText().contains("READY")) {
+					System.out.println(frame.getPayloadText());
+				} else if (data.isREST() && data.getHttpResponse() != null && data.getHttpResponse().getBody() != null) {
+					System.out.println(data.getHttpResponse().getBody());
+				}
+			}
+		});
 	}
 
 }

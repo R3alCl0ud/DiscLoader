@@ -29,6 +29,8 @@ import io.discloader.discloader.entity.util.Permissions;
 import io.discloader.discloader.entity.util.SnowflakeUtil;
 import io.discloader.discloader.network.json.ChannelJSON;
 import io.discloader.discloader.network.rest.RESTOptions;
+import io.discloader.discloader.network.rest.RestAction;
+import io.discloader.discloader.network.rest.actions.channel.CreateInvite;
 import io.discloader.discloader.network.rest.actions.channel.FetchInvites;
 import io.discloader.discloader.network.rest.actions.channel.close.CloseGuildChannel;
 import io.discloader.discloader.network.util.Endpoints;
@@ -83,14 +85,29 @@ public class GuildChannel extends Channel implements IGuildChannel {
 	}
 
 	@Override
+	public RestAction<IInvite> createInvite() {
+		return createInvite(86400, 0, false, false);
+	}
+
+	@Override
+	public RestAction<IInvite> createInvite(boolean temporaryMembership, boolean unique) {
+		return createInvite(86400, 0, temporaryMembership, unique);
+	}
+
+	@Override
+	public RestAction<IInvite> createInvite(int expiresIn, int maxUses) {
+		return createInvite(expiresIn, maxUses, false, false);
+	}
+
+	@Override
+	public RestAction<IInvite> createInvite(int expiresIn, int maxUses, boolean temporaryMembership, boolean unique) {
+		return new CreateInvite(this, new JSONObject().put("max_age", expiresIn).put("max_uses", maxUses).put("temporary", temporaryMembership).put("unique", unique));
+	}
+
+	@Override
 	public CompletableFuture<IGuildChannel> delete() {
 		return new CloseGuildChannel(this).execute();
 	}
-
-	// @Override
-	// public CompletableFuture<IGuildChannel> clone() {
-	// return guild.createTextChannel(name);
-	// }
 
 	@Override
 	public CompletableFuture<IOverwrite> deleteOverwrite(IOverwrite overwrite) {
@@ -126,29 +143,6 @@ public class GuildChannel extends Channel implements IGuildChannel {
 		});
 		return future;
 	}
-
-	// /**
-	// * Changes the channels settings
-	// *
-	// * @param name The new name for the channel
-	// * @param topic The new topic for the channel
-	// * @param position The new position for the channel
-	// * @param bitrate The new bitrate
-	// * @param userLimit The new userLimit
-	// * @return A Future that completes with an IGuildChannel if successful
-	// */
-	//// @Override
-	// public CompletableFuture<IGuildChannel> edit(String name, String topic,
-	// int position, int bitrate, int userLimit) {
-	// CompletableFuture<IGuildChannel> future = new CompletableFuture<>();
-	// loader.rest.request(Methods.PATCH, Endpoints.channel(getID()), new
-	// RESTOptions, cls)
-	//// loader.rest.modifyGuildChannel(this, name, topic, position, bitrate,
-	// userLimit).thenAcceptAsync(channel -> {
-	//// future.complete(channel);
-	//// });
-	// return future;
-	// }
 
 	@Override
 	public CompletableFuture<? extends IGuildChannel> edit(int position, boolean nsfw) {
@@ -329,15 +323,6 @@ public class GuildChannel extends Channel implements IGuildChannel {
 	}
 
 	@Override
-	public CompletableFuture<IOverwrite> setOverwrite(IOverwrite overwrite, String reason) {
-		if (overwrite.getType().equals("member")) {
-			return setPermissions(overwrite.getAllowed(), overwrite.getDenied(), overwrite.getMember(), reason);
-		}
-
-		return setPermissions(overwrite.getAllowed(), overwrite.getDenied(), overwrite.getRole(), reason);
-	}
-
-	@Override
 	public CompletableFuture<List<IOverwrite>> setOverwrite(IOverwrite... overwrites) {
 		CompletableFuture<List<IOverwrite>> future = new CompletableFuture<>();
 		CompletableFuture<? extends IGuildChannel> cf = edit(name, position, nsfw, overwrites);
@@ -349,6 +334,15 @@ public class GuildChannel extends Channel implements IGuildChannel {
 			return null;
 		});
 		return future;
+	}
+
+	@Override
+	public CompletableFuture<IOverwrite> setOverwrite(IOverwrite overwrite, String reason) {
+		if (overwrite.getType().equals("member")) {
+			return setPermissions(overwrite.getAllowed(), overwrite.getDenied(), overwrite.getMember(), reason);
+		}
+
+		return setPermissions(overwrite.getAllowed(), overwrite.getDenied(), overwrite.getRole(), reason);
 	}
 
 	@Override

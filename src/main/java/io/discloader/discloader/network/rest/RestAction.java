@@ -1,8 +1,11 @@
 package io.discloader.discloader.network.rest;
 
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutionException;
 import java.util.function.Consumer;
 import java.util.logging.Logger;
+
+import com.google.gson.Gson;
 
 import io.discloader.discloader.common.DiscLoader;
 import io.discloader.discloader.common.logger.DLLogger;
@@ -20,27 +23,67 @@ public abstract class RestAction<T> {
 
 	protected final DiscLoader loader;
 
-	private final String endpoint;
+	protected final String endpoint;
 	public static Consumer<?> DEFAULT_SUCCESS = o -> {};
 	public static Consumer<Throwable> DEFAULT_FAILURE = t -> {
 		LOG.throwing(t.getStackTrace()[0].getClassName(), t.getStackTrace()[0].getMethodName(), t);
 	};
-	// private Consumer<? super T> success = (obj -> {});
-	// private Consumer<Throwable> failure = (ex -> {});
-	private RESTOptions options;
+	protected RESTOptions options;
+	protected Methods method;
+	protected Gson gson;
+	protected final CompletableFuture<T> future = new CompletableFuture<>();
+	protected boolean executed = false;
 
-	public RestAction(DiscLoader loader, String endpoint, RESTOptions options) {
+	public RestAction(DiscLoader loader, String endpoint, Methods method, RESTOptions options) {
 		this.loader = loader;
 		this.endpoint = endpoint;
+		this.method = method;
+		this.options = options;
+		this.gson = new Gson();
 	}
 
-	public RestAction<T> onSuccess(Consumer<? super T> action) {
-		// this.success = action;
+	public RestAction<T> onSuccess(Consumer<? super T> success) {
+		future.thenAcceptAsync(success);
 		return this;
 	}
 
-	public <U> RestAction<T> execute(Class<U> cls) {
-		CompletableFuture<U> future = loader.rest.request(Methods.GET, endpoint, options, cls);
+	public RestAction<T> onFailure(Consumer<Throwable> failure) {
+		future.exceptionally(ex -> {
+			failure.accept(ex);
+			return null;
+		});
 		return this;
+	}
+
+	public abstract RestAction<T> execute();
+
+	public RestAction<T> execute(Consumer<? super T> success, Consumer<Throwable> failure) {
+		return onSuccess(success).onFailure(failure).execute();
+	}
+
+	public boolean isDone() {
+		return future.isDone();
+	}
+
+	public boolean isCanceled() {
+		return future.isCancelled();
+	}
+
+	public boolean cancel(boolean mayInterruptIfRunning) {
+		return future.cancel(mayInterruptIfRunning);
+	}
+
+	public T get() throws InterruptedException, ExecutionException {
+		return future.get();
+	}
+
+	public T join() {
+		return future.join();
+	}
+
+	protected void autoExecute() {
+		if (loader.getOptions().autoExecRestActions()) {
+			execute();
+		}
 	}
 }

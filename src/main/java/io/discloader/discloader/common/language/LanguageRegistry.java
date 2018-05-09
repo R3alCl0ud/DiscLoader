@@ -2,6 +2,7 @@ package io.discloader.discloader.common.language;
 
 import java.util.HashMap;
 import java.util.Locale;
+import java.util.Map;
 
 import io.discloader.discloader.client.command.Command;
 
@@ -11,7 +12,7 @@ import io.discloader.discloader.client.command.Command;
 public class LanguageRegistry {
 
 	private static LanguageRegistry langs = new LanguageRegistry();
-	public final HashMap<Locale, HashMap<String, String>> localizedNames;
+	public final Map<Locale, Map<String, String>> localizedNames;
 
 	/**
 	 * Creates a new LanguageRegistry instance
@@ -32,13 +33,15 @@ public class LanguageRegistry {
 		return langs;
 	}
 
-	public static HashMap<String, String> getLocale(Locale locale) {
-		if (getLocales().localizedNames.containsKey(locale)) return getLocales().localizedNames.get(locale);
+	public static Map<String, String> getLocale(Locale locale) {
+		if (getLocales().localizedNames.containsKey(locale))
+			return getLocales().localizedNames.get(locale);
 		return null;
 	}
 
 	public static String getLocalized(Locale locale, String holder) {
-		if (getLocale(locale) != null) return getLocale(locale).get(holder);
+		if (getLocale(locale) != null)
+			return getLocale(locale).get(holder);
 		return null;
 	}
 
@@ -53,7 +56,8 @@ public class LanguageRegistry {
 	/**
 	 * Adds a language to the registry
 	 * 
-	 * @param lang The language to register
+	 * @param lang
+	 *            The language to register
 	 */
 	public static void registerLanguage(Language lang) {
 		if (!langs.localizedNames.containsKey(lang.getLocale())) {
