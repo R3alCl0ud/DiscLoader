@@ -350,7 +350,6 @@ public class Main {
 						}).onFailure(ex -> {
 							ex.printStackTrace();
 						}).execute();
-//						channel.sendMessage("Hmm");
 						channel.testNewMessageAction("this is some test content").onSuccess(message -> {
 							logger.info(message.getDisplayedContent());
 						}).onFailure(ex -> {
@@ -362,9 +361,9 @@ public class Main {
 			public void RawPacket(RawEvent data) {
 				WebSocketFrame frame = data.getFrame();
 				if (data.isGateway() && frame.isTextFrame() && !frame.getPayloadText().contains("PRESENCE_UPDATE") && !frame.getPayloadText().contains("GUILD_CREATE") && !frame.getPayloadText().contains("READY")) {
-					System.out.println(frame.getPayloadText());
+					logger.config(frame.getPayloadText());
 				} else if (data.isREST() && data.getHttpResponse() != null && data.getHttpResponse().getBody() != null) {
-					System.out.println(data.getHttpResponse().getBody());
+					logger.config(data.getHttpResponse().getBody());
 				}
 			}
 		});

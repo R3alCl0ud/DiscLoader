@@ -30,40 +30,39 @@ import io.discloader.discloader.network.json.UserJSON;
  * @author Perry Berman
  */
 public class Mentions implements IMentions {
-
+	
 	/**
 	 * The current instance of DiscLoader
 	 */
 	public final DiscLoader loader;
-
+	
 	/**
 	 * The message these mentions apply to
 	 */
 	public final IMessage message;
-
+	
 	/**
 	 * The channel the {@link #message} was sent in.
 	 */
 	public final ITextChannel channel;
-
+	
 	/**
-	 * The guild the message was sent in. null if message was sent in a private
-	 * channel.
+	 * The guild the message was sent in. null if message was sent in a private channel.
 	 */
 	public final IGuild guild;
-
+	
 	private boolean everyone;
-
+	
 	/**
 	 * A HashMap of mentioned Users. Indexed by {@link User#id}.
 	 */
 	public final Map<Long, IUser> users;
-
+	
 	/**
 	 * A HashMap of mentioned Roles. Indexed by {@link Role#id}.
 	 */
 	public final Map<Long, IRole> roles;
-
+	
 	public Mentions(Message<?> message, UserJSON[] mentions, String[] mention_roles, boolean mention_everyone) {
 		this.message = message;
 		loader = message.loader;
@@ -86,33 +85,33 @@ public class Mentions implements IMentions {
 			}
 		}
 	}
-
+	
 	@Override
 	public IMessage getMessage() {
 		return message;
 	}
-
+	
 	public boolean isMentioned() {
 		return isMentioned(loader.getSelfUser());
 	}
-
+	
 	@Override
 	public boolean isMentioned(IGuildMember member) {
 		return isMentioned(member.getUser());
 	}
-
+	
 	public boolean isMentioned(IRole role) {
 		return roles.containsKey(role.getID()) || everyone;
 	}
-
+	
 	public boolean isMentioned(IUser user) {
 		return users.containsKey(user.getID()) || everyone;
 	}
-
+	
 	public boolean mentionedEveryone() {
 		return everyone;
 	}
-
+	
 	public void patch(UserJSON[] mentions, RoleJSON[] mention_roles, boolean mention_everyone) {
 		everyone = mention_everyone;
 		users.clear();
@@ -130,46 +129,44 @@ public class Mentions implements IMentions {
 			}
 		}
 	}
-
+	
 	/*
 	 * (non-Javadoc)
-	 * 
 	 * @see io.discloader.discloader.entity.message.IMentions#getUsers()
 	 */
 	@Override
 	public List<IUser> getUsers() {
 		return new ArrayList<>(users.values());
 	}
-
+	
 	/*
 	 * (non-Javadoc)
-	 * 
 	 * @see io.discloader.discloader.entity.message.IMentions#getRoles()
 	 */
 	@Override
 	public List<IRole> getRoles() {
 		return new ArrayList<>(roles.values());
 	}
-
+	
 	@Override
 	public int size() {
-		return roles.size() + users.size();
+		return toList().size();
 	}
-
+	
 	@Override
 	public boolean equals(Object object) {
 		if (!(object instanceof Mentions))
 			return false;
 		Mentions mentions = (Mentions) object;
-
+		
 		return (this == mentions) || getMessage().equals(mentions.getMessage());
 	}
-
+	
 	@Override
 	public int hashCode() {
 		return getMessage().hashCode();
 	}
-
+	
 	@Override
 	public boolean isMentioned(IMentionable mentionable) {
 		if (mentionable instanceof IUser) {
@@ -181,7 +178,7 @@ public class Mentions implements IMentions {
 		}
 		return everyone;
 	}
-
+	
 	@Override
 	public List<IMentionable> toList() {
 		List<IMentionable> mentioned = new ArrayList<>();
@@ -191,14 +188,17 @@ public class Mentions implements IMentions {
 		roles.forEach((id, role) -> {
 			mentioned.add(role);
 		});
+		getChannels().forEach(channel -> {
+			mentioned.add(channel);
+		});
 		return mentioned;
 	}
-
+	
 	@Override
 	public boolean isMentioned(IChannel channel) {
 		return message.getContent().toLowerCase().contains("<#" + channel.getID() + ">");
 	}
-
+	
 	@Override
 	public List<IGuildChannel> getChannels() {
 		List<IGuildChannel> channels = new ArrayList<>();
@@ -210,7 +210,7 @@ public class Mentions implements IMentions {
 		}
 		return channels;
 	}
-
+	
 	@Override
 	public List<IGuildMember> getMembers() {
 		List<IGuildMember> members = new ArrayList<>();
@@ -221,5 +221,5 @@ public class Mentions implements IMentions {
 		}
 		return members;
 	}
-
+	
 }
