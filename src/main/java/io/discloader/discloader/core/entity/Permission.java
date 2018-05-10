@@ -1,10 +1,10 @@
 package io.discloader.discloader.core.entity;
 
 import io.discloader.discloader.core.entity.guild.GuildMember;
-import io.discloader.discloader.core.entity.guild.Role;
 import io.discloader.discloader.entity.IPermission;
 import io.discloader.discloader.entity.channel.IGuildChannel;
 import io.discloader.discloader.entity.guild.IGuildMember;
+import io.discloader.discloader.entity.guild.IRole;
 import io.discloader.discloader.entity.util.Permissions;
 
 /**
@@ -28,7 +28,7 @@ public class Permission implements IPermission {
 	 */
 	private IGuildChannel channel = null;
 
-	private Role role = null;
+	private IRole role = null;
 
 	/**
 	 * The raw 53bit permissions {@link Integer}
@@ -41,8 +41,13 @@ public class Permission implements IPermission {
 		this.raw = raw;
 	}
 
-	public Permission(Role role, long permissions) {
+	public Permission(IRole role, long permissions) {
 		this(null, null, permissions);
+		this.role = role;
+	}
+
+	public Permission(IRole role, long permissions, IGuildChannel channel) {
+		this(null, channel, permissions);
 		this.role = role;
 	}
 
@@ -68,7 +73,7 @@ public class Permission implements IPermission {
 	/**
 	 * @return the role
 	 */
-	public Role getRole() {
+	public IRole getRole() {
 		return role;
 	}
 

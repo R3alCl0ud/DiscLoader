@@ -13,6 +13,7 @@ import io.discloader.discloader.entity.guild.IGuild;
 import io.discloader.discloader.entity.guild.IGuildMember;
 import io.discloader.discloader.entity.guild.IRole;
 import io.discloader.discloader.entity.invite.IInvite;
+import io.discloader.discloader.entity.user.IUser;
 import io.discloader.discloader.network.rest.RestAction;
 
 public interface IGuildChannel extends IChannel {
@@ -90,7 +91,19 @@ public interface IGuildChannel extends IChannel {
 	 */
 	IGuild getGuild();
 
-	CompletableFuture<List<IInvite>> getInvites();
+	IInvite getInviteByCode(String code);
+
+	List<IInvite> getInvites();
+
+	List<IInvite> getInvitesByInviter(IUser user);
+
+	List<IInvite> getInvitesByInviter(IGuildMember member);
+
+	List<IInvite> getInvitesByInviter(long userID);
+
+	List<IInvite> getInvitesByInviter(String userID);
+
+	RestAction<List<IInvite>> fetchInvites();
 
 	/**
 	 * Gets the members that can view/join this channel
@@ -103,6 +116,10 @@ public interface IGuildChannel extends IChannel {
 
 	Map<Long, IOverwrite> getOverwrites();
 
+	IOverwrite getOverwriteByID(long id);
+
+	IOverwrite getOverwriteByID(String id);
+
 	int getPosition();
 
 	boolean inCategory();
@@ -112,6 +129,8 @@ public interface IGuildChannel extends IChannel {
 	boolean isNSFW();
 
 	IOverwrite overwriteOf(IRole role);
+
+	IOverwrite overwriteOf(IGuildMember member);
 
 	/**
 	 * Gets all of the channel's {@link IOverwrite overwrites} that applies to a
@@ -127,14 +146,22 @@ public interface IGuildChannel extends IChannel {
 	/**
 	 * Evaluates the permissions for a member in the channel's {@link Guild}
 	 * 
-	 * @param iGuildMember
+	 * @param member
 	 *            The member whose permissions we are evaluating.
 	 * @return A new Permissions object that contains {@literal this}, the
 	 *         {@literal member}, and their evaluated permissions {@link Integer}.
-	 *         <br>
-	 *         null if the channel doesn't belong to a {@link Guild}
 	 */
-	IPermission permissionsOf(IGuildMember iGuildMember);
+	IPermission permissionsOf(IGuildMember member);
+
+	/**
+	 * Evaluates the permissions for a role in the channel's {@link Guild}
+	 * 
+	 * @param role
+	 *            The role whose permissions we are evaluating.
+	 * @return A new Permissions object that contains {@literal this}, the
+	 *         {@literal role}, and their evaluated permissions {@link Integer}.
+	 */
+	IPermission permissionsOf(IRole role);
 
 	/**
 	 * Sets the channel's category.
@@ -164,6 +191,8 @@ public interface IGuildChannel extends IChannel {
 	CompletableFuture<IOverwrite> setOverwrite(IOverwrite overwrite) throws PermissionsException;
 
 	CompletableFuture<List<IOverwrite>> setOverwrite(IOverwrite... overwrites) throws PermissionsException;
+
+	CompletableFuture<List<IOverwrite>> setOverwrite(String reason, IOverwrite... overwrites) throws PermissionsException;
 
 	CompletableFuture<IOverwrite> setOverwrite(IOverwrite overwrite, String reason) throws PermissionsException;
 

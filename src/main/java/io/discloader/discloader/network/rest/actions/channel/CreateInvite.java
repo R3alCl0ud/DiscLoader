@@ -25,9 +25,8 @@ public class CreateInvite extends RestAction<IInvite> {
 
 	@Override
 	public RestAction<IInvite> execute() {
-		if (!executed) {
-			executed = true;
-			CompletableFuture<InviteJSON> cf = loader.rest.request(method, endpoint, options, InviteJSON.class);
+		if (!executed.getAndSet(true)) {
+			CompletableFuture<InviteJSON> cf = sendRequest(InviteJSON.class);
 			cf.thenAcceptAsync(data -> {
 				future.complete(EntityBuilder.getInviteFactory().buildInvite(data));
 			});

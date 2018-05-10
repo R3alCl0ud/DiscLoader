@@ -208,7 +208,7 @@ public class GuildEmoji implements IGuildEmoji {
 		CompletableFuture<IGuildEmoji> future = new CompletableFuture<>();
 		String[] payload = new String[roles.length];
 		for (int i = 0; i < roles.length; i++) {
-			payload[i] = SnowflakeUtil.asString(roles[i]);
+			payload[i] = SnowflakeUtil.toString(roles[i]);
 		}
 
 		IEventListener el = new EventListenerAdapter() {

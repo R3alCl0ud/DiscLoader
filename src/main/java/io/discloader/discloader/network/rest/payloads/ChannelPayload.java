@@ -67,7 +67,7 @@ public class ChannelPayload {
 	}
 
 	public void setParent(IChannelCategory parent) {
-		this.parent_id = SnowflakeUtil.asString(parent);
+		this.parent_id = SnowflakeUtil.toString(parent);
 	}
 
 	public void setType(ChannelTypes type) {

@@ -2,6 +2,7 @@ package io.discloader.discloader.network.rest;
 
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.function.Consumer;
 import java.util.logging.Logger;
 
@@ -20,19 +21,18 @@ import io.discloader.discloader.network.util.Methods;
 public abstract class RestAction<T> {
 
 	public static final Logger LOG = DLLogger.getLogger(RestAction.class);
-
-	protected final DiscLoader loader;
-
-	protected final String endpoint;
-	public static Consumer<?> DEFAULT_SUCCESS = o -> {};
-	public static Consumer<Throwable> DEFAULT_FAILURE = t -> {
+	public static final Consumer<?> DEFAULT_SUCCESS = o -> {};
+	public static final Consumer<Throwable> DEFAULT_FAILURE = t -> {
 		LOG.throwing(t.getStackTrace()[0].getClassName(), t.getStackTrace()[0].getMethodName(), t);
 	};
-	protected RESTOptions options;
-	protected Methods method;
-	protected Gson gson;
+
+	protected final DiscLoader loader;
+	protected final String endpoint;
+	protected final RESTOptions options;
+	protected final Methods method;
+	protected final Gson gson;
 	protected final CompletableFuture<T> future = new CompletableFuture<>();
-	protected boolean executed = false;
+	protected final AtomicBoolean executed = new AtomicBoolean(false);
 
 	public RestAction(DiscLoader loader, String endpoint, Methods method, RESTOptions options) {
 		this.loader = loader;
@@ -86,4 +86,9 @@ public abstract class RestAction<T> {
 			execute();
 		}
 	}
+
+	protected <U> CompletableFuture<U> sendRequest(Class<U> cls) {
+		return loader.rest.request(method, endpoint, options, cls);
+	}
+
 }

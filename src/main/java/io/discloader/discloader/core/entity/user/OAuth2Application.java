@@ -93,4 +93,36 @@ public class OAuth2Application {
 		return getOAuthURL(0);
 	}
 
+	public String getName() {
+		return name;
+	}
+
+	public String getClientID() {
+		return clientID;
+	}
+
+	public String getDescription() {
+		return description;
+	}
+
+	public String getIconHash() {
+		return icon;
+	}
+
+	public String[] getRPCOrigins() {
+		return rpcOrigins;
+	}
+
+	public boolean requiresGrant() {
+		return requiresGrant;
+	}
+
+	public boolean isPublic() {
+		return isPublic;
+	}
+
+	public IUser getOwner() {
+		return owner;
+	}
+
 }

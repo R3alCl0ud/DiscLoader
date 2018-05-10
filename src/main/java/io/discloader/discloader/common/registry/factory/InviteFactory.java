@@ -10,4 +10,8 @@ public class InviteFactory {
 	public IInvite buildInvite(InviteJSON data) {
 		return new Invite(data, DiscLoader.getDiscLoader());
 	}
+
+	public IInvite buildInvite(InviteJSON data, DiscLoader loader) {
+		return new Invite(data, loader);
+	}
 }

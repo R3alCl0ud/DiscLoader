@@ -58,7 +58,7 @@ public class Reaction implements IReaction {
 	@Override
 	public CompletableFuture<List<IUser>> getUsers() {
 		CompletableFuture<List<IUser>> future = new CompletableFuture<>();
-		CompletableFuture<IUser[]> cf = message.getLoader().rest.request(Methods.GET, Endpoints.messageReaction(message.getChannel().getID(), message.getID(), SnowflakeUtil.asString(emoji)), new RESTOptions(), IUser[].class);
+		CompletableFuture<IUser[]> cf = message.getLoader().rest.request(Methods.GET, Endpoints.messageReaction(message.getChannel().getID(), message.getID(), SnowflakeUtil.toString(emoji)), new RESTOptions(), IUser[].class);
 		cf.thenAcceptAsync(ius -> {
 			List<IUser> users = new ArrayList<>();
 			for (IUser usr : ius) {
@@ -88,11 +88,11 @@ public class Reaction implements IReaction {
 
 	@Override
 	public CompletableFuture<Void> removeUserReaction(IUser user) {
-		return message.getLoader().rest.request(Methods.DELETE, Endpoints.userReaction(message.getChannel().getID(), message.getID(), user.getID(), SnowflakeUtil.asString(emoji)), new RESTOptions(), Void.class);
+		return message.getLoader().rest.request(Methods.DELETE, Endpoints.userReaction(message.getChannel().getID(), message.getID(), user.getID(), SnowflakeUtil.toString(emoji)), new RESTOptions(), Void.class);
 	}
 
 	@Override
 	public CompletableFuture<Void> removeReaction() {
-		return message.getLoader().rest.request(Methods.DELETE, Endpoints.currentUserReaction(message.getChannel().getID(), message.getID(), SnowflakeUtil.asString(emoji)), new RESTOptions(), Void.class);
+		return message.getLoader().rest.request(Methods.DELETE, Endpoints.currentUserReaction(message.getChannel().getID(), message.getID(), SnowflakeUtil.toString(emoji)), new RESTOptions(), Void.class);
 	}
 }

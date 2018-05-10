@@ -30,7 +30,7 @@ public class ChannelCategory extends GuildChannel implements IChannelCategory {
 	@Override
 	public <T extends IGuildChannel> CompletableFuture<T> addChannel(T channel) {
 		CompletableFuture<T> future = new CompletableFuture<>();
-		JSONObject data = new JSONObject().put("parent_id", SnowflakeUtil.asString(this));
+		JSONObject data = new JSONObject().put("parent_id", SnowflakeUtil.toString(this));
 		loader.rest.request(Methods.PATCH, Endpoints.channel(channel.getID()), new RESTOptions(data), ChannelJSON.class).thenAcceptAsync(d -> {
 			@SuppressWarnings("unchecked")
 			T newChannel = (T) EntityBuilder.getChannelFactory().buildChannel(d, getLoader(), guild, false);
@@ -45,7 +45,7 @@ public class ChannelCategory extends GuildChannel implements IChannelCategory {
 	@Override
 	public CompletableFuture<IGuildChannel> createChannel(String name, ChannelTypes type) {
 		CompletableFuture<IGuildChannel> future = new CompletableFuture<>();
-		JSONObject data = new JSONObject().put("parent_id", SnowflakeUtil.asString(this)).put("name", name).put("type", type.toInt());
+		JSONObject data = new JSONObject().put("parent_id", SnowflakeUtil.toString(this)).put("name", name).put("type", type.toInt());
 		CompletableFuture<ChannelJSON> cf = loader.rest.request(Methods.POST, Endpoints.guildChannels(getGuild().getID()), new RESTOptions(data), ChannelJSON.class);
 		cf.thenAcceptAsync(channelJSON -> {
 			if (channelJSON != null) {
@@ -85,7 +85,7 @@ public class ChannelCategory extends GuildChannel implements IChannelCategory {
 	@Override
 	public CompletableFuture<IGuildTextChannel> createTextChannel(String name) {
 		CompletableFuture<IGuildTextChannel> future = new CompletableFuture<>();
-		JSONObject data = new JSONObject().put("parent_id", SnowflakeUtil.asString(this)).put("name", name).put("type", 0);
+		JSONObject data = new JSONObject().put("parent_id", SnowflakeUtil.toString(this)).put("name", name).put("type", 0);
 		CompletableFuture<ChannelJSON> cf = loader.rest.request(Methods.POST, Endpoints.guildChannels(getGuild().getID()), new RESTOptions(data), ChannelJSON.class);
 		cf.thenAcceptAsync(channelJSON -> {
 			if (channelJSON != null) {
@@ -124,7 +124,7 @@ public class ChannelCategory extends GuildChannel implements IChannelCategory {
 	@Override
 	public CompletableFuture<IGuildVoiceChannel> createVoiceChannel(String name) {
 		CompletableFuture<IGuildVoiceChannel> future = new CompletableFuture<>();
-		JSONObject data = new JSONObject().put("parent_id", SnowflakeUtil.asString(this)).put("name", name).put("type", 2);
+		JSONObject data = new JSONObject().put("parent_id", SnowflakeUtil.toString(this)).put("name", name).put("type", 2);
 		CompletableFuture<ChannelJSON> cf = loader.rest.request(Methods.POST, Endpoints.guildChannels(getGuild().getID()), new RESTOptions(data), ChannelJSON.class);
 		cf.thenAcceptAsync(channelJSON -> {
 			if (channelJSON != null) {

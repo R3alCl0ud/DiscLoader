@@ -3,6 +3,7 @@ package io.discloader.discloader.core.entity;
 import io.discloader.discloader.core.entity.guild.GuildMember;
 import io.discloader.discloader.core.entity.guild.Role;
 import io.discloader.discloader.entity.IOverwrite;
+import io.discloader.discloader.entity.IPermission;
 import io.discloader.discloader.entity.channel.IGuildChannel;
 import io.discloader.discloader.entity.guild.IGuildMember;
 import io.discloader.discloader.entity.guild.IRole;
@@ -52,6 +53,14 @@ public class Overwrite implements IOverwrite {
 	public transient IGuildMember member;
 
 	private transient IGuildChannel channel;
+
+	public Overwrite(IGuildMember member) {
+		this(0, 0, member);
+	}
+
+	public Overwrite(IRole role) {
+		this(0, 0, role);
+	}
 
 	public Overwrite(long allow, long deny) {
 		this.allow = allow;
@@ -108,25 +117,11 @@ public class Overwrite implements IOverwrite {
 	}
 
 	public IGuildMember getMember() {
-		return channel.getGuild().getMembers().get(id);
+		return channel.getGuild().getMember(id);
 	}
 
 	public IRole getRole() {
-		return channel.getGuild().getRoles().get(id);
-	}
-
-	public long setAllowedPermissions(Permissions... permissions) {
-		for (Permissions p : permissions) {
-			allow |= p.getValue();
-		}
-		return allow;
-	}
-
-	public long setDeniedPermissions(Permissions... permissions) {
-		for (Permissions p : permissions) {
-			deny |= p.getValue();
-		}
-		return allow;
+		return channel.getGuild().getRoleByID(id);
 	}
 
 	@Override
@@ -145,6 +140,18 @@ public class Overwrite implements IOverwrite {
 	public void setDenied(Permissions... permissions) {
 		for (Permissions p : permissions) {
 			deny |= p.getValue();
+		}
+	}
+
+	@Override
+	public IPermission computePermissions() {
+		switch (type) {
+		case "member":
+			return channel.permissionsOf(getMember());
+		case "role":
+			return channel.permissionsOf(getRole());
+		default:
+			return null;
 		}
 	}
 

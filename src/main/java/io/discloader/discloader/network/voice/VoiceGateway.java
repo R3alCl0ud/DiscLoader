@@ -136,7 +136,7 @@ public class VoiceGateway extends WebSocketAdapter {
 	}
 
 	public void sendIdentify() {
-		VoiceIdentify payload = new VoiceIdentify(SnowflakeUtil.asString(connection.getGuild()), SnowflakeUtil.asString(connection.getLoader().user), sessionID, connection.getToken());
+		VoiceIdentify payload = new VoiceIdentify(SnowflakeUtil.toString(connection.getGuild()), SnowflakeUtil.toString(connection.getLoader().user), sessionID, connection.getToken());
 		VoicePacket packet = new VoicePacket(IDENTIFY, payload);
 		send(gson.toJson(packet));
 	}

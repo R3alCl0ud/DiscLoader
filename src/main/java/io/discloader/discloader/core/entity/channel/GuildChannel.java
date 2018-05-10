@@ -25,6 +25,7 @@ import io.discloader.discloader.entity.guild.IGuild;
 import io.discloader.discloader.entity.guild.IGuildMember;
 import io.discloader.discloader.entity.guild.IRole;
 import io.discloader.discloader.entity.invite.IInvite;
+import io.discloader.discloader.entity.user.IUser;
 import io.discloader.discloader.entity.util.Permissions;
 import io.discloader.discloader.entity.util.SnowflakeUtil;
 import io.discloader.discloader.network.json.ChannelJSON;
@@ -75,6 +76,8 @@ public class GuildChannel extends Channel implements IGuildChannel {
 	private boolean nsfw;
 
 	private long parentID;
+
+	private List<IInvite> invites = new ArrayList<>();
 
 	public GuildChannel(IGuild guild, ChannelJSON channel) {
 		super(guild.getLoader(), channel);
@@ -188,6 +191,17 @@ public class GuildChannel extends Channel implements IGuildChannel {
 	}
 
 	@Override
+	public RestAction<List<IInvite>> fetchInvites() {
+		return new FetchInvites(this).onSuccess(invts -> {
+			for (IInvite invite : invts) {
+				if (getInviteByCode(invite.getCode()) == null) {
+					invites.add(invite);
+				}
+			}
+		});
+	}
+
+	@Override
 	public IChannelCategory getCategory() {
 		return getGuild().getChannelCategoryByID(parentID);
 	}
@@ -198,8 +212,42 @@ public class GuildChannel extends Channel implements IGuildChannel {
 	}
 
 	@Override
-	public CompletableFuture<List<IInvite>> getInvites() {
-		return new FetchInvites(this).execute();
+	public IInvite getInviteByCode(String code) {
+		for (IInvite invite : getInvites()) {
+			if (invite.getCode().equals(code)) {
+				return invite;
+			}
+		}
+		return null;
+	}
+
+	@Override
+	public List<IInvite> getInvites() {
+		return invites;
+	}
+
+	@Override
+	public List<IInvite> getInvitesByInviter(IGuildMember member) {
+		return getInvitesByInviter(member.getUser());
+	}
+
+	@Override
+	public List<IInvite> getInvitesByInviter(IUser user) {
+		return getInvitesByInviter(user.getID());
+	}
+
+	public List<IInvite> getInvitesByInviter(long userID) {
+		List<IInvite> invites = new ArrayList<>();
+		for (IInvite invite : getInvites()) {
+			if (invite.getInviter().getID() == userID) {
+				invites.add(invite);
+			}
+		}
+		return invites;
+	}
+
+	public List<IInvite> getInvitesByInviter(String userID) {
+		return getInvitesByInviter(SnowflakeUtil.parse(userID));
 	}
 
 	@Override
@@ -215,6 +263,16 @@ public class GuildChannel extends Channel implements IGuildChannel {
 	@Override
 	public String getName() {
 		return name;
+	}
+
+	@Override
+	public IOverwrite getOverwriteByID(long id) {
+		return getOverwrites().get(id);
+	}
+
+	@Override
+	public IOverwrite getOverwriteByID(String id) {
+		return getOverwriteByID(SnowflakeUtil.parse(id));
 	}
 
 	public Map<Long, IOverwrite> getOverwrites() {
@@ -252,8 +310,13 @@ public class GuildChannel extends Channel implements IGuildChannel {
 	}
 
 	@Override
+	public IOverwrite overwriteOf(IGuildMember member) {
+		return getOverwriteByID(member.getID());
+	}
+
+	@Override
 	public IOverwrite overwriteOf(IRole role) {
-		return overwrites.get(role.getID());
+		return getOverwriteByID(role.getID());
 	}
 
 	@Override
@@ -279,10 +342,18 @@ public class GuildChannel extends Channel implements IGuildChannel {
 			}
 		}
 		for (IOverwrite overwrite : overwritesOf(member)) {
-			raw |= overwrite.getAllowed();
 			raw &= ~overwrite.getDenied();
+			raw |= overwrite.getAllowed();
 		}
 		return new Permission(member, this, raw);
+	}
+
+	@Override
+	public IPermission permissionsOf(IRole role) {
+		long raw = role.getPermissions().toLong();
+		raw &= ~overwriteOf(role).getDenied();
+		raw |= overwriteOf(role).getAllowed();
+		return new Permission(role, raw, this);
 	}
 
 	protected String sanitizeChannelName(String name) {
@@ -292,7 +363,7 @@ public class GuildChannel extends Channel implements IGuildChannel {
 	@Override
 	public CompletableFuture<IGuildChannel> setCategory(IChannelCategory category) {
 		CompletableFuture<IGuildChannel> future = new CompletableFuture<>();
-		JSONObject settings = new JSONObject().put("parent_id", SnowflakeUtil.asString(category));
+		JSONObject settings = new JSONObject().put("parent_id", SnowflakeUtil.toString(category));
 		loader.rest.request(Methods.PATCH, Endpoints.channel(getID()), new RESTOptions(settings), ChannelJSON.class).thenAcceptAsync(data -> {
 			IGuildChannel newChannel = (IGuildChannel) EntityBuilder.getChannelFactory().buildChannel(data, getLoader(), getGuild(), false);
 			future.complete(newChannel);
@@ -341,8 +412,23 @@ public class GuildChannel extends Channel implements IGuildChannel {
 		if (overwrite.getType().equals("member")) {
 			return setPermissions(overwrite.getAllowed(), overwrite.getDenied(), overwrite.getMember(), reason);
 		}
-
 		return setPermissions(overwrite.getAllowed(), overwrite.getDenied(), overwrite.getRole(), reason);
+	}
+
+	@Override
+	public CompletableFuture<List<IOverwrite>> setOverwrite(String reason, IOverwrite... overwrites) throws PermissionsException {
+		CompletableFuture<List<IOverwrite>> future = new CompletableFuture<>();
+		JSONObject settings = new JSONObject().put("name", name).put("position", position).put("nsfw", nsfw).put("permission_overwrites", overwrites);
+		loader.rest.request(Methods.PATCH, Endpoints.channel(getID()), new RESTOptions(true, settings, reason), ChannelJSON.class).thenAcceptAsync(data -> {
+			IChannel newChannel = EntityBuilder.getChannelFactory().buildChannel(data, getLoader(), getGuild(), false);
+			if (newChannel instanceof IGuildChannel) {
+				future.complete(new ArrayList<>(((IGuildChannel) newChannel).getOverwrites().values()));
+			}
+		}).exceptionally(ex -> {
+			future.completeExceptionally(ex);
+			return null;
+		});
+		return future;
 	}
 
 	@Override
@@ -427,11 +513,11 @@ public class GuildChannel extends Channel implements IGuildChannel {
 		}
 		for (IGuildChannel channel : channels) {
 			if (channel.getID() == getID()) {
-				positions.add(new JSONObject().put("id", SnowflakeUtil.asString(channel)).put("position", position));
+				positions.add(new JSONObject().put("id", SnowflakeUtil.toString(channel)).put("position", position));
 			} else if (channel.getPosition() >= position) {
-				positions.add(new JSONObject().put("id", SnowflakeUtil.asString(channel)).put("position", channel.getPosition() + 1));
+				positions.add(new JSONObject().put("id", SnowflakeUtil.toString(channel)).put("position", channel.getPosition() + 1));
 			} else {
-				positions.add(new JSONObject().put("id", SnowflakeUtil.asString(channel)).put("position", channel.getPosition()));
+				positions.add(new JSONObject().put("id", SnowflakeUtil.toString(channel)).put("position", channel.getPosition()));
 			}
 			if (channel.getPosition() < 0)
 				normalize = true;

@@ -7,6 +7,8 @@ import io.discloader.discloader.entity.util.Permissions;
 
 public interface IOverwrite extends ISnowflake {
 
+	IPermission computePermissions();
+	
 	long getAllowed();
 
 	long getDenied();
@@ -17,6 +19,7 @@ public interface IOverwrite extends ISnowflake {
 
 	String getType();
 
+	
 	void setAllowed(Permissions... permissions);
 
 	void setDenied(Permissions... permissions);

@@ -162,7 +162,7 @@ public class Message<T extends ITextChannel> implements IMessage {
 
 	@Override
 	public CompletableFuture<Void> addReaction(IEmoji emoji) {
-		return addReaction(SnowflakeUtil.asString(emoji));
+		return addReaction(SnowflakeUtil.toString(emoji));
 	}
 
 	@Override
@@ -412,13 +412,13 @@ public class Message<T extends ITextChannel> implements IMessage {
 
 	@Override
 	public IReaction getReaction(IEmoji emoji) {
-		return getReaction(SnowflakeUtil.asString(emoji));
+		return getReaction(SnowflakeUtil.toString(emoji));
 	}
 
 	@Override
 	public IReaction getReaction(String unicode) {
 		for (IReaction reaction : reactions) {
-			if (unicode.equals(SnowflakeUtil.asString(reaction.getEmoji())))
+			if (unicode.equals(SnowflakeUtil.toString(reaction.getEmoji())))
 				return reaction;
 		}
 		return null;
@@ -494,7 +494,7 @@ public class Message<T extends ITextChannel> implements IMessage {
 
 	@Override
 	public CompletableFuture<IMessage> removeReaction(IEmoji emoji) {
-		return removeReaction(SnowflakeUtil.asString(emoji));
+		return removeReaction(SnowflakeUtil.toString(emoji));
 	}
 
 	@Override

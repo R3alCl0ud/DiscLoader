@@ -376,7 +376,7 @@ public class Guild implements IGuild {
 		}
 		String[] rids = new String[roles.length];
 		for (int i = 0; i < rids.length; i++) {
-			rids[i] = SnowflakeUtil.asString(roles[i]);
+			rids[i] = SnowflakeUtil.toString(roles[i]);
 		}
 		CreateEmoji ce = new CreateEmoji(name, base64, rids);
 		CompletableFuture<EmojiJSON> cf = getLoader().rest.request(Methods.POST, Endpoints.guildEmojis(getID()), new RESTOptions(ce), EmojiJSON.class);
@@ -428,7 +428,7 @@ public class Guild implements IGuild {
 	@Override
 	public CompletableFuture<IGuildTextChannel> createTextChannel(String name, IChannelCategory category, IOverwrite... overwrites) {
 		CompletableFuture<IGuildTextChannel> future = new CompletableFuture<>();
-		JSONObject data = new JSONObject().put("parent_id", SnowflakeUtil.asString(category)).put("name", name).put("type", 0);
+		JSONObject data = new JSONObject().put("parent_id", SnowflakeUtil.toString(category)).put("name", name).put("type", 0);
 		CompletableFuture<ChannelJSON> cf = loader.rest.request(Methods.POST, Endpoints.guildChannels(getID()), new RESTOptions(data), ChannelJSON.class);
 		cf.thenAcceptAsync(channelJSON -> {
 			if (channelJSON != null) {
@@ -717,7 +717,7 @@ public class Guild implements IGuild {
 	@Override
 	public CompletableFuture<IAuditLog> getAuditLog(IAuditLogEntry before) {
 		CompletableFuture<IAuditLog> future = new CompletableFuture<>();
-		JSONObject params = new JSONObject().put("before", SnowflakeUtil.asString(before));
+		JSONObject params = new JSONObject().put("before", SnowflakeUtil.toString(before));
 		CompletableFuture<AuditLogJSON> cf = loader.rest.request(Methods.GET, Endpoints.auditLogs(getID()), new RESTOptions(params), AuditLogJSON.class);
 		cf.thenAcceptAsync(al -> {
 			future.complete(new AuditLog(this, al));
@@ -747,7 +747,7 @@ public class Guild implements IGuild {
 	@Override
 	public CompletableFuture<IAuditLog> getAuditLog(IUser user) {
 		CompletableFuture<IAuditLog> future = new CompletableFuture<>();
-		JSONObject params = new JSONObject().put("user_id", SnowflakeUtil.asString(user));
+		JSONObject params = new JSONObject().put("user_id", SnowflakeUtil.toString(user));
 		CompletableFuture<AuditLogJSON> cf = loader.rest.request(Methods.GET, Endpoints.auditLogs(getID()), new RESTOptions(params), AuditLogJSON.class);
 		cf.thenAcceptAsync(al -> {
 			future.complete(new AuditLog(this, al));
@@ -762,7 +762,7 @@ public class Guild implements IGuild {
 	@Override
 	public CompletableFuture<IAuditLog> getAuditLog(IUser user, ActionTypes action, IAuditLogEntry before, int limit) {
 		CompletableFuture<IAuditLog> future = new CompletableFuture<>();
-		JSONObject params = new JSONObject().put("user_id", SnowflakeUtil.asString(user)).put("action_type", action.toInt()).put("before", SnowflakeUtil.asString(before)).put("limit", limit);
+		JSONObject params = new JSONObject().put("user_id", SnowflakeUtil.toString(user)).put("action_type", action.toInt()).put("before", SnowflakeUtil.toString(before)).put("limit", limit);
 		CompletableFuture<AuditLogJSON> cf = loader.rest.request(Methods.GET, Endpoints.auditLogs(getID()), new RESTOptions(params), AuditLogJSON.class);
 		cf.thenAcceptAsync(al -> {
 			future.complete(new AuditLog(this, al));
@@ -777,7 +777,7 @@ public class Guild implements IGuild {
 	@Override
 	public CompletableFuture<IAuditLog> getAuditLog(IUser user, int limit) {
 		CompletableFuture<IAuditLog> future = new CompletableFuture<>();
-		JSONObject params = new JSONObject().put("user_id", SnowflakeUtil.asString(user)).put("limit", limit);
+		JSONObject params = new JSONObject().put("user_id", SnowflakeUtil.toString(user)).put("limit", limit);
 		CompletableFuture<AuditLogJSON> cf = loader.rest.request(Methods.GET, Endpoints.auditLogs(getID()), new RESTOptions(params), AuditLogJSON.class);
 		cf.thenAcceptAsync(al -> {
 			future.complete(new AuditLog(this, al));
@@ -1235,7 +1235,7 @@ public class Guild implements IGuild {
 	public CompletableFuture<IGuild> setOwner(IGuildMember member) {
 		if (!isOwner()) // check if we are the guild's owner
 			throw new UnauthorizedException("Only the guild's owner can give ownership of the guild to another user."); // throw an exception if we aren't
-		return new ModifyGuild(this, new JSONObject().put("owner_id", SnowflakeUtil.asString(member))).execute(); //
+		return new ModifyGuild(this, new JSONObject().put("owner_id", SnowflakeUtil.toString(member))).execute(); //
 	}
 
 	@Override

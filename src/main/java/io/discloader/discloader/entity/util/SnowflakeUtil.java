@@ -20,7 +20,14 @@ public class SnowflakeUtil {
 		return Long.parseUnsignedLong(id, 10);
 	}
 
+	/**
+	 * @deprecated Use {@link #toString(ISnowflake)} instead
+	 */
 	public static String asString(ISnowflake snowflake) {
+		return toString(snowflake);
+	}
+
+	public static String toString(ISnowflake snowflake) {
 		if (snowflake == null) return null;
 		if (snowflake.getID() == 0l) return snowflake.toString();
 		return Long.toUnsignedString(snowflake.getID(), 10);

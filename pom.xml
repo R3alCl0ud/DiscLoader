@@ -5,7 +5,7 @@
 
 	<groupId>io.discloader</groupId>
 	<artifactId>discloader</artifactId>
-	<version>0.2.13</version>
+	<version>0.2.14</version>
 
 	<name>DiscLoader</name>
 	<description>A simple easy to use Discord API rest/gateway client</description>
@@ -31,7 +31,7 @@
 		<dependency>
 			<groupId>com.neovisionaries</groupId>
 			<artifactId>nv-websocket-client</artifactId>
-			<version>1.31</version>
+			<version>2.4</version>
 		</dependency>
 		<dependency>
 			<groupId>com.mashape.unirest</groupId>
@@ -41,17 +41,17 @@
 		<dependency>
 			<groupId>com.google.code.gson</groupId>
 			<artifactId>gson</artifactId>
-			<version>2.8.0</version>
+			<version>2.8.2</version>
 		</dependency>
 		<dependency>
 			<groupId>com.google.guava</groupId>
 			<artifactId>guava</artifactId>
-			<version>23.0</version>
+			<version>24.1-jre</version>
 		</dependency>
 		<dependency>
 			<groupId>org.json</groupId>
 			<artifactId>json</artifactId>
-			<version>20160810</version>
+			<version>20180130</version>
 		</dependency>
 		<dependency>
 			<groupId>com.sedmelluq</groupId>
@@ -61,24 +61,17 @@
 		<dependency>
 			<groupId>org.slf4j</groupId>
 			<artifactId>slf4j-jdk14</artifactId>
-			<version>1.8.0-alpha2</version>
+			<version>1.8.0-beta2</version>
 		</dependency>
 		<dependency>
 			<groupId>commons-codec</groupId>
 			<artifactId>commons-codec</artifactId>
-			<version>1.9</version>
-		</dependency>
-		<dependency>
-			<groupId>pl.project13.maven</groupId>
-			<artifactId>git-commit-id-plugin</artifactId>
-			<version>2.2.2</version>
-			<type>maven-plugin</type>
-			<scope>test</scope>
+			<version>1.11</version>
 		</dependency>
 		<dependency>
 			<groupId>commons-io</groupId>
 			<artifactId>commons-io</artifactId>
-			<version>2.5</version>
+			<version>2.6</version>
 		</dependency>
 	</dependencies>
 
@@ -111,7 +104,6 @@
 
 	<build>
 		<finalName>${project.artifactId}-${project.version}</finalName>
-
 		<plugins>
 			<plugin>
 				<groupId>org.codehaus.mojo</groupId>
@@ -174,59 +166,7 @@
 					</execution>
 				</executions>
 				<configuration>
-					<finalName>${project.artifactId}-v${project.version}_${git.commit.id.describe}-${maven.build.timestamp}</finalName>
-
-				</configuration>
-			</plugin>
-			<plugin>
-				<groupId>pl.project13.maven</groupId>
-				<artifactId>git-commit-id-plugin</artifactId>
-				<version>2.2.2</version>
-				<executions>
-					<execution>
-						<id>get-the-git-infos</id>
-						<phase>clean</phase>
-						<goals>
-							<goal>revision</goal>
-						</goals>
-					</execution>
-				</executions>
-				<configuration>
-					<injectAllReactorProjects>true</injectAllReactorProjects>
-					<verbose>true</verbose>
-					<skip>false</skip>
-					<prefix>git</prefix>
-					<dotGitDirectory>${project.basedir}/.git</dotGitDirectory>
-					<generateGitPropertiesFile>true</generateGitPropertiesFile>
-					<generateGitPropertiesFilename>target/testing.properties</generateGitPropertiesFilename>
-					<dateFormat>yy'w'ww'd'dd</dateFormat>
-					<useNativeGit>false</useNativeGit>
-					<abbrevLength>7</abbrevLength>
-					<format>properties</format>
-					<injectAllReactorProjects>true</injectAllReactorProjects>
-					<gitDescribe>
-						<skip>false</skip>
-						<always>true</always>
-						<abbrev>7</abbrev>
-						<match>*</match>
-						<dirty>.DEV</dirty>
-						<forceLongFormat>false</forceLongFormat>
-					</gitDescribe>
-					<excludeProperties>
-						<excludeProperty>git.remote.origin.url</excludeProperty>
-					</excludeProperties>
-					<failOnNoGitDirectory>false</failOnNoGitDirectory>
-					<failOnUnableToExtractRepoInfo>true</failOnUnableToExtractRepoInfo>
-					<!-- used in validateRevision -->
-					<validationProperties>
-						<!-- verify that the project version does not end with `-SNAPSHOT` -->
-						<validationProperty>
-							<name>validating project version</name>
-							<value>${project.version}</value>
-							<shouldMatchTo>0</shouldMatchTo>
-						</validationProperty>
-					</validationProperties>
-					<validationShouldFailIfNoMatch>false</validationShouldFailIfNoMatch>
+					<finalName>${project.artifactId}-v${project.version}</finalName>
 				</configuration>
 			</plugin>
 			<plugin>
@@ -291,4 +231,8 @@
 
 		</plugins>
 	</build>
+	<issueManagement>
+		<system>Git</system>
+		<url>https://github.com/r3alcl0ud/discloader/issues</url>
+	</issueManagement>
 </project>

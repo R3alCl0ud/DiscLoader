@@ -124,7 +124,7 @@ public class GuildMember implements IGuildMember {
 		} else {
 			roleIDs = new String[member.getRoles().size()];
 			for (int i = 0; i < member.getRoles().size(); i++) {
-				roleIDs[i] = SnowflakeUtil.asString(member.getRoles().get(i));
+				roleIDs[i] = SnowflakeUtil.toString(member.getRoles().get(i));
 			}
 		}
 		joinedAt = member.getJoinTime();
@@ -328,7 +328,7 @@ public class GuildMember implements IGuildMember {
 		List<IRole> rls = mergeRoles(roles);
 		String[] ids = new String[rls.size()];
 		for (int i = 0; i < ids.length; i++) {
-			ids[i] = SnowflakeUtil.asString(rls.get(i));
+			ids[i] = SnowflakeUtil.toString(rls.get(i));
 		}
 
 		JSONObject payload = new JSONObject().put("roles", ids);
@@ -370,7 +370,7 @@ public class GuildMember implements IGuildMember {
 		List<IRole> rls = mergeRoles(roles);
 		String[] ids = new String[rls.size()];
 		for (int i = 0; i < ids.length; i++) {
-			ids[i] = SnowflakeUtil.asString(rls.get(i));
+			ids[i] = SnowflakeUtil.toString(rls.get(i));
 		}
 
 		JSONObject payload = new JSONObject().put("roles", ids);
@@ -524,7 +524,7 @@ public class GuildMember implements IGuildMember {
 		CompletableFuture<IGuildMember> future = new CompletableFuture<IGuildMember>();
 		JSONObject payload = new JSONObject();
 		if (channel != null) {
-			payload.put("channel_id", SnowflakeUtil.asString(channel));
+			payload.put("channel_id", SnowflakeUtil.toString(channel));
 		}
 		CompletableFuture<Void> cf = getLoader().rest.request(Methods.PATCH, Endpoints.guildMember(getGuild().getID(), getID()), new RESTOptions(true, payload, reason), Void.class);
 		cf.thenAcceptAsync(v -> {
@@ -636,7 +636,7 @@ public class GuildMember implements IGuildMember {
 
 		String[] ids = new String[rls.size()];
 		for (int i = 0; i < ids.length; i++) {
-			ids[i] = SnowflakeUtil.asString(rls.get(i));
+			ids[i] = SnowflakeUtil.toString(rls.get(i));
 		}
 
 		JSONObject payload = new JSONObject().put("roles", ids);
@@ -680,7 +680,7 @@ public class GuildMember implements IGuildMember {
 
 		String[] ids = new String[rls.size()];
 		for (int i = 0; i < ids.length; i++) {
-			ids[i] = SnowflakeUtil.asString(rls.get(i));
+			ids[i] = SnowflakeUtil.toString(rls.get(i));
 		}
 
 		JSONObject payload = new JSONObject().put("roles", ids);

@@ -24,14 +24,16 @@ public class CreateMessage extends RestAction<IMessage> {
 
 	@Override
 	public RestAction<IMessage> execute() {
-		CompletableFuture<MessageJSON> cf = loader.rest.request(method, endpoint, options, MessageJSON.class);
-		cf.thenAcceptAsync((data) -> {
-			future.complete(new Message<>(channel, data));
-		});
-		cf.exceptionally(ex -> {
-			future.completeExceptionally(ex);
-			return null;
-		});
+		if (!executed.getAndSet(true)) {
+			CompletableFuture<MessageJSON> cf = sendRequest(MessageJSON.class);
+			cf.thenAcceptAsync((data) -> {
+				future.complete(new Message<>(channel, data));
+			});
+			cf.exceptionally(ex -> {
+				future.completeExceptionally(ex);
+				return null;
+			});
+		}
 		return this;
 	}
 }
