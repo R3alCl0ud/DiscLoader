@@ -8,6 +8,7 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 
 import io.discloader.discloader.common.DiscLoader;
+import io.discloader.discloader.common.event.guild.member.GuildMemberAddEvent;
 import io.discloader.discloader.common.event.guild.member.GuildMembersChunkEvent;
 import io.discloader.discloader.common.exceptions.AccountTypeException;
 import io.discloader.discloader.common.exceptions.GuildSyncException;
@@ -39,6 +40,7 @@ import io.discloader.discloader.network.json.GuildJSON;
 import io.discloader.discloader.network.json.MemberJSON;
 import io.discloader.discloader.network.json.PresenceJSON;
 import io.discloader.discloader.network.json.RoleJSON;
+import io.discloader.discloader.network.rest.RestAction;
 
 /**
  * This represents a Guild in Discord's API
@@ -357,6 +359,14 @@ public interface IGuild extends ISnowflake, ICreationTime {
 	 */
 	CompletableFuture<IGuild> edit(String name, String icon, IGuildVoiceChannel afkChannel) throws IOException;
 
+	RestAction<IGuildBan> fetchBan(IUser user);
+	
+	RestAction<IGuildBan> fetchBan(IGuildMember member);
+	
+	RestAction<IGuildBan> fetchBan(long userID);
+	
+	RestAction<IGuildBan> fetchBan(String userID);
+	
 	CompletableFuture<List<IGuildBan>> fetchBans();
 
 	CompletableFuture<List<IInvite>> fetchInvites();

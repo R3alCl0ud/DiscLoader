@@ -73,6 +73,7 @@ import io.discloader.discloader.network.json.VoiceRegionJSON;
 import io.discloader.discloader.network.json.VoiceStateJSON;
 import io.discloader.discloader.network.rest.QueryParameter;
 import io.discloader.discloader.network.rest.RESTOptions;
+import io.discloader.discloader.network.rest.RestAction;
 import io.discloader.discloader.network.rest.actions.guild.CreateRole;
 import io.discloader.discloader.network.rest.actions.guild.ModifyGuild;
 import io.discloader.discloader.network.rest.payloads.ChannelPayload;
@@ -552,6 +553,42 @@ public class Guild implements IGuild {
 		return this == guild || getID() == guild.getID();
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * @see io.discloader.discloader.entity.guild.IGuild#fetchBan(io.discloader.discloader.entity.guild.IGuildMember)
+	 */
+	@Override
+	public RestAction<IGuildBan> fetchBan(IGuildMember member) {
+		return null;
+	}
+	
+	/*
+	 * (non-Javadoc)
+	 * @see io.discloader.discloader.entity.guild.IGuild#fetchBan(io.discloader.discloader.entity.user.IUser)
+	 */
+	@Override
+	public RestAction<IGuildBan> fetchBan(IUser user) {
+		return null;
+	}
+	
+	/*
+	 * (non-Javadoc)
+	 * @see io.discloader.discloader.entity.guild.IGuild#fetchBan(long)
+	 */
+	@Override
+	public RestAction<IGuildBan> fetchBan(long userID) {
+		return null;
+	}
+	
+	/*
+	 * (non-Javadoc)
+	 * @see io.discloader.discloader.entity.guild.IGuild#fetchBan(java.lang.String)
+	 */
+	@Override
+	public RestAction<IGuildBan> fetchBan(String userID) {
+		return null;
+	}
+	
 	@Override
 	public CompletableFuture<List<IGuildBan>> fetchBans() {
 		CompletableFuture<List<IGuildBan>> future = new CompletableFuture<List<IGuildBan>>();

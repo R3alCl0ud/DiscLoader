@@ -216,6 +216,13 @@ public class EntityRegistry {
 		return getGroupChannelByID(SnowflakeUtil.parse(id));
 	}
 	
+	public static IGroupChannel getGroupChannelByName(String name) {
+		for (IGroupChannel channel : getGroupChannelsCollection()) {
+			if (channel.getName().equals(name)) return channel;
+		}
+		return null;
+	}
+	
 	public static Map<Long, IGroupChannel> getGroupChannels() {
 		return groupChannels;
 	}

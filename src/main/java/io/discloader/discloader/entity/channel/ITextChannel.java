@@ -33,9 +33,6 @@ public interface ITextChannel extends IChannel {
 	 */
 	CompletableFuture<Map<Long, IMessage>> deleteMessages(IMessage... messages);
 
-	// CompletableFuture<Map<Long, IMessage>> deleteMessages(Map<Long, IMessage>
-	// messages);
-
 	/**
 	 * Deletes multiple messages from the channel.
 	 * 

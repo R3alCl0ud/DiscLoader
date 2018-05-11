@@ -32,6 +32,7 @@ import io.discloader.discloader.common.registry.EntityRegistry;
 import io.discloader.discloader.common.registry.ModRegistry;
 import io.discloader.discloader.core.entity.invite.Invite;
 import io.discloader.discloader.core.entity.user.DLUser;
+import io.discloader.discloader.entity.channel.IGroupChannel;
 import io.discloader.discloader.entity.guild.DefaultNotifications;
 import io.discloader.discloader.entity.guild.ExplicitContentFilter;
 import io.discloader.discloader.entity.guild.IGuild;
@@ -49,6 +50,8 @@ import io.discloader.discloader.network.json.UserJSON;
 import io.discloader.discloader.network.json.VoiceRegionJSON;
 import io.discloader.discloader.network.rest.RESTManager;
 import io.discloader.discloader.network.rest.RESTOptions;
+import io.discloader.discloader.network.rest.RestAction;
+import io.discloader.discloader.network.rest.actions.group.CreateGroupDMChannel;
 import io.discloader.discloader.network.util.Endpoints;
 import io.discloader.discloader.network.util.Methods;
 import io.discloader.discloader.util.DLUtil;
@@ -63,7 +66,7 @@ import io.discloader.discloader.util.DLUtil.Status;
  * public static void main(String... args) {
  * 	// create a new instance of DiscLoader
  * 	DiscLoader loader = new DiscLoader();
- * 
+ * 	
  * 	// time to login
  * 	loader.login(TOKEN);
  *
@@ -73,34 +76,34 @@ import io.discloader.discloader.util.DLUtil.Status;
  * @author Perry Berman, Zach Waldron
  */
 public class DiscLoader {
-
+	
 	public static final Logger LOG = DLLogger.getLogger(DiscLoader.class);
-
+	
 	public static DiscLoader getDiscLoader() {
 		return ModRegistry.loader;
 	}
-
+	
 	private Shard shard = null;
 	private final EventManager eventManager;
 	private CompletableFuture<DiscLoader> rf;
 	private Map<Long, IGuild> syncingGuilds;
 	private long readyAt = 0l;
-
+	
 	public final List<IEventListener> handlers;
 	public final Gateway gateway;
 	public final RESTManager rest;
 	public String token = null;
 	public boolean ready;
 	public int shards, shardid;
-
+	
 	/**
 	 * The User we are currently logged in as.
 	 * 
 	 */
 	public DLUser user;
-
+	
 	private DLOptions options;
-
+	
 	/**
 	 * The DiscLoader client object <br>
 	 * <H1>How To Use</H1>
@@ -110,7 +113,7 @@ public class DiscLoader {
 	 * public static void main(String... args) {
 	 * 	// create a new instance of DiscLoader
 	 * 	DiscLoader loader = new DiscLoader();
-	 * 
+	 * 	
 	 * 	// time to login
 	 * 	loader.login(TOKEN);
 	 *
@@ -120,30 +123,29 @@ public class DiscLoader {
 	public DiscLoader() {
 		this(1, 0);
 	}
-
+	
 	/**
 	 * <pre>
 	 * 
 	 * public static void main(String... args) {
 	 * 	DLOptions options = new DLOptions("TOKEN", "PREFIX");
-	 * 
+	 * 	
 	 * 	// create a new instance of DiscLoader
 	 * 	DiscLoader loader = new DiscLoader(options);
-	 * 
+	 * 	
 	 * 	// time to login
 	 * 	loader.login();
 	 *
 	 * }
 	 * </pre>
 	 * 
-	 * @param options
-	 *            Options to be passed to the client
+	 * @param options Options to be passed to the client
 	 */
 	public DiscLoader(DLOptions options) {
 		this(options.shard, options.shards);
 		setOptions(options);
 	}
-
+	
 	/**
 	 * The DiscLoader client object <br>
 	 * <H1>How To Use</H1>
@@ -153,7 +155,7 @@ public class DiscLoader {
 	 * 
 	 * public static void main(String... args) {
 	 * 	int shards = 10;
-	 * 
+	 * 	
 	 * 	ShardManager manager = new ShardManager(shards);
 	 * 	manager.start();
 	 * 
@@ -169,20 +171,18 @@ public class DiscLoader {
 	 * public static void main(String... args) {
 	 * 	// create a new instance of DiscLoader shard
 	 * 	DiscLoader loader = new DiscLoader(System.getenv("shards"), System.getenv("shard"));
-	 * 
+	 * 	
 	 * 	// make it do it's startup stuff
 	 * 	loader.startup();
-	 * 
+	 * 	
 	 * 	// since it's probably done, time to login
 	 * 	loader.login(TOKEN);
 	 *
 	 * }
 	 * </pre>
 	 * 
-	 * @param shards
-	 *            The total number of shards
-	 * @param shard
-	 *            The number id of this shard
+	 * @param shards The total number of shards
+	 * @param shard The number id of this shard
 	 * @since 0.0.3
 	 */
 	public DiscLoader(int shard, int shards) {
@@ -202,24 +202,23 @@ public class DiscLoader {
 		ModRegistry.loader = this;
 		options = new DLOptions();
 	}
-
+	
 	public DiscLoader(Shard shard) {
 		this(shard.getShardID(), shard.getShardCount());
 		this.shard = shard;
 	}
-
+	
 	/**
 	 * Adds an event listener to the client.
 	 * 
-	 * @param e
-	 *            The IEventListener to add
+	 * @param e The IEventListener to add
 	 * @return {@code this}
 	 */
 	public DiscLoader addEventListener(IEventListener e) {
 		eventManager.addEventHandler(e);
 		return this;
 	}
-
+	
 	public void checkReady() {
 		try {
 			if (gateway.status.get() != Status.READY && gateway.status.get() != Status.NEARLY) {
@@ -246,73 +245,54 @@ public class DiscLoader {
 			e.printStackTrace();
 		}
 	}
-
+	
+	public RestAction<IGroupChannel> createGroupDMChannel(String... accessTokens) {
+		return new CreateGroupDMChannel(this, new RESTOptions(new JSONObject().put("access_tokens", accessTokens)));
+	}
+	
 	/**
 	 * Creates a new {@link IGuild} with the specified name.
 	 * <h2>For Bot Accounts</h2><br>
 	 * This endpoint can be used only by bots in less than 10 guilds.
 	 * 
-	 * @param name
-	 *            The new {@link IGuild}'s name. Must be {@code 2-100} characters.
-	 * @return A {@link CompletableFuture} that completes with an {@link IGuild}
-	 *         object of the newly created guild if successful.
-	 * @throws UnauthorizedException
-	 *             Thrown if the {@link #getSelfUser() user} you are logged in as is
-	 *             a bot that is in more than 10 guilds.
+	 * @param name The new {@link IGuild}'s name. Must be {@code 2-100} characters.
+	 * @return A {@link CompletableFuture} that completes with an {@link IGuild} object of the newly created guild if successful.
+	 * @throws UnauthorizedException Thrown if the {@link #getSelfUser() user} you are logged in as is a bot that is in more than 10 guilds.
 	 */
 	public CompletableFuture<IGuild> createGuild(String name) throws UnauthorizedException {
 		return createGuild(name, null, null, VerificationLevel.NONE, DefaultNotifications.ALL_MESSAGES, ExplicitContentFilter.DISABLED);
 	}
-
+	
 	/**
 	 * Creates a new {@link IGuild} with the specified name.
 	 * <h2>For Bot Accounts</h2><br>
 	 * This endpoint can be used only by bots in less than 10 guilds.
 	 * 
-	 * @param name
-	 *            The new {@link IGuild}'s name. Must be {@code 2-100} characters.
-	 * @param region
-	 *            The new {@link IGuild}'s voice server region.
-	 * @return A {@link CompletableFuture} that completes with an {@link IGuild}
-	 *         object of the newly created guild if successful.
-	 * @throws UnauthorizedException
-	 *             Thrown if the {@link #getSelfUser() user} you are logged in as is
-	 *             a bot that is in more than 10 guilds.
+	 * @param name The new {@link IGuild}'s name. Must be {@code 2-100} characters.
+	 * @param region The new {@link IGuild}'s voice server region.
+	 * @return A {@link CompletableFuture} that completes with an {@link IGuild} object of the newly created guild if successful.
+	 * @throws UnauthorizedException Thrown if the {@link #getSelfUser() user} you are logged in as is a bot that is in more than 10 guilds.
 	 */
 	public CompletableFuture<IGuild> createGuild(String name, VoiceRegion region) throws UnauthorizedException {
 		return createGuild(name, region, null, VerificationLevel.NONE, DefaultNotifications.ALL_MESSAGES, ExplicitContentFilter.DISABLED);
 	}
-
+	
 	/**
 	 * Creates a new {@link IGuild} with the specified name.
 	 * <h2>For Bot Accounts</h2><br>
 	 * This endpoint can be used only by bots in less than 10 guilds.
 	 * 
-	 * @param name
-	 *            The new {@link IGuild}'s name. Must be {@code 2-100} characters in
-	 *            length.
-	 * @param region
-	 *            The new {@link IGuild}'s voice server region.
-	 * @param icon
-	 *            A {@link File} pointing to the new {@link IGuild}'s icon.
-	 * @param verificationLevel
-	 *            Members of the server must meet the following criteria before they
-	 *            can send messages in text channels or initiate a direct message
-	 *            conversation. If a member has an assigned role this does not
-	 *            apply.
-	 * @param notificationLevel
-	 *            This will determine whether members who have not explicitly set
-	 *            their notification settings receive a notification for every
-	 *            message sent in this server or not.
-	 * @param filterLevel
-	 *            Automatically scan and delete messages sent in this server that
-	 *            contain explicit content. Please choose how broadly the filter
-	 *            will apply to members in your server.
-	 * @return A {@link CompletableFuture} that completes with an {@link IGuild}
-	 *         object of the newly created guild if successful.
-	 * @throws UnauthorizedException
-	 *             Thrown if the {@link #getSelfUser() user} you are logged in as is
-	 *             a bot that is in more than 10 guilds.
+	 * @param name The new {@link IGuild}'s name. Must be {@code 2-100} characters in length.
+	 * @param region The new {@link IGuild}'s voice server region.
+	 * @param icon A {@link File} pointing to the new {@link IGuild}'s icon.
+	 * @param verificationLevel Members of the server must meet the following criteria before they can send messages in text channels or
+	 *            initiate a direct message conversation. If a member has an assigned role this does not apply.
+	 * @param notificationLevel This will determine whether members who have not explicitly set their notification settings receive a
+	 *            notification for every message sent in this server or not.
+	 * @param filterLevel Automatically scan and delete messages sent in this server that contain explicit content. Please choose how
+	 *            broadly the filter will apply to members in your server.
+	 * @return A {@link CompletableFuture} that completes with an {@link IGuild} object of the newly created guild if successful.
+	 * @throws UnauthorizedException Thrown if the {@link #getSelfUser() user} you are logged in as is a bot that is in more than 10 guilds.
 	 */
 	public CompletableFuture<IGuild> createGuild(String name, VoiceRegion region, File icon, VerificationLevel verificationLevel, DefaultNotifications notificationLevel, ExplicitContentFilter filterLevel) throws UnauthorizedException {
 		CompletableFuture<IGuild> future = new CompletableFuture<>();
@@ -348,19 +328,19 @@ public class DiscLoader {
 		});
 		return future;
 	}
-
+	
 	public CompletableFuture<Void> disconnect() {
 		return disconnect(1000, null);
 	}
-
+	
 	public CompletableFuture<Void> disconnect(int code) {
 		return disconnect(code, null);
 	}
-
+	
 	public CompletableFuture<Void> disconnect(String reason) {
 		return disconnect(1000, reason);
 	}
-
+	
 	public CompletableFuture<Void> disconnect(int code, String reason) {
 		CompletableFuture<Void> future = new CompletableFuture<>();
 		onceEvent(DisconnectEvent.class, (e) -> {
@@ -370,7 +350,7 @@ public class DiscLoader {
 		gateway.websocket.disconnect(code, reason);
 		return future;
 	}
-
+	
 	public void emit(DLEvent event) {
 		eventManager.emit(event);
 		ModRegistry.emit(event);
@@ -388,11 +368,11 @@ public class DiscLoader {
 			}
 		}
 	}
-
+	
 	/**
 	 * Old method that was used to fire events. <br>
-	 * data Objects passed to this method that are of the type or a subtype of
-	 * {@link DLEvent} will be passed to the new {@link #emit(DLEvent)} method.
+	 * data Objects passed to this method that are of the type or a subtype of {@link DLEvent} will be passed to the new
+	 * {@link #emit(DLEvent)} method.
 	 * 
 	 * @param event
 	 * @param data
@@ -405,7 +385,7 @@ public class DiscLoader {
 		}
 		return;
 	}
-
+	
 	public void emitReady() {
 		gateway.setReady();
 		ready = true;
@@ -415,7 +395,7 @@ public class DiscLoader {
 		ReadyEvent event = new ReadyEvent(this);
 		emit(event);
 	}
-
+	
 	public CompletableFuture<IUser> fetchUser(long id) {
 		CompletableFuture<IUser> future = new CompletableFuture<>();
 		CompletableFuture<UserJSON> cf = rest.request(Methods.GET, Endpoints.user(id), new RESTOptions(), UserJSON.class);
@@ -428,19 +408,19 @@ public class DiscLoader {
 		});
 		return future;
 	}
-
+	
 	public CompletableFuture<IUser> fetchUser(String id) {
 		return fetchUser(SnowflakeUtil.parse(id));
 	}
-
+	
 	public CompletableFuture<GatewayJSON> fetchGateway() {
 		return rest.request(Methods.GET, (token == null || !token.startsWith("Bot ")) ? Endpoints.gateway : Endpoints.botGateway, new RESTOptions(), GatewayJSON.class);
 	}
-
+	
 	public EventManager getEventManager() {
 		return eventManager;
 	}
-
+	
 	public Map<Long, IGuild> getGuilds() {
 		if (shards != 1) {
 			Map<Long, IGuild> guilds = new HashMap<>();
@@ -451,11 +431,10 @@ public class DiscLoader {
 		}
 		return EntityRegistry.getGuilds();
 	}
-
+	
 	/**
 	 * @param code
-	 * @return A CompletableFuture that completes with an IInvite object if
-	 *         successful.
+	 * @return A CompletableFuture that completes with an IInvite object if successful.
 	 */
 	public CompletableFuture<IInvite> getInvite(String code) {
 		CompletableFuture<IInvite> future = new CompletableFuture<>();
@@ -469,7 +448,7 @@ public class DiscLoader {
 		});
 		return future;
 	}
-
+	
 	/**
 	 * Returns the client options.
 	 * 
@@ -478,14 +457,14 @@ public class DiscLoader {
 	public DLOptions getOptions() {
 		return options;
 	}
-
+	
 	/**
 	 * @return the readyAt
 	 */
 	public long getReadyAt() {
 		return readyAt;
 	}
-
+	
 	/**
 	 * Returns a DLUser object representing the user you are logged in as.
 	 * 
@@ -494,7 +473,7 @@ public class DiscLoader {
 	public DLUser getSelfUser() {
 		return user;
 	}
-
+	
 	/**
 	 * Returns a shard object if the connection is sharded.
 	 * 
@@ -503,19 +482,19 @@ public class DiscLoader {
 	public Shard getShard() {
 		return shard;
 	}
-
+	
 	public int getShardCount() {
 		return shards;
 	}
-
+	
 	public int getShardID() {
 		return shardid;
 	}
-
+	
 	public long getUptime() {
 		return System.currentTimeMillis() - readyAt;
 	}
-
+	
 	public CompletableFuture<List<VoiceRegion>> getVoiceRegions() {
 		CompletableFuture<List<VoiceRegion>> future = new CompletableFuture<>();
 		CompletableFuture<VoiceRegionJSON[]> cf = rest.request(Methods.GET, Endpoints.voiceRegions, new RESTOptions(), VoiceRegionJSON[].class);
@@ -532,32 +511,29 @@ public class DiscLoader {
 		});
 		return future;
 	}
-
+	
 	public boolean isGuildSyncing(IGuild guild) {
 		return syncingGuilds.containsKey(guild.getID());
 	}
-
+	
 	public boolean isGuildSyncing(String guildID) {
 		return syncingGuilds.containsKey(SnowflakeUtil.parse(guildID));
 	}
-
+	
 	/**
 	 * Makes the client log into the gateway. using a predefined token.<br>
-	 * You can use {@link DLOptions} to set the token when you create a new
-	 * DiscLoader object.
+	 * You can use {@link DLOptions} to set the token when you create a new DiscLoader object.
 	 * 
 	 * @return A CompletableFuture that completes with {@code this} if successful.
 	 */
 	public CompletableFuture<DiscLoader> login() {
 		return login(token);
 	}
-
+	
 	/**
-	 * Connects the current instance of the {@link DiscLoader loader} into Discord's
-	 * gateway servers
+	 * Connects the current instance of the {@link DiscLoader loader} into Discord's gateway servers
 	 * 
-	 * @param token
-	 *            your API token
+	 * @param token your API token
 	 * @return A CompletableFuture that completes with {@code this} if successful.
 	 */
 	public CompletableFuture<DiscLoader> login(String token) {
@@ -573,7 +549,7 @@ public class DiscLoader {
 				LOG.throwing(ex.getStackTrace()[0].getClassName(), ex.getStackTrace()[0].getMethodName(), ex);
 			}
 		}
-
+		
 		LOG.info("Attempting to login");
 		Command.registerCommands();
 		this.token = token;
@@ -593,40 +569,38 @@ public class DiscLoader {
 			rf.completeExceptionally(ex);
 			return null;
 		});
-
+		
 		return rf;
 	}
-
+	
 	public CompletableFuture<Void> logout() {
 		return disconnect(1000, null);
 	}
-
+	
 	public CompletableFuture<Void> logout(int code) {
 		return disconnect(code, null);
 	}
-
+	
 	public CompletableFuture<Void> logout(int code, String reason) {
 		CompletableFuture<Void> future = disconnect(code, reason);
-
+		
 		return future;
 	}
-
+	
 	public CompletableFuture<Void> logout(String reason) {
 		return disconnect(1000, reason);
 	}
-
+	
 	public <T extends DLEvent> DiscLoader onceEvent(Class<T> cls, Consumer<T> consumer) {
 		eventManager.onceEvent(cls, consumer);
 		return this;
 	}
-
+	
 	/**
-	 * This method gets called in {@link #login(String)} before attempting to login
-	 * now.<br>
+	 * This method gets called in {@link #login(String)} before attempting to login now.<br>
 	 * <br>
 	 * <strike>This method <u><b>must</b></u> be called to start DiscLoader. <br>
-	 * As it begins the setup process for DiscLoader to be able to function
-	 * correctly.<br>
+	 * As it begins the setup process for DiscLoader to be able to function correctly.<br>
 	 * It <u><b>will</b></u> crash otherwise</strike>
 	 * 
 	 * @author Perry Berman
@@ -658,22 +632,21 @@ public class DiscLoader {
 	// return ModRegistry.checkCandidates(candidates);
 	// }
 	// }
-
+	
 	public <T extends DLEvent> DiscLoader onEvent(Class<T> cls, Consumer<T> consumer) {
 		eventManager.onEvent(cls, consumer);
 		return this;
 	}
-
+	
 	public DiscLoader removeEventListener(IEventListener eventListener) {
 		eventManager.removeEventHandler(eventListener);
 		return this;
 	}
-
+	
 	/**
 	 * Sets the clients options;
 	 * 
-	 * @param options
-	 *            The new options to use
+	 * @param options The new options to use
 	 * @return this.
 	 */
 	public DiscLoader setOptions(DLOptions options) {
@@ -685,70 +658,67 @@ public class DiscLoader {
 		this.options = options;
 		return this;
 	}
-
+	
 	/**
 	 * Syncs guilds to client if the logged in user is not a bot
 	 * 
-	 * @param guilds
-	 *            the guilds to sync
+	 * @param guilds the guilds to sync
 	 * @throws GuildSyncException
 	 * @throws AccountTypeException
 	 */
 	public void syncGuilds(IGuild... guilds) throws GuildSyncException, AccountTypeException {
 		if (user.isBot())
 			throw new AccountTypeException("Only user accounts are allowed to sync guilds");
-
+		
 		String[] ids = new String[guilds.length];
 		for (int i = 0; i < guilds.length; i++) {
 			if (isGuildSyncing(guilds[i]))
 				throw new GuildSyncException("Cannot syncing a guild that is currently syncing");
 			ids[i] = Long.toUnsignedString(guilds[i].getID());
 		}
-
+		
 		Packet packet = new Packet(12, ids);
 		gateway.send(packet, true);
 	}
-
+	
 	/**
 	 * Syncs guilds to client if the logged in user is not a bot
 	 * 
-	 * @param guildIDs
-	 *            the ids of the guilds to sync
+	 * @param guildIDs the ids of the guilds to sync
 	 * @throws AccountTypeException
 	 * @throws GuildSyncException
 	 */
 	public void syncGuilds(long... guildIDs) throws AccountTypeException, GuildSyncException {
 		if (user.isBot())
 			throw new AccountTypeException("Only user accounts are allowed to sync guilds");
-
+		
 		String[] ids = new String[guildIDs.length];
 		for (int i = 0; i < guildIDs.length; i++) {
 			ids[i] = Long.toUnsignedString(guildIDs[i], 10);
 		}
-
+		
 		Packet packet = new Packet(12, ids);
 		gateway.send(packet, true);
 	}
-
+	
 	/**
 	 * Syncs guilds to client if the logged in user is not a bot
 	 * 
-	 * @param guildIDs
-	 *            the ids of the guilds to sync
+	 * @param guildIDs the ids of the guilds to sync
 	 * @throws AccountTypeException
 	 * @throws GuildSyncException
 	 */
 	public void syncGuilds(String... guildIDs) throws AccountTypeException, GuildSyncException {
 		if (user.isBot())
 			throw new AccountTypeException("Only user accounts are allowed to sync guilds");
-
+		
 		for (String id : guildIDs) {
 			if (isGuildSyncing(id))
 				throw new GuildSyncException("Cannot syncing a guild that is currently syncing");
 		}
-
+		
 		Packet packet = new Packet(12, guildIDs);
 		gateway.send(packet, true);
 	}
-
+	
 }

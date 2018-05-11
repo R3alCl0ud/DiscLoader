@@ -98,7 +98,7 @@ public class DLUser extends User {
 			throw new AccountTypeException("Cannot fetch the OAuth2Application details of a User Account.");
 		}
 		CompletableFuture<OAuth2Application> future = new CompletableFuture<>();
-		CompletableFuture<OAuthApplicationJSON> cf = getLoader().rest.request(Methods.GET, Endpoints.currentOAuthApplication, new RESTOptions(), OAuthApplicationJSON.class);
+		CompletableFuture<OAuthApplicationJSON> cf = getLoader().rest.request(Methods.GET, Endpoints.currentOAuth2Application, new RESTOptions(), OAuthApplicationJSON.class);
 		cf.thenAcceptAsync(appData -> {
 			IUser owner = EntityRegistry.addUser(appData.owner);
 			future.complete(new OAuth2Application(appData, owner));
