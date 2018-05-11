@@ -78,13 +78,9 @@ import io.discloader.discloader.util.DLUtil.Status;
 public class DiscLoader {
 	
 	public static final Logger LOG = DLLogger.getLogger(DiscLoader.class);
-<<<<<<< HEAD
 	
-=======
-
 	private static final List<DiscLoader> instances = new ArrayList<>();
-
->>>>>>> 71726ce6f8e24d0d8d5e219a929a1d8e61dc567b
+	
 	public static DiscLoader getDiscLoader() {
 		int indexPound = -1;
 		String threadName = Thread.currentThread().getName();
