@@ -31,8 +31,6 @@ public class ModRegistry {
 	 */
 	public static ModContainer activeMod = null;
 
-	public static DiscLoader loader;
-
 	/**
 	 * A {@link HashMap} of the mods loaded by the client. Indexed by
 	 * {@link Mod#modid()}
@@ -40,21 +38,21 @@ public class ModRegistry {
 	 * 
 	 * @since 0.0.1
 	 */
-	public static final HashMap<String, ModContainer> mods = new HashMap<String, ModContainer>();
+	public static final Map<String, ModContainer> mods = new HashMap<>();
 
 	/**
 	 * Uninitialized mods
 	 * 
 	 * 
 	 */
-	private static final HashMap<String, ModContainer> preInitMods = new HashMap<String, ModContainer>();
+	private static final Map<String, ModContainer> preInitMods = new HashMap<>();
 
 	/**
 	 * Contains a sensible method of figuring out what mods loaded what mod
 	 * 
 	 * 
 	 */
-	private static final Map<String, String> loadMod = new HashMap<String, String>();
+	private static final Map<String, String> loadMod = new HashMap<>();
 
 	private static final Logger logger = DLLogger.getLogger(ModRegistry.class);
 
@@ -162,7 +160,7 @@ public class ModRegistry {
 		ProgressLogger.progress(3, 3, "Executing PreInit handler in: " + mod.modInfo.modid());
 		logger.info("Executing PreInit handler in: " + mod.modInfo.modid());
 		mods.put(mod.modInfo.modid(), mod);
-		DLPreInitEvent event = new DLPreInitEvent(loader);
+		DLPreInitEvent event = new DLPreInitEvent(DiscLoader.getDiscLoader());
 		mod.emit(event);
 		if (loadMod.containsKey(mod.modInfo.modid())) {
 			activeMod = preInitMods.get(loadMod.get(mod.modInfo.modid()));

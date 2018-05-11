@@ -78,9 +78,21 @@ import io.discloader.discloader.util.DLUtil.Status;
 public class DiscLoader {
 	
 	public static final Logger LOG = DLLogger.getLogger(DiscLoader.class);
+<<<<<<< HEAD
 	
+=======
+
+	private static final List<DiscLoader> instances = new ArrayList<>();
+
+>>>>>>> 71726ce6f8e24d0d8d5e219a929a1d8e61dc567b
 	public static DiscLoader getDiscLoader() {
-		return ModRegistry.loader;
+		int indexPound = -1;
+		String threadName = Thread.currentThread().getName();
+		if ((indexPound = threadName.indexOf('#')) != -1) {
+			int shardNumber = Integer.parseInt(threadName.substring(indexPound + 1, threadName.length() - 1));
+			return instances.get(shardNumber);
+		}
+		return instances.get(0);
 	}
 	
 	private Shard shard = null;
@@ -193,13 +205,13 @@ public class DiscLoader {
 		if (!(System.err instanceof DLErrorStream))
 			System.setErr(new DLErrorStream(System.err, LOG));
 		System.setProperty("http.agent", "DiscLoader");
+		instances.add(shardid, this);
 		gateway = new Gateway(this);
 		rest = new RESTManager(this);
 		syncingGuilds = new HashMap<>();
 		ready = false;
 		eventManager = new EventManager();
 		handlers = eventManager.getHandlers();
-		ModRegistry.loader = this;
 		options = new DLOptions();
 	}
 	
