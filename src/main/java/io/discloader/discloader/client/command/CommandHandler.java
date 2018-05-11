@@ -5,6 +5,7 @@ import java.util.regex.Matcher;
 
 import io.discloader.discloader.common.event.message.MessageCreateEvent;
 import io.discloader.discloader.common.language.LanguageRegistry;
+import io.discloader.discloader.common.logger.DLLogger;
 import io.discloader.discloader.common.registry.CommandRegistry;
 import io.discloader.discloader.entity.channel.IGuildTextChannel;
 import io.discloader.discloader.entity.guild.IGuild;
@@ -61,9 +62,9 @@ public class CommandHandler {
 					public void run() {
 						try {
 							command.execute(e, args);
-						} catch (Exception e) {
-							System.err.println("Error Occurred While attempting to execute the command \"" + command.getUnlocalizedName() + "\".");
-							e.printStackTrace();
+						} catch (Exception ex) {
+							DLLogger.getLogger(CommandHandler.class).severe("Error Occurred While attempting to execute the command \"" + command.getUnlocalizedName() + "\".");
+							ex.printStackTrace();
 						}
 					}
 				};

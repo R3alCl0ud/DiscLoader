@@ -4,40 +4,29 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 import java.util.logging.Logger;
 
 import com.google.gson.Gson;
-import com.neovisionaries.ws.client.WebSocketFrame;
 import com.sedmelluq.discord.lavaplayer.track.AudioTrack;
 import com.sedmelluq.discord.lavaplayer.track.AudioTrackEndReason;
 
 import io.discloader.discloader.common.DLOptions;
 import io.discloader.discloader.common.DiscLoader;
-import io.discloader.discloader.common.event.EventListenerAdapter;
-import io.discloader.discloader.common.event.RawEvent;
-import io.discloader.discloader.common.event.ReadyEvent;
-import io.discloader.discloader.common.event.channel.GuildChannelCreateEvent;
-import io.discloader.discloader.common.event.guild.GuildCreateEvent;
-import io.discloader.discloader.common.event.message.GuildMessageCreateEvent;
-import io.discloader.discloader.common.event.message.PrivateMessageCreateEvent;
-import io.discloader.discloader.common.exceptions.DiscordException;
-import io.discloader.discloader.common.exceptions.PermissionsException;
+import io.discloader.discloader.common.exceptions.UnauthorizedException;
 import io.discloader.discloader.common.logger.DLLogger;
+import io.discloader.discloader.common.registry.CommandRegistry;
 import io.discloader.discloader.common.start.Options;
 import io.discloader.discloader.core.entity.RichEmbed;
 import io.discloader.discloader.entity.channel.IChannelCategory;
 import io.discloader.discloader.entity.channel.IGuildTextChannel;
 import io.discloader.discloader.entity.channel.IGuildVoiceChannel;
 import io.discloader.discloader.entity.guild.IGuild;
-import io.discloader.discloader.entity.guild.VoiceRegion;
 import io.discloader.discloader.entity.message.IMessage;
 import io.discloader.discloader.entity.user.IUser;
 import io.discloader.discloader.entity.voice.VoiceConnection;
 import io.discloader.discloader.entity.voice.VoiceEventAdapter;
-import io.discloader.discloader.network.util.Endpoints;
 
 public class Main {
 
@@ -46,6 +35,10 @@ public class Main {
 	public static DiscLoader loader;
 	public static Options options = new Options();
 	public static String token;
+
+	public static IGuild guild = null;
+	public static IUser appOwner = null;
+	public static String guildName = "" + System.currentTimeMillis();
 
 	public static final Logger logger = DLLogger.getLogger("Test - Main");
 
@@ -80,206 +73,316 @@ public class Main {
 		opt.useDefaultCommands(options.defaultCommands);
 		opt.setDebug(true);
 		loader = new DiscLoader(opt);
-		// runNormalTest();
-		runRestActionTest();
+		loader.addEventListener(new Listener());
 		loader.login().exceptionally(ex -> {
 			logger.severe("Test Failed");
 			ex.printStackTrace();
 			System.exit(1);
 			return null;
 		});
+		CommandRegistry.registerCommand(new CommandRunTest(), "runtest");
+		CommandRegistry.registerCommand(new CommandCreateGuild(), "createguild");
+		CommandRegistry.registerCommand(new CommandDeleteGuild(), "deleteguild");
 	}
 
-	public static void runNormalTest() {
-		loader.addEventListener(new EventListenerAdapter() {
-			@Override
-			public void RawPacket(RawEvent data) {
-				WebSocketFrame frame = data.getFrame();
-				if (data.isGateway() && frame.isTextFrame() && !frame.getPayloadText().contains("PRESENCE_UPDATE") && !frame.getPayloadText().contains("GUILD_CREATE") && !frame.getPayloadText().contains("READY")) {
-					logger.info("[Gateway Frame] " + frame.getPayloadText());
-				} else if (data.isREST() && data.getHttpResponse() != null && data.getHttpResponse().getBody() != null) {
-					logger.info("[REST Response] " + data.getHttpResponse().getBody());
-				}
-			}
+	public static void runTest(int testNumber) throws Exception {
+		if (guild == null)
+			throw new NullPointerException("Test Guild Not Found.");
+		switch (testNumber) {
+		case 4:
+			runVoiceChannelTest();
+			break;
+		case 3:
+			runTextChannelTest();
+			break;
+		case 2:
+			runRestActionTest();
+			break;
+		case 1:
+		default:
+			runNormalTest();
+			break;
+		}
+	}
 
-			@Override
-			public void Ready(ReadyEvent e) {
-				logger.info("Ready");
-				logger.info("In " + e.getLoader().getGuilds().size() + " Guild(s).");
-				CompletableFuture<List<VoiceRegion>> f2 = loader.getVoiceRegions();
-				f2.thenAcceptAsync(regions -> {
-					for (VoiceRegion region : regions) {
-						if (region.isOptimal()) {
-							AvoidRateLimits();
-							CompletableFuture<IGuild> f3 = loader.createGuild("Test Guild", region);
-							f3.exceptionally(ex -> {
-								logger.severe("Test Failed");
-								ex.printStackTrace();
-								System.exit(3);
-								return null;
-							});
-							f3.thenAcceptAsync(guild -> {
-								AvoidRateLimits();
-								CompletableFuture<IChannelCategory> f4 = guild.createCategory("category");
-								f4.exceptionally(ex -> {
-									logger.severe("Test Failed");
-									ex.printStackTrace();
-									System.exit(4);
-									return null;
-								});
-								f4.thenAcceptAsync(category -> {
-									CompletableFuture<Void> tfuture = testTextChannelThings(guild, category);
-									tfuture.thenAcceptAsync(n -> {
-										logger.config("Text Future Completed");
-									});
-									CompletableFuture<Void> vfuture = testVoiceThings(guild, category);
-									vfuture.thenAcceptAsync(n -> {
-										logger.config("Voice Future Completed");
-									});
-									CompletableFuture<Void> future = CompletableFuture.allOf(tfuture, vfuture);
-									future.thenAcceptAsync(v -> {
-										logger.config("Going to attempt to delete the guild in 5 seconds");
-										AvoidRateLimits(5000l);
-										CompletableFuture<IGuild> f17 = guild.delete();
-										f17.exceptionally(ex -> {
-											logger.severe("Test Failed");
-											ex.printStackTrace();
-											System.exit(17);
-											return null;
-										});
-										f17.thenAcceptAsync(g2 -> {
-											logger.info("Testing Completed Successfully!");
-										});
-									});
-								});
-							});
-							break;
-						}
-					}
-				});
-				f2.exceptionally(ex -> {
-					logger.severe("Test Failed");
-					ex.printStackTrace();
-					System.exit(2);
-					return null;
-				});
-			}
-		});
+	public static void runNormalTest() throws Exception {
+		try {
+			AvoidRateLimits();
+			runTextChannelTest();
+			AvoidRateLimits();
+			runVoiceChannelTest();
+		} catch (InterruptedException | ExecutionException e1) {
+			e1.printStackTrace();
+		}
+
+		// loader.addEventListener(new EventListenerAdapter() {
+		// @Override
+		// public void RawPacket(RawEvent data) {
+		// WebSocketFrame frame = data.getFrame();
+		// if (data.isGateway() && frame.isTextFrame() &&
+		// !frame.getPayloadText().contains("PRESENCE_UPDATE") &&
+		// !frame.getPayloadText().contains("GUILD_CREATE") &&
+		// !frame.getPayloadText().contains("READY")) {
+		// logger.info("[Gateway Frame] " + frame.getPayloadText());
+		// } else if (data.isREST() && data.getHttpResponse() != null &&
+		// data.getHttpResponse().getBody() != null) {
+		// logger.info("[REST Response] " + data.getHttpResponse().getBody());
+		// }
+		// }
+		//
+		// @Override
+		// public void Ready(ReadyEvent e) {
+		// logger.info("Ready");
+		// logger.info("In " + e.getLoader().getGuilds().size() + " Guild(s).");
+		// CompletableFuture<List<VoiceRegion>> f2 = loader.getVoiceRegions();
+		// f2.thenAcceptAsync(regions -> {
+		// for (VoiceRegion region : regions) {
+		// if (region.isOptimal()) {
+		// AvoidRateLimits();
+		// CompletableFuture<IGuild> f3 = loader.createGuild("Test Guild", region);
+		// f3.exceptionally(ex -> {
+		// logger.severe("Test Failed");
+		// ex.printStackTrace();
+		// System.exit(3);
+		// return null;
+		// });
+		// f3.thenAcceptAsync(guild -> {
+		// AvoidRateLimits();
+		// CompletableFuture<IChannelCategory> f4 = guild.createCategory("category");
+		// f4.exceptionally(ex -> {
+		// logger.severe("Test Failed");
+		// ex.printStackTrace();
+		// System.exit(4);
+		// return null;
+		// });
+		// f4.thenAcceptAsync(category -> {
+		// CompletableFuture<Void> tfuture = testTextChannelThings(guild, category);
+		// tfuture.thenAcceptAsync(n -> {
+		// logger.config("Text Future Completed");
+		// });
+		// CompletableFuture<Void> vfuture = testVoiceThings(guild, category);
+		// vfuture.thenAcceptAsync(n -> {
+		// logger.config("Voice Future Completed");
+		// });
+		// CompletableFuture<Void> future = CompletableFuture.allOf(tfuture, vfuture);
+		// future.thenAcceptAsync(v -> {
+		// logger.config("Going to attempt to delete the guild in 5 seconds");
+		// AvoidRateLimits(5000l);
+		// CompletableFuture<IGuild> f17 = guild.delete();
+		// f17.exceptionally(ex -> {
+		// logger.severe("Test Failed");
+		// ex.printStackTrace();
+		// System.exit(17);
+		// return null;
+		// });
+		// f17.thenAcceptAsync(g2 -> {
+		// logger.info("Testing Completed Successfully!");
+		// });
+		// });
+		// });
+		// });
+		// break;
+		// }
+		// }
+		// });
+		// f2.exceptionally(ex -> {
+		// logger.severe("Test Failed");
+		// ex.printStackTrace();
+		// System.exit(2);
+		// return null;
+		// });
+		// }
+		// });
+		//
 	}
 
 	public static void runRestActionTest() {
-		loader.addEventListener(new EventListenerAdapter() {
-			public String guildName = "" + System.currentTimeMillis();
-			public IGuild guild = null;
-			public IUser appOwner = null;
-
-			@Override
-			public void GuildChannelCreate(GuildChannelCreateEvent e) {
-				if (e.getGuild().getID() == guild.getID()) {
-					if (e.getChannel() instanceof IGuildTextChannel) {
-						IGuildTextChannel channel = (IGuildTextChannel) e.getChannel();
-						channel.createInvite().onSuccess(invite -> {
-							logger.warning("Invite code for the test guild: " + invite.getCode());
-						}).onFailure(ex -> {
-							ex.printStackTrace();
-						}).execute();
-						channel.testNewMessageAction("this is some test content").onSuccess(message -> {
-							logger.info(message.getDisplayedContent());
-						}).onFailure(ex -> {
-							ex.printStackTrace();
-						}).execute();
-					}
-				}
+		try {
+			IGuildTextChannel channel = Main.guild.getTextChannelByName("general");
+			if (channel != null) {
+				channel.testNewMessageAction("this is some test content").get();
 			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		//
+		// loader.addEventListener(new EventListenerAdapter() {
+		// public String guildName = "" + System.currentTimeMillis();
+		// public IGuild guild = null;
+		// public IUser appOwner = null;
+		//
+		// @Override
+		// public void GuildChannelCreate(GuildChannelCreateEvent e) {
+		// if (e.getGuild().getID() == guild.getID()) {
+		// if (e.getChannel() instanceof IGuildTextChannel) {
+		// IGuildTextChannel channel = (IGuildTextChannel) e.getChannel();
+		// channel.createInvite().onSuccess(invite -> {
+		// logger.warning("Invite code for the test guild: " + invite.getCode());
+		// }).onException(ex -> {
+		// ex.printStackTrace();
+		// }).execute();
+		// channel.testNewMessageAction("this is some test content").onSuccess(message
+		// -> {
+		// logger.info(message.getDisplayedContent());
+		// }).onException(ex -> {
+		// ex.printStackTrace();
+		// }).execute();
+		// }
+		// }
+		// }
+		//
+		// @Override
+		// public void GuildCreate(GuildCreateEvent e) {
+		// if (e.getGuild().getName().equals(guildName)) {
+		// guild = e.getGuild();
+		// IGuildTextChannel channel = guild.getTextChannelByName("general");
+		// if (channel != null) {
+		// channel.createInvite().onSuccess(invite -> {
+		// logger.warning("Invite code for the test guild: " + invite.getCode());
+		// try {
+		// if (appOwner != null) {
+		// appOwner.sendMessage("Testing Area: " +
+		// Endpoints.inviteLink(invite.getCode())).get();
+		// }
+		// } catch (InterruptedException | ExecutionException e1) {
+		// e1.printStackTrace();
+		// }
+		// }).onException(ex -> {
+		// ex.printStackTrace();
+		// }).execute();
+		// channel.testNewMessageAction("this is some test content").onSuccess(message
+		// -> {
+		// logger.info(message.getDisplayedContent());
+		// }).onException(ex -> {
+		// ex.printStackTrace();
+		// }).execute();
+		// }
+		// }
+		// }
+		//
+		// @Override
+		// public void GuildMessageCreate(GuildMessageCreateEvent e) {
+		// if (e.getGuild().getID() == guild.getID() &&
+		// e.getMessage().getContent().toLowerCase().startsWith(options.prefix)) {
+		// String content =
+		// e.getMessage().getContent().substring(options.prefix.length());
+		// if (content.toLowerCase().startsWith("done")) {
+		// try {
+		// IUser author = e.getMessage().getAuthor();
+		// guild.delete().get();
+		// guild = null;
+		// author.sendMessage("Testing complete! Guild successfully deleted.");
+		// } catch (InterruptedException | ExecutionException e1) {
+		// e.getMessage().getAuthor().sendMessage("Testing failed. :(");
+		// e1.printStackTrace();
+		// }
+		// } else if (content.toLowerCase().startsWith("rename")) {
+		// String name = content.toLowerCase().substring(6).trim().replace(" ",
+		// "-").replace("#", "");
+		// logger.config("New Name: " + name);
+		// try {
+		// e.getChannel().setName(name).get();
+		// } catch (PermissionsException | DiscordException | InterruptedException |
+		// ExecutionException e1) {
+		// e1.printStackTrace();
+		// }
+		// }
+		// }
+		// }
+		//
+		// @Override
+		// public void PrivateMessageCreate(PrivateMessageCreateEvent e) {
+		// String content = e.getMessage().getContent();
+		// if (appOwner != null && e.getChannel().getRecipient().getID() ==
+		// appOwner.getID() && content.toLowerCase().startsWith(options.prefix)) {
+		// content = content.substring(options.prefix.length());
+		// if (content.toLowerCase().startsWith("runtest") && guild == null) {
+		// guildName = "" + System.currentTimeMillis();
+		// loader.createGuild(guildName);
+		// }
+		// }
+		// }
+		//
+		// @Override
+		// public void RawPacket(RawEvent data) {
+		// WebSocketFrame frame = data.getFrame();
+		// if (data.isGateway() && frame.isTextFrame() &&
+		// !frame.getPayloadText().contains("PRESENCE_UPDATE") &&
+		// !frame.getPayloadText().contains("GUILD_CREATE") &&
+		// !frame.getPayloadText().contains("READY")) {
+		// // logger.config(frame.getPayloadText());
+		// } else if (data.isREST() && data.getHttpResponse() != null &&
+		// data.getHttpResponse().getBody() != null) {
+		// // logger.config(data.geFtHttpResponse().getBody());
+		// }
+		// }
+		//
+		// /**
+		// * @param e
+		// */
+		// @Override
+		// public void Ready(ReadyEvent e) {
+		// try {
+		// appOwner = loader.getSelfUser().getOAuth2Application().get().getOwner();
+		// } catch (InterruptedException | ExecutionException e1) {
+		// e1.printStackTrace();
+		// }
+		// loader.createGuild(guildName);
+		// }
+		// });
+		//
+		//
+	}
 
-			@Override
-			public void GuildCreate(GuildCreateEvent e) {
-				if (e.getGuild().getName().equals(guildName)) {
-					guild = e.getGuild();
-					IGuildTextChannel channel = guild.getTextChannelByName("general");
-					if (channel != null) {
-						channel.createInvite().onSuccess(invite -> {
-							logger.warning("Invite code for the test guild: " + invite.getCode());
-							try {
-								if (appOwner != null) {
-									appOwner.sendMessage("Testing Area: " + Endpoints.inviteLink(invite.getCode())).get();
-								}
-							} catch (InterruptedException | ExecutionException e1) {
-								e1.printStackTrace();
-							}
-						}).onFailure(ex -> {
-							ex.printStackTrace();
-						}).execute();
-						channel.testNewMessageAction("this is some test content").onSuccess(message -> {
-							logger.info(message.getDisplayedContent());
-						}).onFailure(ex -> {
-							ex.printStackTrace();
-						}).execute();
-					}
-				}
-			}
+	public static boolean createGuild() throws UnauthorizedException, InterruptedException, ExecutionException {
+		if (guild == null) {
+			guild = loader.createGuild(guildName = "" + System.currentTimeMillis()).get();
+			return true;
+		}
+		return false;
+	}
 
-			@Override
-			public void GuildMessageCreate(GuildMessageCreateEvent e) {
-				if (e.getGuild().getID() == guild.getID() && e.getMessage().getContent().toLowerCase().startsWith(options.prefix)) {
-					String content = e.getMessage().getContent().substring(options.prefix.length());
-					if (content.toLowerCase().startsWith("done")) {
-						try {
-							IUser author = e.getMessage().getAuthor();
-							guild.delete().get();
-							guild = null;
-							author.sendMessage("Testing complete! Guild successfully deleted.");
-						} catch (InterruptedException | ExecutionException e1) {
-							e.getMessage().getAuthor().sendMessage("Testing failed. :(");
-							e1.printStackTrace();
-						}
-					} else if (content.toLowerCase().startsWith("rename")) {
-						String name = content.toLowerCase().substring(6).trim().replace(" ", "-").replace("#", "");
-						logger.config("New Name: " + name);
-						try {
-							e.getChannel().setName(name).get();
-						} catch (PermissionsException | DiscordException | InterruptedException | ExecutionException e1) {
-							e1.printStackTrace();
-						}
-					}
-				}
-			}
+	public static boolean deleteGuild() throws UnauthorizedException, InterruptedException, ExecutionException {
+		if (guild != null) {
+			guild.delete().get();
+			guild = null;
+			return true;
+		}
+		return false;
+	}
 
-			@Override
-			public void PrivateMessageCreate(PrivateMessageCreateEvent e) {
-				String content = e.getMessage().getContent();
-				if (appOwner != null && e.getChannel().getRecipient().getID() == appOwner.getID() && content.toLowerCase().startsWith(options.prefix)) {
-					content = content.substring(options.prefix.length());
-					if (content.toLowerCase().startsWith("runtest") && guild == null) {
-						guildName = "" + System.currentTimeMillis();
-						loader.createGuild(guildName);
-					}
-				}
-			}
+	public static void runTextChannelTest() throws Exception {
+		IGuildTextChannel channel = guild.getDefaultChannel();
+		IMessage msg = channel.sendMessage("content", new RichEmbed("embed").addField().setTimestamp(), new File("README.md")).get();
+		AvoidRateLimits();
+		msg.edit("New Content").get();
+	}
 
+	public static void runVoiceChannelTest() throws Exception {
+		CompletableFuture<VoiceConnection> future = new CompletableFuture<>();
+		IGuildVoiceChannel channel = guild.getVoiceChannelByName("General");
+		VoiceConnection voiceconnection = channel.join().get();
+		voiceconnection.addListener(new VoiceEventAdapter() {
 			@Override
-			public void RawPacket(RawEvent data) {
-				WebSocketFrame frame = data.getFrame();
-				if (data.isGateway() && frame.isTextFrame() && !frame.getPayloadText().contains("PRESENCE_UPDATE") && !frame.getPayloadText().contains("GUILD_CREATE") && !frame.getPayloadText().contains("READY")) {
-					// logger.config(frame.getPayloadText());
-				} else if (data.isREST() && data.getHttpResponse() != null && data.getHttpResponse().getBody() != null) {
-					// logger.config(data.geFtHttpResponse().getBody());
+			public void end(AudioTrack track, AudioTrackEndReason endReason) {
+				if (endReason == AudioTrackEndReason.LOAD_FAILED) {
+					logger.severe("Test Failed\nFailed to load the audio track.");
+				} else {
+					logger.info("Track Finished Playing");
 				}
-			}
-
-			/**
-			 * @param e
-			 */
-			@Override
-			public void Ready(ReadyEvent e) {
-				try {
-					appOwner = loader.getSelfUser().getOAuth2Application().get().getOwner();
-				} catch (InterruptedException | ExecutionException e1) {
-					e1.printStackTrace();
-				}
-				loader.createGuild(guildName);
+				CompletableFuture<VoiceConnection> f16 = voiceconnection.disconnect();
+				f16.exceptionally(ex -> {
+					future.completeExceptionally(ex);
+					return null;
+				});
+				f16.thenAcceptAsync(vc -> {
+					logger.config("Disconnected From VC");
+					future.complete(vc);
+				});
 			}
 		});
+		voiceconnection.play("https://soundcloud.com/r3alcl0ud/guardians-of-animus");
+		future.get();
 	}
 
 	public static CompletableFuture<Void> testTextChannelThings(IGuild guild, IChannelCategory category) {

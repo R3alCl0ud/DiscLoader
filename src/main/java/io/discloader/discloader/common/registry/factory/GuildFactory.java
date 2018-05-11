@@ -22,6 +22,10 @@ public class GuildFactory {
 		return new Guild(DiscLoader.getDiscLoader(), data);
 	}
 
+	public IGuild buildGuild(DiscLoader loader, GuildJSON data) {
+		return new Guild(loader, data);
+	}
+
 	public IRole buildRole(IGuild guild, RoleJSON data) {
 		return new Role(guild, data);
 	}
@@ -41,7 +45,7 @@ public class GuildFactory {
 	public IGuildMember buildMember(IGuild guild, IUser user, String[] roles, boolean deaf, boolean mute, String nick) {
 		return new GuildMember(guild, user, roles, deaf, mute, nick);
 	}
-	
+
 	public IGuildChannel buildChannel(ChannelJSON data) {
 		return new GuildChannel(EntityRegistry.getGuildByID(data.guild_id), data);
 	}

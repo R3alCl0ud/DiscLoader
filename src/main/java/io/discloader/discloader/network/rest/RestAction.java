@@ -42,12 +42,49 @@ public abstract class RestAction<T> {
 		this.gson = new Gson();
 	}
 
-	public RestAction<T> onSuccess(Consumer<? super T> success) {
-		future.thenAcceptAsync(success);
+	protected void autoExecute() {
+		if (loader.getOptions().autoExecRestActions()) {
+			execute();
+		}
+	}
+
+	public boolean cancel(boolean mayInterruptIfRunning) {
+		return future.cancel(mayInterruptIfRunning);
+	}
+
+	public RestAction<T> complete(T value) {
+		future.complete(value);
 		return this;
 	}
 
-	public RestAction<T> onFailure(Consumer<Throwable> failure) {
+	public RestAction<T> completeExceptionally(Throwable ex) {
+		future.completeExceptionally(ex);
+		return this;
+	}
+
+	public abstract RestAction<T> execute();
+
+	public RestAction<T> execute(Consumer<? super T> success, Consumer<Throwable> failure) {
+		return onSuccess(success).onException(failure).execute();
+	}
+
+	public T get() throws InterruptedException, ExecutionException {
+		return future.get();
+	}
+
+	public boolean isCanceled() {
+		return future.isCancelled();
+	}
+
+	public boolean isDone() {
+		return future.isDone();
+	}
+
+	public T join() {
+		return future.join();
+	}
+
+	public RestAction<T> onException(Consumer<Throwable> failure) {
 		future.exceptionally(ex -> {
 			failure.accept(ex);
 			return null;
@@ -55,36 +92,9 @@ public abstract class RestAction<T> {
 		return this;
 	}
 
-	public abstract RestAction<T> execute();
-
-	public RestAction<T> execute(Consumer<? super T> success, Consumer<Throwable> failure) {
-		return onSuccess(success).onFailure(failure).execute();
-	}
-
-	public boolean isDone() {
-		return future.isDone();
-	}
-
-	public boolean isCanceled() {
-		return future.isCancelled();
-	}
-
-	public boolean cancel(boolean mayInterruptIfRunning) {
-		return future.cancel(mayInterruptIfRunning);
-	}
-
-	public T get() throws InterruptedException, ExecutionException {
-		return future.get();
-	}
-
-	public T join() {
-		return future.join();
-	}
-
-	protected void autoExecute() {
-		if (loader.getOptions().autoExecRestActions()) {
-			execute();
-		}
+	public RestAction<T> onSuccess(Consumer<? super T> action) {
+		future.thenAcceptAsync(action);
+		return this;
 	}
 
 	protected <U> CompletableFuture<U> sendRequest(Class<U> cls) {

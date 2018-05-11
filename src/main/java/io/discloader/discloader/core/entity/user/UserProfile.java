@@ -1,6 +1,7 @@
 package io.discloader.discloader.core.entity.user;
 
 import java.util.HashMap;
+import java.util.Map;
 
 import io.discloader.discloader.common.DiscLoader;
 import io.discloader.discloader.common.registry.EntityRegistry;
@@ -8,6 +9,7 @@ import io.discloader.discloader.entity.guild.IGuild;
 import io.discloader.discloader.entity.user.IUser;
 import io.discloader.discloader.entity.user.IUserConnection;
 import io.discloader.discloader.entity.user.IUserProfile;
+import io.discloader.discloader.entity.util.SnowflakeUtil;
 import io.discloader.discloader.network.json.ConnectionJSON;
 import io.discloader.discloader.network.json.MutualGuildJSON;
 import io.discloader.discloader.network.json.ProfileJSON;
@@ -19,10 +21,14 @@ public class UserProfile implements IUserProfile {
 
 	private final DiscLoader loader;
 	private ProfileJSON data;
+	private final IUser user;
+	// private MutualGuildJSON[] mutualGuilds;
 
 	public UserProfile(DiscLoader loader, ProfileJSON data) {
+		this.user = EntityRegistry.addUser(data.user);
 		this.loader = loader;
 		this.data = data;
+		// this.mutualGuilds = data.mutual_guilds;
 	}
 
 	@Override
@@ -36,17 +42,14 @@ public class UserProfile implements IUserProfile {
 
 	@Override
 	public IUser getUser() {
-		if (!EntityRegistry.userExists(data.user.id)) {
-			return EntityRegistry.addUser(data.user);
-		} else {
-			return EntityRegistry.getUserByID(data.user.id);
-		}
+		return user;
 	}
 
-	public HashMap<String, IGuild> getMutualGuilds() {
-		HashMap<String, IGuild> guilds = new HashMap<>();
+	@Override
+	public Map<Long, IGuild> getMutualGuilds() {
+		Map<Long, IGuild> guilds = new HashMap<>();
 		for (MutualGuildJSON d : data.mutual_guilds) {
-			guilds.put(d.id, EntityRegistry.getGuildByID(d.id));
+			guilds.put(SnowflakeUtil.parse(d.id), EntityRegistry.getGuildByID(d.id));
 		}
 		return guilds;
 	}

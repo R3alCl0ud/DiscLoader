@@ -16,8 +16,9 @@ import io.discloader.discloader.entity.user.IUser;
 import io.discloader.discloader.entity.user.IUserProfile;
 import io.discloader.discloader.entity.util.SnowflakeUtil;
 import io.discloader.discloader.network.json.UserJSON;
-import io.discloader.discloader.network.rest.actions.FetchUserProfile;
+import io.discloader.discloader.network.rest.RestAction;
 import io.discloader.discloader.network.rest.actions.channel.CreateDMChannel;
+import io.discloader.discloader.network.rest.actions.user.FetchUserProfile;
 
 /**
  * Represents a user on discord
@@ -159,8 +160,8 @@ public class User implements IUser {
 	 * @return A Future that completes with the user's profile if successful.
 	 */
 	@Override
-	public CompletableFuture<IUserProfile> getProfile() {
-		return new FetchUserProfile(this).execute();
+	public RestAction<IUserProfile> fetchProfile() {
+		return new FetchUserProfile(this);
 	}
 
 	@Override
@@ -184,10 +185,8 @@ public class User implements IUser {
 	}
 
 	@Override
-	public CompletableFuture<IPrivateChannel> openPrivateChannel() {
-		if (getPrivateChannel() != null)
-			return CompletableFuture.completedFuture(getPrivateChannel());
-		return new CreateDMChannel(this).execute();
+	public RestAction<IPrivateChannel> createPrivateChannel() {
+		return new CreateDMChannel(this);
 	}
 
 	@Override
@@ -229,7 +228,7 @@ public class User implements IUser {
 		IPrivateChannel channel = getPrivateChannel();
 		if (channel == null) {
 			try {
-				channel = openPrivateChannel().get();
+				channel = createPrivateChannel().get();
 				return channel.sendMessage(content, embed, file);
 			} catch (ExecutionException | InterruptedException e) {
 				future.completeExceptionally(e.getCause());
@@ -245,7 +244,7 @@ public class User implements IUser {
 		IPrivateChannel channel = getPrivateChannel();
 		if (channel == null) {
 			try {
-				channel = openPrivateChannel().get();
+				channel = createPrivateChannel().get();
 				return channel.sendMessage(content, embed, resource);
 			} catch (ExecutionException | InterruptedException e) {
 				future.completeExceptionally(e.getCause());

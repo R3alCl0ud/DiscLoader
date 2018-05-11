@@ -12,6 +12,7 @@ import java.util.logging.Logger;
 import org.json.JSONObject;
 
 import com.google.gson.Gson;
+import com.neovisionaries.ws.client.ThreadType;
 import com.neovisionaries.ws.client.WebSocket;
 import com.neovisionaries.ws.client.WebSocketAdapter;
 import com.neovisionaries.ws.client.WebSocketException;
@@ -83,7 +84,7 @@ public class GatewayListener extends WebSocketAdapter {
 
 	private String token;
 
-	private final String logName, threadName;
+	private final String logName;
 
 	private Thread reconnection = null;
 
@@ -94,9 +95,8 @@ public class GatewayListener extends WebSocketAdapter {
 		this.loader = this.gateway.loader;
 		this.handlers = new HashMap<String, AbstractHandler>();
 		this.queue = new ArrayList<SocketPacket>();
-		this.logName = loader.shards > 1 ? "Gateway Listener (Shard: #" + loader.shardid + ")" : "Gateway Listener";
+		this.logName = "Gateway Listener" + (loader.shards > 1 ? " (Shard: #" + loader.shardid + ")" : "");
 		this.logger = DLLogger.getLogger(logName);
-		this.threadName = loader.shards > 1 ? "Gateway (Shard: #" + loader.shardid + ") - Reader" : "Gateway Reader";
 		this.register(WSEvents.HELLO, new Hello(this.gateway));
 		this.register(WSEvents.READY, new Ready(this.gateway));
 		this.register(WSEvents.RESUMED, new Resumed(this.gateway));
@@ -205,9 +205,6 @@ public class GatewayListener extends WebSocketAdapter {
 			logger.info("Connected to the gateway");
 		}
 		ProgressLogger.stage(2, 3, "Caching API Objects");
-		if (Thread.currentThread().getName().equals("ReadingThread")) {
-			Thread.currentThread().setName(threadName);
-		}
 		if (reconnection != null && !reconnection.isInterrupted()) {
 			reconnection.interrupt();
 			reconnection = null;
@@ -261,6 +258,11 @@ public class GatewayListener extends WebSocketAdapter {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
+	}
+
+	@Override
+	public void onThreadCreated(WebSocket ws, ThreadType threadType, Thread thread) {
+		thread.setName(getThreadName(threadType));
 	}
 
 	public void register(String event, AbstractHandler handler) {
@@ -319,35 +321,31 @@ public class GatewayListener extends WebSocketAdapter {
 		}
 		reconnection = new Thread(logName + " Reconnector") {
 			public void run() {
-				if (gateway.status.get() == Status.RECONNECTING && !this.isInterrupted()) {
-					try {
-						while (gateway.status.get() == Status.RECONNECTING && !gateway.websocket.isOpen() && !this.isInterrupted() && tries < 3) {
-							tries++;
-							System.out.println(timeout * (tries));
-							Thread.sleep(timeout * (tries));
-							if (loader.getOptions().isDebugging()) {
-								logger.config("Attempting to reconnect to the gateway");
-							}
-							loader.emit(new ReconnectEvent(loader, tries));
-							gateway.websocket = gateway.websocket.recreate().setMissingCloseFrameAllowed(false).connect();
-							Thread.sleep(41250);
-							if (gateway.status.get() == Status.RECONNECTING && !connected.get()) {
-								logger.severe("Failed to connect to the Gateway");
-							}
+				try {
+					while (gateway.status.get() == Status.RECONNECTING && !gateway.websocket.isOpen() && !this.isInterrupted() && tries++ < 3) {
+						Thread.sleep(timeout * (tries));
+						if (loader.getOptions().isDebugging()) {
+							logger.config("Attempting to reconnect to the gateway");
 						}
-					} catch (InterruptedException | WebSocketException | IOException e) {
-						if (gateway.status.get() == Status.RECONNECTING) {
-							if (tries < 3) {
-								tryReconnecting();
-								return;
-							}
+						loader.emit(new ReconnectEvent(loader, tries));
+						gateway.websocket = gateway.websocket.recreate().connect();
+						Thread.sleep(41250);
+						if (gateway.status.get() == Status.RECONNECTING && !connected.get()) {
+							logger.severe("Failed to connect to the Gateway");
 						}
-						if (tries >= 3) {
-							connectToNewEndpoint();
-						}
-						this.interrupt();
-						return;
 					}
+				} catch (InterruptedException | WebSocketException | IOException e) {
+					if (gateway.status.get() == Status.RECONNECTING) {
+						if (tries < 3) {
+							tryReconnecting();
+							return;
+						}
+					}
+					if (tries >= 3) {
+						connectToNewEndpoint();
+					}
+					this.interrupt();
+					return;
 				}
 			}
 		};
@@ -369,5 +367,23 @@ public class GatewayListener extends WebSocketAdapter {
 			connectToNewEndpoint();
 			return null;
 		});
+	}
+
+	/**
+	 * @return the threadName
+	 */
+	public String getThreadName(ThreadType threadType) {
+		switch (threadType) {
+		case CONNECT_THREAD:
+			return "Gateway Connect" + (loader.shards > 1 ? " (Shard: #" + loader.shardid + ")" : "");
+		case FINISH_THREAD:
+			return "Gateway Finish" + (loader.shards > 1 ? " (Shard: #" + loader.shardid + ")" : "");
+		case READING_THREAD:
+			return "Gateway Reader" + (loader.shards > 1 ? " (Shard: #" + loader.shardid + ")" : "");
+		case WRITING_THREAD:
+			return "Gateway Writer" + (loader.shards > 1 ? " (Shard: #" + loader.shardid + ")" : "");
+		default:
+			return ("Gateway " + threadType + (loader.shards > 1 ? " (Shard: #" + loader.shardid + ")" : "")).replaceAll("_THREAD", "");
+		}
 	}
 }

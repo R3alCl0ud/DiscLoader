@@ -14,6 +14,7 @@ import io.discloader.discloader.entity.message.IMessage;
 import io.discloader.discloader.entity.util.ICreationTime;
 import io.discloader.discloader.entity.util.ISnowflake;
 import io.discloader.discloader.network.json.UserJSON;
+import io.discloader.discloader.network.rest.RestAction;
 
 /**
  * @author Perry Berman
@@ -44,7 +45,7 @@ public interface IUser extends ISnowflake, ICreationTime, IMentionable {
 
 	IPrivateChannel getPrivateChannel();
 
-	CompletableFuture<IUserProfile> getProfile();
+	RestAction<IUserProfile> fetchProfile();
 
 	String getUsername();
 
@@ -54,7 +55,7 @@ public interface IUser extends ISnowflake, ICreationTime, IMentionable {
 
 	boolean MFAEnabled();
 
-	CompletableFuture<IPrivateChannel> openPrivateChannel();
+	RestAction<IPrivateChannel> createPrivateChannel();
 
 	/**
 	 * Sends a {@link Message} to the channel.
@@ -105,6 +106,7 @@ public interface IUser extends ISnowflake, ICreationTime, IMentionable {
 	 * 
 	 * @return {@link #getUsername()}{@literal #}{@link #getDiscriminator()}
 	 */
-	String toString();
+	@Override
+	public String toString();
 
 }

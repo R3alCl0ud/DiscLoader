@@ -2,6 +2,7 @@ package io.discloader.discloader.entity.user;
 
 import java.util.Map;
 
+import io.discloader.discloader.common.DiscLoader;
 import io.discloader.discloader.entity.guild.IGuild;
 
 public interface IUserProfile {
@@ -10,6 +11,8 @@ public interface IUserProfile {
 	
 	Map<String, IUserConnection> getConnections();
 	
-	Map<String, IGuild> getMutualGuilds();
+	Map<Long, IGuild> getMutualGuilds();
+	
+	DiscLoader getLoader();
 	
 }
