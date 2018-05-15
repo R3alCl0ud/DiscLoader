@@ -5,7 +5,6 @@ import io.discloader.discloader.common.registry.EntityRegistry;
 import io.discloader.discloader.entity.guild.IGuild;
 import io.discloader.discloader.network.gateway.Gateway;
 import io.discloader.discloader.network.json.GuildJSON;
-import io.discloader.discloader.util.DLUtil;
 
 /**
  * @author Perry Berman
@@ -23,9 +22,7 @@ public class GuildUpdate extends AbstractHandler {
 		IGuild guild = EntityRegistry.getGuildByID(data.id);
 		IGuild oldGuild = guild.clone();
 		guild.setup(data);
-		GuildUpdateEvent event = new GuildUpdateEvent(guild, oldGuild);
-		loader.emit(DLUtil.Events.GUILD_UPDATE, event);
-		loader.emit(event);
+		loader.emit(new GuildUpdateEvent(guild, oldGuild));
 	}
 
 }

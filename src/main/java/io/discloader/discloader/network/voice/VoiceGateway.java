@@ -81,27 +81,32 @@ public class VoiceGateway extends WebSocketAdapter {
 
 	public void onConnected(WebSocket ws, Map<String, List<String>> arg1) throws Exception {
 		logger.config("Successfully connected to the gateway");
+		connection.setConnected(true);
 		this.sendIdentify();
 	}
 
 	public void onDisconnected(WebSocket ws, WebSocketFrame serverFrame, WebSocketFrame clientFrame, boolean isServer) throws Exception {
+		connection.setConnected(false);
 		EntityRegistry.removeVoiceConnection(connection.getGuild().getID());
-		if (isServer) {
+		if (isServer && serverFrame != null) {
 			if (serverFrame.getCloseCode() == 1000 && dc != null) {
 				dc.complete(connection);
 				return;
-			} else {
+			} else if (dc != null) {
 				dc.completeExceptionally(new RuntimeException(serverFrame.getCloseReason()));
-				logger.severe(String.format("Reason: %s, Code: %d, isServer: %b", serverFrame.getCloseReason(), serverFrame.getCloseCode(), isServer));
 			}
-		} else {
+			logger.severe(String.format("Reason: %s, Code: %d, isServer: %b", serverFrame.getCloseReason(), serverFrame.getCloseCode(), isServer));
+		} else if (!isServer && clientFrame != null) {
 			if (clientFrame.getCloseCode() == 1000 && dc != null) {
 				dc.complete(connection);
 				return;
-			} else {
+			} else if (dc != null) {
 				dc.completeExceptionally(new RuntimeException(clientFrame.getCloseReason()));
-				logger.severe(String.format("Reason: %s, Code: %d, isServer: %b", clientFrame.getCloseReason(), clientFrame.getCloseCode(), isServer));
 			}
+			logger.severe(String.format("Reason: %s, Code: %d, isServer: %b", clientFrame.getCloseReason(), clientFrame.getCloseCode(), isServer));
+		} else {
+			dc.completeExceptionally(new RuntimeException("Disconnected Unexpectedly"));
+			logger.severe(String.format("Reason: %s, Code: %d, isServer: %b", null, 0x0, isServer));
 		}
 	}
 

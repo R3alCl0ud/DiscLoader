@@ -122,7 +122,8 @@ public class VoiceConnection {
 	private String token;
 
 	private int SSRC;
-	private final AtomicBoolean speaking;
+	private final AtomicBoolean speaking = new AtomicBoolean(false);
+	private final AtomicBoolean connected = new AtomicBoolean(false);
 
 	// Startup things
 	private CompletableFuture<VoiceConnection> future;
@@ -144,7 +145,6 @@ public class VoiceConnection {
 		sendHandler = new AudioSendHandler(player, this);
 		sendStateUpdate(channel);
 		listeners = new ArrayList<>();
-		speaking = new AtomicBoolean();
 	}
 
 	public void connectUDP(VoiceReady data) {
@@ -434,5 +434,20 @@ public class VoiceConnection {
 			setVoiceChannel(channel);
 			sendStateUpdate(channel);
 		}
+	}
+
+	public boolean isConnected() {
+		return connected.get();
+	}
+
+	public void setConnected(boolean value) {
+		connected.set(value);
+	}
+
+	/**
+	 * @return the connected
+	 */
+	public AtomicBoolean getConnected() {
+		return connected;
 	}
 }

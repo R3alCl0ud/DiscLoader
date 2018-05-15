@@ -9,8 +9,6 @@ import io.discloader.discloader.common.registry.EntityRegistry;
 import io.discloader.discloader.entity.guild.IGuild;
 import io.discloader.discloader.network.gateway.Gateway;
 import io.discloader.discloader.network.json.GuildJSON;
-import io.discloader.discloader.util.DLUtil.Events;
-import io.discloader.discloader.util.DLUtil.Status;
 
 /**
  * @author Perry Berman
@@ -34,15 +32,11 @@ public class GuildDelete extends AbstractHandler {
 		}
 		if (guild.isAvailable()) {
 			EntityRegistry.removeGuild(guild);
-			if (gateway.status.get() == Status.READY && loader.ready) {
-				GuildDeleteEvent event = new GuildDeleteEvent(guild);
-				loader.emit(Events.GUILD_DELETE, event);
-				loader.emit(event);
+			if (shouldEmit()) {
+				loader.emit(new GuildDeleteEvent(guild));
 			}
 		} else if (!guild.isAvailable() && shouldEmit()) {
-			GuildUnavailableEvent event = new GuildUnavailableEvent(guild);
-			loader.emit(Events.GUILD_UNAVAILABLE, event);
-			loader.emit(event);
+			loader.emit(new GuildUnavailableEvent(guild));
 		}
 	}
 

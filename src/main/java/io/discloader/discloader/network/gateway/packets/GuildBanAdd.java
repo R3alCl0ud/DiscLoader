@@ -6,7 +6,6 @@ import io.discloader.discloader.entity.guild.IGuild;
 import io.discloader.discloader.entity.user.IUser;
 import io.discloader.discloader.network.gateway.Gateway;
 import io.discloader.discloader.network.json.GuildMemberRemoveJSON;
-import io.discloader.discloader.util.DLUtil;
 
 /**
  * @author Perry Berman
@@ -25,9 +24,7 @@ public class GuildBanAdd extends AbstractHandler {
 		IUser user = EntityRegistry.addUser(data.user);
 		user.setup(data.user);
 		guild.removeMember(user);
-		GuildBanAddEvent event = new GuildBanAddEvent(guild, user);
-		loader.emit(DLUtil.Events.GUILD_BAN_ADD, event);
-		loader.emit(event);
+		loader.emit(new GuildBanAddEvent(guild, user));
 	}
 
 }

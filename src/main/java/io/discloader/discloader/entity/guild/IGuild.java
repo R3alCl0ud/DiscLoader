@@ -255,9 +255,43 @@ public interface IGuild extends ISnowflake, ICreationTime {
 
 	// CompletableFuture<IGuildTextChannel> createTextChannel(String name);
 
+	CompletableFuture<IGuildTextChannel> createTextChannel(String name, IChannelCategory category, IOverwrite... overwrites);
+
 	CompletableFuture<IGuildTextChannel> createTextChannel(String name, IOverwrite... overwrites);
 
-	CompletableFuture<IGuildTextChannel> createTextChannel(String name, IChannelCategory category, IOverwrite... overwrites);
+	/**
+	 * @param name
+	 *            The name of the channel
+	 * @param category
+	 * @param overwrites
+	 *            The channel's overwrites
+	 * @return A CompletableFuture that completes with a new
+	 *         {@link IGuildVoiceChannel} Object if successful.
+	 */
+	CompletableFuture<IGuildVoiceChannel> createVoiceChannel(String name, IChannelCategory category, IOverwrite... overwrites);
+
+	/**
+	 * Creates a new {@link VoiceChannel}
+	 * 
+	 * @param name
+	 *            The name of the channel
+	 * @param bitRate
+	 *            The channel's bitrate in kilobits per second (kbps).
+	 *            <code>1kb</code> is equal to <code>1000bits (125Bytes)</code>. The
+	 *            bitrate is normalized to be within the range of
+	 *            <code>8 to 128kbps</code>
+	 * @param userLimit
+	 *            The channel's userlimit with a maximum value of
+	 *            <code>99 users</code>. A userLimit of <code>0</code> signifies no
+	 *            limit.
+	 * @param category
+	 *            The category to put the channel in
+	 * @param overwrites
+	 *            The channel's overwrites
+	 * @return A future that completes with a new {@link VoiceChannel} Object if
+	 *         successful.
+	 */
+	CompletableFuture<IGuildVoiceChannel> createVoiceChannel(String name, int bitRate, int userLimit, IChannelCategory category, IOverwrite... overwrites) throws PermissionsException;
 
 	/**
 	 * Creates a new {@link IGuildVoiceChannel}
@@ -302,40 +336,6 @@ public interface IGuild extends ISnowflake, ICreationTime {
 	CompletableFuture<IGuildVoiceChannel> createVoiceChannel(String name, IOverwrite... overwrites);
 
 	/**
-	 * @param name
-	 *            The name of the channel
-	 * @param category
-	 * @param overwrites
-	 *            The channel's overwrites
-	 * @return A CompletableFuture that completes with a new
-	 *         {@link IGuildVoiceChannel} Object if successful.
-	 */
-	CompletableFuture<IGuildVoiceChannel> createVoiceChannel(String name, IChannelCategory category, IOverwrite... overwrites);
-
-	/**
-	 * Creates a new {@link VoiceChannel}
-	 * 
-	 * @param name
-	 *            The name of the channel
-	 * @param bitRate
-	 *            The channel's bitrate in kilobits per second (kbps).
-	 *            <code>1kb</code> is equal to <code>1000bits (125Bytes)</code>. The
-	 *            bitrate is normalized to be within the range of
-	 *            <code>8 to 128kbps</code>
-	 * @param userLimit
-	 *            The channel's userlimit with a maximum value of
-	 *            <code>99 users</code>. A userLimit of <code>0</code> signifies no
-	 *            limit.
-	 * @param category
-	 *            The category to put the channel in
-	 * @param overwrites
-	 *            The channel's overwrites
-	 * @return A future that completes with a new {@link VoiceChannel} Object if
-	 *         successful.
-	 */
-	CompletableFuture<IGuildVoiceChannel> createVoiceChannel(String name, int bitRate, int userLimit, IChannelCategory category, IOverwrite... overwrites) throws PermissionsException;
-
-	/**
 	 * Deletes the Guild if the user you have logged in as is the owner of the guild
 	 * 
 	 * @return A Future that completes with {@code this} if successful, and fails
@@ -359,14 +359,14 @@ public interface IGuild extends ISnowflake, ICreationTime {
 	 */
 	CompletableFuture<IGuild> edit(String name, String icon, IGuildVoiceChannel afkChannel) throws IOException;
 
-	RestAction<IGuildBan> fetchBan(IUser user);
-	
 	RestAction<IGuildBan> fetchBan(IGuildMember member);
-	
+
+	RestAction<IGuildBan> fetchBan(IUser user);
+
 	RestAction<IGuildBan> fetchBan(long userID);
-	
+
 	RestAction<IGuildBan> fetchBan(String userID);
-	
+
 	CompletableFuture<List<IGuildBan>> fetchBans();
 
 	CompletableFuture<List<IInvite>> fetchInvites();
@@ -388,18 +388,6 @@ public interface IGuild extends ISnowflake, ICreationTime {
 	 *         {@link IGuildMember#getID()}
 	 */
 	CompletableFuture<Map<Long, IGuildMember>> fetchMembers();
-
-	/**
-	 * Requests the Gateway to send a {@link GuildMembersChunkEvent} containing this
-	 * {@link IGuild guild's} members
-	 * 
-	 * @param query
-	 *            The String that username starts with, or an empty string to return
-	 *            all members.
-	 * @return A Map of {@link IGuildMember} objects indexed by
-	 *         {@link IGuildMember#getID()}
-	 */
-	CompletableFuture<Map<Long, IGuildMember>> fetchMembers(String query);
 
 	/**
 	 * Requests the Gateway to send a {@link GuildMembersChunkEvent} containing this
@@ -427,6 +415,18 @@ public interface IGuild extends ISnowflake, ICreationTime {
 	CompletableFuture<Map<Long, IGuildMember>> fetchMembers(int limit, String query);
 
 	/**
+	 * Requests the Gateway to send a {@link GuildMembersChunkEvent} containing this
+	 * {@link IGuild guild's} members
+	 * 
+	 * @param query
+	 *            The String that username starts with, or an empty string to return
+	 *            all members.
+	 * @return A Map of {@link IGuildMember} objects indexed by
+	 *         {@link IGuildMember#getID()}
+	 */
+	CompletableFuture<Map<Long, IGuildMember>> fetchMembers(String query);
+
+	/**
 	 * Fetches the {@link IGuild}'s {@link IRole} objects.
 	 * 
 	 * @return A {@link CompeletableFuture} that completes with a {@link Map} of the
@@ -443,15 +443,29 @@ public interface IGuild extends ISnowflake, ICreationTime {
 
 	CompletableFuture<IAuditLog> getAuditLog(IAuditLogEntry before);
 
-	CompletableFuture<IAuditLog> getAuditLog(IUser user);
+	CompletableFuture<IAuditLog> getAuditLog(int limit);
 
-	CompletableFuture<IAuditLog> getAuditLog(IUser user, int limit);
+	CompletableFuture<IAuditLog> getAuditLog(IUser user);
 
 	CompletableFuture<IAuditLog> getAuditLog(IUser user, ActionTypes action, IAuditLogEntry before, int limit);
 
-	CompletableFuture<IAuditLog> getAuditLog(int limit);
+	CompletableFuture<IAuditLog> getAuditLog(IUser user, int limit);
+
+	IGuildBan getBan(IGuildMember member);
+
+	IGuildBan getBan(IUser user);
+
+	IGuildBan getBan(long userID);
+
+	IGuildBan getBan(String userID);
 
 	List<IGuildBan> getBans() throws InterruptedException, ExecutionException;
+
+	IGuildChannel getChannelByID(long id);
+
+	IGuildChannel getChannelByID(String id);
+
+	IGuildChannel getChannelByName(String name);
 
 	Map<Long, IChannelCategory> getChannelCategories();
 
@@ -462,12 +476,6 @@ public interface IGuild extends ISnowflake, ICreationTime {
 	IChannelCategory getChannelCategoryByName(String name);
 
 	Map<Long, IGuildChannel> getChannels();
-
-	IGuildChannel getChannelByID(long id);
-
-	IGuildChannel getChannelByID(String id);
-
-	IGuildChannel getChannelByName(String name);
 
 	/**
 	 * Returns the {@link GuildMember} object for the {@link User} you are logged in

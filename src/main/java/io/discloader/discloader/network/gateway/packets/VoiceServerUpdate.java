@@ -19,11 +19,12 @@ public class VoiceServerUpdate extends AbstractHandler {
 	}
 
 	public void handle(SocketPacket packet) {
-		String d = this.gson.toJson(packet.d);
 		try {
-			VoiceServerUpdateJSON data = gson.fromJson(d, VoiceServerUpdateJSON.class);
+			VoiceServerUpdateJSON data = gson.fromJson(gson.toJson(packet.d), VoiceServerUpdateJSON.class);
 			VoiceConnection connection = EntityRegistry.getVoiceConnectionByID(SnowflakeUtil.parse(data.guild_id));
-			connection.endpointReceived(data.endpoint, data.token);
+			if (connection != null) {
+				connection.endpointReceived(data.endpoint, data.token);
+			}
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

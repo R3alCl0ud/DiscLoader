@@ -75,6 +75,7 @@ import io.discloader.discloader.network.rest.QueryParameter;
 import io.discloader.discloader.network.rest.RESTOptions;
 import io.discloader.discloader.network.rest.RestAction;
 import io.discloader.discloader.network.rest.actions.guild.CreateRole;
+import io.discloader.discloader.network.rest.actions.guild.FetchBan;
 import io.discloader.discloader.network.rest.actions.guild.ModifyGuild;
 import io.discloader.discloader.network.rest.payloads.ChannelPayload;
 import io.discloader.discloader.network.util.Endpoints;
@@ -541,9 +542,6 @@ public class Guild implements IGuild {
 		return future;
 	}
 
-	/**
-	 * @return {@code true} if all fields are equivalent, {@code false} otherwise.
-	 */
 	@Override
 	public boolean equals(Object object) {
 		if (!(object instanceof Guild))
@@ -553,42 +551,30 @@ public class Guild implements IGuild {
 		return this == guild || getID() == guild.getID();
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * @see io.discloader.discloader.entity.guild.IGuild#fetchBan(io.discloader.discloader.entity.guild.IGuildMember)
-	 */
 	@Override
 	public RestAction<IGuildBan> fetchBan(IGuildMember member) {
-		return null;
+		return fetchBan(member.getID());
 	}
-	
-	/*
-	 * (non-Javadoc)
-	 * @see io.discloader.discloader.entity.guild.IGuild#fetchBan(io.discloader.discloader.entity.user.IUser)
-	 */
+
 	@Override
 	public RestAction<IGuildBan> fetchBan(IUser user) {
-		return null;
+		return fetchBan(user.getID());
 	}
-	
-	/*
-	 * (non-Javadoc)
-	 * @see io.discloader.discloader.entity.guild.IGuild#fetchBan(long)
-	 */
+
 	@Override
 	public RestAction<IGuildBan> fetchBan(long userID) {
-		return null;
+		return new FetchBan(this, userID).onSuccess(ban -> {
+			if (getBan(userID) == null) {
+				bans.add(ban);
+			}
+		});
 	}
-	
-	/*
-	 * (non-Javadoc)
-	 * @see io.discloader.discloader.entity.guild.IGuild#fetchBan(java.lang.String)
-	 */
+
 	@Override
 	public RestAction<IGuildBan> fetchBan(String userID) {
-		return null;
+		return fetchBan(SnowflakeUtil.parse(userID));
 	}
-	
+
 	@Override
 	public CompletableFuture<List<IGuildBan>> fetchBans() {
 		CompletableFuture<List<IGuildBan>> future = new CompletableFuture<List<IGuildBan>>();
@@ -1363,6 +1349,31 @@ public class Guild implements IGuild {
 	@Override
 	public void updateVoiceState(VoiceState state) {
 		rawStates.put(state.member.getID(), state);
+	}
+
+	@Override
+	public IGuildBan getBan(IGuildMember member) {
+		return getBan(member.getID());
+	}
+
+	@Override
+	public IGuildBan getBan(IUser user) {
+		return getBan(user.getID());
+	}
+
+	@Override
+	public IGuildBan getBan(long userID) {
+		for (IGuildBan ban : bans) {
+			if (ban.getUser().getID() == userID) {
+				return ban;
+			}
+		}
+		return null;
+	}
+
+	@Override
+	public IGuildBan getBan(String userID) {
+		return getBan(SnowflakeUtil.parse(userID));
 	}
 
 }
