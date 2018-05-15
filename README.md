@@ -1,7 +1,7 @@
 # DiscLoader
 A High Level Java wrapper for the Discord API.
 
-[Documentation](http://docs.discloader.io/0.2.13)
+[Documentation](http://docs.discloader.io/0.2.14)
 
 [Discord Guild](https://discord.gg/7zfDPhE)
 
@@ -16,7 +16,7 @@ A High Level Java wrapper for the Discord API.
     <dependency>
         <groupId>io.discloader</groupId>
         <artifactId>discloader</artifactId>
-        <version>0.2.13</version>
+        <version>0.2.14</version>
     </dependency>
 </dependencies>
 <repositories>
