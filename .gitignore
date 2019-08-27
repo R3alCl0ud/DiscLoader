@@ -15,3 +15,5 @@ dependency-reduced-pom.xml
 *.DS_Store
 .DS_Store
 
+options.json
+options.json

@@ -21,10 +21,19 @@ public enum ChannelTypes {
 	 * Category channels within a guild.
 	 */
 	CATEGORY(4),
+
+	/**
+	 * A Channel that users can follow and crosspost into their own server
+	 */
+	NEWS(5),
+	/**
+	 * A channel in which game developers can sell their game on Discord
+	 */
+	STORE(6),
 	/**
 	 * All other channels.
 	 */
-	CHANNEL(5);
+	CHANNEL(7);
 
 	private int identifier;
 

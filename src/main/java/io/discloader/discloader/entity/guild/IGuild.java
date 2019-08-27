@@ -28,6 +28,8 @@ import io.discloader.discloader.entity.channel.IChannelCategory;
 import io.discloader.discloader.entity.channel.IGuildChannel;
 import io.discloader.discloader.entity.channel.IGuildTextChannel;
 import io.discloader.discloader.entity.channel.IGuildVoiceChannel;
+import io.discloader.discloader.entity.channel.INewsChannel;
+import io.discloader.discloader.entity.channel.IStoreChannel;
 import io.discloader.discloader.entity.invite.IInvite;
 import io.discloader.discloader.entity.presence.IPresence;
 import io.discloader.discloader.entity.user.IUser;
@@ -54,9 +56,8 @@ public interface IGuild extends ISnowflake, ICreationTime {
 	 * Shorthand method for {@link #addMember(IGuildMember, boolean)} where
 	 * {@code emit = false}. Should not increment {@link #getMemberCount()}.
 	 * 
-	 * @param member
-	 *            The member to add to an internal cache of {@link IGuildMember}
-	 *            objects.
+	 * @param member The member to add to an internal cache of {@link IGuildMember}
+	 *               objects.
 	 * @return The member object that was added to the internal cache.
 	 */
 	IGuildMember addMember(IGuildMember member);
@@ -66,11 +67,9 @@ public interface IGuild extends ISnowflake, ICreationTime {
 	 * If {@code emit} is true the internally stored {@link #getMemberCount()}
 	 * integer should be incremented by {@literal 1}
 	 * 
-	 * @param member
-	 *            The member to add to an internal cache of {@link IGuildMember}
-	 *            objects.
-	 * @param emit
-	 *            Whether or not a {@link GuildMemberAddEvent} should be fired.
+	 * @param member The member to add to an internal cache of {@link IGuildMember}
+	 *               objects.
+	 * @param emit   Whether or not a {@link GuildMemberAddEvent} should be fired.
 	 * @return The member object that was added to the internal cache.
 	 */
 	IGuildMember addMember(IGuildMember member, boolean emit);
@@ -79,19 +78,13 @@ public interface IGuild extends ISnowflake, ICreationTime {
 	 * Method used internally by DiscLoader to make a new {@link GuildMember} object
 	 * when a member's data is recieved
 	 * 
-	 * @param user
-	 *            The member's {@link IUser} object.
-	 * @param roles
-	 *            An array of {@link String}s that contains the IDs of the member's
-	 *            roles.
-	 * @param deaf
-	 *            Is the member deafened?
-	 * @param mute
-	 *            Is the member muted?
-	 * @param nick
-	 *            The member's nickname.
-	 * @param emit
-	 *            Whether or not a {@link GuildMemberAddEvent} should be fired.
+	 * @param user  The member's {@link IUser} object.
+	 * @param roles An array of {@link String}s that contains the IDs of the
+	 *              member's roles.
+	 * @param deaf  Is the member deafened?
+	 * @param mute  Is the member muted?
+	 * @param nick  The member's nickname.
+	 * @param emit  Whether or not a {@link GuildMemberAddEvent} should be fired.
 	 * @return The {@link IGuildMember} that was instantiated.
 	 */
 	IGuildMember addMember(IUser user, String[] roles, boolean deaf, boolean mute, String nick, boolean emit);
@@ -100,9 +93,8 @@ public interface IGuild extends ISnowflake, ICreationTime {
 	 * Shorthand method for {@link #addMember(MemberJSON, boolean)} where
 	 * {@code emit = false}. Should not increment {@link #getMemberCount()}.
 	 * 
-	 * @param data
-	 *            The data of the member to add to an internal cache of
-	 *            {@link IGuildMember} objects.
+	 * @param data The data of the member to add to an internal cache of
+	 *             {@link IGuildMember} objects.
 	 * @return The member object that was added to the internal cache.
 	 */
 	IGuildMember addMember(MemberJSON data);
@@ -113,11 +105,9 @@ public interface IGuild extends ISnowflake, ICreationTime {
 	 * integer should be incremented by {@literal 1} if the member didn't already
 	 * exist in the cache.
 	 * 
-	 * @param data
-	 *            The data of the member to add to an internal cache of
-	 *            {@link IGuildMember} objects.
-	 * @param emit
-	 *            Whether or not a {@link GuildMemberAddEvent} should be fired.
+	 * @param data The data of the member to add to an internal cache of
+	 *             {@link IGuildMember} objects.
+	 * @param emit Whether or not a {@link GuildMemberAddEvent} should be fired.
 	 * @return The member object that was added to the internal cache.
 	 */
 	IGuildMember addMember(MemberJSON data, boolean emit);
@@ -125,8 +115,7 @@ public interface IGuild extends ISnowflake, ICreationTime {
 	/**
 	 * Add a role to the guild's internal role cache.
 	 * 
-	 * @param role
-	 *            The role to add to the cache.
+	 * @param role The role to add to the cache.
 	 * @return The role that was added to the cache.
 	 */
 	IRole addRole(IRole role);
@@ -134,8 +123,7 @@ public interface IGuild extends ISnowflake, ICreationTime {
 	/**
 	 * Add a role to the guild's internal role cache.
 	 * 
-	 * @param role
-	 *            The role's data.
+	 * @param role The role's data.
 	 * @return The role that was added to the cache.
 	 */
 	IRole addRole(RoleJSON role);
@@ -144,8 +132,7 @@ public interface IGuild extends ISnowflake, ICreationTime {
 	 * Bans the member from the {@link Guild} if the {@link DiscLoader loader} has
 	 * sufficient permissions
 	 *
-	 * @param member
-	 *            The member to ban from the guild
+	 * @param member The member to ban from the guild
 	 * @see Permissions
 	 * @return A CompletableFuture that completes with {@code this} if successful
 	 * @throws PermissionsException
@@ -156,10 +143,8 @@ public interface IGuild extends ISnowflake, ICreationTime {
 	 * Bans the member from the {@link Guild} if the {@link DiscLoader loader} has
 	 * sufficient permissions
 	 *
-	 * @param member
-	 *            The member to ban from the guild
-	 * @param reason
-	 *            The reason of which the member has been banned
+	 * @param member The member to ban from the guild
+	 * @param reason The reason of which the member has been banned
 	 * @see Permissions
 	 * @return A CompletableFuture that completes with {@code this} if successful
 	 * @throws PermissionsException
@@ -172,9 +157,8 @@ public interface IGuild extends ISnowflake, ICreationTime {
 	 * 
 	 * @return A Future that completes with the number of member kicked during the
 	 *         prune operation if successful.
-	 * @throws PermissionsException
-	 *             if the current user doesn't have the
-	 *             {@link Permissions#KICK_MEMBERS} permission.
+	 * @throws PermissionsException if the current user doesn't have the
+	 *                              {@link Permissions#KICK_MEMBERS} permission.
 	 */
 	CompletableFuture<Integer> beginPrune();
 
@@ -182,13 +166,12 @@ public interface IGuild extends ISnowflake, ICreationTime {
 	 * Begin a prune operation. Requires the {@link Permissions#KICK_MEMBERS
 	 * KICK_MEMBERS} permission.
 	 * 
-	 * @param days
-	 *            The number of days to prune (1 or more)
+	 * @param days The number of days to prune (1 or more)
 	 * @return A Future that completes with the number of member kicked during the
 	 *         prune operation if successful.
-	 * @throws PermissionsException
-	 *             if the current user doesn't have the
-	 *             {@link Permissions#KICK_MEMBERS KICK_MEMBERS} permission.
+	 * @throws PermissionsException if the current user doesn't have the
+	 *                              {@link Permissions#KICK_MEMBERS KICK_MEMBERS}
+	 *                              permission.
 	 */
 	CompletableFuture<Integer> beginPrune(int days);
 
@@ -209,12 +192,9 @@ public interface IGuild extends ISnowflake, ICreationTime {
 	/**
 	 * Creates a new custom emoji
 	 * 
-	 * @param name
-	 *            The name of the new emoji
-	 * @param image
-	 *            The file
-	 * @param roles
-	 *            roles for which the new emoji will be whitelisted.
+	 * @param name  The name of the new emoji
+	 * @param image The file
+	 * @param roles roles for which the new emoji will be whitelisted.
 	 * @return A Future the completes with the created Emoji if successful.
 	 */
 	CompletableFuture<IGuildEmoji> createEmoji(String name, File image, IRole... roles);
@@ -222,12 +202,9 @@ public interface IGuild extends ISnowflake, ICreationTime {
 	/**
 	 * Creates a new custom emoji
 	 * 
-	 * @param name
-	 *            The name of the emoji
-	 * @param image
-	 *            The emoji's image encoded to base64
-	 * @param roles
-	 *            roles for which the new emoji will be whitelisted.
+	 * @param name  The name of the emoji
+	 * @param image The emoji's image encoded to base64
+	 * @param roles roles for which the new emoji will be whitelisted.
 	 * @return A Future the completes with the created Emoji if successful.
 	 */
 	CompletableFuture<IGuildEmoji> createEmoji(String name, String image, IRole... roles);
@@ -237,16 +214,11 @@ public interface IGuild extends ISnowflake, ICreationTime {
 	/**
 	 * Creates a new {@link IRole}.
 	 * 
-	 * @param name
-	 *            The name of the role
-	 * @param permissions
-	 *            The 53bit Permissions integer to assign to the role
-	 * @param color
-	 *            The color of the role
-	 * @param hoist
-	 *            Display role members separately from online members
-	 * @param mentionable
-	 *            Allow anyone to mention this role
+	 * @param name        The name of the role
+	 * @param permissions The 53bit Permissions integer to assign to the role
+	 * @param color       The color of the role
+	 * @param hoist       Display role members separately from online members
+	 * @param mentionable Allow anyone to mention this role
 	 * @return A future that completes with a new {@link IRole} Object if
 	 *         successful.
 	 * @since 0.0.3
@@ -255,69 +227,59 @@ public interface IGuild extends ISnowflake, ICreationTime {
 
 	// CompletableFuture<IGuildTextChannel> createTextChannel(String name);
 
-	CompletableFuture<IGuildTextChannel> createTextChannel(String name, IChannelCategory category, IOverwrite... overwrites);
+	CompletableFuture<IGuildTextChannel> createTextChannel(String name, IChannelCategory category,
+			IOverwrite... overwrites);
 
 	CompletableFuture<IGuildTextChannel> createTextChannel(String name, IOverwrite... overwrites);
 
 	/**
-	 * @param name
-	 *            The name of the channel
+	 * @param name       The name of the channel
 	 * @param category
-	 * @param overwrites
-	 *            The channel's overwrites
+	 * @param overwrites The channel's overwrites
 	 * @return A CompletableFuture that completes with a new
 	 *         {@link IGuildVoiceChannel} Object if successful.
 	 */
-	CompletableFuture<IGuildVoiceChannel> createVoiceChannel(String name, IChannelCategory category, IOverwrite... overwrites);
+	CompletableFuture<IGuildVoiceChannel> createVoiceChannel(String name, IChannelCategory category,
+			IOverwrite... overwrites);
 
 	/**
 	 * Creates a new {@link VoiceChannel}
 	 * 
-	 * @param name
-	 *            The name of the channel
-	 * @param bitRate
-	 *            The channel's bitrate in kilobits per second (kbps).
-	 *            <code>1kb</code> is equal to <code>1000bits (125Bytes)</code>. The
-	 *            bitrate is normalized to be within the range of
-	 *            <code>8 to 128kbps</code>
-	 * @param userLimit
-	 *            The channel's userlimit with a maximum value of
-	 *            <code>99 users</code>. A userLimit of <code>0</code> signifies no
-	 *            limit.
-	 * @param category
-	 *            The category to put the channel in
-	 * @param overwrites
-	 *            The channel's overwrites
+	 * @param name       The name of the channel
+	 * @param bitRate    The channel's bitrate in kilobits per second (kbps).
+	 *                   <code>1kb</code> is equal to
+	 *                   <code>1000bits (125Bytes)</code>. The bitrate is normalized
+	 *                   to be within the range of <code>8 to 128kbps</code>
+	 * @param userLimit  The channel's userlimit with a maximum value of
+	 *                   <code>99 users</code>. A userLimit of <code>0</code>
+	 *                   signifies no limit.
+	 * @param category   The category to put the channel in
+	 * @param overwrites The channel's overwrites
 	 * @return A future that completes with a new {@link VoiceChannel} Object if
 	 *         successful.
 	 */
-	CompletableFuture<IGuildVoiceChannel> createVoiceChannel(String name, int bitRate, int userLimit, IChannelCategory category, IOverwrite... overwrites) throws PermissionsException;
+	CompletableFuture<IGuildVoiceChannel> createVoiceChannel(String name, int bitRate, int userLimit,
+			IChannelCategory category, IOverwrite... overwrites) throws PermissionsException;
 
 	/**
 	 * Creates a new {@link IGuildVoiceChannel}
 	 * 
-	 * @param name
-	 *            The name of the channel
-	 * @param bitRate
-	 *            The channel's bitrate
-	 * @param userLimit
-	 *            The channel's userlimit
-	 * @param overwrites
-	 *            The channel's overwrites
+	 * @param name       The name of the channel
+	 * @param bitRate    The channel's bitrate
+	 * @param userLimit  The channel's userlimit
+	 * @param overwrites The channel's overwrites
 	 * @return A future that completes with a new {@link IGuildVoiceChannel} Object
 	 *         if successful.
 	 */
-	CompletableFuture<IGuildVoiceChannel> createVoiceChannel(String name, int bitRate, int userLimit, IOverwrite... overwrites);
+	CompletableFuture<IGuildVoiceChannel> createVoiceChannel(String name, int bitRate, int userLimit,
+			IOverwrite... overwrites);
 
 	/**
 	 * Creates a new {@link IGuildVoiceChannel}
 	 * 
-	 * @param name
-	 *            The name of the channel
-	 * @param bitRate
-	 *            The channel's bitrate
-	 * @param overwrites
-	 *            The channel's overwrites
+	 * @param name       The name of the channel
+	 * @param bitRate    The channel's bitrate
+	 * @param overwrites The channel's overwrites
 	 * @return A future that completes with a new {@link IGuildVoiceChannel} Object
 	 *         if successful.
 	 */
@@ -326,10 +288,8 @@ public interface IGuild extends ISnowflake, ICreationTime {
 	/**
 	 * Creates a new {@link IGuildVoiceChannel}
 	 * 
-	 * @param name
-	 *            The name of the channel
-	 * @param overwrites
-	 *            The channel's overwrites
+	 * @param name       The name of the channel
+	 * @param overwrites The channel's overwrites
 	 * @return A future that completes with a new {@link IGuildVoiceChannel} Object
 	 *         if successful.
 	 */
@@ -340,21 +300,17 @@ public interface IGuild extends ISnowflake, ICreationTime {
 	 * 
 	 * @return A Future that completes with {@code this} if successful, and fails
 	 *         with a {@link UnauthorizedException}
-	 * @throws UnauthorizedException
-	 *             Thrown if you are not the owner of the guild.
+	 * @throws UnauthorizedException Thrown if you are not the owner of the guild.
 	 */
 	CompletableFuture<IGuild> delete();
 
 	/**
-	 * @param name
-	 *            The guild's new name.
-	 * @param icon
-	 *            The guild's new icon.
+	 * @param name       The guild's new name.
+	 * @param icon       The guild's new icon.
 	 * @param afkChannel
 	 * @return A Future that completes with {@code this} if successful.
-	 * @throws PermissionsException
-	 *             Thrown if the current user doesn't have the
-	 *             {@link Permissions#MANAGE_GUILD} permission.
+	 * @throws PermissionsException Thrown if the current user doesn't have the
+	 *                              {@link Permissions#MANAGE_GUILD} permission.
 	 * @throws IOException
 	 */
 	CompletableFuture<IGuild> edit(String name, String icon, IGuildVoiceChannel afkChannel) throws IOException;
@@ -374,8 +330,7 @@ public interface IGuild extends ISnowflake, ICreationTime {
 	/**
 	 * Fetches a GuildMember from the REST API
 	 * 
-	 * @param memberID
-	 *            the ID of the member to load
+	 * @param memberID the ID of the member to load
 	 * @return CompletableFuture.GuildMember
 	 */
 	CompletableFuture<IGuildMember> fetchMember(long memberID);
@@ -393,8 +348,7 @@ public interface IGuild extends ISnowflake, ICreationTime {
 	 * Requests the Gateway to send a {@link GuildMembersChunkEvent} containing this
 	 * {@link IGuild guild's} members
 	 * 
-	 * @param limit
-	 *            The maximum number of members to fetch.
+	 * @param limit The maximum number of members to fetch.
 	 * @return A Map of {@link IGuildMember} objects indexed by
 	 *         {@link IGuildMember#getID()} if successful.
 	 */
@@ -404,11 +358,9 @@ public interface IGuild extends ISnowflake, ICreationTime {
 	 * Requests the Gateway to send a {@link GuildMembersChunkEvent} containing this
 	 * {@link IGuild guild's} members
 	 * 
-	 * @param limit
-	 *            The maximum number of members to fetch.
-	 * @param query
-	 *            The String that username starts with, or an empty string to return
-	 *            all members.
+	 * @param limit The maximum number of members to fetch.
+	 * @param query The String that username starts with, or an empty string to
+	 *              return all members.
 	 * @return A Map of {@link IGuildMember} objects indexed by
 	 *         {@link IGuildMember#getID()} if successful.
 	 */
@@ -418,9 +370,8 @@ public interface IGuild extends ISnowflake, ICreationTime {
 	 * Requests the Gateway to send a {@link GuildMembersChunkEvent} containing this
 	 * {@link IGuild guild's} members
 	 * 
-	 * @param query
-	 *            The String that username starts with, or an empty string to return
-	 *            all members.
+	 * @param query The String that username starts with, or an empty string to
+	 *              return all members.
 	 * @return A Map of {@link IGuildMember} objects indexed by
 	 *         {@link IGuildMember#getID()}
 	 */
@@ -546,8 +497,7 @@ public interface IGuild extends ISnowflake, ICreationTime {
 	 * Returns the number of members that would be removed in a prune operation.
 	 * Requires the {@link Permissions#KICK_MEMBERS} permission.
 	 * 
-	 * @param days
-	 *            The number of days to count prune for (1 or more)
+	 * @param days The number of days to count prune for (1 or more)
 	 * @return A Future that completes with the number of members that would be
 	 *         kicked in a prune operation
 	 */
@@ -565,6 +515,20 @@ public interface IGuild extends ISnowflake, ICreationTime {
 
 	String getSplashHash();
 
+	INewsChannel getNewsChannelByID(long channelID);
+
+	INewsChannel getNewsChannelByID(String channelID);
+
+	INewsChannel getNewsChannelByName(String name);
+
+	Map<Long, INewsChannel> getNewsChannels();
+	
+	IStoreChannel getStoreChannelByID(long channelID);
+	IStoreChannel getStoreChannelByID(String channelID);
+	IStoreChannel getStoreChannelByName(String channelName);
+
+	Map<Long, IStoreChannel> getStoreChannels();
+	
 	IGuildTextChannel getTextChannelByID(long channelID);
 
 	IGuildTextChannel getTextChannelByID(String channelID);
@@ -602,8 +566,7 @@ public interface IGuild extends ISnowflake, ICreationTime {
 	 * This check is <strong>explicit</strong> if the {@link #getCurrentMember()
 	 * current member} is not the {@link IGuild guild's} {@link #getOwner() owner}.
 	 * 
-	 * @param permissions
-	 *            One or {@link Permissions permission} to check for.
+	 * @param permissions One or {@link Permissions permission} to check for.
 	 * @return a boolean.
 	 */
 	boolean hasPermission(Permissions... permissions);
@@ -637,8 +600,7 @@ public interface IGuild extends ISnowflake, ICreationTime {
 	 * Checks if a {@link IGuildMember member} is the {@link #getOwner() owner} of
 	 * the {@link IGuild guild}.
 	 * 
-	 * @param member
-	 *            The member to check if they own the {@link IGuild guild}.
+	 * @param member The member to check if they own the {@link IGuild guild}.
 	 * @return {@code true} if {@link IGuildMember#getID() member.getID()} is equal
 	 *         to {@link #getOwnerID() this.getOwnerID()}, false otherwise.
 	 */
@@ -656,13 +618,11 @@ public interface IGuild extends ISnowflake, ICreationTime {
 	 * {@link #getCurrentMember() current member} has the
 	 * {@link Permissions#KICK_MEMBERS} permission.
 	 * 
-	 * @param member
-	 *            The {@link IGuildMember member} to kick from the guild.
+	 * @param member The {@link IGuildMember member} to kick from the guild.
 	 * @see Permissions
 	 * @return A CompletableFuture that completes with {@code this} if successful.
-	 * @throws PermissionsException
-	 *             Thrown if the current user doesn't have the
-	 *             {@link Permissions#KICK_MEMBERS} permission.
+	 * @throws PermissionsException Thrown if the current user doesn't have the
+	 *                              {@link Permissions#KICK_MEMBERS} permission.
 	 */
 	CompletableFuture<IGuildMember> kick(IGuildMember member) throws PermissionsException;
 
@@ -671,16 +631,13 @@ public interface IGuild extends ISnowflake, ICreationTime {
 	 * {@link #getCurrentMember() current member} has the
 	 * {@link Permissions#KICK_MEMBERS} permission.
 	 * 
-	 * @param member
-	 *            The {@link IGuildMember member} to kick from the guild.
-	 * @param reason
-	 *            The reason for kicking the user to be shown in the
-	 *            {@link IAuditLog audit log}.
+	 * @param member The {@link IGuildMember member} to kick from the guild.
+	 * @param reason The reason for kicking the user to be shown in the
+	 *               {@link IAuditLog audit log}.
 	 * @see Permissions
 	 * @return A CompletableFuture that completes with {@code this} if successful.
-	 * @throws PermissionsException
-	 *             Thrown if the current user doesn't have the
-	 *             {@link Permissions#KICK_MEMBERS} permission.
+	 * @throws PermissionsException Thrown if the current user doesn't have the
+	 *                              {@link Permissions#KICK_MEMBERS} permission.
 	 * 
 	 */
 	CompletableFuture<IGuildMember> kick(IGuildMember member, String reason) throws PermissionsException;
@@ -706,8 +663,7 @@ public interface IGuild extends ISnowflake, ICreationTime {
 	/**
 	 * Sets the {@link IGuild guild's} AFK {@link IGuildVoiceChannel voice channel}.
 	 * 
-	 * @param voiceChannel
-	 *            The {@link IGuildVoiceChannel} to set as the afk channel.
+	 * @param voiceChannel The {@link IGuildVoiceChannel} to set as the afk channel.
 	 * @throws PermissionsException
 	 * @throws MissmatchException
 	 */
@@ -716,11 +672,10 @@ public interface IGuild extends ISnowflake, ICreationTime {
 	/**
 	 * Sets the guild's icon if the loader has sufficient permissions
 	 * 
-	 * @param icon
-	 *            location of icon file on disk
+	 * @param icon location of icon file on disk
 	 * @return A Future that completes with {@code this} if successful.
-	 * @throws IOException
-	 *             Exception thrown if there is an error reading icon file
+	 * @throws IOException          Exception thrown if there is an error reading
+	 *                              icon file
 	 * @throws PermissionsException
 	 */
 	CompletableFuture<IGuild> setIcon(String icon) throws IOException;
@@ -728,22 +683,19 @@ public interface IGuild extends ISnowflake, ICreationTime {
 	/**
 	 * Sets the guild's name if the loader has sufficient permissions
 	 * 
-	 * @param name
-	 *            The guild's new name
+	 * @param name The guild's new name
 	 * @return A Future that completes with {@code this} if successful.
 	 * @throws PermissionsException
 	 */
 	CompletableFuture<IGuild> setName(String name);
 
 	/**
-	 * @param member
-	 *            The member to set as the {@link IGuild guild's} {@link #getOwner()
-	 *            owner}.
+	 * @param member The member to set as the {@link IGuild guild's}
+	 *               {@link #getOwner() owner}.
 	 * @return A Future that completes with the new {@link #getOwner() owner} of the
 	 *         {@link IGuild guild} if successful. {@link IGuild this} if
 	 *         successful.
-	 * @throws UnauthorizedException
-	 *             Thrown if you are not the owner of theS guild.
+	 * @throws UnauthorizedException Thrown if you are not the owner of theS guild.
 	 */
 	CompletableFuture<IGuild> setOwner(IGuildMember member);
 
@@ -760,8 +712,7 @@ public interface IGuild extends ISnowflake, ICreationTime {
 	/**
 	 * Sets the Guild's voice region to the specified region
 	 * 
-	 * @param region
-	 *            The new voice region
+	 * @param region The new voice region
 	 * @return A Future that completes with {@code this} if successful.
 	 * @throws PermissionsException
 	 */
@@ -770,10 +721,8 @@ public interface IGuild extends ISnowflake, ICreationTime {
 	/**
 	 * Syncs the guild to the client if the logged in user is not a bot.
 	 * 
-	 * @throws GuildSyncException
-	 *             Thrown if {@link #isSyncing()} returns true.
-	 * @throws AccountTypeException
-	 *             Thrown if client is logged in as a bot account
+	 * @throws GuildSyncException   Thrown if {@link #isSyncing()} returns true.
+	 * @throws AccountTypeException Thrown if client is logged in as a bot account
 	 */
 	void sync() throws GuildSyncException, AccountTypeException;
 
