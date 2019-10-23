@@ -1,6 +1,7 @@
 package io.discloader.discloader.client.command;
 
 import java.util.Locale;
+import java.util.logging.Logger;
 import java.util.regex.Matcher;
 
 import io.discloader.discloader.common.event.message.MessageCreateEvent;
@@ -23,10 +24,12 @@ public class CommandHandler {
 
 	public static boolean selfBot = true;
 
+	public static final Logger logger = DLLogger.getLogger("CommandHandler");
+	
 	public static void handleMessageCreate(MessageCreateEvent e) {
 		try {
 			IMessage message = e.getMessage();
-			if (!handleCommands || e.loader.user == null || message.getAuthor() == null || message.getAuthor().isBot() || ((!e.loader.user.isBot() && selfBot) && message.getAuthor().getID() != e.loader.user.getID()) || message.getContent().length() < prefix.length()) {
+			if (!handleCommands || e.getLoader().getSelfUser() == null || message.getAuthor() == null || message.getAuthor().isBot() || ((!e.getLoader().getSelfUser().isBot() && selfBot) && message.getAuthor().getID() != e.getLoader().getSelfUser().getID()) || message.getContent().length() < prefix.length()) {
 				return;
 			}
 			String[] Args = e.args;
