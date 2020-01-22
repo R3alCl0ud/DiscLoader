@@ -14,6 +14,7 @@ import io.discloader.discloader.common.exceptions.PermissionsException;
 import io.discloader.discloader.entity.guild.IGuild;
 import io.discloader.discloader.entity.guild.IGuildEmoji;
 import io.discloader.discloader.entity.guild.IRole;
+import io.discloader.discloader.entity.user.IUser;
 import io.discloader.discloader.entity.util.Permissions;
 import io.discloader.discloader.entity.util.SnowflakeUtil;
 import io.discloader.discloader.network.json.EmojiJSON;
@@ -228,4 +229,31 @@ public class GuildEmoji implements IGuildEmoji {
 		return future;
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * @see io.discloader.discloader.entity.guild.IGuildEmoji#getUser()
+	 */
+	@Override
+	public IUser getUser() {
+		return null;
+	}
+	
+	/*
+	 * (non-Javadoc)
+	 * @see io.discloader.discloader.entity.guild.IGuildEmoji#isAnimated()
+	 */
+	@Override
+	public boolean isAnimated() {
+		return false;
+	}
+	
+	/*
+	 * (non-Javadoc)
+	 * @see io.discloader.discloader.entity.guild.IGuildEmoji#isManaged()
+	 */
+	@Override
+	public boolean isManaged() {
+		return false;
+	}
+	
 }

@@ -6,6 +6,10 @@ public class EmojiJSON {
 
 	public String[] roles;
 
+	public UserJSON user;
+	
 	public boolean requires_colons;
 	public boolean managed;
+	public boolean animated;
+	
 }

@@ -158,7 +158,6 @@ public class AudioSendHandler implements AudioOutputHook {
 
 	@Override
 	public AudioFrame outgoingFrame(AudioPlayer player, AudioFrame frame) {
-		// System.out.println(frame.format.codec.name());
 		return frame;
 	}
 

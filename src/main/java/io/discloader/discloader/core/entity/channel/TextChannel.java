@@ -65,6 +65,8 @@ public class TextChannel extends GuildChannel implements IGuildTextChannel {
 
 	private boolean nsfw;
 
+	private int rateLimit;
+
 	public TextChannel(IGuild guild, ChannelJSON data) {
 		super(guild, data);
 
@@ -89,7 +91,8 @@ public class TextChannel extends GuildChannel implements IGuildTextChannel {
 
 	@Override
 	public CompletableFuture<IGuildTextChannel> edit(String name, int position) {
-		if (!this.permissionsOf(guild.getCurrentMember()).hasAny(Permissions.MANAGE_CHANNELS, Permissions.ADMINISTRATOR) && !guild.isOwner()) {
+		if (!this.permissionsOf(guild.getCurrentMember()).hasAny(Permissions.MANAGE_CHANNELS, Permissions.ADMINISTRATOR)
+				&& !guild.isOwner()) {
 			throw new PermissionsException("Insufficient Permissions");
 		}
 
@@ -99,9 +102,11 @@ public class TextChannel extends GuildChannel implements IGuildTextChannel {
 
 		CompletableFuture<IGuildTextChannel> future = new CompletableFuture<>();
 		JSONObject payload = new JSONObject().put("name", sanitizeChannelName(name)).put("position", position);
-		CompletableFuture<ChannelJSON> cf = loader.rest.request(Methods.PATCH, Endpoints.channel(getID()), new RESTOptions(payload), ChannelJSON.class);
+		CompletableFuture<ChannelJSON> cf = loader.rest.request(Methods.PATCH, Endpoints.channel(getID()),
+				new RESTOptions(payload), ChannelJSON.class);
 		cf.thenAcceptAsync(data -> {
-			IGuildTextChannel channel = (IGuildTextChannel) EntityBuilder.getChannelFactory().buildChannel(data, getLoader(), getGuild(), false);
+			IGuildTextChannel channel = (IGuildTextChannel) EntityBuilder.getChannelFactory().buildChannel(data,
+					getLoader(), getGuild(), false);
 			future.complete(channel);
 		});
 		cf.exceptionally(ex -> {
@@ -113,7 +118,8 @@ public class TextChannel extends GuildChannel implements IGuildTextChannel {
 
 	@Override
 	public CompletableFuture<IGuildTextChannel> edit(String name, String topic) {
-		if (!this.permissionsOf(guild.getCurrentMember()).hasAny(Permissions.MANAGE_CHANNELS, Permissions.ADMINISTRATOR) && !guild.isOwner()) {
+		if (!this.permissionsOf(guild.getCurrentMember()).hasAny(Permissions.MANAGE_CHANNELS, Permissions.ADMINISTRATOR)
+				&& !guild.isOwner()) {
 			throw new PermissionsException("Insufficient Permissions");
 		}
 
@@ -127,9 +133,11 @@ public class TextChannel extends GuildChannel implements IGuildTextChannel {
 
 		CompletableFuture<IGuildTextChannel> future = new CompletableFuture<>();
 		JSONObject payload = new JSONObject().put("name", sanitizeChannelName(name)).put("topic", topic);
-		CompletableFuture<ChannelJSON> cf = loader.rest.request(Methods.PATCH, Endpoints.channel(getID()), new RESTOptions(payload), ChannelJSON.class);
+		CompletableFuture<ChannelJSON> cf = loader.rest.request(Methods.PATCH, Endpoints.channel(getID()),
+				new RESTOptions(payload), ChannelJSON.class);
 		cf.thenAcceptAsync(data -> {
-			IGuildTextChannel channel = (IGuildTextChannel) EntityBuilder.getChannelFactory().buildChannel(data, getLoader(), getGuild(), false);
+			IGuildTextChannel channel = (IGuildTextChannel) EntityBuilder.getChannelFactory().buildChannel(data,
+					getLoader(), getGuild(), false);
 			future.complete(channel);
 		});
 		cf.exceptionally(ex -> {
@@ -141,7 +149,8 @@ public class TextChannel extends GuildChannel implements IGuildTextChannel {
 
 	@Override
 	public CompletableFuture<IGuildTextChannel> edit(String name, String topic, int position) {
-		if (!this.permissionsOf(guild.getCurrentMember()).hasAny(Permissions.MANAGE_CHANNELS, Permissions.ADMINISTRATOR) && !guild.isOwner()) {
+		if (!this.permissionsOf(guild.getCurrentMember()).hasAny(Permissions.MANAGE_CHANNELS, Permissions.ADMINISTRATOR)
+				&& !guild.isOwner()) {
 			throw new PermissionsException("Insufficient Permissions");
 		}
 
@@ -154,10 +163,13 @@ public class TextChannel extends GuildChannel implements IGuildTextChannel {
 		}
 
 		CompletableFuture<IGuildTextChannel> future = new CompletableFuture<>();
-		JSONObject payload = new JSONObject().put("name", sanitizeChannelName(name)).put("topic", topic).put("position", position);
-		CompletableFuture<ChannelJSON> cf = loader.rest.request(Methods.PATCH, Endpoints.channel(getID()), new RESTOptions(payload), ChannelJSON.class);
+		JSONObject payload = new JSONObject().put("name", sanitizeChannelName(name)).put("topic", topic).put("position",
+				position);
+		CompletableFuture<ChannelJSON> cf = loader.rest.request(Methods.PATCH, Endpoints.channel(getID()),
+				new RESTOptions(payload), ChannelJSON.class);
 		cf.thenAcceptAsync(data -> {
-			IGuildTextChannel channel = (IGuildTextChannel) EntityBuilder.getChannelFactory().buildChannel(data, getLoader(), getGuild(), false);
+			IGuildTextChannel channel = (IGuildTextChannel) EntityBuilder.getChannelFactory().buildChannel(data,
+					getLoader(), getGuild(), false);
 			future.complete(channel);
 		});
 		cf.exceptionally(ex -> {
@@ -263,8 +275,7 @@ public class TextChannel extends GuildChannel implements IGuildTextChannel {
 	 * Checks if a certain {@link GuildMember guild member} is typing in this
 	 * channel
 	 * 
-	 * @param member
-	 *            The member to check.
+	 * @param member The member to check.
 	 * @return {@code true} if the member is typing, false otherwise.
 	 */
 	public boolean isTyping(GuildMember member) {
@@ -345,11 +356,13 @@ public class TextChannel extends GuildChannel implements IGuildTextChannel {
 	}
 
 	@Override
-	public CompletableFuture<IMessage> sendMessage(String content, RichEmbed embed, Attachment attachment, boolean tts) {
+	public CompletableFuture<IMessage> sendMessage(String content, RichEmbed embed, Attachment attachment,
+			boolean tts) {
 		CompletableFuture<IMessage> future = new CompletableFuture<>();
 		File file = attachment == null ? null : new File(attachment.filename);
 		SendableMessage sendable = new SendableMessage(content, tts, embed, attachment, file);
-		CompletableFuture<MessageJSON> mcf = loader.rest.request(Methods.POST, Endpoints.messages(getID()), new RESTOptions(sendable), MessageJSON.class);
+		CompletableFuture<MessageJSON> mcf = loader.rest.request(Methods.POST, Endpoints.messages(getID()),
+				new RESTOptions(sendable), MessageJSON.class);
 		mcf.thenAcceptAsync(e -> {
 			future.complete(new Message<>(this, e));
 		});
@@ -385,7 +398,8 @@ public class TextChannel extends GuildChannel implements IGuildTextChannel {
 		Attachment attachment = file == null ? null : new Attachment(file.getName());
 		SendableMessage sendable = new SendableMessage(content, tts, embed, attachment, file);
 		CompletableFuture<IMessage> future = new CompletableFuture<>();
-		CompletableFuture<MessageJSON> mcf = loader.rest.request(Methods.POST, Endpoints.messages(getID()), new RESTOptions(sendable), MessageJSON.class);
+		CompletableFuture<MessageJSON> mcf = loader.rest.request(Methods.POST, Endpoints.messages(getID()),
+				new RESTOptions(sendable), MessageJSON.class);
 		mcf.thenAcceptAsync(e -> {
 			future.complete(new Message<>(this, e));
 		});
@@ -406,7 +420,8 @@ public class TextChannel extends GuildChannel implements IGuildTextChannel {
 		Attachment attachment = resource == null ? null : new Attachment(resource.getFileName());
 		SendableMessage sendable = new SendableMessage(content, tts, embed, attachment, resource);
 		CompletableFuture<IMessage> future = new CompletableFuture<>();
-		CompletableFuture<MessageJSON> mcf = loader.rest.request(Methods.POST, Endpoints.messages(getID()), new RESTOptions(sendable), MessageJSON.class);
+		CompletableFuture<MessageJSON> mcf = loader.rest.request(Methods.POST, Endpoints.messages(getID()),
+				new RESTOptions(sendable), MessageJSON.class);
 		mcf.thenAcceptAsync(e -> {
 			future.complete(new Message<>(this, e));
 		});
@@ -424,15 +439,18 @@ public class TextChannel extends GuildChannel implements IGuildTextChannel {
 
 	@Override
 	public CompletableFuture<IGuildTextChannel> setNSFW(boolean nsfw) {
-		if (!this.permissionsOf(guild.getCurrentMember()).hasAny(Permissions.MANAGE_CHANNELS, Permissions.ADMINISTRATOR) && !guild.isOwner()) {
+		if (!this.permissionsOf(guild.getCurrentMember()).hasAny(Permissions.MANAGE_CHANNELS, Permissions.ADMINISTRATOR)
+				&& !guild.isOwner()) {
 			throw new PermissionsException("Insufficient Permissions");
 		}
 
 		CompletableFuture<IGuildTextChannel> future = new CompletableFuture<>();
 		JSONObject payload = new JSONObject().put("nsfw", nsfw);
-		CompletableFuture<ChannelJSON> cf = loader.rest.request(Methods.PATCH, Endpoints.channel(getID()), new RESTOptions(payload), ChannelJSON.class);
+		CompletableFuture<ChannelJSON> cf = loader.rest.request(Methods.PATCH, Endpoints.channel(getID()),
+				new RESTOptions(payload), ChannelJSON.class);
 		cf.thenAcceptAsync(data -> {
-			IGuildTextChannel channel = (IGuildTextChannel) EntityBuilder.getChannelFactory().buildChannel(data, getLoader(), getGuild(), false);
+			IGuildTextChannel channel = (IGuildTextChannel) EntityBuilder.getChannelFactory().buildChannel(data,
+					getLoader(), getGuild(), false);
 			future.complete(channel);
 		});
 		cf.exceptionally(ex -> {
@@ -443,7 +461,8 @@ public class TextChannel extends GuildChannel implements IGuildTextChannel {
 	}
 
 	public CompletableFuture<IGuildTextChannel> setTopic(String topic) {
-		if (!this.permissionsOf(guild.getCurrentMember()).hasAny(Permissions.MANAGE_CHANNELS, Permissions.ADMINISTRATOR) && !guild.isOwner()) {
+		if (!this.permissionsOf(guild.getCurrentMember()).hasAny(Permissions.MANAGE_CHANNELS, Permissions.ADMINISTRATOR)
+				&& !guild.isOwner()) {
 			throw new PermissionsException("Insufficient Permissions");
 		}
 
@@ -453,9 +472,11 @@ public class TextChannel extends GuildChannel implements IGuildTextChannel {
 
 		CompletableFuture<IGuildTextChannel> future = new CompletableFuture<>();
 		JSONObject payload = new JSONObject().put("topic", topic);
-		CompletableFuture<ChannelJSON> cf = loader.rest.request(Methods.PATCH, Endpoints.channel(getID()), new RESTOptions(payload), ChannelJSON.class);
+		CompletableFuture<ChannelJSON> cf = loader.rest.request(Methods.PATCH, Endpoints.channel(getID()),
+				new RESTOptions(payload), ChannelJSON.class);
 		cf.thenAcceptAsync(data -> {
-			IGuildTextChannel channel = (IGuildTextChannel) EntityBuilder.getChannelFactory().buildChannel(data, getLoader(), getGuild(), false);
+			IGuildTextChannel channel = (IGuildTextChannel) EntityBuilder.getChannelFactory().buildChannel(data,
+					getLoader(), getGuild(), false);
 			future.complete(channel);
 		});
 		cf.exceptionally(ex -> {
@@ -477,7 +498,8 @@ public class TextChannel extends GuildChannel implements IGuildTextChannel {
 	@Override
 	public CompletableFuture<Map<Long, IUser>> startTyping() {
 		CompletableFuture<Map<Long, IUser>> future = new CompletableFuture<>();
-		CompletableFuture<Void> cf = loader.rest.request(Methods.POST, Endpoints.channelTyping(getID()), new RESTOptions(), Void.class);
+		CompletableFuture<Void> cf = loader.rest.request(Methods.POST, Endpoints.channelTyping(getID()),
+				new RESTOptions(), Void.class);
 		cf.thenAcceptAsync(n -> {
 			typing.put(loader.user.getID(), loader.user);
 			future.complete(typing);
@@ -502,6 +524,21 @@ public class TextChannel extends GuildChannel implements IGuildTextChannel {
 	@Override
 	public CompletableFuture<IMessage> unpinMessage(IMessage message) {
 		return new UnpinMessage<IGuildTextChannel>(message).execute();
+	}
+
+	@Override
+	public CompletableFuture<IGuildTextChannel> setRateLimit(int rate) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public int getRateLimit() {
+		if (getGuild().getMember(getLoader().user.getID()).getPermissions().hasPermission(Permissions.MANAGE_MESSAGES,
+				Permissions.MANAGE_CHANNELS)) {
+			return 0;
+		}
+		return rateLimit;
 	}
 
 }
