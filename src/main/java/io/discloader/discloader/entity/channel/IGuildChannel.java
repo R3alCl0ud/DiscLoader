@@ -81,7 +81,11 @@ public interface IGuildChannel extends IChannel {
 
 	// CompletableFuture<? extends IGuildChannel> edit(String name, String
 	// topic, int position, int bitrate, int userLimit);
-
+	/**
+	 * Returns the parent {@link IChannelCategory} of this {@link IGuildChannel}.
+	 * 
+	 * @return The parent {@link IChannelCategory} of this {@link IGuildChannel}.
+	 */
 	IChannelCategory getCategory();
 
 	/**
@@ -105,6 +109,7 @@ public interface IGuildChannel extends IChannel {
 
 	RestAction<List<IInvite>> fetchInvites();
 
+	
 	/**
 	 * Gets the members that can view/join this channel
 	 * 

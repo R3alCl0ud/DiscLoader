@@ -322,7 +322,7 @@ public class GatewayListener extends WebSocketAdapter {
 		reconnection = new Thread(logName + " Reconnector") {
 			public void run() {
 				try {
-					while (gateway.status.get() == Status.RECONNECTING && !gateway.websocket.isOpen() && !this.isInterrupted() && tries++ < 3) {
+					while (gateway.status.get() == Status.RECONNECTING && !gateway.websocket.isOpen() && !this.isInterrupted() && ++tries <= 3) {
 						Thread.sleep(timeout * (tries));
 						if (loader.getOptions().isDebugging()) {
 							logger.config("Attempting to reconnect to the gateway");
@@ -330,18 +330,21 @@ public class GatewayListener extends WebSocketAdapter {
 						loader.emit(new ReconnectEvent(loader, tries));
 						gateway.websocket = gateway.websocket.recreate().connect();
 						Thread.sleep(41250);
-						if (gateway.status.get() == Status.RECONNECTING && !connected.get()) {
+						if (gateway.status.get() == Status.RECONNECTING || !connected.get()) {
 							logger.severe("Failed to connect to the Gateway");
 						}
 					}
+					if (tries > 3) {
+						connectToNewEndpoint();
+					}
 				} catch (InterruptedException | WebSocketException | IOException e) {
 					if (gateway.status.get() == Status.RECONNECTING) {
-						if (tries < 3) {
+						if (tries <= 3) {
 							tryReconnecting();
 							return;
 						}
 					}
-					if (tries >= 3) {
+					if (tries > 3) {
 						connectToNewEndpoint();
 					}
 					this.interrupt();

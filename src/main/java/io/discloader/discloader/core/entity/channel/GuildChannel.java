@@ -104,7 +104,8 @@ public class GuildChannel extends Channel implements IGuildChannel {
 
 	@Override
 	public RestAction<IInvite> createInvite(int expiresIn, int maxUses, boolean temporaryMembership, boolean unique) {
-		return new CreateInvite(this, new JSONObject().put("max_age", expiresIn).put("max_uses", maxUses).put("temporary", temporaryMembership).put("unique", unique));
+		return new CreateInvite(this, new JSONObject().put("max_age", expiresIn).put("max_uses", maxUses)
+				.put("temporary", temporaryMembership).put("unique", unique));
 	}
 
 	@Override
@@ -115,12 +116,13 @@ public class GuildChannel extends Channel implements IGuildChannel {
 	@Override
 	public CompletableFuture<IOverwrite> deleteOverwrite(IOverwrite overwrite) {
 		CompletableFuture<IOverwrite> future = new CompletableFuture<>();
-		loader.rest.request(Methods.DELETE, Endpoints.channelOverwrite(getID(), overwrite.getID()), new RESTOptions(), Void.class).thenAcceptAsync(n -> {
-			future.complete(overwrite);
-		}).exceptionally(ex -> {
-			future.completeExceptionally(ex);
-			return null;
-		});
+		loader.rest.request(Methods.DELETE, Endpoints.channelOverwrite(getID(), overwrite.getID()), new RESTOptions(),
+				Void.class).thenAcceptAsync(n -> {
+					future.complete(overwrite);
+				}).exceptionally(ex -> {
+					future.completeExceptionally(ex);
+					return null;
+				});
 		return future;
 	}
 
@@ -138,12 +140,13 @@ public class GuildChannel extends Channel implements IGuildChannel {
 		}
 
 		JSONObject props = new JSONObject().put("permission_overwrites", keep);
-		loader.rest.request(Methods.PATCH, Endpoints.channel(getID()), new RESTOptions(props), ChannelJSON.class).thenAcceptAsync(data -> {
-			future.complete(removed);
-		}).exceptionally(ex -> {
-			future.completeExceptionally(ex);
-			return null;
-		});
+		loader.rest.request(Methods.PATCH, Endpoints.channel(getID()), new RESTOptions(props), ChannelJSON.class)
+				.thenAcceptAsync(data -> {
+					future.complete(removed);
+				}).exceptionally(ex -> {
+					future.completeExceptionally(ex);
+					return null;
+				});
 		return future;
 	}
 
@@ -168,17 +171,21 @@ public class GuildChannel extends Channel implements IGuildChannel {
 	}
 
 	@Override
-	public CompletableFuture<? extends IGuildChannel> edit(String name, int position, boolean nsfw, IOverwrite... overwrites) throws PermissionsException {
+	public CompletableFuture<? extends IGuildChannel> edit(String name, int position, boolean nsfw,
+			IOverwrite... overwrites) throws PermissionsException {
 		CompletableFuture<IGuildChannel> future = new CompletableFuture<>();
-		JSONObject settings = new JSONObject().put("name", name).put("position", position).put("nsfw", nsfw).put("permission_overwrites", overwrites);
-		loader.rest.request(Methods.PATCH, Endpoints.channel(getID()), new RESTOptions(settings), ChannelJSON.class).thenAcceptAsync(data -> {
-			IChannel newChannel = EntityBuilder.getChannelFactory().buildChannel(data, getLoader(), getGuild(), false);
-			if (newChannel instanceof IGuildChannel)
-				future.complete((IGuildChannel) newChannel);
-		}).exceptionally(ex -> {
-			future.completeExceptionally(ex);
-			return null;
-		});
+		JSONObject settings = new JSONObject().put("name", name).put("position", position).put("nsfw", nsfw)
+				.put("permission_overwrites", overwrites);
+		loader.rest.request(Methods.PATCH, Endpoints.channel(getID()), new RESTOptions(settings), ChannelJSON.class)
+				.thenAcceptAsync(data -> {
+					IChannel newChannel = EntityBuilder.getChannelFactory().buildChannel(data, getLoader(), getGuild(),
+							false);
+					if (newChannel instanceof IGuildChannel)
+						future.complete((IGuildChannel) newChannel);
+				}).exceptionally(ex -> {
+					future.completeExceptionally(ex);
+					return null;
+				});
 		return future;
 	}
 
@@ -364,13 +371,15 @@ public class GuildChannel extends Channel implements IGuildChannel {
 	public CompletableFuture<IGuildChannel> setCategory(IChannelCategory category) {
 		CompletableFuture<IGuildChannel> future = new CompletableFuture<>();
 		JSONObject settings = new JSONObject().put("parent_id", SnowflakeUtil.toString(category));
-		loader.rest.request(Methods.PATCH, Endpoints.channel(getID()), new RESTOptions(settings), ChannelJSON.class).thenAcceptAsync(data -> {
-			IGuildChannel newChannel = (IGuildChannel) EntityBuilder.getChannelFactory().buildChannel(data, getLoader(), getGuild(), false);
-			future.complete(newChannel);
-		}).exceptionally(ex -> {
-			future.completeExceptionally(ex);
-			return null;
-		});
+		loader.rest.request(Methods.PATCH, Endpoints.channel(getID()), new RESTOptions(settings), ChannelJSON.class)
+				.thenAcceptAsync(data -> {
+					IGuildChannel newChannel = (IGuildChannel) EntityBuilder.getChannelFactory().buildChannel(data,
+							getLoader(), getGuild(), false);
+					future.complete(newChannel);
+				}).exceptionally(ex -> {
+					future.completeExceptionally(ex);
+					return null;
+				});
 		return future;
 	}
 
@@ -416,18 +425,22 @@ public class GuildChannel extends Channel implements IGuildChannel {
 	}
 
 	@Override
-	public CompletableFuture<List<IOverwrite>> setOverwrite(String reason, IOverwrite... overwrites) throws PermissionsException {
+	public CompletableFuture<List<IOverwrite>> setOverwrite(String reason, IOverwrite... overwrites)
+			throws PermissionsException {
 		CompletableFuture<List<IOverwrite>> future = new CompletableFuture<>();
-		JSONObject settings = new JSONObject().put("name", name).put("position", position).put("nsfw", nsfw).put("permission_overwrites", overwrites);
-		loader.rest.request(Methods.PATCH, Endpoints.channel(getID()), new RESTOptions(true, settings, reason), ChannelJSON.class).thenAcceptAsync(data -> {
-			IChannel newChannel = EntityBuilder.getChannelFactory().buildChannel(data, getLoader(), getGuild(), false);
-			if (newChannel instanceof IGuildChannel) {
-				future.complete(new ArrayList<>(((IGuildChannel) newChannel).getOverwrites().values()));
-			}
-		}).exceptionally(ex -> {
-			future.completeExceptionally(ex);
-			return null;
-		});
+		JSONObject settings = new JSONObject().put("name", name).put("position", position).put("nsfw", nsfw)
+				.put("permission_overwrites", overwrites);
+		loader.rest.request(Methods.PATCH, Endpoints.channel(getID()), new RESTOptions(true, settings, reason),
+				ChannelJSON.class).thenAcceptAsync(data -> {
+					IChannel newChannel = EntityBuilder.getChannelFactory().buildChannel(data, getLoader(), getGuild(),
+							false);
+					if (newChannel instanceof IGuildChannel) {
+						future.complete(new ArrayList<>(((IGuildChannel) newChannel).getOverwrites().values()));
+					}
+				}).exceptionally(ex -> {
+					future.completeExceptionally(ex);
+					return null;
+				});
 		return future;
 	}
 
@@ -435,7 +448,8 @@ public class GuildChannel extends Channel implements IGuildChannel {
 	public CompletableFuture<IOverwrite> setPermissions(long allow, long deny, IGuildMember member) {
 		CompletableFuture<IOverwrite> future = new CompletableFuture<>();
 		JSONObject payload = new JSONObject().put("allow", allow).put("deny", deny).put("type", "member");
-		CompletableFuture<Void> cf = loader.rest.request(Methods.PUT, Endpoints.channelOverwrite(getID(), member.getID()), new RESTOptions(payload), Void.class);
+		CompletableFuture<Void> cf = loader.rest.request(Methods.PUT,
+				Endpoints.channelOverwrite(getID(), member.getID()), new RESTOptions(payload), Void.class);
 		cf.thenAcceptAsync(V -> {
 			future.complete(new Overwrite(allow, deny, member));
 		});
@@ -450,7 +464,9 @@ public class GuildChannel extends Channel implements IGuildChannel {
 	public CompletableFuture<IOverwrite> setPermissions(long allow, long deny, IGuildMember member, String reason) {
 		CompletableFuture<IOverwrite> future = new CompletableFuture<>();
 		JSONObject payload = new JSONObject().put("allow", allow).put("deny", deny).put("type", "member");
-		CompletableFuture<Void> cf = loader.rest.request(Methods.PUT, Endpoints.channelOverwrite(getID(), member.getID()), new RESTOptions(true, payload, reason), Void.class);
+		CompletableFuture<Void> cf = loader.rest.request(Methods.PUT,
+				Endpoints.channelOverwrite(getID(), member.getID()), new RESTOptions(true, payload, reason),
+				Void.class);
 		cf.thenAcceptAsync(V -> {
 			future.complete(new Overwrite(allow, deny, member));
 		});
@@ -465,7 +481,8 @@ public class GuildChannel extends Channel implements IGuildChannel {
 	public CompletableFuture<IOverwrite> setPermissions(long allow, long deny, IRole role) {
 		CompletableFuture<IOverwrite> future = new CompletableFuture<>();
 		JSONObject payload = new JSONObject().put("allow", allow).put("deny", deny).put("type", "role");
-		CompletableFuture<Void> cf = loader.rest.request(Methods.PUT, Endpoints.channelOverwrite(getID(), role.getID()), new RESTOptions(payload), Void.class);
+		CompletableFuture<Void> cf = loader.rest.request(Methods.PUT, Endpoints.channelOverwrite(getID(), role.getID()),
+				new RESTOptions(payload), Void.class);
 		cf.thenAcceptAsync(V -> {
 			future.complete(new Overwrite(allow, deny, role));
 		});
@@ -480,7 +497,8 @@ public class GuildChannel extends Channel implements IGuildChannel {
 	public CompletableFuture<IOverwrite> setPermissions(long allow, long deny, IRole role, String reason) {
 		CompletableFuture<IOverwrite> future = new CompletableFuture<>();
 		JSONObject payload = new JSONObject().put("allow", allow).put("deny", deny).put("type", "role");
-		CompletableFuture<Void> cf = loader.rest.request(Methods.PUT, Endpoints.channelOverwrite(getID(), role.getID()), new RESTOptions(true, payload, reason), Void.class);
+		CompletableFuture<Void> cf = loader.rest.request(Methods.PUT, Endpoints.channelOverwrite(getID(), role.getID()),
+				new RESTOptions(true, payload, reason), Void.class);
 		cf.thenAcceptAsync(V -> {
 			future.complete(new Overwrite(allow, deny, role));
 		});
@@ -515,9 +533,11 @@ public class GuildChannel extends Channel implements IGuildChannel {
 			if (channel.getID() == getID()) {
 				positions.add(new JSONObject().put("id", SnowflakeUtil.toString(channel)).put("position", position));
 			} else if (channel.getPosition() >= position) {
-				positions.add(new JSONObject().put("id", SnowflakeUtil.toString(channel)).put("position", channel.getPosition() + 1));
+				positions.add(new JSONObject().put("id", SnowflakeUtil.toString(channel)).put("position",
+						channel.getPosition() + 1));
 			} else {
-				positions.add(new JSONObject().put("id", SnowflakeUtil.toString(channel)).put("position", channel.getPosition()));
+				positions.add(new JSONObject().put("id", SnowflakeUtil.toString(channel)).put("position",
+						channel.getPosition()));
 			}
 			if (channel.getPosition() < 0)
 				normalize = true;
@@ -544,10 +564,11 @@ public class GuildChannel extends Channel implements IGuildChannel {
 				}
 			}
 		});
-		getLoader().rest.request(Methods.PATCH, Endpoints.guildChannels(getGuild().getID()), new RESTOptions(true, positions.toString()), Void.class).exceptionally(ex -> {
-			future.completeExceptionally(ex);
-			return null;
-		});
+		getLoader().rest.request(Methods.PATCH, Endpoints.guildChannels(getGuild().getID()),
+				new RESTOptions(true, positions.toString()), Void.class).exceptionally(ex -> {
+					future.completeExceptionally(ex);
+					return null;
+				});
 
 		return future;
 	}
@@ -557,7 +578,7 @@ public class GuildChannel extends Channel implements IGuildChannel {
 		super.setup(data);
 		name = data.name;
 		position = data.position;
-
+		parentID = SnowflakeUtil.parse(data.parent_id);
 	}
 
 	@Override
