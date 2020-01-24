@@ -1,6 +1,7 @@
 package io.discloader.discloader.entity.user;
 
 import java.io.File;
+import java.util.List;
 import java.util.concurrent.CompletableFuture;
 
 import io.discloader.discloader.client.render.util.Resource;
@@ -94,6 +95,8 @@ public interface IUser extends ISnowflake, ICreationTime, IMentionable {
 	CompletableFuture<IMessage> sendMessage(String content, RichEmbed embed, File file);
 
 	CompletableFuture<IMessage> sendMessage(String content, RichEmbed embed, Resource resource);
+	
+	public List<UserFlags> getFlags();
 
 	void setup(UserJSON data);
 

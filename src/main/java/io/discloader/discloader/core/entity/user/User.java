@@ -2,6 +2,8 @@ package io.discloader.discloader.core.entity.user;
 
 import java.io.File;
 import java.time.OffsetDateTime;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 
@@ -14,6 +16,7 @@ import io.discloader.discloader.entity.channel.IPrivateChannel;
 import io.discloader.discloader.entity.message.IMessage;
 import io.discloader.discloader.entity.user.IUser;
 import io.discloader.discloader.entity.user.IUserProfile;
+import io.discloader.discloader.entity.user.UserFlags;
 import io.discloader.discloader.entity.util.SnowflakeUtil;
 import io.discloader.discloader.network.json.UserJSON;
 import io.discloader.discloader.network.rest.RestAction;
@@ -67,6 +70,8 @@ public class User implements IUser {
 	 */
 	private boolean mfa;
 
+	private List<UserFlags> flags;
+
 	public User(DiscLoader loader, UserJSON user) {
 		this.loader = loader;
 
@@ -86,12 +91,14 @@ public class User implements IUser {
 		this.bot = user.isBot();
 		this.verified = user.isVerified();
 		this.mfa = user.MFAEnabled();
+		this.flags = user.getFlags();
 	}
 
 	/**
 	 * 
 	 */
-	public User() {}
+	public User() {
+	}
 
 	/**
 	 * toStrings the user in mention format
@@ -128,7 +135,8 @@ public class User implements IUser {
 		if (this == user) {
 			return true;
 		}
-		return id == user.id && username.equals(user.username) && discriminator == user.discriminator && mfa == user.mfa && verified == user.verified && isBot() == user.isBot();
+		return id == user.id && username.equals(user.username) && discriminator == user.discriminator && mfa == user.mfa
+				&& verified == user.verified && isBot() == user.isBot();
 	}
 
 	@Override
@@ -265,6 +273,12 @@ public class User implements IUser {
 			bot = data.bot;
 			verified = data.verified;
 			mfa = data.mfa_enabled;
+			flags = new ArrayList<>();
+			for (UserFlags f : UserFlags.values()) {
+				 if ((data.flags & f.toInt()) != 0) {
+					flags.add(f);
+				}
+			}
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -273,6 +287,11 @@ public class User implements IUser {
 	@Override
 	public String toString() {
 		return String.format("%s#%04d", username, discriminator);
+	}
+
+	@Override
+	public List<UserFlags> getFlags() {
+		return flags;
 	}
 
 }

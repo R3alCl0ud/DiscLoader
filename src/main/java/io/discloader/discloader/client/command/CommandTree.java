@@ -8,7 +8,9 @@ import io.discloader.discloader.common.event.message.MessageCreateEvent;
 import io.discloader.discloader.entity.channel.IGuildTextChannel;
 
 public class CommandTree extends Command {
-
+	
+	protected Map<String, Command> subCommands = new HashMap<>();
+	
 	public CommandTree(String unlocalizedName) {
 		super();
 		setUnlocalizedName(unlocalizedName);
@@ -59,7 +61,7 @@ public class CommandTree extends Command {
 	}
 
 	public Map<String, Command> getSubCommands() {
-		return new HashMap<>();
+		return subCommands;
 	}
 
 	public void defaultResponse(MessageCreateEvent e) {

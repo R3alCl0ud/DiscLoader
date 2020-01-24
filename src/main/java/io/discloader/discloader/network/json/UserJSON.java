@@ -14,4 +14,6 @@ public class UserJSON {
 	public boolean bot;
 	public boolean verified;
 	public boolean mfa_enabled;
+	public int flags;
+	public int premium_type;
 }
