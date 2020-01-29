@@ -15,6 +15,7 @@ public class ChannelJSON {
 	
 	public short type;
 	public int user_limit;
+	public int rate_limit_per_user;
 	public int position;
 	public int bitrate;
 	

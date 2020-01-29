@@ -23,11 +23,11 @@ public enum VerificationLevel {
 	 */
 	MEDIUM,
 	/**
-	 * (╯°□°）╯︵ ┻━┻ - Must be a member of the server for longer than 10 minutes
+	 * Must be a member of the server for longer than 10 minutes
 	 */
 	HIGH,
 	/**
-	 * ┻━┻ミヽ(ಠ益ಠ)ﾉ彡┻━┻ - Must have a verified phone number
+	 * Must have a verified phone number
 	 */
 	VERY_HIGH;
 

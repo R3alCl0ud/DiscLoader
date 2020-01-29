@@ -72,7 +72,6 @@ public class TextChannel extends GuildChannel implements IGuildTextChannel {
 
 		messages = new HashMap<>();
 		typing = new HashMap<>();
-		nsfw = data.nsfw;
 	}
 
 	@Override
@@ -491,8 +490,9 @@ public class TextChannel extends GuildChannel implements IGuildTextChannel {
 		super.setup(data);
 
 		// type = ChannelType.TEXT;
-
+		nsfw = data.nsfw;
 		topic = data.topic;
+		rateLimit = data.rate_limit_per_user;
 	}
 
 	@Override
