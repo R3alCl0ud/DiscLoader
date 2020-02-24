@@ -578,7 +578,9 @@ public class GuildChannel extends Channel implements IGuildChannel {
 		super.setup(data);
 		name = data.name;
 		position = data.position;
-		parentID = SnowflakeUtil.parse(data.parent_id);
+		if (data.parent_id != null) {
+			parentID = SnowflakeUtil.parse(data.parent_id);
+		}
 	}
 
 	@Override

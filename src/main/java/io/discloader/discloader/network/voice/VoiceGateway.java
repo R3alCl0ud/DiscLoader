@@ -54,7 +54,9 @@ public class VoiceGateway extends WebSocketAdapter {
 
 	public VoiceGateway(VoiceConnection connection) {
 		this.connection = connection;
-		logger = DLLogger.getLogger("VoiceGateway" + (connection.getGuild() == null ? " - Channel: " + connection.getChannel().getID() : " - Guild: " + connection.getGuild().getID()));
+		logger = DLLogger.getLogger(
+				"VoiceGateway" + (connection.getGuild() == null ? " - Channel: " + connection.getChannel().getID()
+						: " - Guild: " + connection.getGuild().getID()));
 		gson = new Gson();
 	}
 
@@ -85,7 +87,8 @@ public class VoiceGateway extends WebSocketAdapter {
 		this.sendIdentify();
 	}
 
-	public void onDisconnected(WebSocket ws, WebSocketFrame serverFrame, WebSocketFrame clientFrame, boolean isServer) throws Exception {
+	public void onDisconnected(WebSocket ws, WebSocketFrame serverFrame, WebSocketFrame clientFrame, boolean isServer)
+			throws Exception {
 		connection.setConnected(false);
 		EntityRegistry.removeVoiceConnection(connection.getGuild().getID());
 		if (isServer && serverFrame != null) {
@@ -95,7 +98,8 @@ public class VoiceGateway extends WebSocketAdapter {
 			} else if (dc != null) {
 				dc.completeExceptionally(new RuntimeException(serverFrame.getCloseReason()));
 			}
-			logger.severe(String.format("Reason: %s, Code: %d, isServer: %b", serverFrame.getCloseReason(), serverFrame.getCloseCode(), isServer));
+			logger.severe(String.format("Reason: %s, Code: %d, isServer: %b", serverFrame.getCloseReason(),
+					serverFrame.getCloseCode(), isServer));
 		} else if (!isServer && clientFrame != null) {
 			if (clientFrame.getCloseCode() == 1000 && dc != null) {
 				dc.complete(connection);
@@ -103,7 +107,8 @@ public class VoiceGateway extends WebSocketAdapter {
 			} else if (dc != null) {
 				dc.completeExceptionally(new RuntimeException(clientFrame.getCloseReason()));
 			}
-			logger.severe(String.format("Reason: %s, Code: %d, isServer: %b", clientFrame.getCloseReason(), clientFrame.getCloseCode(), isServer));
+			logger.severe(String.format("Reason: %s, Code: %d, isServer: %b", clientFrame.getCloseReason(),
+					clientFrame.getCloseCode(), isServer));
 		} else {
 			dc.completeExceptionally(new RuntimeException("Disconnected Unexpectedly"));
 			logger.severe(String.format("Reason: %s, Code: %d, isServer: %b", null, 0x0, isServer));
@@ -111,8 +116,10 @@ public class VoiceGateway extends WebSocketAdapter {
 	}
 
 	public void onTextMessage(WebSocket ws, String text) throws Exception {
+//		logger.config(text);
 		SocketPacket packet = gson.fromJson(text, SocketPacket.class);
 		setSequence(packet.s);
+		logger.config(gson.toJson(packet.d));
 		switch (packet.op) {
 		case READY:
 			VoiceReady data = gson.fromJson(gson.toJson(packet.d), VoiceReady.class);
@@ -141,7 +148,8 @@ public class VoiceGateway extends WebSocketAdapter {
 	}
 
 	public void sendIdentify() {
-		VoiceIdentify payload = new VoiceIdentify(SnowflakeUtil.toString(connection.getGuild()), SnowflakeUtil.toString(connection.getLoader().user), sessionID, connection.getToken());
+		VoiceIdentify payload = new VoiceIdentify(SnowflakeUtil.toString(connection.getGuild()),
+				SnowflakeUtil.toString(connection.getLoader().user), sessionID, connection.getToken());
 		VoicePacket packet = new VoicePacket(IDENTIFY, payload);
 		send(gson.toJson(packet));
 	}
@@ -164,16 +172,19 @@ public class VoiceGateway extends WebSocketAdapter {
 			public void run() {
 				try {
 					Thread.sleep(interval);
-				} catch (InterruptedException e) {}
+				} catch (InterruptedException e) {
+				}
 
 				while (ws.isOpen() && !connection.getUDPClient().udpSocket.isClosed()) {
 					VoicePacket packet = new VoicePacket(HEARTBEAT, sequence);
 					send(gson.toJson(packet));
 					try {
 						Thread.sleep(interval);
-					} catch (InterruptedException e) {}
+					} catch (InterruptedException e) {
+					}
 				}
-				logger.config("Ended: ws.isOpen(): " + ws.isOpen() + ", udp.isClosed(): " + connection.getUDPClient().udpSocket.isClosed());
+				logger.config("Ended: ws.isOpen(): " + ws.isOpen() + ", udp.isClosed(): "
+						+ connection.getUDPClient().udpSocket.isClosed());
 			}
 		};
 		heartbeatThread.setPriority((Thread.NORM_PRIORITY + Thread.MAX_PRIORITY) / 2);

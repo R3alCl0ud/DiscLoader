@@ -16,6 +16,8 @@ public interface IGuildTextChannel extends IGuildChannel, ITextChannel, IMention
 
 	CompletableFuture<IGuildTextChannel> edit(String name, String topic, int position);
 
+	CompletableFuture<IGuildTextChannel> edit(String name, String topic, int position, int rateLimit);
+	
 	boolean isNSFW();
 
 	CompletableFuture<IGuildTextChannel> setTopic(String topic);

@@ -91,7 +91,7 @@ public class AudioSendHandler implements AudioOutputHook {
 	}
 
 	public byte[] provide20MsAudio() {
-		return lastFrame.data;
+		return lastFrame.getData();
 	}
 
 	public void stop() {

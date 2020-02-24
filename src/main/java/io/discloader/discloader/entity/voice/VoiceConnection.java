@@ -152,7 +152,8 @@ public class VoiceConnection {
 		InetSocketAddress externalAddress = null;
 		int tries = 0;
 		try {
-			InetSocketAddress gg = new InetSocketAddress(endpoint + "", data.port);
+			logger.fine(data.ip);
+			InetSocketAddress gg = new InetSocketAddress(data.ip, data.port);
 			while (externalAddress == null) {
 				externalAddress = this.udpClient.discoverAddress(gg, data.ssrc);
 				tries++;

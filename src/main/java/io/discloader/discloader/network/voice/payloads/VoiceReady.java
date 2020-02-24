@@ -17,4 +17,5 @@ public class VoiceReady {
 	public int heartbeat_interval; 
 	
 	public String ip;
+	
 }

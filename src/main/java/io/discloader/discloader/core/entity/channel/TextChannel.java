@@ -162,8 +162,41 @@ public class TextChannel extends GuildChannel implements IGuildTextChannel {
 		}
 
 		CompletableFuture<IGuildTextChannel> future = new CompletableFuture<>();
-		JSONObject payload = new JSONObject().put("name", sanitizeChannelName(name)).put("topic", topic).put("position",
-				position);
+		JSONObject payload = new JSONObject().put("name", sanitizeChannelName(name)).put("topic", topic)
+				.put("position", position);
+		//.put("rate_limit_per_user", Math.min(21600, Math.max(rateLimit, 0)));
+		CompletableFuture<ChannelJSON> cf = loader.rest.request(Methods.PATCH, Endpoints.channel(getID()),
+				new RESTOptions(payload), ChannelJSON.class);
+		cf.thenAcceptAsync(data -> {
+			IGuildTextChannel channel = (IGuildTextChannel) EntityBuilder.getChannelFactory().buildChannel(data,
+					getLoader(), getGuild(), false);
+			future.complete(channel);
+		});
+		cf.exceptionally(ex -> {
+			future.completeExceptionally(ex);
+			return null;
+		});
+		return future;
+	}
+
+	@Override
+	public CompletableFuture<IGuildTextChannel> edit(String name, String topic, int position, int rateLimit) {
+		if (!this.permissionsOf(guild.getCurrentMember()).hasAny(Permissions.MANAGE_CHANNELS, Permissions.ADMINISTRATOR)
+				&& !guild.isOwner()) {
+			throw new PermissionsException("Insufficient Permissions");
+		}
+
+		if (name.length() < 2 || name.length() > 100) {
+			throw new RuntimeException("Name.length() out of bounds [2-100]");
+		}
+
+		if (topic.length() > 1024) {
+			throw new RuntimeException("Topic.length() out of bounds [" + topic.length() + " > 1024]");
+		}
+
+		CompletableFuture<IGuildTextChannel> future = new CompletableFuture<>();
+		JSONObject payload = new JSONObject().put("name", sanitizeChannelName(name)).put("topic", topic)
+				.put("position", position).put("rate_limit_per_user", Math.min(21600, Math.max(rateLimit, 0)));
 		CompletableFuture<ChannelJSON> cf = loader.rest.request(Methods.PATCH, Endpoints.channel(getID()),
 				new RESTOptions(payload), ChannelJSON.class);
 		cf.thenAcceptAsync(data -> {
@@ -251,6 +284,15 @@ public class TextChannel extends GuildChannel implements IGuildTextChannel {
 				pins.put(message.getID(), message);
 		}
 		return pins;
+	}
+
+	@Override
+	public int getRateLimit() {
+		if (getGuild().getMember(getLoader().user.getID()).getPermissions().hasPermission(Permissions.MANAGE_MESSAGES,
+				Permissions.MANAGE_CHANNELS)) {
+			return 0;
+		}
+		return rateLimit;
 	}
 
 	/**
@@ -459,6 +501,12 @@ public class TextChannel extends GuildChannel implements IGuildTextChannel {
 		return future;
 	}
 
+	@Override
+	public CompletableFuture<IGuildTextChannel> setRateLimit(int rate) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
 	public CompletableFuture<IGuildTextChannel> setTopic(String topic) {
 		if (!this.permissionsOf(guild.getCurrentMember()).hasAny(Permissions.MANAGE_CHANNELS, Permissions.ADMINISTRATOR)
 				&& !guild.isOwner()) {
@@ -524,21 +572,6 @@ public class TextChannel extends GuildChannel implements IGuildTextChannel {
 	@Override
 	public CompletableFuture<IMessage> unpinMessage(IMessage message) {
 		return new UnpinMessage<IGuildTextChannel>(message).execute();
-	}
-
-	@Override
-	public CompletableFuture<IGuildTextChannel> setRateLimit(int rate) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public int getRateLimit() {
-		if (getGuild().getMember(getLoader().user.getID()).getPermissions().hasPermission(Permissions.MANAGE_MESSAGES,
-				Permissions.MANAGE_CHANNELS)) {
-			return 0;
-		}
-		return rateLimit;
 	}
 
 }
