@@ -35,151 +35,152 @@ import io.discloader.discloader.common.registry.EntityRegistry;
  */
 public class Main {
 
-	public static final Gson gson = new Gson();
+    public static final Gson gson = new Gson();
 
-	public static DiscLoader loader;
+    public static DiscLoader loader;
 
-	public static boolean usegui = false;
+    public static boolean usegui = false;
 
-	public static String token;
+    public static String token;
 
-	// private static int shard = 0, shards = 1;
+    // private static int shard = 0, shards = 1;
 
-	private static Logger LOGGER = DLLogger.getLogger(Main.class);
+    private static Logger LOGGER = DLLogger.getLogger(Main.class);
 
-	private static final String tokenRegex = "-t=(.*+)", prefixRegex = "-p=(.*+)", shardRegex = "-s=(\\d+)\\:(\\d+)";
-	private static final Pattern tokenPat = Pattern.compile(tokenRegex), prefixPat = Pattern.compile(prefixRegex), shardPat = Pattern.compile(shardRegex);
+    private static final String tokenRegex = "-t=(.*+)", prefixRegex = "-p=(.*+)", shardRegex = "-s=(\\d+)\\:(\\d+)";
+    private static final Pattern tokenPat = Pattern.compile(tokenRegex), prefixPat = Pattern.compile(prefixRegex), shardPat = Pattern.compile(shardRegex);
 
-	public static DiscLoader getLoader() {
-		return loader;
-	}
+    public static DiscLoader getLoader() {
+        return loader;
+    }
 
-	/**
-	 * @return the lOG
-	 */
-	public static Logger getLogger() {
-		return LOGGER;
-	}
+    /**
+     * @return the lOG
+     */
+    public static Logger getLogger() {
+        return LOGGER;
+    }
 
-	public static void main(String... args) throws IOException {
-		System.setProperty("http.agent", "DiscLoader");
-		String content = "";
-		if (new File("options.json").exists()) {
-			Object[] lines = Files.readAllLines(Paths.get("./options.json")).toArray();
-			for (Object line : lines)
-				content += line;
-			Options options = gson.fromJson(content, Options.class);
-			token = options.auth.token;
-		}
-		DLOptions options = parseArgs(args);
+    public static void main(String... args) throws IOException {
+        System.setProperty("http.agent", "DiscLoader");
+        String content = "";
+        if (new File("options.json").exists()) {
+            Object[] lines = Files.readAllLines(Paths.get("./options.json")).toArray();
+            for (Object line : lines)
+                content += line;
+            Options options = gson.fromJson(content, Options.class);
+            token = options.auth.token;
+        }
+        boolean myBool = false;
+        if (myBool && args.length > 1) System.out.println("hello");
+        else System.out.println("fuck");
+        DLOptions options = parseArgs(args);
 
-		if (options.shards > 1) {
-			ShardManager manager = new ShardManager(options);
-			manager.addShardingListener(new ShardingListenerAdapter() {
+        if (options.shards > 1) {
+            ShardManager manager = new ShardManager(options);
+            manager.addShardingListener(new ShardingListenerAdapter() {
 
-				@Override
-				public void onShardLaunched(ShardLaunchedEvent e) {
-					LOGGER.info(String.format("Shard #%d: Launched", e.getShard().getShardID()));
-					e.getShard().getLoader().addEventListener(new EventListenerAdapter() {
+                @Override
+                public void onShardLaunched(ShardLaunchedEvent e) {
+                    LOGGER.info(String.format("Shard #%d: Launched", e.getShard().getShardID()));
+                    e.getShard().getLoader().addEventListener(new EventListenerAdapter() {
 
-						public void Ready(ReadyEvent e) {
+                        public void Ready(ReadyEvent e) {
 
-							for (Command command : CommandRegistry.commands.entries()) {
-								LOGGER.info(command.getUnlocalizedName());
-							}
-						}
+                            for (Command command : CommandRegistry.commands.entries()) {
+                                LOGGER.info(command.getUnlocalizedName());
+                            }
+                        }
 
-						@Override
-						public void RawPacket(RawEvent data) {
-							WebSocketFrame frame = data.getFrame();
-							if (data.isGateway() && frame.isTextFrame() && !frame.getPayloadText().contains("PRESENCE_UPDATE")) {
-								// LOGGER.fine(frame.getPayloadText());
-							} else if (data.isREST()) {
-								LOGGER.info(data.getHttpResponse().getBody());
-								LOGGER.info("" + data.getHttpResponse().getStatus());
-							}
-						}
+                        @Override
+                        public void RawPacket(RawEvent data) {
+                            WebSocketFrame frame = data.getFrame();
+                            if (data.isGateway() && frame.isTextFrame() && !frame.getPayloadText().contains("PRESENCE_UPDATE")) {
+                                // LOGGER.fine(frame.getPayloadText());
+                            } else if (data.isREST()) {
+                                LOGGER.info(data.getHttpResponse().getBody());
+                                LOGGER.info("" + data.getHttpResponse().getStatus());
+                            }
+                        }
 
-						@Override
-						public void GuildMessageCreate(GuildMessageCreateEvent e) {
-							if (e.getGuild().getID() != 282226852616077312l)
-								return;
-							if (e.getMessage().getContent().startsWith("logs")) {
-								String[] args = e.getMessage().getContent().split(" ");
-								if (args.length == 1) {
+                        @Override
+                        public void GuildMessageCreate(GuildMessageCreateEvent e) {
+                            if (e.getGuild().getID() != 282226852616077312l) return;
+                            if (e.getMessage().getContent().startsWith("logs")) {
+                                String[] args = e.getMessage().getContent().split(" ");
+                                if (args.length == 1) {
 
-								} else if (args.length == 2) {
+                                } else if (args.length == 2) {
 
-								}
-							}
-						}
-					});
-				}
-			});
-			manager.launchShards();
-		} else {
-			loader = new DiscLoader(options);
-			loader.addEventListener(new EventListenerAdapter() {
+                                }
+                            }
+                        }
+                    });
+                }
+            });
+            manager.launchShards();
+        } else {
+            loader = new DiscLoader(options);
+            loader.addEventListener(new EventListenerAdapter() {
 
-				@Override
-				public void MessageCreate(MessageCreateEvent e) {
-					if (e.getMessage().getContent().equals("#$close")) {
-						e.getLoader().gateway.websocket.disconnect(1001);
-					}
-				}
+                @Override
+                public void MessageCreate(MessageCreateEvent e) {
+                    if (e.getMessage().getContent().equals("#$close")) {
+                        e.getLoader().gateway.websocket.disconnect(1001);
+                    }
+                }
 
-				public void Ready(ReadyEvent e) {
-					LOGGER.info(e.getLoader().user.getUsername());
+                public void Ready(ReadyEvent e) {
+                    LOGGER.info(e.getLoader().user.getUsername());
 
-					for (Command command : CommandRegistry.commands.entries()) {
-						LOGGER.info(command.getUnlocalizedName());
-					}
-					LOGGER.info(EntityRegistry.getGuildByID(282226852616077312l).getDefaultChannel().getName());
-					// .sendMessage("testing 125");
-				}
+                    for (Command command : CommandRegistry.commands.entries()) {
+                        LOGGER.info(command.getUnlocalizedName());
+                    }
+                    LOGGER.info(EntityRegistry.getGuildByID(282226852616077312l).getDefaultChannel().getName());
+                    // .sendMessage("testing 125");
+                }
 
-				@Override
-				public void RawPacket(RawEvent data) {
-					WebSocketFrame frame = data.getFrame();
-					if (data.isGateway() && frame.isTextFrame() && !frame.getPayloadText().contains("PRESENCE_UPDATE")) {
-						LOGGER.info(frame.getPayloadText());
-					} else if (data.isREST() && data.getHttpResponse() != null) {
-						LOGGER.info(data.getHttpResponse().getBody());
-					}
-				}
-			});
-			loader.login();
-		}
-	}
+                @Override
+                public void RawPacket(RawEvent data) {
+                    WebSocketFrame frame = data.getFrame();
+                    if (data.isGateway() && frame.isTextFrame() && !frame.getPayloadText().contains("PRESENCE_UPDATE")) {
+                        LOGGER.info(frame.getPayloadText());
+                    } else if (data.isREST() && data.getHttpResponse() != null) {
+                        LOGGER.info(data.getHttpResponse().getBody());
+                    }
+                }
+            });
+            loader.login();
+        }
+    }
 
-	public static DLOptions parseArgs(String... args) {
-		DLOptions options = new DLOptions(false);
-		for (String arg : args) {
-			if (arg.startsWith("-") && !arg.startsWith("--") && !arg.contains("=")) {
-				if (arg.contains("d")) {
-					options = new DLOptions(options.token, options.prefix, true, options.shouldLoadMods(), options.isDebugging(), options.autoExecRestActions(), options.shard, options.shards);
-				}
-				if (arg.contains("g")) {
-					options = new DLOptions(options.token, options.prefix, options.defaultCommands, true, options.isDebugging(), options.autoExecRestActions(), options.shard, options.shards);
-				}
-			} else if (arg.equalsIgnoreCase("--defaultcmd")) {
-				options = new DLOptions(options.token, options.prefix, true, options.isDebugging(), options.shard, options.shards);
-			}
-			Matcher tokenMatcher = tokenPat.matcher(arg), prefixMatcher = prefixPat.matcher(arg), shardMatcher = shardPat.matcher(arg);
-			if (tokenMatcher.find()) {
-				options.setToken(tokenMatcher.group(1));
-			} else if (prefixMatcher.find()) {
-				options.setPrefix(prefixMatcher.group(1));
-			} else if (shardMatcher.find()) {
-				if (shardMatcher.groupCount() != 2) {
-					LOGGER.severe("Sharding option usage: -s=shard:totalshards");
-					continue;
-				}
-
-				options.setSharding(Integer.parseInt(shardMatcher.group(1)), Integer.parseInt(shardMatcher.group(2)));
-				// System.out.println();
-			}
-		}
-		return options;
-	}
+    public static DLOptions parseArgs(String... args) {
+        DLOptions options = new DLOptions(false);
+        for (String arg : args) {
+            if (arg.startsWith("-") && !arg.startsWith("--") && !arg.contains("=")) {
+                if (arg.contains("d")) {
+                    options = new DLOptions(options.token, options.prefix, true, options.shouldLoadMods(), options.isDebugging(), options.autoExecRestActions(), options.shard, options.shards);
+                }
+                if (arg.contains("g")) {
+                    options = new DLOptions(options.token, options.prefix, options.defaultCommands, true, options.isDebugging(), options.autoExecRestActions(), options.shard, options.shards);
+                }
+            } else if (arg.equalsIgnoreCase("--defaultcmd")) {
+                options = new DLOptions(options.token, options.prefix, true, options.isDebugging(), options.shard, options.shards);
+            }
+            Matcher tokenMatcher = tokenPat.matcher(arg), prefixMatcher = prefixPat.matcher(arg), shardMatcher = shardPat.matcher(arg);
+            if (tokenMatcher.find()) {
+                options.setToken(tokenMatcher.group(1));
+            } else if (prefixMatcher.find()) {
+                options.setPrefix(prefixMatcher.group(1));
+            } else if (shardMatcher.find()) {
+                if (shardMatcher.groupCount() != 2) {
+                    LOGGER.severe("Sharding option usage: -s=shard:totalshards");
+                    continue;
+                }
+                options.setSharding(Integer.parseInt(shardMatcher.group(1)), Integer.parseInt(shardMatcher.group(2)));
+                // System.out.println();
+            }
+        }
+        return options;
+    }
 }

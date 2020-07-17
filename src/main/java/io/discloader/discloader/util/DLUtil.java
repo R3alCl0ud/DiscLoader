@@ -363,19 +363,6 @@ public final class DLUtil {
 		public static final String GUILD_EMOJI_UPDATE = "GuildEmojiUpdate";
 	}
 
-	public static final class Methods {
-
-		public static final int GET = 0;
-
-		public static final int POST = 1;
-
-		public static final int DELETE = 2;
-
-		public static final int PATCH = 3;
-
-		public static final int PUT = 4;
-	}
-
 	public static final class OPCodes {
 
 		public static final int DISPATCH = 0;
@@ -631,7 +618,7 @@ public final class DLUtil {
 
 	public static final String GatewaySuffix = String.format("?v=%d&encoding=json", APIVersion);
 
-	public static final String LoaderVersion = "0.2.13";
+	public static final String LoaderVersion = "0.2.14";
 
 	public static final File MissingTexture = new Resource("discloader", "texture/commands/missing-texture.png").getPath() == null ? null : new File(new Resource("discloader", "texture/gui/icons/missing-icon.png").getPath());
 

@@ -7,8 +7,8 @@ import org.json.JSONObject;
 import io.discloader.discloader.entity.guild.IGuild;
 import io.discloader.discloader.network.json.GuildJSON;
 import io.discloader.discloader.network.rest.actions.RESTAction;
-import io.discloader.discloader.util.DLUtil.Endpoints;
-import io.discloader.discloader.util.DLUtil.Methods;
+import io.discloader.discloader.network.util.Endpoints;
+import io.discloader.discloader.network.util.Methods;
 
 public class ModifyGuild extends RESTAction<IGuild> {
 	

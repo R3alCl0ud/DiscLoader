@@ -7,7 +7,7 @@ import io.discloader.discloader.util.DLUtil;
  */
 public class Endpoints {
 	
-	public static final String Discord = "https://discordapp.com";
+	public static final String Discord = "https://discord.com";
 	public static final String API = String.format("%s/api/v%d", Discord, DLUtil.APIVersion);
 	public static final String CDN = "https://cdn.discordapp.com";
 	

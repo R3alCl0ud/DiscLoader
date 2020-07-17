@@ -9,8 +9,8 @@ import io.discloader.discloader.entity.message.IMessage;
 import io.discloader.discloader.entity.sendable.Attachment;
 import io.discloader.discloader.entity.sendable.SendableMessage;
 import io.discloader.discloader.network.rest.actions.RESTAction;
-import io.discloader.discloader.util.DLUtil.Endpoints;
-import io.discloader.discloader.util.DLUtil.Methods;
+import io.discloader.discloader.network.util.Endpoints;
+import io.discloader.discloader.network.util.Methods;
 
 public class EditMessage<T extends ITextChannel> extends RESTAction<IMessage> {
 

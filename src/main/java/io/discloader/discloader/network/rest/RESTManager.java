@@ -45,7 +45,7 @@ public class RESTManager {
 	public <T> CompletableFuture<T> request(Methods method, String url, RESTOptions options, Class<T> cls) {
 		if (options == null)
 			options = new RESTOptions();
-		Request<T> apiRequest = new Request<T>(options);
+		Request<T> apiRequest = new Request<T>(options, method);
 		if (!routes.containsKey(url))
 			routes.put(url, new Route<T>(this, url, method, options.isAuth(), cls));
 		return ((Route<T>) routes.get(url)).push(apiRequest);
@@ -55,12 +55,12 @@ public class RESTManager {
 		this.queues.get(route).handle();
 	}
 
-	public CompletableFuture<String> makeRequest(String url, int method, boolean auth) {
+	public CompletableFuture<String> makeRequest(String url, Methods method, boolean auth) {
 		return this.makeRequest(url, method, auth, null);
 	}
 
-	public CompletableFuture<String> makeRequest(String url, int method, boolean auth, Object data) {
-		APIRequest request = new APIRequest(url, method, auth, data);
+	public CompletableFuture<String> makeRequest(String url, Methods method, boolean auth, Object data) {
+		APIRequest request = new APIRequest(url, method.ordinal(), auth, data);
 		CompletableFuture<String> future = new CompletableFuture<>();
 		if (!queues.containsKey(url)) {
 			queues.put(url, new RESTQueue(this, url));

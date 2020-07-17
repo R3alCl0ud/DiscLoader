@@ -13,8 +13,9 @@ import com.mashape.unirest.request.body.MultipartBody;
 
 import io.discloader.discloader.client.render.util.Resource;
 import io.discloader.discloader.entity.sendable.SendableMessage;
+import io.discloader.discloader.network.util.Methods;
 import io.discloader.discloader.util.DLUtil;
-import io.discloader.discloader.util.DLUtil.Methods;
+
 
 public class APIRequest {
 
@@ -85,10 +86,10 @@ public class APIRequest {
 	public BaseRequest createRequest() throws IOException {
 		BaseRequest request = null;
 		switch (this.method) {
-		case Methods.GET:
+		case 0:
 			request = Unirest.get(this.route);
 			break;
-		case Methods.POST:
+		case 1:
 			request = Unirest.post(this.route);
 			if (multi) {
 //				try {
@@ -114,14 +115,14 @@ public class APIRequest {
 				((HttpRequestWithBody) request).body(gson.toJson(data));
 			}
 			break;
-		case Methods.PATCH:
+		case 3:
 			request = Unirest.patch(this.route);
 			((HttpRequestWithBody) request).body(gson.toJson(data));
 			break;
-		case Methods.DELETE:
+		case 2:
 			request = Unirest.delete(this.route);
 			break;
-		case DLUtil.Methods.PUT:
+		case 4:
 			request = Unirest.put(this.route);
 			((HttpRequestWithBody) request).body(gson.toJson(this.data));
 			break;

@@ -8,8 +8,8 @@ import io.discloader.discloader.entity.message.IMessage;
 import io.discloader.discloader.network.json.MessageJSON;
 import io.discloader.discloader.network.rest.actions.RESTAction;
 import io.discloader.discloader.util.DLUtil;
-import io.discloader.discloader.util.DLUtil.Endpoints;
-import io.discloader.discloader.util.DLUtil.Methods;
+import io.discloader.discloader.network.util.Endpoints;
+import io.discloader.discloader.network.util.Methods;
 
 public class FetchMessage<T extends ITextChannel> extends RESTAction<IMessage> {
 
@@ -32,7 +32,6 @@ public class FetchMessage<T extends ITextChannel> extends RESTAction<IMessage> {
 			future.completeExceptionally(ex);
 			return;
 		}
-
 		MessageJSON data = DLUtil.gson.fromJson(s, MessageJSON.class);
 		IMessage message = new Message<>(channel, data);
 		channel.getMessages().put(message.getID(), message);

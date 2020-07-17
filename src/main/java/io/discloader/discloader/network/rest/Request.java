@@ -2,6 +2,8 @@ package io.discloader.discloader.network.rest;
 
 import java.util.concurrent.CompletableFuture;
 
+import io.discloader.discloader.network.util.Methods;
+
 /**
  * @author Perry Berman
  * @param <T>
@@ -15,14 +17,18 @@ public class Request<T> {
 	private Object data;
 	private RESTOptions options;
 
-	public Request(RESTOptions options) {
+	private final Methods method;
+	
+	public Request(RESTOptions options, Methods method) {
 		future = new CompletableFuture<>();
 		this.options = options;
+		this.method = method;
 	}
 
-	public Request(Object data) {
+	public Request(Object data, Methods method) {
 		future = new CompletableFuture<>();
 		this.data = data;
+		this.method = method;
 	}
 
 	public Object getData() {
@@ -46,5 +52,9 @@ public class Request<T> {
 	public RESTOptions getOptions() {
 		return options;
 	}
+
+    public Methods getMethod() {
+        return method;
+    }
 
 }

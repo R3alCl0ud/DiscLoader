@@ -10,8 +10,8 @@ import io.discloader.discloader.entity.message.IMessage;
 import io.discloader.discloader.network.json.MessageJSON;
 import io.discloader.discloader.network.rest.actions.RESTAction;
 import io.discloader.discloader.util.DLUtil;
-import io.discloader.discloader.util.DLUtil.Endpoints;
-import io.discloader.discloader.util.DLUtil.Methods;
+import io.discloader.discloader.network.util.Endpoints;
+import io.discloader.discloader.network.util.Methods;
 
 public class PinnedMessages<T extends ITextChannel> extends RESTAction<Map<Long, IMessage>> {
 

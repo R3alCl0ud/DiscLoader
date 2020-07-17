@@ -4,8 +4,8 @@ import java.util.concurrent.CompletableFuture;
 
 import io.discloader.discloader.entity.channel.IChannel;
 import io.discloader.discloader.network.rest.actions.RESTAction;
-import io.discloader.discloader.util.DLUtil.Endpoints;
-import io.discloader.discloader.util.DLUtil.Methods;
+import io.discloader.discloader.network.util.Endpoints;
+import io.discloader.discloader.network.util.Methods;
 
 public class CloseChannel<T extends IChannel> extends RESTAction<T> {
 

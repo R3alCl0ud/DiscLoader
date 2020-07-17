@@ -8,8 +8,8 @@ import io.discloader.discloader.entity.channel.IGuildVoiceChannel;
 import io.discloader.discloader.entity.channel.IVoiceChannel;
 import io.discloader.discloader.entity.guild.IGuildMember;
 import io.discloader.discloader.entity.guild.IRole;
-import io.discloader.discloader.util.DLUtil.Endpoints;
-import io.discloader.discloader.util.DLUtil.Methods;
+import io.discloader.discloader.network.util.Endpoints;
+import io.discloader.discloader.network.util.Methods;
 
 public class ModifyMember {
 

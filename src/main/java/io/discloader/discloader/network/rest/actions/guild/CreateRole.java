@@ -9,8 +9,8 @@ import io.discloader.discloader.entity.guild.IRole;
 import io.discloader.discloader.entity.sendable.SendableRole;
 import io.discloader.discloader.network.json.RoleJSON;
 import io.discloader.discloader.network.rest.actions.RESTAction;
-import io.discloader.discloader.util.DLUtil.Endpoints;
-import io.discloader.discloader.util.DLUtil.Methods;
+import io.discloader.discloader.network.util.Endpoints;
+import io.discloader.discloader.network.util.Methods;
 
 public class CreateRole extends RESTAction<IRole> {
 
