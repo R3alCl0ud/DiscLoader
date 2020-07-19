@@ -3,8 +3,8 @@ package io.discloader.discloader.entity.guild;
 import java.util.concurrent.CompletableFuture;
 
 import io.discloader.discloader.common.DiscLoader;
-import io.discloader.discloader.core.entity.Permission;
 import io.discloader.discloader.core.entity.guild.GuildMember;
+import io.discloader.discloader.core.entity.guild.Permission;
 import io.discloader.discloader.core.entity.guild.Role;
 import io.discloader.discloader.entity.IMentionable;
 import io.discloader.discloader.entity.IPermission;

@@ -17,7 +17,6 @@ import io.discloader.discloader.common.event.guild.member.GuildMemberUpdateEvent
 import io.discloader.discloader.common.exceptions.PermissionsException;
 import io.discloader.discloader.common.exceptions.VoiceConnectionException;
 import io.discloader.discloader.common.registry.EntityRegistry;
-import io.discloader.discloader.core.entity.Permission;
 import io.discloader.discloader.core.entity.channel.VoiceChannel;
 import io.discloader.discloader.core.entity.user.User;
 import io.discloader.discloader.entity.IPermission;

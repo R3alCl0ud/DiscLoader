@@ -6,7 +6,6 @@ import java.util.concurrent.CompletableFuture;
 import org.json.JSONObject;
 
 import io.discloader.discloader.common.DiscLoader;
-import io.discloader.discloader.core.entity.Permission;
 import io.discloader.discloader.entity.IPermission;
 import io.discloader.discloader.entity.guild.IGuild;
 import io.discloader.discloader.entity.guild.IRole;

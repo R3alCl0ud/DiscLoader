@@ -7,8 +7,8 @@ import java.util.concurrent.CompletableFuture;
 
 import io.discloader.discloader.client.render.util.Resource;
 import io.discloader.discloader.common.exceptions.IllegalContentException;
-import io.discloader.discloader.core.entity.RichEmbed;
 import io.discloader.discloader.core.entity.message.Message;
+import io.discloader.discloader.core.entity.message.embed.RichEmbed;
 import io.discloader.discloader.core.entity.user.User;
 import io.discloader.discloader.entity.message.IMessage;
 import io.discloader.discloader.entity.message.MessageFetchOptions;

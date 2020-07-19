@@ -10,7 +10,7 @@ import java.util.concurrent.ExecutionException;
 import io.discloader.discloader.client.render.util.Resource;
 import io.discloader.discloader.common.DiscLoader;
 import io.discloader.discloader.common.registry.EntityRegistry;
-import io.discloader.discloader.core.entity.RichEmbed;
+import io.discloader.discloader.core.entity.message.embed.RichEmbed;
 import io.discloader.discloader.entity.IIcon;
 import io.discloader.discloader.entity.channel.IPrivateChannel;
 import io.discloader.discloader.entity.message.IMessage;

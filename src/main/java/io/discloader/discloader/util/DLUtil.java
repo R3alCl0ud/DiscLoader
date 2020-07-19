@@ -18,7 +18,7 @@ import com.google.gson.Gson;
 import io.discloader.discloader.client.render.util.Resource;
 import io.discloader.discloader.common.DiscLoader;
 import io.discloader.discloader.common.language.Language;
-import io.discloader.discloader.core.entity.Permission;
+import io.discloader.discloader.core.entity.guild.Permission;
 import io.discloader.discloader.entity.util.ISnowflake;
 import io.discloader.discloader.network.gateway.GatewayListener;
 
@@ -609,6 +609,7 @@ public final class DLUtil {
 	public static final Gson gson = new Gson();
 
 	public static final int APIVersion = 7;
+	public static final int VoiceAPIVersion = 3;
 
 	public static final String PERMISSIONS_DOCS = "https://discordapp.com/developers/docs/topics/permissions#bitwise-permission-flags";
 

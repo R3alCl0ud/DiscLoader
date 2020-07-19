@@ -10,7 +10,7 @@ import io.discloader.discloader.client.render.util.Resource;
 import io.discloader.discloader.common.event.message.MessageCreateEvent;
 import io.discloader.discloader.common.language.LanguageRegistry;
 import io.discloader.discloader.common.registry.CommandRegistry;
-import io.discloader.discloader.core.entity.RichEmbed;
+import io.discloader.discloader.core.entity.message.embed.RichEmbed;
 import io.discloader.discloader.entity.message.IMessage;
 import io.discloader.discloader.util.DLUtil;
 

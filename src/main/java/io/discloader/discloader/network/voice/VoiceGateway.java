@@ -19,6 +19,7 @@ import io.discloader.discloader.common.registry.EntityRegistry;
 import io.discloader.discloader.entity.util.SnowflakeUtil;
 import io.discloader.discloader.entity.voice.VoiceConnection;
 import io.discloader.discloader.network.gateway.packets.SocketPacket;
+import io.discloader.discloader.network.util.Endpoints;
 import io.discloader.discloader.network.voice.payloads.SessionDescription;
 import io.discloader.discloader.network.voice.payloads.Speaking;
 import io.discloader.discloader.network.voice.payloads.VoiceData;
@@ -61,7 +62,7 @@ public class VoiceGateway extends WebSocketAdapter {
 	}
 
 	public void connect(String gateway, String token) throws IOException, WebSocketException {
-		gateway = String.format("wss://%s?v=3", gateway);
+	    gateway = Endpoints.voiceGateway(gateway);
 		logger.config(String.format("Connecting to the gateway at: %s, Using the token: %s", gateway, token));
 		WebSocketFactory factory = new WebSocketFactory().setConnectionTimeout(15000);
 		ws = factory.createSocket(gateway).addListener(this);
@@ -116,10 +117,8 @@ public class VoiceGateway extends WebSocketAdapter {
 	}
 
 	public void onTextMessage(WebSocket ws, String text) throws Exception {
-//		logger.config(text);
 		SocketPacket packet = gson.fromJson(text, SocketPacket.class);
 		setSequence(packet.s);
-		logger.config(gson.toJson(packet.d));
 		switch (packet.op) {
 		case READY:
 			VoiceReady data = gson.fromJson(gson.toJson(packet.d), VoiceReady.class);

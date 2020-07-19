@@ -3,7 +3,7 @@ package io.discloader.discloader.entity.sendable;
 import java.io.File;
 
 import io.discloader.discloader.client.render.util.Resource;
-import io.discloader.discloader.core.entity.RichEmbed;
+import io.discloader.discloader.core.entity.message.embed.RichEmbed;
 
 /**
  * @author Perry Berman

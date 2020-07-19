@@ -243,4 +243,8 @@ public class Endpoints {
 		return String.format("%s/%d/%s", webhooks, webhookID, token);
 	}
 	
+	public static final String voiceGateway(String url) {
+	    return String.format("wss://%s?v=%d", url,  DLUtil.VoiceAPIVersion);
+	}
+	
 }

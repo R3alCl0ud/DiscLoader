@@ -18,7 +18,7 @@ import io.discloader.discloader.common.exceptions.UnauthorizedException;
 import io.discloader.discloader.common.logger.DLLogger;
 import io.discloader.discloader.common.registry.CommandRegistry;
 import io.discloader.discloader.common.start.Options;
-import io.discloader.discloader.core.entity.RichEmbed;
+import io.discloader.discloader.core.entity.message.embed.RichEmbed;
 import io.discloader.discloader.entity.channel.IChannelCategory;
 import io.discloader.discloader.entity.channel.IGuildTextChannel;
 import io.discloader.discloader.entity.channel.IGuildVoiceChannel;
